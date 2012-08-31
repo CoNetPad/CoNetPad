@@ -22,7 +22,7 @@ The Directory Information
 #Our meeting minutes
 /minutes
 
-#The documentation to our project
+#The documentation for our project
 /docs
 
 #The reports for our projects
@@ -31,9 +31,9 @@ The Directory Information
 #The general folder for the source code.
 /source
 
-#The source code folder for the server code
+#The source code folder for the server
 /source/server
 
-#The source code folder for the client code
+#The source code folder for the client
 /source/client
 
