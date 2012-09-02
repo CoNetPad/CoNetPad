@@ -14,7 +14,7 @@
                                    
 #######################################################
                    THE ACM GROUP README
-######################################################
+#######################################################
 
 
 The Directory Information
@@ -28,7 +28,7 @@ The Directory Information
 #The reports for our projects
 /reports
 
-#The general folder for the source code.
+#The general folder for the source code
 /source
 
 #The source code folder for the server
