@@ -31,20 +31,19 @@
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Server {
 
 	private ServerSocket serverSocket;
-	private Queue<Integer> queue;
+	private BlockingQueue<Integer> queue;
 	private boolean listening;
 
 	public Server() {
 		serverSocket = null;
 		listening = true;
-		queue = new LinkedList<Integer>();
+		queue = new LinkedBlockingQueue<Integer>();
 	}
 
 	public void run() {
@@ -58,10 +57,12 @@ public class Server {
 		System.out.println("Starting to listen for clients");
 		int id = 0;
 
+		System.out.println("Starting queue thread");
+		new QueueThread(queue).start();		
 		
 		while (listening) {
 			try {
-				new ConnectionThread(serverSocket.accept(), id).start();
+				new ConnectionThread(serverSocket.accept(), id, queue).start();
 				System.out.println("Client connected");
 				id++;
 			} catch (IOException e) {

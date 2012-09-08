@@ -4,14 +4,18 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Date;
+import java.util.concurrent.BlockingQueue;
 
 public class ConnectionThread extends Thread {
 	private Socket socket = null;
 	private int id;
-	public ConnectionThread(Socket socket, int id) {
+	private BlockingQueue<Integer> queue;
+
+	public ConnectionThread(Socket socket, int id, BlockingQueue<Integer> queue) {
 		super();
 		this.socket = socket;
 		this.id = id;
+		this.queue = queue;
 	}
 
 	public void run() {
@@ -28,17 +32,16 @@ public class ConnectionThread extends Thread {
 			Protocol kkp = new Protocol();
 			boolean stop = false;
 			while ((inputLine = in.readLine()) != null && !stop) {
-				//System.out.print("Command recieved from " + id + " ");
+				// System.out.print("Command recieved from " + id + " ");
 				outputCode = kkp.processInput(inputLine);
-				switch (outputCode) {
-				case 1:
-					break;
-				case -1:
+				if (outputCode == -1)
 					stop = true;
-					break;
-				default:
-					//System.out.println(outputCode);
-					break;
+				try {
+					queue.put(new Integer(outputCode));
+					System.out.println("Queue Put: From " + id + " "
+							+ outputCode);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
 			}
 			out.close();
@@ -46,7 +49,8 @@ public class ConnectionThread extends Thread {
 			socket.close();
 			System.out.println("Thread for client stopped");
 			long eDateTime = new Date().getTime();
-		    System.out.println(id + " Took at: " + (eDateTime-lDateTime));
+			System.out.println(id + " Took : " + (eDateTime - lDateTime)
+					+ " ms");
 
 		} catch (IOException e) {
 			e.printStackTrace();
