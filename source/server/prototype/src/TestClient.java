@@ -33,23 +33,23 @@ import java.io.*;
 import java.net.*;
 import java.util.Random;
 
-public class TestClient extends Thread {
-	
+public class TestClient {
+
 	private int id;
-	
-	public TestClient(int id){
+	private boolean stop;
+	Socket kkSocket = null;
+
+	public TestClient(int id) {
 		this.id = id;
 	}
-	
+
 	public void run() {
 
-Socket kkSocket = null;
-		PrintWriter out = null;
-		
 		try {
 			System.out.println("Opening client-socket");
 			kkSocket = new Socket("127.0.0.1", 4444);
-			out = new PrintWriter(kkSocket.getOutputStream(), true);
+			new ListenThread().start();
+			new WriteThread().start();
 		} catch (UnknownHostException e) {
 			System.err.println("Don't know about host.");
 			System.exit(1);
@@ -58,28 +58,66 @@ Socket kkSocket = null;
 					.println("Couldn't get I/O for the connection to the host.");
 			System.exit(1);
 		}
+	}
 
-		Random rand = new Random();
-		int code = -1;
-		for(int i = 0; i < 1000; i++){
-			code = rand.nextInt(100);
-			//System.out.println(id + "] Sending: " + code);
-			System.out.println(id + "] " + i);
-			out.println(code);
-			/*try {
-				Thread.sleep(code * 25);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}*/
+	private class ListenThread extends Thread {
+
+		public void run() {
+			BufferedReader in = null;
+			try {
+				in = new BufferedReader(new InputStreamReader(
+						kkSocket.getInputStream()));
+				int outputCode;
+				String inputLine = "";
+				while ((inputLine = in.readLine()) != null && !stop) {
+					outputCode = Integer.parseInt(inputLine);
+					if (outputCode == -1) {
+						stop = true;
+						System.out.println(outputCode
+								+ "recieved, stopping client");
+					}
+				}
+
+			} catch (SocketException e1) {
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			} catch (NumberFormatException e1) {
+				e1.printStackTrace();
+			} finally {
+				in.close();
+				kkSocket.close();
+			}
 		}
-		out.println(-1);
+	}
 
-		System.out.println("Closing Connections");
-		out.close();
-		try {
-			kkSocket.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+	private class WriteThread extends Thread {
+
+		public void run() {
+
+			try {
+
+				Random rand = new Random();
+				int code = -1;
+				PrintWriter out = new PrintWriter(kkSocket.getOutputStream(),
+						true);
+				boolean stop = false;
+				while (!stop) {
+					code = rand.nextInt(150) - 1;
+					out.println(code);
+					if (code == -1) {
+						System.out.println(code + " send, stopping client");
+						stop = true;
+					}
+				}
+
+				out.close();
+				kkSocket.close();
+			} catch (NumberFormatException e1) {
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 }
