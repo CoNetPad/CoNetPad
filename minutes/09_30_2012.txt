@@ -1,0 +1,5 @@
+Meeting Minutes for September 6, 2012
+
+1) Began working on formally defining requirements
+2) Looked over SRS template
+3) Discussed different possible approaches to system design
