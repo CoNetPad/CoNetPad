@@ -32,9 +32,17 @@ public class QueueThread extends Thread {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+				break;
 			} catch (IOException e) {
 				e.printStackTrace();
+				break;
 			}
 		}
+		try {
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 }

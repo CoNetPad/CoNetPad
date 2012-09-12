@@ -63,7 +63,7 @@ public class TestClient {
 		}
 
 		try {
-			fos = new FileOutputStream("server.txt");
+			fos = new FileOutputStream("client-" + id + ".txt");
 			fout = new OutputStreamWriter(fos, "UTF-8");
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
@@ -83,6 +83,7 @@ public class TestClient {
 				String inputLine = "";
 				while ((inputLine = in.readLine()) != null && !stop) {
 					outputCode = Integer.parseInt(inputLine);
+					fout.write(Integer.toString(outputCode));
 					if (outputCode == -1) {
 						stop = true;
 						System.out.println(outputCode
@@ -101,6 +102,11 @@ public class TestClient {
 			try {
 				in.close();
 				kkSocket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			try {
+				fout.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
