@@ -29,7 +29,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -39,7 +44,7 @@ public class Server {
 	private ServerSocket serverSocket;
 	private BlockingQueue<Integer> queue;
 	private boolean listening;
-
+	
 	public Server() {
 		serverSocket = null;
 		listening = true;
@@ -47,6 +52,7 @@ public class Server {
 	}
 
 	public void run() {
+		
 		try {
 			System.out.println("Trying to open socket");
 			serverSocket = new ServerSocket(4444);
@@ -62,13 +68,15 @@ public class Server {
 		
 		while (listening) {
 			try {
-				new ConnectionThread(serverSocket.accept(), id, queue).start();
+				new ConnectionThread(serverSocket.accept(), id, queue, this).start();
 				System.out.println("Client connected");
 				id++;
 			} catch (IOException e) {
 				e.printStackTrace();
+				listening = false;
 			}
 		}
+		
 		System.out.println("Closing connections");
 		try {
 			serverSocket.close();
@@ -76,5 +84,14 @@ public class Server {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	
+	public void stopServer(){
+		try {
+			serverSocket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

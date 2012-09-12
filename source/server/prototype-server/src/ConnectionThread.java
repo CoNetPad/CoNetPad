@@ -12,13 +12,14 @@ public class ConnectionThread extends Thread {
 	private Socket socket = null;
 	private int id;
 	private BlockingQueue<Integer> queue;
-	private boolean serverIsListening;
+	private Server server;
 	
-	public ConnectionThread(Socket socket, int id, BlockingQueue<Integer> queue) {
+	public ConnectionThread(Socket socket, int id, BlockingQueue<Integer> queue, Server server) {
 		super();
 		this.socket = socket;
 		this.id = id;
 		this.queue = queue;
+		this.server = server;
 	}
 
 	public void run() {
@@ -35,15 +36,12 @@ public class ConnectionThread extends Thread {
 			Protocol kkp = new Protocol();
 			boolean stop = false;
 			while ((inputLine = in.readLine()) != null && !stop) {
-				// System.out.print("Command recieved from " + id + " ");
 				outputCode = kkp.processInput(inputLine);
 				if (outputCode == -1)
 					stop = true;
 				try {
 					queue.put(new Integer(outputCode));
 					out.println(outputCode);
-					System.out.println("Queue Put: From " + id + " "
-							+ outputCode);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -54,6 +52,7 @@ public class ConnectionThread extends Thread {
 			long eDateTime = new Date().getTime();
 			System.out.println(id + " Took : " + (eDateTime - lDateTime)
 					+ " ms");
+			server.stopServer();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

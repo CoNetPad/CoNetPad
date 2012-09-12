@@ -37,7 +37,10 @@ public class TestClient {
 
 	private int id;
 	private boolean stop;
-	Socket kkSocket = null;
+	private Socket kkSocket = null;
+
+	private FileOutputStream fos;
+	private OutputStreamWriter fout;
 
 	public TestClient(int id) {
 		this.id = id;
@@ -57,6 +60,15 @@ public class TestClient {
 			System.err
 					.println("Couldn't get I/O for the connection to the host.");
 			System.exit(1);
+		}
+
+		try {
+			fos = new FileOutputStream("server.txt");
+			fout = new OutputStreamWriter(fos, "UTF-8");
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
 		}
 	}
 
@@ -84,9 +96,13 @@ public class TestClient {
 				e1.printStackTrace();
 			} catch (NumberFormatException e1) {
 				e1.printStackTrace();
-			} finally {
+			}
+
+			try {
 				in.close();
 				kkSocket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 	}
