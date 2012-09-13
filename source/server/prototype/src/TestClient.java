@@ -84,7 +84,7 @@ public class TestClient {
 				while ((inputLine = in.readLine()) != null && !stop) {
 					outputCode = Integer.parseInt(inputLine);
 					fout.write(Integer.toString(outputCode));
-					if (outputCode == -1) {
+					if (outputCode == -2) {
 						stop = true;
 						System.out.println(outputCode
 								+ "recieved, stopping client");
@@ -124,15 +124,12 @@ public class TestClient {
 				PrintWriter out = new PrintWriter(kkSocket.getOutputStream(),
 						true);
 				boolean stop = false;
-				while (!stop) {
-					code = rand.nextInt(150) - 1;
+				// while (!stop) {
+				for (int i = 0; i < 100; i++) {
+					code = rand.nextInt(250);
 					out.println(code);
-					if (code == -1) {
-						System.out.println(code + " send, stopping client");
-						stop = true;
-					}
 				}
-
+				out.println(-1);
 				out.close();
 				kkSocket.close();
 			} catch (NumberFormatException e1) {

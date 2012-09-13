@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
+import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -44,7 +45,8 @@ public class Server {
 	private ServerSocket serverSocket;
 	private BlockingQueue<Integer> queue;
 	private boolean listening;
-	
+	private QueueThread qthread;
+	public ArrayList<ConnectionThread> clientList;
 	public Server() {
 		serverSocket = null;
 		listening = true;
@@ -62,9 +64,12 @@ public class Server {
 		}
 		System.out.println("Starting to listen for clients");
 		int id = 0;
+		
+		clientList = new ArrayList<ConnectionThread>(0);
 
 		System.out.println("Starting queue thread");
-		new QueueThread(queue).start();		
+		qthread = new QueueThread(queue, clientList, this);
+		qthread.start();		
 		
 		while (listening) {
 			try {
@@ -86,10 +91,16 @@ public class Server {
 		
 	}
 	
+	public void clientDisconnects(){
+		qthread.clientDisconnects();
+	}
 	
-	public void stopServer(){
+	public void stopServeer(){
+		for (int i = 0; i < clientList.size(); i++) {
+			clientList.get(i).finalize();
+		}
 		try {
-			serverSocket.close();
+			this.serverSocket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
