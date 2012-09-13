@@ -29,12 +29,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
@@ -44,17 +39,16 @@ public class Server {
 
 	private ServerSocket serverSocket;
 	private BlockingQueue<Integer> queue;
-	private boolean listening;
 	private QueueThread qthread;
 	public ArrayList<ConnectionThread> clientList;
+
 	public Server() {
 		serverSocket = null;
-		listening = true;
 		queue = new LinkedBlockingQueue<Integer>();
 	}
 
 	public void run() {
-		
+
 		try {
 			System.out.println("Trying to open socket");
 			serverSocket = new ServerSocket(4444);
@@ -64,45 +58,47 @@ public class Server {
 		}
 		System.out.println("Starting to listen for clients");
 		int id = 0;
-		
+
 		clientList = new ArrayList<ConnectionThread>(0);
 
 		System.out.println("Starting queue thread");
 		qthread = new QueueThread(queue, clientList, this);
-		qthread.start();		
-		
-		while (listening) {
+		qthread.start();
+
+		while (true) {
 			try {
-				new ConnectionThread(serverSocket.accept(), id, queue, this).start();
+				ConnectionThread thread = new ConnectionThread(
+						serverSocket.accept(), id, queue);
+				clientList.add(thread);
+				thread.start();
 				System.out.println("Client connected");
 				id++;
 			} catch (IOException e) {
 				e.printStackTrace();
-				listening = false;
+				break;
 			}
 		}
-		
+
 		System.out.println("Closing connections");
+
+		for (int i = 0; i < clientList.size(); i++) {
+			try {
+				clientList.get(i).join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void stopServeer() {
+		System.out.println("Cleaning network");
 		try {
 			serverSocket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-	}
-	
-	public void clientDisconnects(){
-		qthread.clientDisconnects();
-	}
-	
-	public void stopServeer(){
 		for (int i = 0; i < clientList.size(); i++) {
 			clientList.get(i).finalize();
-		}
-		try {
-			this.serverSocket.close();
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 }

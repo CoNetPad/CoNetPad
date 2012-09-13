@@ -3,37 +3,36 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Date;
 import java.util.concurrent.BlockingQueue;
-
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
 
 public class ConnectionThread extends Thread {
 	private Socket socket = null;
 	private int id;
 	private BlockingQueue<Integer> queue;
-	private Server server;
 	private PrintWriter out = null;
 	private BufferedReader in = null;
 	public boolean isRunning = false;
 
 	public ConnectionThread(Socket socket, int id,
-			BlockingQueue<Integer> queue, Server server) {
+			BlockingQueue<Integer> queue) {
 		super();
 		this.socket = socket;
 		this.id = id;
 		this.queue = queue;
-		this.server = server;
+		try {
+			out = new PrintWriter(socket.getOutputStream(), true);
+			in = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
 
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void run() {
 
 		try {
 			System.out.println("Thread for client started");
-			out = new PrintWriter(socket.getOutputStream());
-			in = new BufferedReader(new InputStreamReader(
-					socket.getInputStream()));
 			isRunning = true;
 			String inputLine;
 			int outputCode;
@@ -53,7 +52,6 @@ public class ConnectionThread extends Thread {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		server.clientDisconnects();
 	}
 
 	public void sendCommand(int command) {

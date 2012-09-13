@@ -37,14 +37,17 @@ public class QueueThread extends Thread {
 		while (!stop) {
 			try {
 				Integer integer = queue.take();
-				System.out.println("Queue Take:" + integer);
-				out.write(Integer.toString(integer));
-				if(integer == -1 && counter == 0){
-					break;
-				}
+				out.write(Integer.toString(integer) + "\n");
 				for (int i = 0; i < clientList.size(); i++) {
 					if (clientList.get(i).isRunning) {
 						clientList.get(i).sendCommand(integer);
+						System.out.println(i + " " + integer + " => ");
+					}
+				}
+				if (integer == -1) {
+					counter++;
+					if (counter == clientList.size()) {
+						break;
 					}
 				}
 			} catch (InterruptedException e) {
@@ -66,18 +69,7 @@ public class QueueThread extends Thread {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 		server.stopServeer();
-	}
-
-	public void clientConnects() {
-		counter++;
-
-	}
-
-	public void clientDisconnects() {
-		counter--;
-		if (counter == 0) {
-			stop = true;
-		}
 	}
 }

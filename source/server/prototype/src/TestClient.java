@@ -1,46 +1,22 @@
-/*
- * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- *   - Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *
- *   - Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *
- *   - Neither the name of Oracle or the names of its
- *     contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
- * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 import java.io.*;
 import java.net.*;
 import java.util.Random;
 
-public class TestClient {
+public class TestClient extends Thread {
 
-	private int id;
-	private boolean stop;
-	private Socket kkSocket = null;
+	private int id; // ID of this client
+	private Socket kkSocket = null; // Socket for comunicating with the server
 
 	private FileOutputStream fos;
 	private OutputStreamWriter fout;
+
+	private PrintWriter out = null;
+	private BufferedReader in = null;
+
+	private ListenThread lthread; // Thread that handles incoming connections
+									// from the server
+	private WriteThread wthread; // Thread that handles outgoing connections to
+									// the server
 
 	public TestClient(int id) {
 		this.id = id;
@@ -51,8 +27,15 @@ public class TestClient {
 		try {
 			System.out.println("Opening client-socket");
 			kkSocket = new Socket("127.0.0.1", 4444);
-			new ListenThread().start();
-			new WriteThread().start();
+			fos = new FileOutputStream("client-" + id + ".txt");
+			fout = new OutputStreamWriter(fos, "UTF-8");
+			in = new BufferedReader(new InputStreamReader(
+					kkSocket.getInputStream()));
+			out = new PrintWriter(kkSocket.getOutputStream(), true);
+			lthread = new ListenThread();
+			lthread.start();
+			wthread = new WriteThread();
+			wthread.start();
 		} catch (UnknownHostException e) {
 			System.err.println("Don't know about host.");
 			System.exit(1);
@@ -63,80 +46,84 @@ public class TestClient {
 		}
 
 		try {
-			fos = new FileOutputStream("client-" + id + ".txt");
-			fout = new OutputStreamWriter(fos, "UTF-8");
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		} catch (UnsupportedEncodingException e1) {
-			e1.printStackTrace();
+			wthread.join();
+			lthread.join();
+			System.out.println("Threads completed");
+		} catch (InterruptedException e) {
+			System.err.println("Waiting for threads failed");
 		}
+
+		try {
+			System.out.println("Closing reader and writer");
+			in.close();
+			out.close();
+		} catch (IOException e) {
+			System.err.println("Failed closing reader and writer");
+		}
+		System.out.println("Client stopped");
 	}
 
 	private class ListenThread extends Thread {
 
 		public void run() {
-			BufferedReader in = null;
+			System.out.println("Starting listen thread");
 			try {
-				in = new BufferedReader(new InputStreamReader(
-						kkSocket.getInputStream()));
 				int outputCode;
 				String inputLine = "";
-				while ((inputLine = in.readLine()) != null && !stop) {
+				boolean stop = false;
+				while (!stop && (inputLine = in.readLine()) != null) {
 					outputCode = Integer.parseInt(inputLine);
-					fout.write(Integer.toString(outputCode));
+					fout.write(Integer.toString(outputCode) + "\n");
+					System.out.println(id + " " + outputCode + " <=");
+
 					if (outputCode == -2) {
 						stop = true;
 						System.out.println(outputCode
-								+ "recieved, stopping client");
+								+ " recieved, stopping client");
 					}
 				}
 
 			} catch (SocketException e1) {
-				e1.printStackTrace();
+				System.err
+						.println("Exception in the connection, probably closed by server");
 			} catch (IOException e1) {
-				e1.printStackTrace();
+				System.err.println("Exception with IO component");
 			} catch (NumberFormatException e1) {
-				e1.printStackTrace();
+				System.err.println("Exception parsing string to Integer");
 			}
 
 			try {
-				in.close();
-				kkSocket.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			try {
+				System.out.println("Closing file");
 				fout.close();
+				fos.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				System.err.println("Closing file writers filed");
 			}
+			System.out.println("Finishing listen thread");
 		}
 	}
 
 	private class WriteThread extends Thread {
 
 		public void run() {
-
+			System.out.println("Starting write thread");
 			try {
-
 				Random rand = new Random();
 				int code = -1;
-				PrintWriter out = new PrintWriter(kkSocket.getOutputStream(),
-						true);
-				boolean stop = false;
-				// while (!stop) {
-				for (int i = 0; i < 100; i++) {
-					code = rand.nextInt(250);
+
+				for (int i = 0; i < 500; i++) {
+					code = rand.nextInt(100);
 					out.println(code);
+					System.out.println(id + " " + code + " => ");
+					Thread.sleep(code);
 				}
 				out.println(-1);
-				out.close();
-				kkSocket.close();
 			} catch (NumberFormatException e1) {
-				e1.printStackTrace();
-			} catch (IOException e1) {
-				e1.printStackTrace();
+				System.err.println("Exception parsing string to Integer");
+			} catch (InterruptedException e) {
+				System.err.println("Exception while sleeping the thread");
 			}
+			System.out.println("Finishing write thread");
 		}
 	}
 }
