@@ -13,8 +13,7 @@ public class ConnectionThread extends Thread {
 	private BufferedReader in = null;
 	public boolean isRunning = false;
 
-	public ConnectionThread(Socket socket, int id,
-			BlockingQueue<Integer> queue) {
+	public ConnectionThread(Socket socket, int id, BlockingQueue<Integer> queue) {
 		super();
 		this.socket = socket;
 		this.id = id;
@@ -32,7 +31,7 @@ public class ConnectionThread extends Thread {
 	public void run() {
 
 		try {
-			System.out.println("Thread for client started");
+			System.out.println("Thread for client " + id + "started");
 			isRunning = true;
 			String inputLine;
 			int outputCode;

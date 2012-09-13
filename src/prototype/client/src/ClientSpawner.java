@@ -1,5 +1,6 @@
 import java.io.IOException;
 
+
 public class ClientSpawner {
 	public static final int NUMBER_OF_CLIENTS = 10;
 	
