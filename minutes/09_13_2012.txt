@@ -1,0 +1,4 @@
+Meeting Minutes for September 13, 2012
+
+1) Discussed each section of the SRS template
+2) Decided on way in which Git will be used with CoNetPad
