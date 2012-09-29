@@ -62,7 +62,7 @@ Meeting Minutes for September 27, 2012
 	   --------- Git
 
    * 3 tier system
-   * client-server relationship betwen all directly connect components
+   * client-server relationship between all directly connected components
 
 6) Plan/Assignments:
    * we plan to meet at 9am on Tuesday, for whoever can make it (Cesar and Josh confirmed)
