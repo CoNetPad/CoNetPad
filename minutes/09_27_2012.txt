@@ -51,8 +51,68 @@ Meeting Minutes for September 27, 2012
    ** username
    ** password // hashed
    ** user-specific salt
-   ** database-wide salt
-   
+
+   UPDATE (9/29/12):
+   Removed database-wide salt. We should still use something like that for added security, but it shouldn't be stored in the
+   databse (nor hardcoded into the source code). Rather, this "secret key" should be generated upon installation of the server.
+
+   From (http://www.grc.com/sn/sn-357.htm):
+
+   "Now, I would say that best practice, we talked about not storing, in a best practice situation,
+    not storing the salt with the database. Well, what you really want to do to make the strongest
+    system you can is you custom salt every account. So when somebody is creating their password,
+    you generate a pseudorandom salt for that user. You also have what I would call a sequestered
+    system-wide salt which is not stored with the database. So the per user salt, which does need to
+    be stored with the database, that makes each user's hash custom to them. The sequestered system-wide
+    salt, which is not stored with the database, means that if only your database is compromised, they still don't
+    get that.
+
+    But then, once you've got these two salts, a per user salt and a per system salt, then you apply Password-Based
+    Key Derivation, whatever, 10,000. And the idea there is that you are slowing down the process of processing this
+    hash in such a fashion that even guys with really fast GPUs and hardwares are slowed. So that's best practice for
+    hash storing today."
+
+    There's actually a really useful site that explains all this stuff and provides actual Java source
+    code that we could use: http://crackstation.net/hashing-security.htm#javasourcecode
+    We would just have to modify a little bit.
+    These were also useful for the following code:
+    http://www.digizol.org/2009/10/java-encrypt-decrypt-jce-salt.html
+    http://stackoverflow.com/questions/6403662/how-to-use-a-key-generated-by-keygenerator-at-a-later-time
+
+    For example, we might the following (hacked together from above sources:
+
+    // to create secret key - only performed once during server installation
+    SecretKey key = KeyGenerator.getInstance("AES").generateKey();
+    byte[] encoded = key.getEncoded(); // store 'encoded' (but not in database)
+
+    // when need to load secret key
+    byte[] encoded = <stored_non-database_file>
+    SecretKey key = new SecretKeySpec(encoded, "AES");
+
+
+    // before storing the (salted and hashed) password into the database encrpyt it:
+    public static String encrypt(byte[] pass, SecretKey key) throws Exception {
+        Cipher c = Cipher.getInstance("AES");
+        c.init(Cipher.ENCRYPT_MODE, key);
+        byte[] encPass = c.doFinal(pass);
+        String encryptedPass = new BASE64Encoder().encode(encPass);
+        return encryptedPass;
+    }
+    
+    // before comparing the user-entered password hash with the database one,
+    // decrypt the database password using the AES key (which is stored in the server
+    // filesystem)
+    public static String decrypt(String encryptedPass, SecretKey key) throws Exception {
+        Cipher c = Cipher.getInstance("AES");
+        c.init(Cipher.DECRYPT_MODE, key);
+        byte[] decodedPass = new BASE64Decoder().decodeBuffer(encryptedPass);
+        byte[] decPass = c.doFinal(decodedPass);
+        String decryptedPassword = new String(decPass);
+        return decryptedPassword;
+    }
+
+    I have no idea if all this will actually work, since I haven't tested anything.
+
 5) specifics on architecture:
 
 		      IRC
