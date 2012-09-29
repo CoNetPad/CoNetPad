@@ -1,0 +1,73 @@
+Meeting Minutes for September 27, 2012
+
+1) Discussed the remaining tasks that need to be done for Deliverable II
+   a) explanation of the architecture of the system
+   b) UML design documents
+      i)    class diagram
+      ii)   sequence diagram
+      iii)  use case diagram(s)
+   c) ER diagram / relational schema
+   d) test plan
+   e) updated risk management
+   f) updated project plan
+
+2) use case diagram specifics
+   * actors: user (self), users (other than self), IRC server (optional; only if feature allowing connecting to external IRC server is implemented)
+   * use cases:
+   ** download source/binary
+   ** login/create account
+   ** create/delete/modify files
+   ** edit user settings
+   ** chat
+   ** clone Git repo
+   ** compile source
+
+3) specific classes that will likely be used
+   * for the server:
+   ** Repository
+   ** Account
+   ** Session
+   ** Compiler
+   ** IRCServer
+   ** Server
+   ** CommandQueue
+   * for the client:
+   ** UI
+   ** Connection
+   *** ServerConnection
+   *** IRCConnection
+   ** User // may or may not have an associated Account
+   ** IRCCommand
+   * shared classes:
+   ** SSLSocket
+   ** File
+   *** ServerFile
+   *** ClientFile
+   // Note: these are tentative - will likely change as we progress in the design process
+
+4) specific information that the SQLite database will likely need to handle
+   * user information
+   ** userid
+   ** username
+   ** password // hashed
+   ** user-specific salt
+   ** database-wide salt
+   
+5) specifics on architecture:
+
+		      IRC
+		    /
+   client -- server -- SQLite
+   	  \   	    \
+	   --------- Git
+
+   * 3 tier system
+   * client-server relationship betwen all directly connect components
+
+6) Plan/Assignments:
+   * we plan to meet at 9am on Tuesday, for whoever can make it (Cesar and Josh confirmed)
+   * individual goals for Tuesday:
+   ** Josh - class diagram, system architecture, and updated project plan (also will try to finalize the SRS)
+   ** Cesar - sequence diagram, use case diagrams, updated risk management, and test plan
+   ** Justin - ER diagram, relational schema, user interface layout/design
+   * the overall goal is to get the majority of Deliverable II done by Thursday
