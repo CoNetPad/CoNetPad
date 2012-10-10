@@ -1,0 +1,5 @@
+Minutes for October 2, 2012
+
+1) Discussed what each member was able to accomplish.
+2) Listed the components that still needed to be finished and divided the work among members
+3) Agreed upon the overall, high-level design for the classes.

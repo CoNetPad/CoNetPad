@@ -1,0 +1,14 @@
+Minutes for October 9, 2012
+
+1) Discussed the ER Diagram for the database. Decided on the various tables that the database would hold.
+
+2) Discussed the system architecture and checked with Dr. Do to ensure it was appropriate.
+
+3) Discussed changes that needed to be made to the use case diagram - needed to add a few use cases.
+
+4) Divided the remainder of the project tasks into subtasks - to be used in the updated project plan.
+
+5) Assigned work to be done that day for the tasks still unfinished:
+   Cesar: use case diagram/text fixes, sequence diagram fixes
+   Justin: ER Diagram, System Architecture
+   Josh: UML Class Diagram, Project Plan, meeting minutes
