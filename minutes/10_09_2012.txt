@@ -1,4 +1,4 @@
-Minutes for October 9, 2012
+Meeting Minutes for October 9, 2012
 
 1) Discussed the ER Diagram for the database. Decided on the various tables that the database would hold.
 

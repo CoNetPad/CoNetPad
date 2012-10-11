@@ -1,4 +1,4 @@
-Minutes for September 20, 2012
+Meeting Minutes for September 20, 2012
 
 1)  Talked and made decisions on our database
 2)  Talked and made decisions on design documents
