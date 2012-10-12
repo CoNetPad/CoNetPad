@@ -1,0 +1,20 @@
+Meeting Minutes for October 11, 2012
+
+1) Changed the design of the server. Instead of having a TaskQueue located in CNPServer, each ServerSourceFile will have its own TaskQueue (that only serializes Tasks per file). In the new design, the task processing is as follows:
+
+- CNPClient sends a CNPTask to the CNPServer through the SSLSocket using serialization.
+- The CNPServer receives the task data on its SSLServerSocket, unserializes it back to a CNPTask, and forwards it to the TaskDistributor.
+- Using knowledge of the CNPSession and modified file (stored in CNPTask), the multi-threaded TaskDistributor forwards the CNPTask to a specific ServerSourceFile's single-thread TaskQueue.
+- CNPTask changes are made to the ServerSourceFile.
+- The ServerSourceFile sends another CNPTask to the TaskDistributor (using a different type of CNPTask).
+- The TaskDistributor forwards a serialized version of the CNPTask (in parallel) to all CNPClients in the CNPSession that have the file open (probably implemented by registering interested CNPClients as  Listeners of some sort).
+- CNPClient receives the CNPTask on their SSLSocket, unserializes it, and forwards it to its own multi-threaded ExecutorService.
+- This ExecutorService will execute each CNPTask and update the CNPClient's view to reflect the changes.
+
+2) Defined interfaces for CNPServer/CNPClient, Network/Logic, and Logic/Storage.
+
+3) Divided project into logical components and assigned components to group members (see ProjectDivision.png). Current assignments are:
+- Cesar = Network (both Server and Client) - work with classes like CNPConnection, SSLSocket/SSLServerSocket, IRCServer, CNPSession
+- Justin = Logic (Client) - work with classes like SourceFile, CNPClient (especially its ExecutorService), CNPTask
+- Josh = Logic (Server) - work with classes like CNPSession, CNPTask, TaskDistributor, TaskQueue
+
