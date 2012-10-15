@@ -1,3 +1,5 @@
+package prototype.client.src;
+
 import java.io.IOException;
 
 

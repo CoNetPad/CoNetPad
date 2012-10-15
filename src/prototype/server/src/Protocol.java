@@ -1,3 +1,4 @@
+package prototype.server.src;
 public class Protocol {
 
 	public int processInput(String theInput) {
