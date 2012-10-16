@@ -1,0 +1,18 @@
+Meeting Minutes for October 15, 2012
+
+1) Made major changes in design:
+   
+   a) The server will listen on a single port and will manually spawn a thread for each client that connects to it.
+   b) Client/Server no longer communicate tasks using an executable (runnable/callable) task object.
+        i) Send only plain-text parameters as a string (using delimiters) that specify a particular task
+       ii) Client/Server should construct the task object on their own side, based on these parameters.
+      iii) Client/Server will then forward the task object to the appropriate ExecutorService.
+      	   * Client will forward it to clientExecutor
+	   * Server will forward it to the appropriate ServerSourceFile's taskSerializer (a single-thread ExecutorService)
+       iv) CNPTask no longer needs to contain a CNPConnection (these will be stored on each side after a client connects)
+   c) the permissionType field of a CNPTask should be static
+
+2) We should also work on converting documentation to a plain-text format, whenever possible.
+   This way, changes can be made more easily and version differences are simpler to view.
+
+3) TODO: Interface specification needs to be updated.
