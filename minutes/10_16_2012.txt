@@ -1,0 +1,9 @@
+Meeting Minutes for October 16, 2012
+
+1) Will no longer use IRC component. CNPServer will handle chat functionality on its own.
+   - Note: This means clients can no longer connect to chat server with external IRC
+           client.
+
+2) Messages should be passed between client/server using JSON.
+   - Note: For now, can use basic string parsing.
+           Eventually, should reuse Java JSON library.
