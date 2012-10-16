@@ -4,17 +4,25 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 
-public class Network {
+import javax.swing.event.EventListenerList;
+
+import org.ndacm.acmgroup.network.event.Component;
+import org.ndacm.acmgroup.network.event.MessageReceivedEvent;
+import org.ndacm.acmgroup.network.event.MessageReceivedEventListener;
+
+public class Network implements Component{
 
 	private ServerSocket serverSocket;
-	public ArrayList<CNPConnection> clientList;
+	private ArrayList<CNPConnection> clientList;
+	private EventListenerList listenerList = new EventListenerList();
 
 	public void startListening() {
 		try {
 			System.out.println("Trying to open socket");
 			serverSocket = new ServerSocket(4444);
 		} catch (IOException e) {
-			System.err.println("Could not listen on port: 4444.");
+			System.err.println("Could not listen on port: 4444");
+			System.err.println("Exiting");
 			System.exit(-1);
 		}
 		System.out.println("Starting to listen for clients");
@@ -22,18 +30,17 @@ public class Network {
 
 		clientList = new ArrayList<CNPConnection>(0);
 
-		System.out.println("Starting queue thread");
+		System.out.println("Starting clients pool");
 
 		while (true) {
 			try {
-				CNPConnection thread = new CNPConnection(serverSocket.accept(),
-						id);
+				CNPConnection thread = new CNPConnection(serverSocket.accept(),id, this);
 				clientList.add(thread);
 				thread.start();
 				System.out.println("Client connected");
 				id++;
 			} catch (IOException e) {
-				e.printStackTrace();
+				System.err.println("Error while connecting client " + id);
 				break;
 			}
 		}
@@ -43,8 +50,9 @@ public class Network {
 		for (int i = 0; i < clientList.size(); i++) {
 			try {
 				clientList.get(i).join();
+				System.out.println("Thread " + i + " closed");
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				System.err.println("Error while closing thread " + i);
 			}
 		}
 	}
@@ -54,7 +62,7 @@ public class Network {
 		try {
 			serverSocket.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println("Error while closing server socket");
 		}
 		for (int i = 0; i < clientList.size(); i++) {
 			clientList.get(i).close();
@@ -64,5 +72,22 @@ public class Network {
 	public void stopClient(int id) {
 		System.out.println("Closing connection with client " + id);
 		clientList.get(id).close();
+	}
+
+	public void addMessageReceivedEventListener(MessageReceivedEventListener listener) {
+		listenerList.add(MessageReceivedEventListener.class, listener);
+	}
+
+	public void removeMessageReceivedEventListener(MessageReceivedEventListener listener) {
+		listenerList.remove(MessageReceivedEventListener.class, listener);
+	}
+
+	public void fireMessageReceivedEvent(MessageReceivedEvent evt) {
+		Object[] listeners = listenerList.getListenerList();
+		for (int i = 0; i < listeners.length; i += 2) {
+			if (listeners[i] == MessageReceivedEventListener.class) {
+				((MessageReceivedEventListener) listeners[i + 1]).MessageReceivedEventOccurred(evt);
+			}
+		}
 	}
 }

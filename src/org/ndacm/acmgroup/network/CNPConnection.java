@@ -7,26 +7,30 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 
+import org.ndacm.acmgroup.network.event.Component;
+import org.ndacm.acmgroup.network.event.MessageReceivedEvent;
+import org.ndacm.acmgroup.network.event.MessageReceivedEventListener;
+
 public class CNPConnection extends Thread {
 	private Socket socket = null;
 	private int id;
-	private BlockingQueue<Integer> queue;
 	private PrintWriter out = null;
 	private BufferedReader in = null;
-	public boolean isRunning = false;
-
-	public CNPConnection(Socket socket, int id) {
+	private Component component;
+	private boolean stop = false;
+	
+	public CNPConnection(Socket socket, int id, Component component) {
 		super();
 		this.socket = socket;
 		this.id = id;
-		this.queue = queue;
+		this.component = component;
 		try {
 			out = new PrintWriter(socket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(
 					socket.getInputStream()));
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println("Error establishing in/out streams");
 		}
 	}
 
@@ -34,24 +38,13 @@ public class CNPConnection extends Thread {
 
 		try {
 			System.out.println("Thread for client " + id + "started");
-			isRunning = true;
 			String inputLine;
-			int outputCode;
-			Protocol kkp = new Protocol();
-			boolean stop = false;
 			while ((inputLine = in.readLine()) != null && !stop) {
-				outputCode = kkp.processInput(inputLine);
-				if (outputCode == -1)
-					stop = true;
-				try {
-					queue.put(new Integer(outputCode));
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+				component.fireMessageReceivedEvent(new MessageReceivedEvent(new CNPTask(0, 0)));
 			}
-			System.out.println("Thread for client stopped");
+			System.out.println("Thread for client stopped correctly");
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println("Thread for client stopped with an exception");
 		}
 	}
 
@@ -67,7 +60,14 @@ public class CNPConnection extends Thread {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		isRunning = false;
+	}
+
+	public boolean isStop() {
+		return stop;
+	}
+
+	public void stopThread() {
+		this.stop = true;
 	}
 
 }
