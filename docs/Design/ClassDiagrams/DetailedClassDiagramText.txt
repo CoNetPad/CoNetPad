@@ -57,7 +57,7 @@ CNPServer
 CNPSession
 ----------
 - gitRepo: GitRepo
-- ircSession: jerklib.Session
+- server: CNPServer
 - leader: SessionLeader
 - sourceFiles: ConcurrentHashMap<String, ServerSourceFile>
 - permissions: ConccurentHashMap<Account, Account.AccountPermissionLevel>
@@ -151,13 +151,13 @@ SourceFile
 
 ServerSourceFile
 ----------
-- file: File
+- source: Rope
 - taskQueue: ExecutorService
-- server: CNPServer
+- session: CNPSession
 - taskSerializer: TaskQueue
 ----------
 + writeToFile(): boolean
-+ addTask(task: CommandTask): void
++ addTask(task: EditorTask): void
 + addTask(task: DownloadTask): void
 ----------
 
@@ -208,8 +208,9 @@ DownloadRepoTask
 + execute(): void
 ----------
 
-IRCTask
+ChatTask
 ----------
+- username: String
 - message: String
 ----------
 + execute(): void
@@ -218,9 +219,10 @@ IRCTask
 
 EditorTask
 ----------
-- event: KeyEvent
-- filename: String
-- locationInString: int
+- username: String
+- keyEntered: char
+- editIndex: int
+- fileName: String
 - session: CNPSession
 ----------
 + execute(): void
