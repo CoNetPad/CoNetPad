@@ -1,0 +1,426 @@
+﻿I. Software Requirements Specification
+ Introduction
+ Purpose 
+This document specifies the software requirements for CoNetPad Version 0.1. It covers the requirements for the entire CoNetPad system, including the client, server, communication, security, and file input/output components.
+ Document Conventions
+References (in Section 1.5) are provided for any underlined text within a section. 
+ Intended Audience and Reading Suggestions
+This document is intended for customers and developers, though users of the system have played a significant role in determining the specific content that follows. This is because the requirements that we have specified are intended to fulfill the perceived needs of users.
+
+Customers and program managers should understand all aspects of this document. Customers must do their best to ensure that all known requirements are described in this document. It is expected that requirements may be added or removed as the project progresses, but these should be minimal in order to ensure minimal project cost and development time. At the very least, all participants of the project should read Section 1 (“Introduction”) and Section 2 (“Overall Description”). Testers should focus on all requirements of the system, including Section 4 (“External Interface Requirements”) and Section 5 (“Other Nonfunctional Requirements”).
+ Project Scope
+The aim of this project is to a produce a simple solution for real-time collaboration in small software projects. It is not to replace the fully-featured solutions that already exist in the market. Existing software products like the Eclipse Integrated Development Environment (IDE) or the Netbeans IDE already provide users with a free and comprehensive development environment. These tools can be combined with Version Control Systems (VCS) such as Subversion or Git to provide multiple developers an efficient way to collaborate on projects. In addition, the Eclipse Communication Framework (ECF) versions 2.0.0 and up contain the DocShare plug-in, which implements real-time shared editing. The issue with these solutions is that they require the user to first download and install large software (possibly including additional plug-ins) and then configure their system to correctly use these solutions. Often times, there is also a steep learning curve in actually using the solution.
+
+Some solutions that are similar to ours do exist. These include Gobby, SubEthaEdit, collabedit, and Cloud9. However, none of these solutions contains all the features that our solution intends to provide. Gobby lacks integrated support for Git and remote compilation. SubEthaEdit also lacks integrated Git support and is available only on the Mac OS X platform. Collebedit does not allow for multiple files in a single view and does not utilize the auto-complete feature. Cloud9 is an excellent solution except for that fact that unlocking all of its features requires the user to be a paid subscriber.
+
+Our goal is to create a free, accessible solution with a functionality that falls somewhere in-between the large, fully-featured IDEs and the bare-boned, real-time collaboration tools available online.
+ References
+The following products are referenced by this document. Web addresses have been included for those interested in obtaining more information on these products.
+
+Related Products:
+Eclipse - http://www.eclipse.org/
+ECF/DocShare Plugin - http://wiki.eclipse.org/DocShare_Plugin
+Netbeans - http://netbeans.org/
+Gobby - http://gobby.0x539.de/trac/
+SubEthaEdit - http://www.codingmonkeys.de/subethaedit/index.html
+collabedit - http://collabedit.com/
+Cloud9 - https://c9.io/
+
+Java Tools/Libraries:
+JGit - http://www.jgit.org/
+Xerial JDBC Driver - http://www.xerial.org/trac/Xerial/wiki/SQLiteJDBC
+Martyr - http://martyr.sourceforge.net/
+JerkLib - http://jerklib.sourceforge.net/
+ Overall Description
+ Product Perspective
+The CoNetPad system can be viewed as consisting of five discrete subsystems: a Git repository, an SQLite database, the CoNetPad Java application, the Java Virtual Machine upon which the CoNetPad Java application runs, and an IRC server. Each of these subsystems must function correctly in order for the overall CoNetPad system to be fully functional. The CoNetPad system communicates through a network system. This network can be either local or Internet-based. Figure 1 illustrates this high-level system view.
+
+Figure 1 shows the specific CoNetPad subsystems that directly interact with the network, namely the IRC server and the CoNetPad Java application (running on top of a Java Virtual Machine). The other two subsystems, the Git repository and the SQLite database, do not directly interact with the network. Both of these subsystems are meant to be used locally only by the CoNetPad Java application.
+
+
+
+
+
+Figure 1:
+
+
+
+The interface between the systems and subsystems is also shown in Figure 1. The CoNetPad Java application will communicate with the Git repository using a Java Git Library, such as JGit. It will communicate with the SQLite database using an SQLite JDBC driver, such as the one provided by Xerial. Various Java IRC libraries exist that can be used for communication between the CoNetPad Java application and the IRC server, such as Martyr and JerkLib. Both the CoNetPad Java application and the IRC server will communicate over the network using TCP sockets.
+ Product Features
+The features that are planned to be included in CoNetPad are as follows:
+
+Service accessible over a network
+Concurrent editing between multiple users
+Color highlighting used to differentiate work of different authors
+Controlled access to a session (both read and write access)
+Ability to create a session leader
+Controlled visibility for specific files in a session
+Ability for session leader to create/delete files
+Ability for users to communicate via “chat” interface separate from the files
+Integrated chat service in client
+Ability to connect external chat clients to a session chat instance
+Password protected channel
+Option for session leader to disable chat
+Ability to edit multiple files in the same session
+Interface to Git for versioning control of source code
+Ability to clone the Git repository associated with a session
+Ability to download the source code for specific files
+Auto-Complete
+Syntax highlighting
+Option for remote compilation of source code
+Ability to download resulting binary files
+Display any compiler error or warning messages 
+Support for multiple languages
+Availability on multiple platforms
+Open source project
+
+These features are not equally important. Even if some of these features are left out of the final product, CoNetPad will still be useful as a collaboration tool. Others must be included for CoNetPad to have any significant value. The features that are essential are prioritized over those that are not. The priorities for each of these features are elaborated on in Section 3.
+
+In addition, certain features require the implementation of other features in order to exist. Figure 2 shows these prerequisites for those dependent features. The dependent features are shown to the right of those features that they depend on.
+ User Classes and Characteristics
+The primary user classes that we anticipate will use this product are small project developers and instructors of an introductory programming language course.
+
+Developers who use CoNetPad will likely do so for small projects. These projects will likely consist of less than 1,000 lines of code and span no more than a few files. The frequency with which these developers use our product will depend on the frequency with which they must create small-scale programs in a group setting. We anticipate that this use class will use all of the features planned for CoNetPad, except for perhaps visibility control of files. In addition, developers who begin a project with CoNetPad, but later realize that they underestimated the size or complexity of the project, will be able to clone the Git repository associated with the session. From there, they will have the option of using this repository with a larger, fully-featured IDE.
+
+The other primary users that we envision using our product are instructors who are trying to teach a programming language, along with their students. CoNetPad would provide an environment in which an instructor could assign a small programming assignment to students and then watch in real-time as they attempt to solve it. Instructors would have the ability to provide hints through the chat interface and even edit the file the student is working on to provide corrections or additional help. While we don't expect members of this use class will make use of all CoNetPad features, the ability to do so will remain. A feature that we believe will be especially utilized by this user class is the ability to disable chat between students, as well as disable the ability for students to view all files being worked on in the session. This will prevent cheating and other behaviors that are non-conducive to learning.
+
+Secondary user classes include members of groups competing in a programming competition. One example is the programming competition performed at the University of Illinois at Urbana-Champaign called MechMania, a competition that the NDSU chapter of the ACM is involved with. CoNetPad would provide an easy way for all members to work collaboratively and in real-time. Another user class might be students who wish to collaborate with each other on the task of note-taking during a class lecture. Although these students would not likely require all the available features of CoNetPad, they could simply use a subset to accomplish their goal.
+ Operating Environment
+The CoNetPad application will be written in Java and will run within a Java Virtual Machine. Therefore, it will be available to the Windows, Mac OS X, and Linux operating systems, so long as a Java Virtual Machine is supported on these operating systems – something that we expect will continue for many years.
+
+In addition, the CoNetPad system requires the existence of Git software, an IRC server, and an SQLite database. The relationships between these components are illustrated in Section 2.1.
+ Design and Implementation Constraints
+The constraint that we perceive will be the most limiting is the requirement that the user experience not be damaged by network performance issues. Since people will only use CoNetPad if it is mostly lag-free, this constraint in non-negotiable. Developers of this software will need to ensure that CoNetPad can function seamlessly with multiple users on projects containing multiple files. If there is a large amount of lag between the time users type something and the time they see it on the screen, it will be very difficult to use CoNetPad as a serious collaboration tool. Although developers will be able to specify a maximum number of simultaneous users, this number should not be less than ten. In addition, although the minimal set of user requirements can include the existence of a broadband connection, developers will need to ensure that CoNetPad works properly even on slow DSL network connections.
+
+The hardware requirements for this application will be minimal – all that is required is a small amount of disk space for the software installation. Therefore, the options available to developers should not be limited. A set of minimal system requirements will be published with this software that will ensure developers access to the required user resources.
+
+Software constraints include those constraints that apply to subsystems used by the CoNetPad application. Therefore, developers must operate within the constraints of the Git software, the SQLite database software, and the IRC server software. More specifically, they will be limited by the APIs and libraries that create the interface between the CoNetPad Java application and these components. Also, since the CoNetPad application is meant to take advantage of the existing Java Virtual Machine network, it must be programmed using the Java programming language. Developers can use either the Java SE 6 or Java SE 7 version.
+
+Networks connections should be made using SSL for integrity protection, authentication, and confidentiality.  In addition, users should be required to provide a password to enter a private session. The password for the session will be created by the session leader and should only be stored in a salted and hashed state.
+ User Documentation
+Although this product should be simple enough that most people will not require additional documentation, a user manual should be provided with it. Additionally, explanatory tooltips should be used with the user interface.
+
+Since this project is meant to be open-sourced, there is an increased need for developers to fully document their code. This will allow others to understand and modify the source code in an efficient manner.
+ Assumptions and Dependencies
+It is assumed that a Java Runtime Environment will continue to be supported on the major operating systems (Windows, Mac OS X, and Linux). If this is not true, then our potential audience will be significantly reduced.
+
+In addition, it is assumed that access to APIs and libraries needed for communication with a Git repository, SQLite database, and IRC server will remain available. Since this is currently the case and nothing suggests this will change, we don't believe this is a high-risk assumption.
+
+Software dependencies are described in detail in Section 2.1.
+ System Features
+ Service Accessible Over a Network
+3.1.1	Description and Priority
+The CoNetPad application service should be available over a network. This network could be either a local network or the Internet. Without the ability for users to access CoNetPad over a network, the usefulness of the application is severely restricted. Many other features require the implementation of this feature; therefore, the completion of this feature is a very high priority.
+
+Priority: High
+3.1.2	Stimulus/Response Sequences
+By specifying the location of an existing CoNetPad server, users of the application should be able to connect to that server through the CoNetPad software.
+3.1.3	Functional Requirements
+This feature depends on clients having access to a network on which the CoNetPad server application is installed. If clients specify an incorrect server address or are not on a network that has access to such a server, than they will not be able to utilize the networked features of the application.
+
+REQ-1:	Existing server that has the CoNetPad server application installed.
+REQ-2:	A network to which the CoNetPad server and clients are connected.
+ Ability for Users to Concurrently Edit a File
+3.2.1	Description and Priority
+Users should be able to concurrently edit files belonging to a project. Any action, even the entering of a single letter, should be reflected in the files of the other group members in real-time. Since real-time collaboration is a major goal of this software, this feature is very important to complete.
+
+Priority: High
+3.2.2	Stimulus/Response Sequences
+Whenever a user makes a change to a file, this change should be propagated to all others with minimal delay. This includes adding, modifying, or removing content.
+
+See Section 5.1 for more specific time requirements.
+
+3.2.3	Functional Requirements
+The ability for multiple users to edit a file simultaneously (using separate clients) depends on the ability for the application to utilize a network connecting these users. If a user gets disconnected from the network, then the ability for that user to make further changes should be restricted. When the user reconnects, the user's client should re-sync with the server before allowing changes to be made. This will avoid a user getting disconnected, making many changes while offline, and then submitting all those changes at once when the connection is reestablished – possibly at time when those changes are no longer valid or needed.
+
+REQ-1:	Network that connects users and on which the CoNetPad server is installed.
+REQ-2:	Ability for clients to communicate through CoNetPad on a network.
+ Use of Color to Differentiate User Changes
+3.3.1	Description and Priority
+The application should make use of color to highlight changes made by specific users. An unobtrusive light color should be assigned to each user. The specific colors assigned to each user do not need to be the same, given different user perspectives. The important thing is that the colors provide the ability to differentiate changes made by one person from those made by another. A legend should be provided that allows a user to cross-reference a particular color with a particular user.
+
+Priority: Medium
+3.3.2	Stimulus/Response Sequences
+If User A adds a block of code, then that code should be highlighted with a certain color, say light green. Suppose User B, whose associated color might be light blue, then later changes a single variable name within that block. The overall appearance of that block of code might then be light green, with a single variable name within highlighted in light blue.
+3.3.3	Functional Requirements
+Although this feature is most useful when multiple users are editing a file simultaneously, it does not require the concurrent editing feature of this software; only a functional network on which the client and server communicate is required.
+
+REQ-1:	Ability for clients to communicate with a CoNetPad server located on their network.
+ Session Access Control
+3.4.1	Description and Priority
+An option should be available for a session to have controlled access. The main types of session access can be categorized as restricted, read-only, and read/write access. The type of overall access should be determined by how the session is initially configured and whether or not the user attempting to connect to a session supplies the correct session password (if one exists). 
+
+A session may be designated as public or private. Private sessions may be further configured to specify whether users who fail to authenticate successfully (by providing a pre-shared key) have only read access or whether they have no access at all.
+
+User-level access controls may be overridden by a session leader, if that feature is available (see Section 3.6).
+
+Priority: Medium
+
+3.4.2	Stimulus/Response Sequences
+For a public session:
+
+Anyone with the session identifier can connect to the session and both read and write to the files.
+
+For a private session with restricted secondary access:
+
+Anyone with the session identifier and correct password can connect to the session and read/write files. Those without the correct password cannot access the session at all.
+
+For a private session with read secondary access:
+
+Anyone with the session identifier and correct password can connect to the session and read/write files. Those without the correct password can still connect to the session and watch as changes are made, but they cannot make any changes themselves.
+3.4.3	Functional Requirements
+The prerequisites for this feature include the existence of both a password and an access control setting for a particular session, both of which should be determined at the time of session initialization.
+
+The ability to connect to any session will also be dependent upon how many users are already connected. In order to minimize latency, an upper limit to the number of users connected to a session will be hard-coded into the application. Any attempts to join a session with the maximum number of allowed users will be rejected.
+
+REQ-1:	Ability to set password for a particular session.
+REQ-2:	Ability to configure a session's settings to correspond to a specific access control mode.
+ Session Leader
+3.5.1	Description and Priority
+A specific user in a session will be designated as the session leader. The particular user chosen to be the session leader will be the user that initializes that session. Session leaders should correspond to group leaders for a project, since they will be given more power than other users.
+
+Priority: High
+3.5.2	Stimulus/Response Sequences
+By creating a new session, that user automatically is labeled the session leader.
+3.5.3	Functional Requirements
+Each session will have at most one session leader. Once a session is created, the specific user designated as the session leader cannot be changed.
+ Session Leader Fine-Tuned User Controls
+3.6.1	Description and Priority
+Session leaders will have the ability to override access control settings on a per-user basis. They may designate a session as being read-only by default, even if the user has the correct password. The session leader might then allow write capabilities to users manually.
+
+Additionally, a session leader may hide files altogether from a user. This would be useful for when an instructor of a class (the session leader) does not want his students (the other session members) to view each other’s work, in order to prevent cheating and promote learning through trial and error.
+
+Priority: Low
+3.6.2	Stimulus/Response Sequences
+A session leader may configure a session to be read-only by default, including for those users that know the correct password associated with the session. Users who connect must then obtain explicit permission from the leader before they can write to any files.
+
+A session leader may also configure a session to hide all files from all other users, by default. Users would only be able to read and write to files once they are granted explicit permission by the session leader.
+
+3.6.3	Functional Requirements
+
+REQ-1:	Designation of a particular user as session leader.
+ Multiple File per Session
+3.7.1	Description and Priority
+Sessions should be able to handle multiple files at once. These files should be able to be switched between by users, provided they are not made invisible by the session leader. Multiple files are common, even in small projects. For example, a small project written in Java will likely contain at least two different classes, which are normally separated into separate files.
+
+Only the session leader has the ability to create or delete files within a session.
+
+Priority: High
+3.7.2	Stimulus/Response Sequences
+Once a session leader has a created or deleted a file from a session, that file will be added or removed from each user's view. Whenever a user switches to a new file, the current state of the file should be synchronized.
+3.7.3	Functional Requirements
+In order to easily manage session files in a group setting, only the session leader will be able to create or delete files. Additionally, there may be an upper limit on the number of files a session may hold, if such a limit is needed to ensure an acceptable low level of latency.
+
+REQ-1:	Designation of a particular user as session leader.
+ Session Chat
+3.8.1	Description and Priority
+Session users should have the ability to chat with one another using an interface that is separate from the files being edited. This is important because coding projects require communication, even for relatively simple ones. Our group has decided to impose the design requirement that the chat be implemented using an IRC system, although the specific way that it is implemented is not restricted. This is because prior research has been done that shows that existing Java libraries exist for interfacing with an IRC server. In addition, it is desired that chat feature have the IRC “style”. 
+
+The IRC server that is connected to may either be hosted on the same machine as the CoNetPad server application is on, or it may be hosted on a freely available IRC server, such as Freenode.
+
+Priority: High
+
+3.8.2	Stimulus/Response Sequences
+Users will be able to chat through a separate section of the client GUI. Communication through chat will be in real-time, since this feature is inherent in the IRC protocol.
+3.8.3	Functional Requirements
+
+REQ-1:	Existing IRC server to connect to.
+REQ-2:	Java API for IRC that can be used.
+ Ability to Connect External IRC Client
+3.9.1	Description and Priority
+Users may desire the ability to connect an IRC client separate from the CoNetPad application to the same IRC channel that CoNetPad uses. This might be because they are already familiar with or want the features of another IRC client. Users of CoNetPad should be allowed to do this by being provided the IRC server URL and channel name.
+
+Since users of CoNetPad that are using an external IRC client do not also need to see the same information in a chat section of CoNetPad, they should also be able to hide the CoNetPad chat window if desired.
+
+Priority: Low
+3.9.2	Stimulus/Response Sequences
+Users should be able to retrieve the IRC server URL and channel name, in order to connect externally. The chat window within the client should be removed from the CoNetPad GUI for a particular user if that user chooses a specific setting.
+3.9.3	Functional Requirements
+REQ-1:	User-provided external IRC client.
+ Ability to Disable Chat Session-wide
+3.10.1	Description and Priority
+The ability to disable chat session-wide should be available for session leaders only. This feature will be useful for the same reasons that restricted visibility of files among users will be – in a classroom instruction setting. Although at times an instructor may wish for his students to be able to communicate amongst each other about a project, there may be times when he or she wishes to evaluate students on an individual basis. In these cases, it will be useful to prevent cross-student communication by disabling the chat feature.
+
+Priority: Low
+3.10.2	Stimulus/Response Sequences
+The session leader should have access to a setting that disables user-to-user chat. Session-leader-to-user chat should not be affected by this setting.
+3.10.3	Functional Requirements
+REQ-1:	A specific user designated as session leader.
+ Ability to password protect IRC channel
+3.11.1	Description and Priority
+The IRC channel that corresponds to a CoNetPad session should be able to be protected with a password. This password should be the same password that is used for the CoNetPad session. If the user is using the CoNetPad integrated chat client, then the password will be automatically entered for the user. No further authentication besides authenticating with the CoNetPad server is required. However, if users decide to use an external IRC client, they will need to enter the correct password in that client as well.
+
+Priority: Low
+3.11.2	Stimulus/Response Sequences
+If the CoNetPad session requires a password, then the corresponding IRC channel will as well. For external IRC clients, this password will need to be entered correctly before access to the channel is provided.
+3.11.3	Functional Requirements
+
+REQ-1:	IRC channel corresponding to password-protected CoNetPad session.
+ Version control system
+3.12.1	Description and Priority
+A version control system (VCS) should be used in conjunction with the CoNetPad application to track changes made at discrete intervals. It has been determined that CoNetPad should use the Git version control software as its VCS, although not every feature of Git will be integrated into CoNetPad.
+
+A Git repository should be associated with each CoNetPad session. It is to be used for persistent storage of session files and version control. The specific points in time when the set of files within a CoNetPad session are committed and pushed to the underlying repository are decided by the session leader, through some control only accessible to the leader. In addition, if the files in a session have been modified and have not been manually committed and pushed for a period 30 minutes, the CoNetPad system will automatically perform a Git commit and push to the associated repository.
+
+The reason that the design constraint of using Git for version control has been imposed is because our group members have the most experience with this system. In addition, we wanted to use a distributed VCS, rather than a centralized one, for reasons of flexibility in future upgrades.
+
+The ability to branch from and merge to the CoNetPad session repository will not be supported in this version of the software.
+
+Priority: Medium
+3.12.2	Stimulus/Response Sequences
+The session leader will be able to manually commit session files and push them to the associated session repository.
+
+Every 30 minutes that pass in a session with modified files, in which session files have not been committed/pushed, the system will automatically perform these activities.
+3.12.3	Functional Requirements
+This feature requires an API for the Java-based CoNetPad application to interface with the Git software.
+
+REQ-1:	Java Git API that is available for use.
+ Ability to clone the session repository
+3.13.1	Description and Priority
+It may be useful for users to clone the Git repository associated with a CoNetPad session in order to work on it outside the application. Although there are no current plans to allow the merging of these repositories back into the user session, the cloned Git repository could be used with conventional development tools and services outside of CoNetPad.
+
+Priority: Low
+3.13.2	Stimulus/Response Sequences
+Users that specify the desire to clone the Git repository will be able to download a copy of the repository to their local machine.
+3.13.3	Functional Requirements
+
+REQ-1:	A Git repository that is associated with the CoNetPad session.
+ Ability to download source code for a file
+3.14.1	Description and Priority
+If users do not care about the repository underlying the CoNetPad session (if it exists), they can also download only the source files. A single source file can be downloaded, or all (visible) source files associated with a session can be downloaded.
+
+Priority: Medium
+3.14.2	Stimulus/Response Sequences
+By triggering some form of control in the application, users can download individual or all source files associated with the session, provided they are visible.
+3.14.3	Functional Requirements
+N/A	
+ Auto-complete
+3.15.1	Description and Priority
+The CoNetPad application should suggest word completions for users as they type source code. This will allow the users to be more productive, without having to memorize function names, class names, and other programming language-specific identifiers.
+
+Priority: Medium
+3.15.2	Stimulus/Response Sequences
+When the user begins typing a word that must end in a certain way, e.g. “<ClassName>.”, then the application should suggest a list of possible endings. 
+3.15.3	Functional Requirements
+Due to the limited time that can be spent on this project, it is required that an existing Java library or tool be used to implement this feature.
+
+REQ-1:	Existing library or tool that implements auto-complete.
+ Syntax Highlighting
+3.16.1	Description and Priority
+As users enter source code, the appearance of the code should be modified to allow for easy human understanding of the source code structure. A common tool for this is syntax highlighting, where specific types of words are highlighted in a distinct way to differentiate them from other types of words. These types include keywords, class names, primitive types, and selection or control structures, among others.
+
+Priority: Medium
+3.16.2	Stimulus/Response Sequences
+Source code should be automatically highlighted (using colors) to make various types of words appear different from other words not of the same type. 
+3.16.3	Functional Requirements
+Due to the limited time that can be spent on this project, it is required that an existing Java library or tool be used to implement this feature.
+
+REQ-1:	Existing library or tool that implements syntax highlighting.
+ Remote Compilation
+3.17.1	Description and Priority
+Users should be able to remotely compile source code for certain types of programming languages (see Section 3.19). The application should display any compiler messages to the users, especially compiler error messages due to incorrect syntax.
+
+Priority: Medium
+3.17.2	Stimulus/Response Sequences
+When the user presses the control to compile the current source code, the compiler output should be displayed to all users.
+3.17.3	Functional Requirements
+This feature will require that the appropriate compiler for whatever programming language is being developed is installed on the server machine. This will not be feasible for all possible programming languages.
+
+REQ-1:	Compiler for particular programming language installed on server.
+ Download binary files resulting from compilation
+3.18.1	Description and Priority
+In addition to seeing the compiler output messages for a remote compilation, users should have the ability to download the binary files corresponding to a compilation directly to their local machine.
+
+Priority: Medium
+3.18.2	Stimulus/Response Sequences
+When the user presses the control to compile the current source code, the compiler output should be displayed to all users, along with a link to download the binary code associated with compilation. This link will be replaced with a new one whenever a new compilation is performed.
+3.18.3	Functional Requirements
+This feature will require that the appropriate compiler for whatever programming language is being developed is installed on the server machine. This will not be feasible for all possible programming languages.
+
+REQ-1:	Compiler for particular programming language installed on server.
+ Support for Multiple Languages
+3.19.1	Description and Priority
+Support should be provided for various languages, with a focus on the more popularly used language in modern software. We will focus on the Java programming language to begin with. However, in time, various other languages including C# and C++ should be included.
+
+The specific support provided depends on the set of other features that are provided. For instance, syntax support and auto-complete features may be provided for certain languages. Additionally, remote compilation may be offered for a subset of programming languages.
+
+Priority: Low
+3.19.2	Stimulus/Response Sequences
+By specifying the language for a particular file at the time of its creation, various features specific to that language should be available to users, e.g. syntax highlighting or auto-complete.
+3.19.3	Functional Requirements
+The functional requirements for this feature depend on the level of support that will be provided. In addition, the availability of free and easily obtainable syntax-highlighting/auto-complete libraries or compilers for specific programming languages will affect whether or not extra support is provided for them or not.
+ Open Source Project
+3.20.1	Description and Priority
+At the end of the development, this project should be released as open source software. The software will be free and other developers will be able to use or modify the software at their own will.
+
+Priority: Low
+3.20.2	Stimulus/Response Sequences
+N/A
+3.20.3	Functional Requirements
+TheACMGroup developers should strive to make all code as well-documented as possible, to allow for others to easily understand and modify the CoNetPad code.
+ Multi-platform
+3.21.1	Description and Priority
+It is important that CoNetPad be available on multiple platforms. In this way, the software's potential audience is not needlessly restricted. Given the decision to use Java as the implementation programming language, CoNetPad should be inherently cross-platform, due to the fact that a version of the Java Virtual Machine is available multiple operating systems.
+
+Priority: High
+
+3.21.2	Stimulus/Response Sequences
+N/A
+3.21.3	Functional Requirements
+N/A
+ External Interface Requirements
+ User Interfaces
+Figure 3:
+
+Figure 3 shows the general layout plan for the client user interface. Each source code file will appear in a tab and the source code will be visible in the file editing area. The chat window will allow the user to interact with other group member via IRC chat. Each user should be listed in the “Users” window, along with their associated color (to be used in chat and source code highlighting). The compile button will allow any user to compile the current code. When this is done, the output will be displayed to all users, along with a link to download the binary. All other features will be accessible through a menu system.
+
+CoNetPad tries to be as user friendly as possible for both use and deploy. The client will be developed using java swing and the server will read configuration from a file and command line options. 
+
+The interaction with the client will require a keyboard, mouse, and a graphical user interface. The first interaction will require the user to input the address of the server. Once the connection is established the user will be prompted for their username and password. If the user is not registered, they will be allowed to create an account, using their email address as a unique identifier. Once a user is logged in they will be presented with a view of the current session, the documents opened (if any). The user will be able to write using the keyboard in both the chat box and the document area.
+
+The server itself requires little interaction from the user and only requires a keyboard and a basic command line interface. Configuration files and command line options will be read when the server starts and no other interaction will occur until the server stops.
+ Hardware Interfaces
+CoNetPad is a standard desktop application and requires a keyboard (either physical or virtual), a pointing device (mouse or touch input), and a display.
+ Software Interfaces
+CoNetPad will be written in Java and will run on any OS that supports a Java Virtual Machine. For user and session management, the server will interact with a local SQLite database. In order to provide communication between the users, the client will include a chat box that will connect to an IRC server. 
+
+To communicate between the server and the client, each client will establish a TCP socket connection for general-purpose communication. One more extra socket will be required for communicating between the client and the IRC server.
+ Communications Interfaces
+The two communication interfaces are going to use SSL sockets between the server and the client and using the standard IRC protocol between the client and the IRC server. 
+ Other Nonfunctional Requirements
+ Performance Requirements
+In order to achieve a seamless experience for the user, our system has to provide quick responses in the order of magnitude of hundreds of milliseconds or less. To achieve this, we will measure the total  time that it takes from the time a command is sent from one client until this command reaches all other clients - we call this interval the transaction time.
+
+If the server is deployed in a local area network, the transaction time should be less than 100ms.
+In the case the server is deployed over the Internet, the transaction time should be less than 1 second.
+
+We are considering these requirements under reasonable circumstances, like no external traffic blocking the communication or some other kind of technical difficulties. Reasonable circumstances imply an allocation of bandwidth of at least 50 kB/s.
+ Safety Requirements
+Our product does not require any kind of special safety training or certification.
+ Security Requirements
+CoNetPad protects its users and their data through the use of two security layers. The first layer is a user management layer that provides the creator of a session the ability to choose which users get access to their sessions and their read/write permissions. Each user needs to follow a simple sign-in process where they define their email address, username, and password.
+
+The second layer is implemented in the sockets that will be used. Rather than using normal sockets, we are using SSL Sockets, which provide encryption and protection against eavesdropping of user information and session data.
+ Software Quality Attributes
+TheACMGroup has a strong focus in creating the best quality software. CoNetPad is an example of such commitment.
+ 
+CoNetPad is a service with high availability across both LAN and the Internet. CoNetPad uses the consumer-producer pattern to simplify the concurrency between server and clients. This makes the server highly reliable, even under high stress. 
+
+Flexibility is another benefit of CoNetPad. The goal of CoNetPad is to provide a collaboration tool for small teams. Some of the use cases we proposed previously included education and software development. CoNetPad it not limited to this kind of work, as it can be used as a text editor in any area that requires real-time collaboration. The simplicity of deployment and use make it ideal for both technical and non-technical users.
+
+TheACMGroup decided to use Java for various reasons, one of the most important ones being portability.
+
+Appendix A: Glossary
+IDE:  Integrated Development Environment. A complete software development environment that includes various tools.
+
+VCS: Version Control Systems. Use to track the history of software changes and versions.
+
+Auto-complete:  Involves the program predicting a word or phrase that the user wants to type in without the user actually typing it in completely.
+
+IRC: Internet Relay Chat. A protocol for real-time Internet text. Uses “channels” for group communication.
+
+API: Application Programming Interface. Specifies the interfaces that allows software components to communicate with each other. 
+
+DSL: Digital Subscriber Line. Technology in which internet access is provided by transmitting data over a local telephone network. 
+
+Tooltip: When the user hovers the pointer over an item, without clicking it, a tooltip may appear and provide additional information about the item being hovered over.

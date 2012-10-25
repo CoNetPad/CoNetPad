@@ -1,0 +1,27 @@
+Test Plan:
+
+1. Performance Requirements:
+
+TheACMGroup has developed a test suit that allows for measuring the time it takes a message to go from a client to all the others. This testing tool also supports command line arguments, making automation really simple. We will develop a script for this testing suit so we can run a speed test after every commit. For achieving this we will configure git to run the test suit after every successful commit. 
+This automated tests will check the speed of a message under ideal conditions but we will also check the speed of the application under real-life circumstances. This test will be done manually twice a week during our meetings.
+
+2. Safety Requirements:
+
+Our product does not require any kind of special safety training or certification.
+
+3. Security Requirements:
+
+The security of CoNetPad is based in two layers, each one has to be tested in an independent way. 
+The user management is based in an standard UNIX permissions system but rather than using a passwd file, we will keep the information in a SQLite database, this information is going to be encrypted too. Once the implementation of the security layer is completed and tested, it will be froze, this way we are going to prevent regressions.
+The second layer of security of CoNetPad involves the use of SSLSockets. This class is part of the JavaAPI and provides enterprise level security for the communications. We will follow the best practices described by Oracle to make sure our use of SSLSockets is as safe as possible.
+
+4. Software Quality Attributes:
+
+To assure the high quality of our software and the satisfaction of our users, TheACMGroup is putting great effort in testing and assuring the correct functioning of CoNetPad.
+We will use Eclipse to generate unit tests for all classes that we will be using. 
+As we are following an agile approach we will be doing automated tests regularly. All the classes will follow a specified interface and the tests will make sure that no edge case or exception occurs.
+
+Once a set of classes are completed they will be integrated and tested. To organize the tests and tasks, each module(set of classes that work together to achieve a task) will be worked on in a separate branch. Before the branch is merged to master it will be tested, if the test is successful it will be merged.
+Once the first version is completed, the team will start using it regularly during the meetings. Also the application will be shared with members of the ACM to receive feedback from a bigger audience. 
+
+All this practices will assure CoNetPad will be high quality software, not only we will find and fix as many bugs as we can but we will also make sure the interface implementation is as intuitive as possible.

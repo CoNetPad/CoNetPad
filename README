@@ -29,7 +29,7 @@ The Directory Information
 /reports
 
 #The general folder for the source code
-/source
+/src
 
 #The source code folder for the server
 /source/server

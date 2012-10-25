@@ -1,0 +1,209 @@
+﻿CNPClient
+- socket: SSLSocket
+- connection: CNPConnection
+- clientExecutorService: ExecutorService
+- sourceFiles: ConcurrentHashMap<String, SourceFile>
++ connect(serverURL: String, sessionName: String): CNPConnection
++ compile(filenames: List<String>): void
++ downloadAllSources(): void
++ downloadSourceFile(filename: String): void
++ sendIRCMessage(message: String): void
++ retrieveIRCMessage(): String
++ addTask(task: CNPTask): void // Task type will determine if executed locally (server -> client) or sent (client -> server)
+
+CNPServer
+- clientConnections: ConcurrentHashMap<Account, CNPConnection>
+- socket: SSLServerSocket
+- database: Database
+- compiler: Compiler
+- taskCourier: TaskDistributor
+- key: SecretKey
+- cipher: Cipher
+- ircManager: jerklib.ConnectionManager
++ compile(filenames: List<String>, session: CNPSession): boolean
++ addTask(task: CNPTask): void
++ distributeTask(task: CNPTask): void
++ createAccount(username: String, password: String): Account
++ retrieveAccount(username: String, password: String): Account
++ createCNPSession(sessionURL: String): CNPSession
++ createCNPSession(sessionURL: String, password: String): CNPSession
++retrieveCNPSession(account: Account, sessionURL: String): CNPSession
++ connect(username: String, sessionURL: String): ClientConnection
++createIRCSession(session: CNPSession): boolean
+
+CNPSession
+- gitRepo: GitRepo
+- ircSession: jerklib.Session
+- leader: SessionLeader
+- sourceFiles: ConcurrentHashMap<String, ServerSourceFile>
+- permissions: ConccurentHashMap<Account, Account.AccountPermissionLevel>
+- sessionURL: String
++ createFile(filename: String): boolean
++ deleteFile(filename: String): boolean
++ commitAndPush(message: String): boolean
++ commitAndPush(): boolean
++ clone(connection: CNPConnection): boolean
++ addUser(username: String): boolean
++ removeUser(username: String): boolean
+
+CNPPrivateSession
+- sessionPassword: String
++ passwordIsCorrect(attempt: String): boolean
+
+CNPConnection
+- session: CNPSession
+- client: CNPClient
+- server: CNPServer
+- account: Account
+- clientPermission: Account.PermissionLevel
+
+
+IRCServer
+- manager: ConnectionManager
++ createSession(sessionURL: String): jerklib.Session
+
+Database
+- dbConnection: Connection
+- driverClass: String
++ createAccount(username:String, password: String, email: String): Account
++ retrieveAccount(username: String, password: String): Account
++ retrieveSession(sessionURL: String): CNPSession
++ createSession(sessionLeader: String,  sessionPassword: String, 
+isPrivate: boolean): boolean
++createSessionAccount(session: CNPSession, account: Account,
+permission: Account.PermissionLevel): boolean
++ retrieveAccountPermission(session: Session, account: Account): Account.PermissionLevel
++ sessionIsPrivate(sessionURL: String): boolean
+
+Account
+- username: String
+- email: String
+
+
+<<enumeration>>
+Account.PermissionLevel
+READ
+READ_WRITE
+UNRESTRICTED
+
+GitRepo
+- repo: Repository
+- git: Git
+- localRepoPath: String
++ addFile(file: ServerSourceFile): boolean
++ commit(message: String): boolean
++ push(): boolean
++ clone(outputPath: String): boolean
++ removeFile(file: ServerSourceFile): boolean
+
+Compiler
+- compiler: Compiler
+- javaCompilerPath: String
+- cppCompilerPath: String
++ compile(files: List<ServerSourceFiles>, outputURL: String): boolean
+
+SourceFile
+- fileAsString: StringBuilder
+- type: SourceFile.SourceType
++ editFile(keyCode: int, location: int): boolean
+
+ServerSourceFile
+- file: File
+- server: CNPServer
+- taskSerializer: TaskQueue
++ writeToFile(): boolean
+
+<<enumeration>>
+SourceFile.SourceType
+JAVA
+CPP
+GENERAL
+
+TaskQueue
+- serializeService: ExecutorService
++ addTask(task: CommandTask): void
++ addTask(task: DownloadTask): void
+
+TaskDistributor
+- distributeService: ExecutorService
++ distributeTask(task: CommandTask): void
++ distributeTask(task: DownloadTask): void
+
+<<abstract>>
+CNPTask
+- permission: Account.PermissionType
++ execute(): void
+
+<<abstract>>
+DownloadTask
+
++ call(): V
++ execute(): void
+
+<<enumeration>>
+DownloadTask.FileType
+BINARY
+SOURCE
+
+DownloadFileTask
+- filenames: List<String>
+- type: DownloadTask.FileType
++ call(): V
++ execute(): void
+
+DownloadRepoTask
+
++ call(): V
++ execute(): void
+
+IRCTask
+- message: String
++ execute(): void
++ run(): void
+
+CommandTask
+- event: KeyEvent
+- filename: String
+- locationInString: int
+- session: CNPSession
++ execute(): void
++ run(): void
+
+<<interface>>
+IClient
+
++ addTask(task: CNPTask)
+
+<<interface>>
+IDatabase
+
++ createAccount(username: String, password: String, email: String): Account
++ retrieveAccount(username: String, password: String): Account
++ createSession(sessionURL: String, sessionLeader: String, sessionPassword: String): boolean
++ createSession(sessionURL: String, sessionLeader: String): boolean
++ retrieveSession(sessionURL: String): CNPSession
++ addAccountToSession(session: CNPSession, account: Account, permission: AccountPermissionLevel): boolean
++ removeAccountFromSession(session: CNPSession, account: Account): boolean
++ retrieveAccountPermission(sessionURL: String): boolean
+
+<<interface>>
+IServer
+
++ addTask(jsonTask: String): void
++ createAccount(username: String, password: String, email: String): Account
++ createCNPSession(sessionURL: String): CNPSession
++ createCNPSession(sessionURL: String, sessionPassword: String): CNPSession
++ sessionIsPrivate(sessionURL: String): boolean
++ connect(username: String, userPass: String, sessionURL: String): CNPConnection
++ connect(username: String, userPass: String, sessionURL: String, sessionPass: String):CNPConnection
++ disconnect(username: String, userPass: String, sessionURL: String): boolean
+
+<<interface>>
+IGitRepo
+
++ addFile(file: ServerSourceFile): boolean
++ removeFile(file: ServerSourceFile): boolean
++ commit(message: String): boolean
++ push(): boolean
++ clone(outputPath: String): boolean
+
