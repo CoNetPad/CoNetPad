@@ -1,0 +1,5 @@
+Meeting Minutes for October 25, 2012
+
+1) Agreed on source code directory structure.
+2) Discussed Java package naming conventions.
+3) Decided to prioritize storage part (Git, SQLite) over JSON API specification.
