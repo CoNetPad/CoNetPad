@@ -39,3 +39,6 @@ The Directory Information
 
 #The source code folder for the tests
 /src/test
+
+#Library resources
+/lib
