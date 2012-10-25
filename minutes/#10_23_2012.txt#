@@ -1,0 +1,9 @@
+Meeting Minutes for October 23, 2012
+
+1) No longer need a Java interface for the client/server. The JSON API will serve as the interface.
+   (Still need to explicitly define the API.)
+
+2) Will use GSON as Java JSON library. Will use both JUnit (for unit testing) and some form of functional testing. 
+
+3) Will introduce Network class to abstract network aspect of system. Probably will have an abstract Network class
+   which is extended by a ClientNetwork and ServerNetwork classes.
