@@ -29,57 +29,57 @@
 | - serverURL: String                                                                                               |
 | - sessionName: String // random string that will be appended to the end of the URL, e.g. server-url.com/EeFMLzerL |
 | - clientExecutor: ExecutorService                                                                                 |
-| - sourceFiles: ConcurrentHashMap<String, SourceFile>                                                              |
+| - sourceFiles: Map<String, SourceFile>                                                                            |
 |                                                                                                                   |
 |-------------------------------------------------------------------------------------------------------------------|
 | + connect(serverURL: String, sessionName: String): boolean                                                        |
-| + compile(filenames: List<String>): void                                                                          |
-| + downloadAllSources(): void                                                                                      |
-| + downloadSourceFile(filename: String): void                                                                      |
-| + sendIRCMessage(message: String): void                                                                           |
-| + retrieveIRCMessage(): String                                                                                    |
-| + addTask(task: CNPTask): void                                                                                    |
+| + compile(filenames: List<String>): boolean                                                                       |
+| + getSourceFile(filename: String): File                                                                           |
+| + getAllSourceFiles(): List<File>                                                                                 |
+| + sendChatMessage(message: String): boolean                                                                       |
+| + executeTask(task: ChatTask): boolean                                                                            |
+| + executeTask(task: EditorTask): boolean                                                                          |
+| + executeTask(task: DownloadTask): boolean                                                                        |
 
 
 | CNPServer                                                              |
 |------------------------------------------------------------------------|
-| - clientConnections: ConcurrentHashMap<Account, CNPConnection>         |
+| - clientConnections: Map<Account, CNPConnection>                       |
 | - socket: SSLServerSocket                                              |
 | - database: Database                                                   |
 | - compiler: Compiler                                                   |
 | - taskCourier: TaskDistributor                                         |
 | - key: SecretKey                                                       |
 | - cipher: Cipher                                                       |
-| - taskDistributor: ExecutorService                                     |
 |------------------------------------------------------------------------|
-| + compile(filenames: List<String>, session: CNPSession): boolean       |
-| + addTask(task: CNPTask): void                                         |
-| + distributeTask(task: CNPTask): void                                  |
+| + compile(filenames: List<String>, session: CNPSession): File          |
+| + addTask(task: Task): void                                            |
+| + distributeTask(task: Task): void                                     |
 | + createAccount(username: String, password: String): Account           |
 | + retrieveAccount(username: String, password: String): Account         |
-| + createCNPSession(sessionURL: String): CNPSession                     |
-| + createCNPSession(sessionURL: String, password: String): CNPSession   |
-| + retrieveCNPSession(account: Account, sessionURL: String): CNPSession |
-| + connect(username: String, sessionURL: String): ClientConnection      |
-| + createIRCSession(session: CNPSession): boolean                       |
+| + createCNPSession(sessionName: String): CNPSession                    |
+| + createCNPSession(sessionName: String, password: String): CNPSession  |
+| + retrieveCNPSession(sessionName: String): CNPSession                   |
+| + connect(username: String, sessionName: String): ClientConnection    |
 
 
-| CNPSession                                                                |
-|---------------------------------------------------------------------------|
-| - gitRepo: GitRepo                                                        |
-| - server: CNPServer                                                       |
-| - leader: SessionLeader                                                   |
-| - sourceFiles: ConcurrentHashMap<String, ServerSourceFile>                |
-| - permissions: ConccurentHashMap<Account, Account.AccountPermissionLevel> |
-| - sessionURL: String                                                      |
-|---------------------------------------------------------------------------|
-| + createFile(filename: String): boolean                                   |
-| + deleteFile(filename: String): boolean                                   |
-| + commitAndPush(message: String): boolean                                 |
-| + commitAndPush(): boolean                                                |
-| + clone(connection: CNPConnection): boolean                               |
-| + addUser(username: String): boolean                                      |
-| + removeUser(username: String): boolean                                   |
+| CNPSession                                                   |
+|--------------------------------------------------------------|
+| - gitRepo: GitRepo                                           |
+| - server: CNPServer                                          |
+| - sessionLeader: Account                                     |
+| - sourceFiles: Map<String, ServerSourceFile>                 |
+| - filePermissions: Map<Account, Account.FilePermissionLevel> |
+| - chatPermissions: Map<Account, Account.ChatPermissionLevel> |
+| - sessionName: String                                        |
+|--------------------------------------------------------------|
+| + createFile(filename: String): boolean                      |
+| + deleteFile(filename: String): boolean                      |
+| + commitAndPush(message: String): boolean                    |
+| + commitAndPush(): boolean                                   |
+| + cloneRepo(): File                                          |
+| + addUser(userAccount: Account): boolean                     |
+| + removeUser(userAccount: Account): boolean                  |
 
 
 | CNPPrivateSession                             |
@@ -95,24 +95,24 @@
 | - client: CNPClient                         |
 | - server: CNPServer                         |
 | - account: Account                          |
-| - clientPermission: Account.PermissionLevel |
 |---------------------------------------------|
 |                                             |
 
 
-| Database                                                                                                   |
-|------------------------------------------------------------------------------------------------------------|
-| - dbConnection: Connection                                                                                 |
-| - driverClass: String                                                                                      |
-| ----------                                                                                                 |
-| + createAccount(username:String, password: String, email: String): Account                                 |
-| + retrieveAccount(username: String, password: String): Account                                             |
-| + retrieveSession(sessionURL: String): CNPSession                                                          |
-| + createSession(sessionLeader: String,  sessionPassword: String,                                           |
-| +isPrivate: boolean): boolean                                                                              |
-| +createSessionAccount(session: CNPSession, account: Account, permission: Account.PermissionLevel): boolean |
-| + retrieveAccountPermission(session: Session, account: Account): Account.PermissionLevel                   |
-| + sessionIsPrivate(sessionURL: String): boolean                                                            |
+| Database                                                                                                                                                         |
+|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| - dbConnection: Connection                                                                                                                                       |
+| - driverClass: String // static, final                                                                                                                           |
+| ----------                                                                                                                                                       |
+| + createAccount(username:String, email: String, password: String): Account                                                                                       |
+| + retrieveAccount(username: String, password: String): Account                                                                                                   |
+| + retrieveSession(sessionName: String): CNPSession                                                                                                               |
+| + retrieveSession(sessionName: String, sessionPassword: String): CNPPrivateSession                                                                               |
+| + createSession(sessionLeader: String) : CNPSession                                                                                                              |
+| + createSession(sessionLeader: String,  sessionPassword: String): CNPPrivateSession                                                                              |
+| + createSessionAccount(session: CNPSession, account: Account, filePermission: Account.FilePermissionLevel, chatPermission: Account.ChatPermissionLevel): boolean |
+| + retrieveAccountPermission(session: Session, account: Account): Account.PermissionLevel                                                                         |
+| + sessionIsPrivate(sessionName: String): boolean                                                                                                                 |
 
 
 | Account            |
@@ -124,11 +124,19 @@
 
 
 | <<enumeration>>         |
-| Account.PermissionLevel |
+| Account.FilePermissionLevel |
 |-------------------------|
 | READ                    |
 | READ_WRITE              |
 | UNRESTRICTED            |
+
+
+| <<enumeration>>             |
+| Account.ChatPermissionLevel |
+|-----------------------------|
+| VOICE                       |
+| MUTE                        |
+
 
 
 | GitRepo                                       |
@@ -140,7 +148,6 @@
 | + addFile(file: ServerSourceFile): boolean    |
 | + commit(message: String): boolean            |
 | + push(): boolean                             |
-| + clone(outputPath: String): boolean          |
 | + removeFile(file: ServerSourceFile): boolean |
 
 
@@ -153,24 +160,23 @@
 | + compile(files: List<ServerSourceFiles>, outputURL: String): boolean |
 
 
-| SourceFile                                       |
-|--------------------------------------------------|
-| - fileAsString: StringBuilder                    |
-| - type: SourceFile.SourceType                    |
-|--------------------------------------------------|
-| + editFile(keyCode: int, location: int): boolean |
+| SourceFile                              |
+|-----------------------------------------|
+| - sourceRope: Rope                      |
+| - type: SourceFile.SourceType           |
+|-----------------------------------------|
+| + editSource(task: EditorTask): boolean |
+| + toString(): String                    |
+| + toFile(): File                        |
 
 
-| ServerSourceFile                    |
-|-------------------------------------|
-| - source: Rope                      |
-| - taskQueue: ExecutorService        |
-| - session: CNPSession               |
-| - taskSerializer: TaskQueue         |
-|-------------------------------------|
-| + writeToFile(): boolean            |
-| + addTask(task: EditorTask): void   |
-| + addTask(task: DownloadTask): void |
+| ServerSourceFile                       |
+|----------------------------------------|
+| - taskQueue: ExecutorService           |
+| - session: CNPSession                  |
+|----------------------------------------|
+| + addTask(task: EditorTask): boolean   |
+| + addTask(task: DownloadTask): boolean |
 
 
 | <<enumeration>>       |
@@ -181,20 +187,22 @@
 | GENERAL               |
 
 
-| <<abstract>>                                             |
-| CNPTask                                                  |
-|----------------------------------------------------------|
-| - permission: Account.PermissionType // abstract, static |
-|----------------------------------------------------------|
-| + execute(): void                                        |
-
-
 | <<abstract>>      |
-| DownloadTask      |
+| Task              |
 |-------------------|
+|                   |
 |-------------------|
-| + call(): V       |
 | + execute(): void |
+
+
+| <<abstract>>     |
+| DownloadTask     |
+|------------------|
+|                  |
+|------------------|
+| + call(): File   |
+
+
 
 
 | <<enumeration>>       |
@@ -208,25 +216,37 @@
 |-------------------------------|
 | - filenames: List<String>     |
 | - type: DownloadTask.FileType |
+| - username: String            |
+| - session: CNPSession         |
 |-------------------------------|
 | + call(): V                   |
 | + execute(): void             |
 
 
-| DownloadRepoTask  |
-|-------------------|
-|-------------------|
-| + call(): V       |
-| + execute(): void |
+| DownloadRepoTask      |
+|-----------------------|
+| - username: String    |
+| - session: CNPSession |
+|-----------------------|
+| + call(): V           |
+| + execute(): void     |
 
 
-| ChatTask           |
-|--------------------|
-| - username: String |
-| - message: String  |
-|--------------------|
-| + execute(): void  |
-| + run(): void      |
+| ChatTask                                      |
+|-----------------------------------------------|
+| + _PERMISSION_: ChatPermissionLevel // static |
+| - username: String                            |
+| - message: String                             |
+|-----------------------------------------------|
+| + execute(): void                             |
+| + run(): void                                 |
+
+
+| PrivateChatTask // extends ChatTask |
+|-------------------------------------|
+| - recipientName: String             |
+|-------------------------------------|
+|                                     |
 
 
 | EditorTask            |
@@ -241,29 +261,30 @@
 | + run(): void         |
 
 
-| <<interface>>                                                                                             |
-| IDatabase                                                                                                 |
-|-----------------------------------------------------------------------------------------------------------|
-|-----------------------------------------------------------------------------------------------------------|
-| + createAccount(username: String, password: String, email: String): Account                               |
-| + retrieveAccount(username: String, password: String): Account                                            |
-| + createSession(sessionURL: String, sessionLeader: String, sessionPassword: String): boolean              |
-| + createSession(sessionURL: String, sessionLeader: String): boolean                                       |
-| + retrieveSession(sessionURL: String): CNPSession                                                         |
-| + addAccountToSession(session: CNPSession, account: Account, permission: AccountPermissionLevel): boolean |
-| + removeAccountFromSession(session: CNPSession, account: Account): boolean                                |
-| + retrieveAccountPermission(sessionURL: String): boolean                                                  |
+| <<interface>>                                                                                                                                                    |
+| IDatabase                                                                                                                                                        |
+|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|                                                                                                                                                                  |
+|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| + createAccount(username: String, email: String, password: String): Account                                                                                      |
+| + retrieveAccount(username: String, password: String): Account                                                                                                   |
+| + createSession(sessionLeader: Account): CNPSession                                                                                                              |
+| + createSession(sessionLeader: Account, sessionPassword: String): CNPPrivateSession                                                                              |
+| + retrieveSession(sessionName: String): CNPSession                                                                                                               |
+| + retrieveSession(sessionName: String, sessionPassword: String): CNPPrivateSession                                                                               |
+| + sessionIsPrivate(sessionName: String): boolean                                                                                                                 |
+| + createSessionAccount(session: CNPSession, account: Account, filePermission: Account.FilePermissionLevel, chatPermission: Account.ChatPermissionLevel): boolean |
 
 
 | <<interface>>                                 |
 | IGitRepo                                      |
 |-----------------------------------------------|
+|                                               |
 |-----------------------------------------------|
 | + addFile(file: ServerSourceFile): boolean    |
 | + removeFile(file: ServerSourceFile): boolean |
 | + commit(message: String): boolean            |
 | + push(): boolean                             |
-| + clone(outputPath: String): boolean          |
 
 
 // interface for client/server needs to be specified in a JSON API
