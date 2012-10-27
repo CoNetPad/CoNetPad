@@ -2,6 +2,8 @@ package org.ndacm.acmgroup.cnp;
 
 public class Account {
 	
+	private String username;
+	private String email;
 	
 	public enum FilePermissionLevel {
 		READ,
@@ -10,8 +12,9 @@ public class Account {
 	}
 	
 	public enum ChatPermissionLevel {
-		VOICE,
-		MUTE
+		MUTE,
+		TO_LEADER,
+		VOICE
 	}
 
 }
