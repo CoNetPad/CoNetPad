@@ -5,12 +5,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
+
 import javax.net.ssl.SSLSocket;
+
 import org.ndacm.acmgroup.cnp.file.SourceFile;
 import org.ndacm.acmgroup.cnp.task.ChatTask;
 import org.ndacm.acmgroup.cnp.task.DownloadTask;
 import org.ndacm.acmgroup.cnp.task.EditorTask;
-import org.ndacm.acmgroup.cnp.task.Task;
 
 public class CNPClient {
 

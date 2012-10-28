@@ -2,9 +2,9 @@ package org.ndacm.acmgroup.cnp.file;
 
 import java.awt.event.KeyEvent;
 import java.io.File;
+
 import org.ahmadsoft.ropes.Rope;
 import org.ndacm.acmgroup.cnp.task.EditorTask;
-import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
 
 public class SourceFile {
 

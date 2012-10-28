@@ -3,8 +3,6 @@ package org.ndacm.acmgroup.cnp.task;
 import org.ndacm.acmgroup.cnp.Account;
 import org.ndacm.acmgroup.cnp.Account.FilePermissionLevel;
 import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
-import org.ndacm.acmgroup.cnp.file.SourceFile;
-import org.ndacm.acmgroup.cnp.server.CNPSession;
 
 /**
  * A task to edit a source file. An EditorTask is issued by a single person and is 

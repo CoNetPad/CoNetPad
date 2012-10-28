@@ -6,6 +6,7 @@ import org.ndacm.acmgroup.cnp.server.CNPSession;
 import org.ndacm.acmgroup.cnp.task.DownloadTask;
 import org.ndacm.acmgroup.cnp.task.EditorTask;
 import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
+import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
 public class ServerSourceFile extends SourceFile {
 
@@ -35,8 +36,8 @@ public class ServerSourceFile extends SourceFile {
 		}
 
 		// create EditorTaskResponse and send it to users in session
-		EditorTaskResponse response = new EditorTaskResponse(keyPressed, editIndex, filename);
-		// what does one of these need to have to get distributed efficiently?
+		TaskResponse response = new EditorTaskResponse(keyPressed, editIndex, filename, session);
+		session.distributeTask(response);
 
 	}
 

@@ -2,9 +2,6 @@ package org.ndacm.acmgroup.cnp.server;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -15,14 +12,12 @@ import org.ndacm.acmgroup.cnp.database.Database;
 import org.ndacm.acmgroup.cnp.network.CNPConnection;
 import org.ndacm.acmgroup.cnp.task.ChatTask;
 import org.ndacm.acmgroup.cnp.task.EditorTask;
-import org.ndacm.acmgroup.cnp.task.Task;
 
 public class CNPServer {
 	
 	private SSLServerSocket socket;
-	private Map<Account, CNPConnection> clientConnections; // implement with ConcurrentHashMap
-	private ExecutorService taskCourier;
-	private ExecutorService chatQueue; // single-thread
+
+
 	
 	private Database database;
 	private Compiler compiler;
@@ -33,7 +28,7 @@ public class CNPServer {
 	public CNPServer() {
 		// TODO implement
 		
-		chatQueue = Executors.newSingleThreadExecutor();
+		
 	}
 	
 	public Account createAccount(String username, String password) {
@@ -76,9 +71,7 @@ public class CNPServer {
 		// TODO implement
 	}
 	
-	public void distributeTask(Task task) { // have throw TaskExecutionException
-		// TODO implement
-	}
+
 	
 	public File compile(List<String> fileNames, CNPSession session) {
 		// TODO implement
