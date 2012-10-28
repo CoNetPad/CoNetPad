@@ -42,24 +42,23 @@
 | + executeTask(task: DownloadTask): boolean                                                                        |
 
 
-| CNPServer                                                              |
-|------------------------------------------------------------------------|
-| - clientConnections: Map<Account, CNPConnection>                       |
-| - socket: SSLServerSocket                                              |
-| - database: Database                                                   |
-| - compiler: Compiler                                                   |
-| - taskCourier: TaskDistributor                                         |
-| - key: SecretKey                                                       |
-| - cipher: Cipher                                                       |
-|------------------------------------------------------------------------|
-| + compile(filenames: List<String>, session: CNPSession): File          |
-| + addTask(task: Task): void                                            |
-| + distributeTask(task: Task): void                                     |
-| + createAccount(username: String, password: String): Account           |
-| + retrieveAccount(username: String, password: String): Account         |
-| + createCNPSession(sessionName: String): CNPSession                    |
-| + createCNPSession(sessionName: String, password: String): CNPSession  |
-| + retrieveCNPSession(sessionName: String): CNPSession                   |
+| CNPServer                                                             |
+|-----------------------------------------------------------------------|
+| - socket: SSLServerSocket                                             |
+| - database: Database                                                  |
+| - compiler: Compiler                                                  |
+| - key: SecretKey                                                      |
+| - cipher: Cipher                                                      |
+|-----------------------------------------------------------------------|
+| + compile(filenames: List<String>, session: CNPSession): File         |
+| + executeTask(task: ChatTask): void                                   |
+| + executeTask(task: EditorTask): void                                 |
+| + distributeTask(task: Task): void                                    |
+| + createAccount(username: String, password: String): Account          |
+| + retrieveAccount(username: String, password: String): Account        |
+| + createCNPSession(sessionName: String): CNPSession                   |
+| + createCNPSession(sessionName: String, password: String): CNPSession |
+| + retrieveCNPSession(sessionName: String): CNPSession                 |
 | + connect(username: String, sessionName: String): ClientConnection    |
 
 
@@ -72,6 +71,9 @@
 | - filePermissions: Map<Account, Account.FilePermissionLevel> |
 | - chatPermissions: Map<Account, Account.ChatPermissionLevel> |
 | - sessionName: String                                        |
+| - taskCourier: ExecutorService                               |
+| - chatQueue: ExecutorService // single-thread                |
+| - clientConnections: Map<Account, CNPConnection>             |
 |--------------------------------------------------------------|
 | + createFile(filename: String): boolean                      |
 | + deleteFile(filename: String): boolean                      |
@@ -80,6 +82,8 @@
 | + cloneRepo(): File                                          |
 | + addUser(userAccount: Account): boolean                     |
 | + removeUser(userAccount: Account): boolean                  |
+| + addTask(task: EditorTask): void                            |
+| + distributeTask(task: TaskResponse): void                   |
 
 
 | CNPPrivateSession                             |
@@ -162,8 +166,9 @@
 
 | SourceFile                              |
 |-----------------------------------------|
-| - sourceRope: Rope                      |
-| - type: SourceFile.SourceType           |
+| # filename: String
+| # sourceRope: Rope                      |
+| # type: SourceFile.SourceType           |
 |-----------------------------------------|
 | + editSource(task: EditorTask): boolean |
 | + toString(): String                    |
@@ -177,6 +182,7 @@
 |----------------------------------------|
 | + addTask(task: EditorTask): boolean   |
 | + addTask(task: DownloadTask): boolean |
+| + editSource(task: EditorTask): void   |
 
 
 | <<enumeration>>       |
@@ -201,8 +207,6 @@
 |                  |
 |------------------|
 | + call(): File   |
-
-
 
 
 | <<enumeration>>       |
@@ -249,16 +253,32 @@
 |                                     |
 
 
-| EditorTask            |
+| EditorTask                                    |
+|-----------------------------------------------|
+| + _PERMISSION_: FilePermissionLevel // static |
+| - userAccount: Account                        |
+| - keyPressed: int                             |
+| - editIndex: int                              |
+| - sourceFile: ServerSourceFile                |
+|-----------------------------------------------|
+| + execute(): void                             |
+| + run(): void                                 |
+
+
+| <<abstract>>          |
+| TaskResponse          |
 |-----------------------|
-| - username: String    |
-| - keyEntered: char    |
-| - editIndex: int      |
-| - fileName: String    |
-| - session: CNPSession |
-|-----------------------|
-| + execute(): void     |
-| + run(): void         |
+| # session: CNPSession |
+
+
+| EditorTaskResponse       |
+|--------------------------|
+| - keyPressed: int        |
+| - editIndec: int         |
+| - sourceFileName: String |
+|--------------------------|
+| + run: void              |
+| + execute: void          |
 
 
 | <<interface>>                                                                                                                                                    |
