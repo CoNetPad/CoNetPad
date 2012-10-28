@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="docs/|minutes/|reports/|src/prototype/|src/|src/" kind="src" path=""/>
+	<classpathentry excluding="docs/|minutes/|reports/|src/prototype/|src/|src/|lib/" kind="src" path=""/>
 	<classpathentry excluding="prototype/client/src/|prototype/server/src/" kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="lib" path="lib/gson-2.2.2/gson-2.2.2.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/theacmgroup/lib/gson-2.2.2/gson-2.2.2-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/jgit-2.1.0.201209190230-r/org.eclipse.jgit-2.1.0.201209190230-r.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/theacmgroup/lib/jgit-2.1.0.201209190230-r/org.eclipse.jgit-2.1.0.201209190230-r-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/ropes-1.2.5/ropes.jar"/>
+	<classpathentry kind="lib" path="lib/sqlite-jdbc-3.7.2/sqlite-jdbc-3.7.2.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/theacmgroup/lib/sqlite-jdbc-3.7.2/sqlite-jdbc-3.7.2-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
