@@ -42,24 +42,26 @@
 | + executeTask(task: DownloadTask): boolean                                                                        |
 
 
-| CNPServer                                                              |
-|------------------------------------------------------------------------|
-| - clientConnections: Map<Account, CNPConnection>                       |
-| - socket: SSLServerSocket                                              |
-| - database: Database                                                   |
-| - compiler: Compiler                                                   |
-| - taskCourier: TaskDistributor                                         |
-| - key: SecretKey                                                       |
-| - cipher: Cipher                                                       |
-|------------------------------------------------------------------------|
-| + compile(filenames: List<String>, session: CNPSession): File          |
-| + addTask(task: Task): void                                            |
-| + distributeTask(task: Task): void                                     |
-| + createAccount(username: String, password: String): Account           |
-| + retrieveAccount(username: String, password: String): Account         |
-| + createCNPSession(sessionName: String): CNPSession                    |
-| + createCNPSession(sessionName: String, password: String): CNPSession  |
-| + retrieveCNPSession(sessionName: String): CNPSession                   |
+| CNPServer                                                             |
+|-----------------------------------------------------------------------|
+| - clientConnections: Map<Account, CNPConnection>                      |
+| - socket: SSLServerSocket                                             |
+| - database: Database                                                  |
+| - compiler: Compiler                                                  |
+| - taskCourier: ExecutorService                                        |
+| - chatQueue: ExecutorService                                          |
+| - key: SecretKey                                                      |
+| - cipher: Cipher                                                      |
+|-----------------------------------------------------------------------|
+| + compile(filenames: List<String>, session: CNPSession): File         |
+| + executeTask(task: ChatTask): void                                   |
+| + executeTask(task: EditorTask): void                                 |
+| + distributeTask(task: Task): void                                    |
+| + createAccount(username: String, password: String): Account          |
+| + retrieveAccount(username: String, password: String): Account        |
+| + createCNPSession(sessionName: String): CNPSession                   |
+| + createCNPSession(sessionName: String, password: String): CNPSession |
+| + retrieveCNPSession(sessionName: String): CNPSession                 |
 | + connect(username: String, sessionName: String): ClientConnection    |
 
 
@@ -80,6 +82,7 @@
 | + cloneRepo(): File                                          |
 | + addUser(userAccount: Account): boolean                     |
 | + removeUser(userAccount: Account): boolean                  |
+| + addTask(task: EditorTask): void                            |
 
 
 | CNPPrivateSession                             |
@@ -249,16 +252,16 @@
 |                                     |
 
 
-| EditorTask            |
-|-----------------------|
-| - username: String    |
-| - keyEntered: char    |
-| - editIndex: int      |
-| - fileName: String    |
-| - session: CNPSession |
-|-----------------------|
-| + execute(): void     |
-| + run(): void         |
+| EditorTask             |
+|------------------------|
+| - userAccount: Account |
+| - keyEntered: char     |
+| - editIndex: int       |
+| - fileName: String     |
+| - session: CNPSession  |
+|------------------------|
+| + execute(): void      |
+| + run(): void          |
 
 
 | <<interface>>                                                                                                                                                    |

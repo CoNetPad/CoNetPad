@@ -1,6 +1,9 @@
 package org.ndacm.acmgroup.cnp.task;
 
+import org.ndacm.acmgroup.cnp.Account;
 import org.ndacm.acmgroup.cnp.Account.FilePermissionLevel;
+import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
+import org.ndacm.acmgroup.cnp.file.SourceFile;
 import org.ndacm.acmgroup.cnp.server.CNPSession;
 
 /**
@@ -15,30 +18,44 @@ public class EditorTask extends Task implements Runnable{
 	 */
 	public static FilePermissionLevel PERMISSION;
 
-	private String username;
-	private char keyEntered;
+	private Account userAccount;
+	private int keyPressed;
 	private int editIndex;
-	private String fileName;
-	private CNPSession session;
+	private ServerSourceFile sourceFile;
 	
 	/**
 	 * Fully-specified constructor for EditorTask.
 	 * 
-	 * @param username The username of the user who created the edit task.
+	 * @param userAccount The account of the user who created the edit task.
 	 * @param keyEntered The char associated with pressed key.
 	 * @param editIndex The 0-based index of the edit within the source file.
 	 * @param fileName The name of the file that was edited.
 	 * @param session The name/identifier for the CoNetPad session.
 	 */
-	public EditorTask(String username, char keyEntered, int editIndex, String fileName, CNPSession session) {
+	public EditorTask(Account userAccount, int keyPressed, int editIndex, ServerSourceFile sourceFile) {
 		
 		PERMISSION = FilePermissionLevel.READ_WRITE;
 		
-		this.username = username;
-		this.keyEntered = keyEntered;
+		this.userAccount = userAccount;
+		this.keyPressed = keyPressed;
 		this.editIndex = editIndex;
-		this.fileName = fileName;
-		this.session = session;
+		this.sourceFile = sourceFile;
+	}
+	
+	public Account getUserAccount() {
+		return userAccount;
+	}
+	
+	public ServerSourceFile getSourceFile() {
+		return sourceFile;
+	}
+	
+	public int getKeyPressed() {
+		return keyPressed;
+	}
+	
+	public int getEditIndex() {
+		return editIndex;
 	}
 	
 	/**
@@ -52,8 +69,8 @@ public class EditorTask extends Task implements Runnable{
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
 		
+		sourceFile.editSource(this);
 	}
 
 }

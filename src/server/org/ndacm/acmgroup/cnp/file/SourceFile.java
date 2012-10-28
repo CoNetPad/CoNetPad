@@ -1,13 +1,16 @@
 package org.ndacm.acmgroup.cnp.file;
 
+import java.awt.event.KeyEvent;
 import java.io.File;
 import org.ahmadsoft.ropes.Rope;
 import org.ndacm.acmgroup.cnp.task.EditorTask;
+import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
 
 public class SourceFile {
 
-	private Rope sourceRope;
-	private SourceFile.SourceType type;
+	protected String filename;
+	protected Rope sourceRope;
+	protected SourceFile.SourceType type;
 
 	public enum SourceType {
 		JAVA,
@@ -15,9 +18,17 @@ public class SourceFile {
 		GENERAL
 	}
 	
-	public boolean editSource(EditorTask task) {
-		// TODO implement
-		return false;
+	public void editSource(EditorTask task) {
+		
+		int keyPressed = task.getKeyPressed();
+		int editIndex = task.getEditIndex();
+		
+		if (keyPressed == KeyEvent.VK_BACK_SPACE) {
+			sourceRope = sourceRope.delete(editIndex, editIndex + 1);
+		} else {
+			sourceRope = sourceRope.insert(editIndex, Character.toString((char) keyPressed));
+		}	
+
 	}
 	
 	public File toFile() {

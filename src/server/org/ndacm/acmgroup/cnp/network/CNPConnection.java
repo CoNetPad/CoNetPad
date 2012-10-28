@@ -12,4 +12,7 @@ public class CNPConnection {
 	private CNPServer server;
 	private Account account;
 	
+	public CNPSession getSession() {
+		return session;
+	}
 }
