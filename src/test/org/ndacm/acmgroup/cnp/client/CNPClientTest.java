@@ -1,24 +1,34 @@
-package org.ndacm.acmgroup.cnp.client.test;
+package org.ndacm.acmgroup.cnp.client;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.ndacm.acmgroup.cnp.client.CNPClient;
+import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
 
 /**
  * JUnit test class for testing CNPClient.
  *
  */
 public class CNPClientTest {
+	
+	private static CNPClient client1;
 
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		
+		// initialize client1
+		client1 = new CNPClient("acmgroup.ndacm.org");
+		client1.addSourceFile("sourceFile1", SourceType.JAVA);
+		client1.addSourceFile("sourceFile2", SourceType.CPP);
+		client1.addSourceFile("sourceFile3", SourceType.GENERAL);
 	}
 
 	/**
