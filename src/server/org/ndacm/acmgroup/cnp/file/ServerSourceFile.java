@@ -12,6 +12,11 @@ public class ServerSourceFile extends SourceFile {
 
 	private CNPSession session;
 	private ExecutorService taskQueue;
+	
+	public ServerSourceFile(String filename, SourceType type, String initialText) {
+		super(filename, type, initialText);
+		// TODO Auto-generated constructor stub
+	}
 
 	public void addTask(EditorTask task) {
 		taskQueue.submit(task);
