@@ -127,12 +127,12 @@
 |                    |
 
 
-| <<enumeration>>         |
+| <<enumeration>>             |
 | Account.FilePermissionLevel |
-|-------------------------|
-| READ                    |
-| READ_WRITE              |
-| UNRESTRICTED            |
+|-----------------------------|
+| READ                        |
+| READ_WRITE                  |
+| UNRESTRICTED                |
 
 
 | <<enumeration>>             |
@@ -166,7 +166,7 @@
 
 | SourceFile                              |
 |-----------------------------------------|
-| # filename: String
+| # filename: String                      |
 | # sourceRope: Rope                      |
 | # type: SourceFile.SourceType           |
 |-----------------------------------------|
