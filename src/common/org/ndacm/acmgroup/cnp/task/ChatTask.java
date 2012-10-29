@@ -43,5 +43,9 @@ public class ChatTask extends Task implements Runnable {
 		// TODO Auto-generated method stub
 		
 	}
+	public String toString()
+	{
+		return this.username + " " + this.message;
+	}
 
 }
