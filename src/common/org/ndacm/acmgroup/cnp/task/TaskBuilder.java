@@ -62,11 +62,4 @@ public class TaskBuilder
 	
 	}
 	
-	public static void main(String[] args)
-	{
-		//SOME TEST CODE
-		TaskBuilder tb = new TaskBuilder("{\"type\":\"chat\"}");
-		Task t = tb.getCNPTask();
-		System.out.println(t);
-	}
 }

@@ -10,7 +10,7 @@ import org.ndacm.acmgroup.cnp.TaskType;
 
 public class JSONTask {
 	private String type;	//the type of json
-	
+
 	@Override
 	/**
 	 *toString()

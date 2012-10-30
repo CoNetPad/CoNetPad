@@ -32,8 +32,13 @@ The Directory Information
 /src
 
 #The source code folder for the server
-/source/server
+/src/server
 
 #The source code folder for the client
-/source/client
+/src/client
 
+#The source code folder for the tests
+/src/test
+
+#Library resources
+/lib
