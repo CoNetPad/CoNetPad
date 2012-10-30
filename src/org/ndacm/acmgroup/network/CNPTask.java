@@ -1,5 +1,20 @@
 package org.ndacm.acmgroup.network;
 
+/**
+ * @author cesar
+ * 
+ *         For the network, any message send and received is just an array of
+ *         bytes. Different sets of protocols can be used to receive/send
+ *         messages(xml, json and others) no matter which one is actually used
+ *         but this class will be the one in charge of doing the translation.
+ * 
+ *         This class represents a CNP task from the point of view of the
+ *         network. This class will interface the CNPTask converting it in a
+ *         string for the server or in an actual CNPTask for the executor
+ *         service.
+ * 
+ * 
+ */
 public class CNPTask {
 	private static final char DIV = ':';
 	private static final char END = '&';

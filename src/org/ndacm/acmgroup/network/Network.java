@@ -10,7 +10,16 @@ import org.ndacm.acmgroup.network.event.Component;
 import org.ndacm.acmgroup.network.event.MessageReceivedEvent;
 import org.ndacm.acmgroup.network.event.MessageReceivedEventListener;
 
-public class Network implements Component{
+/**
+ * @author cesar
+ * 
+ *         This class will be in charge of handling all the network connections,
+ *         listening for new clients and sending/receiving messages.
+ *         
+ *         
+ * 
+ */
+public class Network implements Component {
 
 	private ServerSocket serverSocket;
 	private ArrayList<CNPConnection> clientList;
@@ -34,7 +43,8 @@ public class Network implements Component{
 
 		while (true) {
 			try {
-				CNPConnection thread = new CNPConnection(serverSocket.accept(),id, this);
+				CNPConnection thread = new CNPConnection(serverSocket.accept(),
+						id, this);
 				clientList.add(thread);
 				thread.start();
 				System.out.println("Client connected");
@@ -74,11 +84,13 @@ public class Network implements Component{
 		clientList.get(id).close();
 	}
 
-	public void addMessageReceivedEventListener(MessageReceivedEventListener listener) {
+	public void addMessageReceivedEventListener(
+			MessageReceivedEventListener listener) {
 		listenerList.add(MessageReceivedEventListener.class, listener);
 	}
 
-	public void removeMessageReceivedEventListener(MessageReceivedEventListener listener) {
+	public void removeMessageReceivedEventListener(
+			MessageReceivedEventListener listener) {
 		listenerList.remove(MessageReceivedEventListener.class, listener);
 	}
 
@@ -86,7 +98,8 @@ public class Network implements Component{
 		Object[] listeners = listenerList.getListenerList();
 		for (int i = 0; i < listeners.length; i += 2) {
 			if (listeners[i] == MessageReceivedEventListener.class) {
-				((MessageReceivedEventListener) listeners[i + 1]).MessageReceivedEventOccurred(evt);
+				((MessageReceivedEventListener) listeners[i + 1])
+						.MessageReceivedEventOccurred(evt);
 			}
 		}
 	}
