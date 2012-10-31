@@ -2,20 +2,20 @@ package common.network.event;
 
 import java.util.EventObject;
 
-import common.network.CNPTask;
+import common.network.ProtoCNPTask;
 
 public class MessageReceivedEvent extends EventObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private CNPTask task;
+	private ProtoCNPTask task;
 	
-	public MessageReceivedEvent(CNPTask task) {
+	public MessageReceivedEvent(ProtoCNPTask task) {
 		super(task);
 		this.task = task;
 	}
 
-	public CNPTask getTask() {
+	public ProtoCNPTask getTask() {
 		return task;
 	}	
 }

@@ -61,7 +61,7 @@ public class CNPConnection extends Thread {
 			String inputLine;
 			while ((inputLine = in.readLine()) != null && !stop) {
 				component.fireMessageReceivedEvent(new MessageReceivedEvent(
-						new CNPTask(0, 0)));
+						new ProtoCNPTask(0, 0)));
 			}
 			System.out.println("Thread for client stopped correctly");
 		} catch (IOException e) {
@@ -73,7 +73,7 @@ public class CNPConnection extends Thread {
 	 * @param command
 	 *            element to be transmitted.
 	 */
-	public void sendCommand(CNPTask command) {
+	public void sendCommand(ProtoCNPTask command) {
 		out.println(command);
 	}
 

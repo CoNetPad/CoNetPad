@@ -15,41 +15,68 @@ package common.network;
  * 
  * 
  */
-public class CNPTask {
+public class ProtoCNPTask {
 	private static final char DIV = ':';
 	private static final char END = '&';
 
 	private int id;
 	private int message;
 
-	public CNPTask(int id, int message) {
+	/**
+	 * @param id
+	 * @param message
+	 */
+	public ProtoCNPTask(int id, int message) {
 		this.id = id;
 		this.message = message;
 	}
 
+	/**
+	 * @return
+	 */
 	public int getMessage() {
 		return message;
 	}
 
+	/**
+	 * @param message
+	 */
 	public void setMessage(int message) {
 		this.message = message;
 	}
 
+	/**
+	 * @return
+	 */
 	public int getId() {
 		return id;
 	}
 
+	/**
+	 * @param id
+	 */
 	public void setId(int id) {
 		this.id = id;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
 	public String toString() {
 		return new String(Integer.toString(id) + DIV
 				+ Integer.toString(message) + END);
 	}
 
-	public static CNPTask fromString(String serial) {
-		return new CNPTask(Integer.parseInt(serial.split(":")[0]),
+	/**
+	 * @param serial
+	 *            String representation of the CNPTask, this is the message
+	 *            recieved from the network and it will be translated.
+	 * @return a CNPTask object that represents the string recieved.
+	 */
+	public static ProtoCNPTask fromString(String serial) {
+		return new ProtoCNPTask(Integer.parseInt(serial.split(":")[0]),
 				Integer.parseInt(serial.split(":")[1].substring(serial
 						.split(":")[1].length() - 1)));
 	}
