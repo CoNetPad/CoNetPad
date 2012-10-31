@@ -1,4 +1,4 @@
-package org.ndacm.acmgroup.network.irc;
+package common.network.irc;
 
 import java.io.*;
 

@@ -1,4 +1,4 @@
-package org.ndacm.acmgroup.network;
+package common.network;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -6,9 +6,9 @@ import java.util.ArrayList;
 
 import javax.swing.event.EventListenerList;
 
-import org.ndacm.acmgroup.network.event.Component;
-import org.ndacm.acmgroup.network.event.MessageReceivedEvent;
-import org.ndacm.acmgroup.network.event.MessageReceivedEventListener;
+import common.network.event.Component;
+import common.network.event.MessageReceivedEvent;
+import common.network.event.MessageReceivedEventListener;
 
 /**
  * @author cesar

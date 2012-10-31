@@ -1,8 +1,8 @@
-package org.ndacm.acmgroup.network.event;
+package common.network.event;
 
 import java.util.EventObject;
 
-import org.ndacm.acmgroup.network.CNPTask;
+import common.network.CNPTask;
 
 public class MessageReceivedEvent extends EventObject {
 

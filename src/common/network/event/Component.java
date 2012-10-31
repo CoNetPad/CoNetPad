@@ -1,4 +1,4 @@
-package org.ndacm.acmgroup.network.event;
+package common.network.event;
 
 public interface Component {
 	public void addMessageReceivedEventListener(
