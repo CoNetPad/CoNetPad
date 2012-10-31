@@ -6,8 +6,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-import common.network.event.Component;
-import common.network.event.MessageReceivedEvent;
+import common.network.events.Component;
+import common.network.events.MessageReceivedEvent;
 
 /**
  * @author cesar

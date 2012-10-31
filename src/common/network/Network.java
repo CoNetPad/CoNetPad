@@ -6,9 +6,9 @@ import java.util.ArrayList;
 
 import javax.swing.event.EventListenerList;
 
-import common.network.event.Component;
-import common.network.event.MessageReceivedEvent;
-import common.network.event.MessageReceivedEventListener;
+import common.network.events.Component;
+import common.network.events.MessageReceivedEvent;
+import common.network.events.MessageReceivedEventListener;
 
 /**
  * @author cesar
