@@ -15,9 +15,6 @@ import common.network.events.MessageReceivedEventListener;
  * 
  *         This class will be in charge of handling all the network connections,
  *         listening for new clients and sending/receiving messages.
- *         
- *         
- * 
  */
 public class Network implements Component {
 
