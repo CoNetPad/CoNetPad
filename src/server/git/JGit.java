@@ -1,28 +1,8 @@
 package server.git;
 
 import java.io.File;
-import java.io.IOException;
-
-import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.CanceledException;
-import org.eclipse.jgit.api.errors.ConcurrentRefUpdateException;
-import org.eclipse.jgit.api.errors.DetachedHeadException;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.InvalidConfigurationException;
-import org.eclipse.jgit.api.errors.InvalidRefNameException;
-import org.eclipse.jgit.api.errors.InvalidRemoteException;
-import org.eclipse.jgit.api.errors.JGitInternalException;
-import org.eclipse.jgit.api.errors.NoFilepatternException;
-import org.eclipse.jgit.api.errors.NoHeadException;
-import org.eclipse.jgit.api.errors.NoMessageException;
-import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
-import org.eclipse.jgit.api.errors.RefNotFoundException;
-import org.eclipse.jgit.api.errors.TransportException;
-import org.eclipse.jgit.api.errors.UnmergedPathsException;
-import org.eclipse.jgit.api.errors.WrongRepositoryStateException;
-import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.storage.file.FileRepository;
+import java.io.FileNotFoundException;
+import java.util.Hashtable;
 
 /**
  * @author cesar
@@ -35,94 +15,81 @@ import org.eclipse.jgit.storage.file.FileRepository;
  */
 public class JGit {
 
-	private String localPath, remotePath;
-	private Repository localRepo;
-	private Git git;
+	public static final String TEMP_REPO_DIR = "./Repos";
 
-	public void init() throws IOException {
-		localPath = "/home/me/repos/my";
-		remotePath = "git@github.com:me/myrepo.git";
-		localRepo = new FileRepository(localPath + "/.git");
-		git = new Git(localRepo);
+	private Hashtable<String, JRepository> repos;
+
+	public File storage;
+
+	public JGit(File storage) throws NotDirectoryException {
+		if (!storage.isDirectory()) {
+			throw new NotDirectoryException();
+		}
+		this.storage = storage;
+		repos = new Hashtable<String, JRepository>();
 	}
 
-	public void Create() throws IOException {
-		Repository newRepo = new FileRepository(localPath + ".git");
-		newRepo.create();
-	}
-
-	public void Clone() throws IOException, NoFilepatternException {
-		try {
-			Git.cloneRepository().setURI(remotePath)
-					.setDirectory(new File(localPath)).call();
-		} catch (GitAPIException e) {
-			e.printStackTrace();
+	public void activateRepo(String name) throws FileNotFoundException {
+		File tempRepo = new File(storage.getAbsolutePath() + File.separatorChar
+				+ name);
+		if (tempRepo.exists()) {
+			try {
+				JRepository repoToLoad = new JRepository(tempRepo, name);
+				repoToLoad.gitLoad();
+				repos.put(repoToLoad.getName(), repoToLoad);
+			} catch (NotDirectoryException e) {
+				e.printStackTrace();
+			}
+		} else {
+			throw new FileNotFoundException();
 		}
 	}
 
-	public void Add() throws IOException, NoFilepatternException {
-		File myfile = new File(localPath + "/myfile");
-		myfile.createNewFile();
-		try {
-			git.add().addFilepattern("myfile").call();
-		} catch (GitAPIException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public void deactivateRepo(String name) {
+		if (repos.get(name) != null) {
+			repos.get(name).gitCommit("Closing repo");
 		}
 	}
 
-	public void Commit() throws IOException, NoHeadException,
-			NoMessageException, ConcurrentRefUpdateException,
-			JGitInternalException, WrongRepositoryStateException {
-		try {
-			git.commit().setMessage("Added myfile").call();
-		} catch (UnmergedPathsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (GitAPIException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public void createRepo(String name) {
+		File tempRepo = new File(storage.getAbsolutePath() + File.separatorChar
+				+ name);
+		if (!tempRepo.exists()) {
+			try {
+				JRepository repoToLoad = new JRepository(tempRepo, name);
+				repoToLoad.gitInit();
+				repos.put(name, repoToLoad);
+			} catch (NotDirectoryException e) {
+				e.printStackTrace();
+			}
+		} else {
+
 		}
 	}
 
-	public void Push() throws IOException, JGitInternalException,
-			InvalidRemoteException {
-		try {
-			git.push().call();
-		} catch (TransportException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (GitAPIException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public void addFileToRepo(String name, File fileToAdd) {
+		if (repos.get(name) != null) {
+			repos.get(name).gitAdd(fileToAdd);
 		}
 	}
 
-	public void TrackMaster() throws IOException, JGitInternalException,
-			RefAlreadyExistsException, RefNotFoundException,
-			InvalidRefNameException {
-		try {
-			git.branchCreate().setName("master")
-					.setUpstreamMode(SetupUpstreamMode.SET_UPSTREAM)
-					.setStartPoint("origin/master").setForce(true).call();
-		} catch (GitAPIException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public void removeFileFromRepo(String name, File fileToRemove) {
+		if (repos.get(name) != null) {
+			repos.get(name).gitRm(fileToRemove);
 		}
 	}
 
-	public void Pull() throws IOException, WrongRepositoryStateException,
-			InvalidConfigurationException, DetachedHeadException,
-			InvalidRemoteException, CanceledException, RefNotFoundException,
-			NoHeadException {
-		try {
-			git.pull().call();
-		} catch (TransportException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (GitAPIException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public void commitToRepo(String name, String message) {
+		if (repos.get(name) != null) {
+			repos.get(name).gitCommit(message);
+		}
+	}
+
+	public File retrieveRepo(String name) {
+		if (repos.get(name) != null) {
+			return repos.get(name).getDirectory();
+		} else {
+			return null;
 		}
 	}
 }
