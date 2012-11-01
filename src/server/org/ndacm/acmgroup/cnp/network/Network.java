@@ -1,5 +1,7 @@
 package org.ndacm.acmgroup.cnp.network;
 
-public abstract class Network {
+import org.ndacm.acmgroup.cnp.network.event.Component;
+
+public abstract class Network implements Component {
 
 }
