@@ -1,4 +1,4 @@
-package common.network;
+package server.network;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -6,6 +6,11 @@ import java.util.ArrayList;
 
 import javax.swing.event.EventListenerList;
 
+import org.eclipse.jgit.util.Base64;
+
+import common.network.BaseNetwork;
+import common.network.CNPConnection;
+import common.network.ProtoCNPTask;
 import common.network.events.Component;
 import common.network.events.MessageReceivedEvent;
 import common.network.events.MessageReceivedEventListener;
@@ -16,11 +21,10 @@ import common.network.events.MessageReceivedEventListener;
  *         This class will be in charge of handling all the network connections,
  *         listening for new clients and sending/receiving messages.
  */
-public class Network implements Component {
+public class ServerNetwork extends BaseNetwork {
 
 	private ServerSocket serverSocket;
 	private ArrayList<CNPConnection> clientList;
-	private EventListenerList listenerList = new EventListenerList();
 
 	public void startListening() {
 		try {
@@ -80,24 +84,8 @@ public class Network implements Component {
 		System.out.println("Closing connection with client " + id);
 		clientList.get(id).close();
 	}
-
-	public void addMessageReceivedEventListener(
-			MessageReceivedEventListener listener) {
-		listenerList.add(MessageReceivedEventListener.class, listener);
-	}
-
-	public void removeMessageReceivedEventListener(
-			MessageReceivedEventListener listener) {
-		listenerList.remove(MessageReceivedEventListener.class, listener);
-	}
-
-	public void fireMessageReceivedEvent(MessageReceivedEvent evt) {
-		Object[] listeners = listenerList.getListenerList();
-		for (int i = 0; i < listeners.length; i += 2) {
-			if (listeners[i] == MessageReceivedEventListener.class) {
-				((MessageReceivedEventListener) listeners[i + 1])
-						.MessageReceivedEventOccurred(evt);
-			}
-		}
+	
+	public void sendMessageToClient(int id, ProtoCNPTask task) {
+		clientList.get(id).sendCommand(task);
 	}
 }
