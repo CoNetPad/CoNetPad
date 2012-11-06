@@ -1,9 +1,9 @@
-package org.ndacm.acmgroup.cnp.network;
+package server.org.ndacm.acmgroup.cnp.network;
 
-import org.ndacm.acmgroup.cnp.Account;
-import org.ndacm.acmgroup.cnp.client.CNPClient;
-import org.ndacm.acmgroup.cnp.server.CNPServer;
-import org.ndacm.acmgroup.cnp.server.CNPSession;
+import client.org.ndacm.acmgroup.cnp.client.CNPClient;
+import server.org.ndacm.acmgroup.cnp.Account;
+import server.org.ndacm.acmgroup.cnp.server.*;
+
 
 public class CNPConnection {
 

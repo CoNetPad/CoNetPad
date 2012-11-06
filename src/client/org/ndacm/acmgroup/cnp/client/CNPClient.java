@@ -1,4 +1,4 @@
-package org.ndacm.acmgroup.cnp.client;
+package client.org.ndacm.acmgroup.cnp.client;
 
 import java.io.BufferedReader;
 import java.io.File;

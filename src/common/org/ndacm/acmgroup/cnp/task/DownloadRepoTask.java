@@ -1,8 +1,8 @@
-package org.ndacm.acmgroup.cnp.task;
+package common.org.ndacm.acmgroup.cnp.task;
 
 import java.io.File;
 
-import org.ndacm.acmgroup.cnp.server.CNPSession;
+import server.org.ndacm.acmgroup.cnp.server.CNPSession;
 
 public class DownloadRepoTask extends DownloadTask {
 

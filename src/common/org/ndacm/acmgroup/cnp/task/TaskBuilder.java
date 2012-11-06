@@ -6,12 +6,13 @@
  * @version 1.0
  */
 
-package org.ndacm.acmgroup.cnp.task;
+package common.org.ndacm.acmgroup.cnp.task;
 
-import org.ndacm.acmgroup.cnp.TaskType;
-import org.ndacm.acmgroup.cnp.TaskType.CNPTaskType;
+import server.org.ndacm.acmgroup.cnp.TaskType;
+import server.org.ndacm.acmgroup.cnp.TaskType.CNPTaskType;
 
 import com.google.gson.Gson;
+
 
 public class TaskBuilder
 {

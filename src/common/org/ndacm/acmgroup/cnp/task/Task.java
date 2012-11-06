@@ -1,4 +1,4 @@
-package org.ndacm.acmgroup.cnp.task;
+package common.org.ndacm.acmgroup.cnp.task;
 
 /**
  * Abstract class for a task. A CNPTask unifies the execution of a task under a single method call: execute().

@@ -1,4 +1,4 @@
-package org.ndacm.acmgroup.cnp;
+package server.org.ndacm.acmgroup.cnp;
 
 public class Account {
 	

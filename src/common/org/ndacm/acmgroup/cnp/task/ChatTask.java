@@ -1,6 +1,6 @@
-package org.ndacm.acmgroup.cnp.task;
+package common.org.ndacm.acmgroup.cnp.task;
 
-import org.ndacm.acmgroup.cnp.Account.ChatPermissionLevel;
+import server.org.ndacm.acmgroup.cnp.Account.ChatPermissionLevel;
 
 /**
  * A task to send a chat message. An ChatTask is a message sent by a connected user to

@@ -1,10 +1,12 @@
-package org.ndacm.acmgroup.cnp.file;
-
+package common.org.ndacm.acmgroup.cnp.file;
 import java.awt.event.KeyEvent;
 import java.io.File;
 
 import org.ahmadsoft.ropes.Rope;
-import org.ndacm.acmgroup.cnp.task.EditorTask;
+
+import common.org.ndacm.acmgroup.cnp.task.EditorTask;
+
+
 
 public class SourceFile {
 
