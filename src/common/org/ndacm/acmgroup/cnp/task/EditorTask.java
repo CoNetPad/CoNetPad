@@ -1,8 +1,8 @@
-package common.org.ndacm.acmgroup.cnp.task;
+package org.ndacm.acmgroup.cnp.task;
 
-import server.org.ndacm.acmgroup.cnp.*;
-import server.org.ndacm.acmgroup.cnp.Account.FilePermissionLevel;
-import server.org.ndacm.acmgroup.cnp.file.ServerSourceFile;
+import org.ndacm.acmgroup.cnp.*;
+import org.ndacm.acmgroup.cnp.Account.FilePermissionLevel;
+import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
 
 
 

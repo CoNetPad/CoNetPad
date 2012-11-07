@@ -1,4 +1,4 @@
-package server.org.ndacm.acmgroup.cnp.server;
+package org.ndacm.acmgroup.cnp.server;
 
 import java.io.File;
 import java.util.Map;
@@ -7,11 +7,11 @@ import java.util.concurrent.Executors;
 
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
-import server.org.ndacm.acmgroup.cnp.file.ServerSourceFile;
-import server.org.ndacm.acmgroup.cnp.git.GitRepo;
+import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
+import org.ndacm.acmgroup.cnp.git.GitRepo;
 
-import server.org.ndacm.acmgroup.cnp.Account;
-import server.org.ndacm.acmgroup.cnp.network.CNPConnection;
+import org.ndacm.acmgroup.cnp.Account;
+import org.ndacm.acmgroup.cnp.network.CNPConnection;
 
 
 public class CNPSession {

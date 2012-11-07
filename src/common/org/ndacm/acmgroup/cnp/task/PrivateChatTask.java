@@ -1,4 +1,4 @@
-package common.org.ndacm.acmgroup.cnp.task;
+package org.ndacm.acmgroup.cnp.task;
 
 public class PrivateChatTask extends ChatTask {
 	

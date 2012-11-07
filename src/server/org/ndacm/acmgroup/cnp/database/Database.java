@@ -1,13 +1,29 @@
-package server.org.ndacm.acmgroup.cnp.database;
+/**
+ * Class:  Database<br>
+ * Description:  This is a class for handling our database stuff.  
+ * @author Justin
+ */
+package org.ndacm.acmgroup.cnp.database;
 
 
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.security.*;
+
 
 import org.ndacm.acmgroup.cnp.Account;
+import org.ndacm.acmgroup.cnp.exceptions.FailedAccountException;
 import org.ndacm.acmgroup.cnp.server.CNPPrivateSession;
 import org.ndacm.acmgroup.cnp.server.CNPSession;
-import java.sql.*;
 
+
+/**
+ * @author Justin
+ *
+ */
 public class Database implements IDatabase{
 	
 	private static final String driverClass = "org.sqlite.JDBC";
@@ -15,34 +31,52 @@ public class Database implements IDatabase{
 	private String dbFile = "jdbc:sqlite:src//sqllite//CoNetPad.db3";
 	private Statement stmt;
 	
-	
-	public Database() throws Exception{
-		// load the sqlite-JDBC driver using the current class loader
+	/**
+	 * Default Constructor
+	 * @throws Exception
+	 */
+	public Database() throws Exception
+	{
 	     Class.forName(driverClass);
 	     dbConnection = DriverManager.getConnection(dbFile);
 	     stmt = dbConnection.createStatement();
-//	 	ResultSet rs = st.executeQuery(sql);
-//		while(rs.next())
-//		{
-//			String output = rs.getString("name");
-//			System.out.println(output);
+
 	}
-	public static void main(String[] args)
+	/**
+	 * createAccount()
+	 * This Creates a new user account and returns an object
+	 * @param username - String The string username you wish to use to create new account
+	 * @param email - String The password of the new account
+	 * @param password - String The RAW password to be given.  Encrpytion is done for you.
+	 * @return Returns an new Account Object or throws an FailedAccountException
+	 * @throws SQLException, FailedAccountException
+	 */
+	public Account createAccount(String username, String email, String password) throws SQLException, FailedAccountException 
 	{
-		
-	}
-	public Account createAccount(String username, String email, String password) throws SQLException {
 		// TODO implement
 		// also store in DB
-		String query = "SELECT * FROM UserAccount WHERE Username='" + username + "'";
-		ResultSet result =stmt.executeQuery(query);
-		while(result.next())
+		try
 		{
-			String name = result.getString("Username");
-			String eml = result.getString("Email");
-			return new Account(name, eml);
+		    String encryptPass = sha1(password);
+		 
+			String query = "INSERT INTO UserAccount (Username, AccountPassword, Email) VALUES ('" + username + "', '"
+						+ encryptPass + "', '" + email + "');";
+			int result =stmt.executeUpdate(query);
+			if(result > 0)
+			{
+				return new Account(username, email);
+			}
+			else
+			{
+				
+				throw new FailedAccountException();
+			}
 		}
-		return new Account();
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			throw new FailedAccountException("Encrpytion failed");
+		}
 	}
 	
 //	public Account retrieveAccount(String username, String password) {
@@ -80,5 +114,34 @@ public class Database implements IDatabase{
 //		// TODO implement
 //		return false;
 //	}
+	
+	/**
+	 * sha1()
+	 * This returns the string version of the SHA1 Encryption
+	 * @param input This is the string you wish to get the SHA1 Hash
+	 * @return The encrypted value
+	 * @throws NoSuchAlgorithmException
+	 */
+   private static String sha1(String input) throws NoSuchAlgorithmException
+   {
+		MessageDigest md = MessageDigest.getInstance("SHA1");
+		md.update(input.getBytes()); 
+		byte[] b = md.digest();
+		char hexDigit[] = {'0', '1', '2', '3', '4', '5', '6', '7',
+		 '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+		StringBuffer buf = new StringBuffer();
+		for (int j=0; j<b.length; j++) 
+		{
+			buf.append(hexDigit[(b[j] >> 4) & 0x0f]);
+			buf.append(hexDigit[b[j] & 0x0f]);
+		}
+		  return buf.toString();
+	}
 
 }
+
+//	ResultSet rs = st.executeQuery(sql);
+//while(rs.next())
+//{
+//	String output = rs.getString("name");
+//	System.out.println(output);

@@ -1,4 +1,4 @@
-package client.org.ndacm.acmgroup.cnp.client;
+package org.ndacm.acmgroup.cnp.client;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,11 +18,11 @@ import java.util.concurrent.Executors;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
-import common.org.ndacm.acmgroup.cnp.file.SourceFile;
-import common.org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
-import common.org.ndacm.acmgroup.cnp.task.ChatTask;
-import common.org.ndacm.acmgroup.cnp.task.DownloadTask;
-import common.org.ndacm.acmgroup.cnp.task.EditorTask;
+import org.ndacm.acmgroup.cnp.file.SourceFile;
+import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
+import org.ndacm.acmgroup.cnp.task.ChatTask;
+import org.ndacm.acmgroup.cnp.task.DownloadTask;
+import org.ndacm.acmgroup.cnp.task.EditorTask;
 
 
 

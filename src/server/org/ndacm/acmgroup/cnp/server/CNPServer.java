@@ -1,18 +1,24 @@
-package server.org.ndacm.acmgroup.cnp.server;
+package org.ndacm.acmgroup.cnp.server;
+
 import java.io.File;
+import java.net.Socket;
 import java.util.List;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.net.ssl.SSLServerSocket;
 
-import server.org.ndacm.acmgroup.cnp.*;
-import server.org.ndacm.acmgroup.cnp.database.*;
+import org.ndacm.acmgroup.cnp.Account;
+import org.ndacm.acmgroup.cnp.database.Database;
+import org.ndacm.acmgroup.cnp.network.CNPConnection;
+import org.ndacm.acmgroup.cnp.network.ServerNetwork;
+import org.ndacm.acmgroup.cnp.task.ChatTask;
+import org.ndacm.acmgroup.cnp.task.EditorTask;
 
 public class CNPServer {
 	
 	private SSLServerSocket socket;
-
+	private ServerNetwork network;
 
 	
 	private Database database;
@@ -27,19 +33,17 @@ public class CNPServer {
 		
 	}
 	
-	public Account createAccount(String username, String password) {
-		// TODO implement
-		return new Account();
+	public Account createAccount(String username, String email, String password) {	
+		return database.createAccount(username, email, password);
 	}
 	
 	public Account retrieveAccount(String username, String password) {
-		// TODO implement
-		return new Account();
+		return database.retrieveAccount(username, password);
 	}
 	
 	public CNPConnection connect(String username, String sessionName) {
 		// TODO implement
-		return new CNPConnection();
+		return new CNPConnection(new Socket(),1, new ServerNetwork());
 	}
 	
 	public CNPSession createCNPSession(String sessionName) {

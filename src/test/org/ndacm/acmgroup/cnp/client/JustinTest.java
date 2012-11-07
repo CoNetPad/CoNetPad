@@ -1,12 +1,22 @@
 package org.ndacm.acmgroup.cnp.client;
-import org*;
+
+import org.ndacm.acmgroup.cnp.database.Database;
+import org.ndacm.acmgroup.cnp.task.Task;
+import org.ndacm.acmgroup.cnp.task.TaskBuilder;
+
 public class JustinTest {
 
 	
 	public static void main(String[] args)
 	{
-		TaskBuilder tb = new TaskBuilder("{\"type\":\"chat\", \"msg\":\"Message\", \"username\":\"ander\"}");
-		Task t = tb.getCNPTask();
-		System.out.println(t);
+		try{
+			Database db = new Database();
+			db.createAccount("John", "test@gmail.com", "password");
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
 	}
 }

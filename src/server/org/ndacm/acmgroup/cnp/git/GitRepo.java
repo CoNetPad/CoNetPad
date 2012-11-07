@@ -1,9 +1,9 @@
-package server.org.ndacm.acmgroup.cnp.git;
+package org.ndacm.acmgroup.cnp.git;
 
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.api.Git;
 
-import server.org.ndacm.acmgroup.cnp.file.ServerSourceFile;
+import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
 
 public class GitRepo {
 	

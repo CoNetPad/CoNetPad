@@ -21,5 +21,6 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/theacmgroup/lib/sqlite-jdbc-3.7.2/sqlite-jdbc-3.7.2-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/junit-4.10.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

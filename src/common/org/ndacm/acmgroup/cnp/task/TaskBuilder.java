@@ -6,11 +6,10 @@
  * @version 1.0
  */
 
-package common.org.ndacm.acmgroup.cnp.task;
+package org.ndacm.acmgroup.cnp.task;
 
-import server.org.ndacm.acmgroup.cnp.TaskType;
-import server.org.ndacm.acmgroup.cnp.TaskType.CNPTaskType;
-
+import org.ndacm.acmgroup.cnp.TaskType;
+import org.ndacm.acmgroup.cnp.TaskType.CNPTaskType;
 import com.google.gson.Gson;
 
 
