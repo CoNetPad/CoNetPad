@@ -1,11 +1,11 @@
 package org.ndacm.acmgroup.cnp.server;
 
 import java.io.File;
-import java.net.Socket;
 import java.util.List;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
+import javax.net.ssl.SSLServerSocket;
 
 import org.ndacm.acmgroup.cnp.Account;
 import org.ndacm.acmgroup.cnp.database.Database;
@@ -16,7 +16,7 @@ import org.ndacm.acmgroup.cnp.task.EditorTask;
 
 public class CNPServer {
 	
-	//private SSLServerSocket socket;
+	private SSLServerSocket socket;
 	private ServerNetwork network;
 
 	

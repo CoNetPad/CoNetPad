@@ -1,8 +1,10 @@
-package org.ndacm.acmgroup.cnp.task;
+package common.org.ndacm.acmgroup.cnp.task;
 
-import org.ndacm.acmgroup.cnp.Account;
-import org.ndacm.acmgroup.cnp.Account.FilePermissionLevel;
-import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
+import server.org.ndacm.acmgroup.cnp.*;
+import server.org.ndacm.acmgroup.cnp.Account.FilePermissionLevel;
+import server.org.ndacm.acmgroup.cnp.file.ServerSourceFile;
+
+
 
 /**
  * A task to edit a source file. An EditorTask is issued by a single person and is 
@@ -67,8 +69,14 @@ public class EditorTask extends Task implements Runnable{
 
 	@Override
 	public void run() {
+		// TODO Auto-generated method stub
 		
-		sourceFile.editSource(this);
 	}
+
+//	@Override
+//	public void run() {
+		
+	//	sourceFile.editSource(this);
+	//}
 
 }

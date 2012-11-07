@@ -1,12 +1,14 @@
-package org.ndacm.acmgroup.cnp.file;
-
+package server.org.ndacm.acmgroup.cnp.file;
 import java.awt.event.KeyEvent;
 import java.util.concurrent.ExecutorService;
-import org.ndacm.acmgroup.cnp.server.CNPSession;
-import org.ndacm.acmgroup.cnp.task.DownloadTask;
-import org.ndacm.acmgroup.cnp.task.EditorTask;
-import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
-import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
+
+
+
+import server.org.ndacm.acmgroup.cnp.server.CNPSession;
+
+import common.org.ndacm.acmgroup.cnp.file.SourceFile;
+import common.org.ndacm.acmgroup.cnp.task.DownloadTask;
+import common.org.ndacm.acmgroup.cnp.task.EditorTask;
 
 public class ServerSourceFile extends SourceFile {
 

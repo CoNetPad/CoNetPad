@@ -1,9 +1,8 @@
-package org.ndacm.acmgroup.cnp.database;
+package server.org.ndacm.acmgroup.cnp.database;
+
 
 import java.sql.Connection;
-import org.ndacm.acmgroup.cnp.Account;
-import org.ndacm.acmgroup.cnp.server.CNPPrivateSession;
-import org.ndacm.acmgroup.cnp.server.CNPSession;
+import server.org.ndacm.acmgroup.cnp.*;
 
 public class Database implements IDatabase{
 	

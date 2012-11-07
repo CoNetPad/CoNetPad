@@ -1,4 +1,4 @@
-package org.ndacm.acmgroup.cnp.network;
+package server.org.ndacm.acmgroup.cnp.network;
 
 import java.io.IOException;
 import java.net.ServerSocket;

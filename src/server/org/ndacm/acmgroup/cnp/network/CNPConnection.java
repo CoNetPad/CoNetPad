@@ -1,30 +1,17 @@
 package org.ndacm.acmgroup.cnp.network;
 
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
-
 import org.ndacm.acmgroup.cnp.Account;
-import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
-import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
-import org.ndacm.acmgroup.cnp.network.event.Component;
-import org.ndacm.acmgroup.cnp.network.event.MessageReceivedEvent;
-import org.ndacm.acmgroup.cnp.task.EditorTask;
+import org.ndacm.acmgroup.cnp.client.CNPClient;
+import org.ndacm.acmgroup.cnp.server.CNPServer;
+import org.ndacm.acmgroup.cnp.server.CNPSession;
 
 public class CNPConnection extends Thread {
 
-	//	private CNPSession session;
-	//	private CNPClient client;
-	//	private CNPServer server;
-	//	private Account account;
-	//	
-	//	public CNPSession getSession() {
-	//		return session;
-	//	}
-
+	private CNPSession session;
+	private CNPClient client;
+	private CNPServer server;
+	private Account account;
+	
 	private Socket socket = null;
 	private int id;
 	private PrintWriter out = null;
@@ -82,5 +69,10 @@ public class CNPConnection extends Thread {
 	public void stopThread() {
 		this.stop = true;
 	}
+
+	public CNPSession getSession() {
+		return session;
+	}
+
 
 }
