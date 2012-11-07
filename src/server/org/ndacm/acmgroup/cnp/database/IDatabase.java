@@ -1,9 +1,8 @@
-package server.org.ndacm.acmgroup.cnp.database;
+package org.ndacm.acmgroup.cnp.database;
 
-
-import org.ndacm.acmgroup.cnp.server.*;
-
-import server.org.ndacm.acmgroup.cnp.*;
+import org.ndacm.acmgroup.cnp.Account;
+import org.ndacm.acmgroup.cnp.server.CNPPrivateSession;
+import org.ndacm.acmgroup.cnp.server.CNPSession;
 
 public interface IDatabase {
 

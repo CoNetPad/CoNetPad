@@ -4,7 +4,7 @@
  * This is a utility class for converting json string to Event object
  */
 
-package common.org.ndacm.acmgroup.cnp.task;
+package org.ndacm.acmgroup.cnp.task;
 
 
 public class JSONTask {

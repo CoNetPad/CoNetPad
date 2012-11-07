@@ -1,4 +1,4 @@
-package server.org.ndacm.acmgroup.cnp.network;
+package org.ndacm.acmgroup.cnp.network;
 
 import org.ndacm.acmgroup.cnp.network.event.MessageReceivedEvent;
 import org.ndacm.acmgroup.cnp.network.event.MessageReceivedEventListener;

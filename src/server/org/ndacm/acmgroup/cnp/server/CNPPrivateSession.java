@@ -1,4 +1,4 @@
-package server.org.ndacm.acmgroup.cnp.server;
+package org.ndacm.acmgroup.cnp.server;
 
 public class CNPPrivateSession extends CNPSession {
 	
