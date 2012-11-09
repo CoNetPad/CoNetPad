@@ -62,7 +62,7 @@ public class Database implements IDatabase{
 			int result =stmt.executeUpdate(query);
 			if(result > 0)
 			{
-				return new Account(username, email);
+				return new Account(username, email, 1); // TODO fix
 			}
 			else
 			{
@@ -98,7 +98,7 @@ public class Database implements IDatabase{
 			{
 				String uname = rs.getString("Username");
 				String email = rs.getString("Email");
-				return new Account(uname, email);
+				return new Account(uname, email, 1); // TODO fix
 			}
 			throw new FailedAccountException("No Account Found");
 			

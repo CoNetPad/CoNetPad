@@ -15,7 +15,7 @@ public class CNPSession {
 	
 	private String sessionName;
 	private CNPServer server;
-	private GitRepo gitRepo;
+	// private GitRepo gitRepo; TODO fix
 	private Map<String, ServerSourceFile> sourceFiles; // implement with ConcurrentHashMap
 	
 	private ExecutorService taskCourier;

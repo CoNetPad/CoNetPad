@@ -2,6 +2,7 @@ package org.ndacm.acmgroup.cnp.server;
 
 import java.io.File;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.crypto.Cipher;
@@ -10,6 +11,7 @@ import javax.net.ssl.SSLServerSocket;
 
 import org.ndacm.acmgroup.cnp.Account;
 import org.ndacm.acmgroup.cnp.database.Database;
+import org.ndacm.acmgroup.cnp.exceptions.FailedAccountException;
 import org.ndacm.acmgroup.cnp.network.CNPConnection;
 import org.ndacm.acmgroup.cnp.network.ServerNetwork;
 import org.ndacm.acmgroup.cnp.task.ChatTask;
@@ -33,11 +35,11 @@ public class CNPServer {
 		
 	}
 	
-	public Account createAccount(String username, String email, String password) {	
+	public Account createAccount(String username, String email, String password) throws SQLException, FailedAccountException {	
 		return database.createAccount(username, email, password);
 	}
 	
-	public Account retrieveAccount(String username, String password) {
+	public Account retrieveAccount(String username, String password) throws SQLException, FailedAccountException {
 		return database.retrieveAccount(username, password);
 	}
 	
