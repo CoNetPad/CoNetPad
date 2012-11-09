@@ -1,19 +1,8 @@
-package server.network;
+package org.ndacm.acmgroup.cnp.network;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
-
-import javax.swing.event.EventListenerList;
-
-import org.eclipse.jgit.util.Base64;
-
-import common.network.BaseNetwork;
-import common.network.CNPConnection;
-import common.network.ProtoCNPTask;
-import common.network.events.Component;
-import common.network.events.MessageReceivedEvent;
-import common.network.events.MessageReceivedEventListener;
 
 /**
  * @author cesar

@@ -1,10 +1,10 @@
-package common.network;
+package org.ndacm.acmgroup.cnp.network;
 
 import javax.swing.event.EventListenerList;
 
-import common.network.events.Component;
-import common.network.events.MessageReceivedEvent;
-import common.network.events.MessageReceivedEventListener;
+import org.ndacm.acmgroup.cnp.network.events.Component;
+import org.ndacm.acmgroup.cnp.network.events.MessageReceivedEvent;
+import org.ndacm.acmgroup.cnp.network.events.MessageReceivedEventListener;
 
 public class BaseNetwork implements Component {
 

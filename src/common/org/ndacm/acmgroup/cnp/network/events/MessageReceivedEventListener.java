@@ -1,4 +1,4 @@
-package common.network.events;
+package org.ndacm.acmgroup.cnp.network.events;
 
 import java.util.EventListener;
 

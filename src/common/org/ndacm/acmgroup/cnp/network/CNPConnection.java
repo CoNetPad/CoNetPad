@@ -1,4 +1,4 @@
-package common.network;
+package org.ndacm.acmgroup.cnp.network;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,8 +6,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-import common.network.events.Component;
-import common.network.events.MessageReceivedEvent;
+import org.ndacm.acmgroup.cnp.network.events.Component;
+import org.ndacm.acmgroup.cnp.network.events.MessageReceivedEvent;
 
 /**
  * @author cesar

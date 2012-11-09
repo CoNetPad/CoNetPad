@@ -5,13 +5,10 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
-
-import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
-import org.ndacm.acmgroup.cnp.git.GitRepo;
-
 import org.ndacm.acmgroup.cnp.Account;
+import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
 import org.ndacm.acmgroup.cnp.network.CNPConnection;
+import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
 
 public class CNPSession {

@@ -1,8 +1,8 @@
-package common.network.events;
+package org.ndacm.acmgroup.cnp.network.events;
 
 import java.util.EventObject;
 
-import common.network.ProtoCNPTask;
+import org.ndacm.acmgroup.cnp.network.ProtoCNPTask;
 
 /**
  * @author cesar

@@ -1,4 +1,4 @@
-package common.network;
+package org.ndacm.acmgroup.cnp.network;
 
 /**
  * @author cesar

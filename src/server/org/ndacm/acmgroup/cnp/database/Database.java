@@ -6,18 +6,16 @@
 package org.ndacm.acmgroup.cnp.database;
 
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.security.*;
-
 
 import org.ndacm.acmgroup.cnp.Account;
 import org.ndacm.acmgroup.cnp.exceptions.FailedAccountException;
-import org.ndacm.acmgroup.cnp.server.CNPPrivateSession;
-import org.ndacm.acmgroup.cnp.server.CNPSession;
 
 
 /**

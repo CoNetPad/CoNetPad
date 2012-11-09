@@ -1,4 +1,4 @@
-package server.git;
+package org.ndacm.acmgroup.cnp.git;
 
 public class NotDirectoryException extends Exception {
 

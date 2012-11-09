@@ -1,12 +1,8 @@
-package client.network;
+package org.ndacm.acmgroup.cnp.network;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
-
-import common.network.BaseNetwork;
-import common.network.CNPConnection;
-import common.network.ProtoCNPTask;
 
 public class ClientNetwork extends BaseNetwork {
 
