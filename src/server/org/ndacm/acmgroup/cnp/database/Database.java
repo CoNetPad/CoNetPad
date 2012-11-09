@@ -78,12 +78,43 @@ public class Database implements IDatabase{
 			throw new FailedAccountException("Encrpytion failed");
 		}
 	}
+	/**
+	 * retrieveAccount()
+	 * Gets an existing account from the database and returns it into an Account Object
+	 * @param username The username you wish to try and get
+	 * @param password The password you wish to verify with.  Make sure its RAW and not encrpypted.
+	 * @return Account The account object of the the user account
+	 * @throws SQLException
+	 * @throws FailedAccountException
+	 */
+	public Account retrieveAccount(String username, String password) throws SQLException, FailedAccountException {
+		// TODO implement
+		String query = null;
+		try
+		{
+		    String encryptPass = sha1(password);
+			query = "SELECT Username, Email FROM UserAccount WHERE Username='" + username + "' AND  AccountPassword='"
+						+ encryptPass + "';";
+			ResultSet rs = stmt.executeQuery(query);
+			while(rs.next())
+			{
+				String uname = rs.getString("Username");
+				String email = rs.getString("Email");
+				return new Account(uname, email);
+			}
+			throw new FailedAccountException("No Account Found");
+			
+		}
+		catch(NoSuchAlgorithmException e)
+		{
+			throw new FailedAccountException("Encrpytion failed");
+		}
+		catch(SQLException e)
+		{
+			throw new FailedAccountException("SQL Error");
+		}
+	}
 	
-//	public Account retrieveAccount(String username, String password) {
-//		// TODO implement
-//		return new Account();
-//	}
-//	
 //	public CNPSession createSession(Account sessionLeader) {
 //		// TODO implement
 //		return new CNPSession();
@@ -140,8 +171,4 @@ public class Database implements IDatabase{
 
 }
 
-//	ResultSet rs = st.executeQuery(sql);
-//while(rs.next())
-//{
-//	String output = rs.getString("name");
-//	System.out.println(output);
+

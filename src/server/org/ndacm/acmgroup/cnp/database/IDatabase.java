@@ -30,7 +30,7 @@ public interface IDatabase {
 	 */
 	Account createAccount(String username, String email, String password)  throws SQLException, FailedAccountException;
 	
-//	Account retrieveAccount(String username, String password);
+	Account retrieveAccount(String username, String password) throws SQLException, FailedAccountException;
 //	
 //	CNPSession createSession(Account sessionLeader);
 //	

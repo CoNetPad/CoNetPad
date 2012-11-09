@@ -8,16 +8,18 @@ public class Account {
 	
 	private String username;		//Username of account
 	private String email;			//Email of Accout
-	
+	private int userid;
 	public Account()
 	{
 		username = "guest";
 		email = "none";
+		userid = 0;
 	}
-	public Account(String uname, String eml)
+	public Account(String uname, String eml, int id)
 	{
 		username = uname;
 		email = eml;
+		userid = id;
 	}
 	/**
 	 * getUsername()
@@ -37,6 +39,16 @@ public class Account {
 	public String getEmail()
 	{
 		return email;
+	}
+	
+	/**
+	 * getUserID()
+	 * This gets the Database ID of the user.
+	 * @return	The database ID of the user
+	 */
+	public int getUserID()
+	{
+		return userid;
 	}
 	public enum FilePermissionLevel {
 		READ,
