@@ -6,8 +6,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-import org.ndacm.acmgroup.cnp.network.events.Component;
-import org.ndacm.acmgroup.cnp.network.events.MessageReceivedEvent;
+import org.ndacm.acmgroup.cnp.network.events.TaskEventSource;
+import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
 
 /**
  * @author cesar
@@ -22,7 +22,7 @@ public class CNPConnection extends Thread {
 	private int id;
 	private PrintWriter out = null;
 	private BufferedReader in = null;
-	private Component component;
+	private TaskEventSource component;
 	private boolean stop = false;
 
 	/**
@@ -34,7 +34,7 @@ public class CNPConnection extends Thread {
 	 *            object that handles firing events, this will usually be the
 	 *            Network object.
 	 */
-	public CNPConnection(Socket socket, int id, Component component) {
+	public CNPConnection(Socket socket, int id, TaskEventSource component) {
 		super();
 		this.socket = socket;
 		this.id = id;
@@ -60,7 +60,7 @@ public class CNPConnection extends Thread {
 			System.out.println("Thread for client " + id + "started");
 			String inputLine;
 			while ((inputLine = in.readLine()) != null && !stop) {
-				component.fireMessageReceivedEvent(new MessageReceivedEvent(
+				component.fireTaskReceivedEvent(new TaskReceivedEvent(
 						new ProtoCNPTask(0, 0)));
 			}
 			System.out.println("Thread for client stopped correctly");

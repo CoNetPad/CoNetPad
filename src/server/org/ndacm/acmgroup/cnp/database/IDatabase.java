@@ -6,15 +6,10 @@
  */
 package org.ndacm.acmgroup.cnp.database;
 
+import java.sql.SQLException;
+
 import org.ndacm.acmgroup.cnp.Account;
 import org.ndacm.acmgroup.cnp.exceptions.FailedAccountException;
-import org.ndacm.acmgroup.cnp.server.CNPPrivateSession;
-import org.ndacm.acmgroup.cnp.server.CNPSession;
-
-
-
-import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
 
 public interface IDatabase {
 	

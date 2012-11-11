@@ -1,5 +1,7 @@
 package org.ndacm.acmgroup.cnp.network;
 
+import org.ndacm.acmgroup.cnp.task.Task;
+
 /**
  * @author cesar
  * 
@@ -15,7 +17,7 @@ package org.ndacm.acmgroup.cnp.network;
  * 
  * 
  */
-public class ProtoCNPTask {
+public class ProtoCNPTask extends Task {
 	private static final char DIV = ':';
 	private static final char END = '&';
 
@@ -79,5 +81,11 @@ public class ProtoCNPTask {
 		return new ProtoCNPTask(Integer.parseInt(serial.split(":")[0]),
 				Integer.parseInt(serial.split(":")[1].substring(serial
 						.split(":")[1].length() - 1)));
+	}
+
+	@Override
+	public void execute() {
+		// TODO Auto-generated method stub
+		
 	}
 }

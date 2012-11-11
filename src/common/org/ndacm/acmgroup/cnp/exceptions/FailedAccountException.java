@@ -9,6 +9,8 @@ import java.sql.SQLException;
 
 public class FailedAccountException extends SQLException {
 	
+	private static final long serialVersionUID = 1L;
+	
 	private String msg;	//The Error message
 	public FailedAccountException()
 	{

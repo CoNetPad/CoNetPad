@@ -1,8 +1,6 @@
 package org.ndacm.acmgroup.cnp.client;
 
 import org.ndacm.acmgroup.cnp.database.Database;
-import org.ndacm.acmgroup.cnp.task.Task;
-import org.ndacm.acmgroup.cnp.task.TaskBuilder;
 
 public class JustinTest {
 

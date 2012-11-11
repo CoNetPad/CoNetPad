@@ -20,6 +20,11 @@ public class JGit {
 	private Hashtable<String, JRepository> repos;
 
 	public File storage;
+	
+	public JGit() {
+		// create File based on session name
+	}
+	
 
 	public JGit(File storage) throws NotDirectoryException {
 		if (!storage.isDirectory()) {

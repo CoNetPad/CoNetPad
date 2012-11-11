@@ -2,53 +2,79 @@ package org.ndacm.acmgroup.cnp.server;
 
 import java.io.File;
 import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.ndacm.acmgroup.cnp.Account;
+import org.ndacm.acmgroup.cnp.Account.ChatPermissionLevel;
+import org.ndacm.acmgroup.cnp.Account.FilePermissionLevel;
 import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
+import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
+import org.ndacm.acmgroup.cnp.git.JGit;
 import org.ndacm.acmgroup.cnp.network.CNPConnection;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
 
 public class CNPSession {
 	
-	private String sessionName;
+	private static final String SESSION_NAME_CHARS = "abcdefghijklmnopqrstuvwxyz";
+	private static String baseDirectory;
+	private static Random rnd = new Random();
+	
+	private int sessionID;
 	private CNPServer server;
-	// private GitRepo gitRepo; TODO fix
+	private String sessionName;
+	private JGit gitRepo;
 	private Map<String, ServerSourceFile> sourceFiles; // implement with ConcurrentHashMap
+	private String sourceFileDirectory;
 	
 	private ExecutorService taskCourier;
-	private ExecutorService chatQueue; // single-thread
+	private ExecutorService sessionTaskQueue; // single-thread
 	
-	private Account sessionLeader;
+	private int sessionLeader;
 	private Map<Account, CNPConnection> clientConnections; // implement with ConcurrentHashMap
-	private Map<Account, Account.FilePermissionLevel> filePermissions; // implement with CHM ^
-	private Map<Account, Account.ChatPermissionLevel> chatPermissions;
+	private Map<Account, FilePermissionLevel> filePermissions; // implement with CHM ^
+	private Map<Account, ChatPermissionLevel> chatPermissions;
 	
-	public CNPSession() {
-		// TODO implement
-		chatQueue = Executors.newSingleThreadExecutor();
+	
+	public CNPSession(int sessionID, String sessionName, CNPServer server, int sessionLeader) {
+	
+		this.server = server;
+		
+		baseDirectory = server.getBaseDirectory() + System.getProperty("file.separator") +
+				"sessions" + System.getProperty("file.separator") +
+				sessionName + System.getProperty("file.separator");
+		
+		gitRepo = new JGit();
+		sourceFiles = new ConcurrentHashMap<String, ServerSourceFile>();
+		
+		taskCourier = Executors.newCachedThreadPool();
+		sessionTaskQueue = Executors.newSingleThreadExecutor();
+		
+		this.sessionLeader = sessionLeader;
+		clientConnections = new ConcurrentHashMap<Account, CNPConnection>();
+		filePermissions = new ConcurrentHashMap<Account, FilePermissionLevel>();
+		chatPermissions = new ConcurrentHashMap<Account, ChatPermissionLevel>();
+
 	}
 	
-	public boolean addUser(Account userAccount) {
-		// TODO implement
-		return false;
+	public void addUser(Account userAccount, CNPConnection connection) {
+		clientConnections.put(userAccount, connection);
 	}
 	
-	public boolean removeUser (Account userAccount) {
-		// TODO implement
-		return false;
+	public void removeUser (Account userAccount) {
+		clientConnections.remove(userAccount);
 	}
 	
-	public boolean createFile(String filename) {
-		// TODO implement
-		return false;
+	public void createFile(String filename, SourceType type) {
+		ServerSourceFile file = new ServerSourceFile(filename, type);
+		sourceFiles.put(filename, file);
 	}
 	
-	public boolean deleteFile(String filename) {
-		// TODO implement
-		return false;
+	public void deleteFile(String filename) {
+		sourceFiles.remove(filename);
 	}
 	
 	public boolean commitAndPush(String message) {
@@ -67,6 +93,15 @@ public class CNPSession {
 	
 	public void distributeTask(TaskResponse task) { // have throw TaskExecutionException
 		taskCourier.submit(task);
+	}
+	
+	// http://stackoverflow.com/questions/2863852/how-to-generate-a-random-string-in-java
+	public static String generateString(int length) {
+		char[] text = new char[length];
+		for (int i = 0; i < length; i++) {
+			text[i] = SESSION_NAME_CHARS.charAt(rnd.nextInt(SESSION_NAME_CHARS.length()));
+		}
+		return new String(text);
 	}
 	
 }

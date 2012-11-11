@@ -10,7 +10,6 @@ import java.io.Writer;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -38,13 +37,9 @@ public class CNPClient {
 	private ExecutorService clientExecutor;
 	private Map<String, SourceFile> sourceFiles;
 
-	private Random rnd = new Random();
-	private static final String SESSION_NAME_CHARS = "abcdefghijklmnopqrstuvwxyz";
-
 	public CNPClient(String serverURL){
 
 		this.serverURL = serverURL;
-		sessionName = generateString(rnd, SESSION_NAME_CHARS, 5);
 		sourceFiles = new ConcurrentHashMap<String, SourceFile>();
 		clientExecutor = Executors.newCachedThreadPool();
 
@@ -131,13 +126,5 @@ public class CNPClient {
 		return false;
 	}
 
-	// http://stackoverflow.com/questions/2863852/how-to-generate-a-random-string-in-java
-	private String generateString(Random rng, String characters, int length) {
-		char[] text = new char[length];
-		for (int i = 0; i < length; i++) {
-			text[i] = characters.charAt(rng.nextInt(characters.length()));
-		}
-		return new String(text);
-	}
 
 }

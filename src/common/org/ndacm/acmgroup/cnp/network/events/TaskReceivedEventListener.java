@@ -10,12 +10,12 @@ import java.util.EventListener;
  *         message is received.
  * 
  */
-public interface MessageReceivedEventListener extends EventListener {
+public interface TaskReceivedEventListener extends EventListener {
 	/**
 	 * @param evt
 	 * 
 	 *            Use this method to receive the event and take an action based
 	 *            on such event.
 	 */
-	public void MessageReceivedEventOccurred(MessageReceivedEvent evt);
+	public void TaskReceivedEventOccurred(TaskReceivedEvent evt);
 }

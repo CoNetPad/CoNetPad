@@ -8,9 +8,11 @@ import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
 
 public class Compiler {
 	
-	private Compiler compiler; // singleton instance
-	private String javaCompilerPath;
-	private String cppCompilerPath;
+	private static final String JAVAC_PATH = "";
+	private static final String GCC_PATH = "";
+	
+	private static Compiler compiler; // singleton instance
+	
 	
 	public List<File> compile(List<ServerSourceFile> sourceFiles) {
 		// TODO implement

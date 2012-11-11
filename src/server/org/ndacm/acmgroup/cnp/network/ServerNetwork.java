@@ -7,8 +7,6 @@ import java.util.ArrayList;
 /**
  * This class will be in charge of handling all the network connections,
  * listening for new clients and sending/receiving messages.
- *         
- * @author cesar
  */
 public class ServerNetwork extends BaseNetwork {
 
@@ -16,7 +14,12 @@ public class ServerNetwork extends BaseNetwork {
 
 	private ServerSocket serverSocket;
 	private ArrayList<CNPConnection> clientList;
-	private boolean shouldStop = false; // whether the server should be stopped or not
+	private boolean shouldStop; // whether the server should be stopped or not
+	
+	public ServerNetwork() {
+		shouldStop = false;
+		clientList = new ArrayList<CNPConnection>();
+	}
 
 	public void startListening() {
 
@@ -32,16 +35,11 @@ public class ServerNetwork extends BaseNetwork {
 		System.out.println("Starting to listen for clients");
 		int id = 0;
 
-		clientList = new ArrayList<CNPConnection>(0);
-
 		System.out.println("Starting clients pool");
-
-
 		while (!shouldStop) {
 			// listen for threads
 			try {
-				CNPConnection thread = new CNPConnection(serverSocket.accept(),
-						id, this);
+				CNPConnection thread = new CNPConnection(serverSocket.accept(),	id, this);
 				clientList.add(thread);
 				thread.start();
 				System.out.println("Client connected.");
@@ -63,7 +61,6 @@ public class ServerNetwork extends BaseNetwork {
 		for (int i = 0; i < clientList.size(); i++) {
 			clientList.get(i).close();
 		}
-
 
 		// wait for client threads to die
 		for (int i = 0; i < clientList.size(); i++) {

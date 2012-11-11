@@ -2,7 +2,7 @@ package org.ndacm.acmgroup.cnp.network.events;
 
 import java.util.EventObject;
 
-import org.ndacm.acmgroup.cnp.network.ProtoCNPTask;
+import org.ndacm.acmgroup.cnp.task.Task;
 
 /**
  * @author cesar
@@ -11,18 +11,18 @@ import org.ndacm.acmgroup.cnp.network.ProtoCNPTask;
  *         This class is just a wrapper over a CNPTask.
  * 
  */
-public class MessageReceivedEvent extends EventObject {
+public class TaskReceivedEvent extends EventObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private ProtoCNPTask task;
+	private Task task;
 
 	/**
 	 * @param task
 	 *            This method should called by the Component that is firing the
 	 *            event.
 	 */
-	public MessageReceivedEvent(ProtoCNPTask task) {
+	public TaskReceivedEvent(Task task) {
 		super(task);
 		this.task = task;
 	}
@@ -31,7 +31,7 @@ public class MessageReceivedEvent extends EventObject {
 	 * @return Objects receiving this event can use this method to retrieve the
 	 *         CNPTask.
 	 */
-	public ProtoCNPTask getTask() {
+	public Task getTask() {
 		return task;
 	}
 }

@@ -17,6 +17,9 @@ import javax.crypto.spec.PBEKeySpec;
 
 import org.ndacm.acmgroup.cnp.Account;
 import org.ndacm.acmgroup.cnp.exceptions.FailedAccountException;
+import org.ndacm.acmgroup.cnp.server.CNPPrivateSession;
+import org.ndacm.acmgroup.cnp.server.CNPServer;
+import org.ndacm.acmgroup.cnp.server.CNPSession;
 
 /**
  * Class:  Database<br>
@@ -70,14 +73,7 @@ public class Database implements IDatabase{
 			hashString = new String(f.generateSecret(spec).getEncoded());
 			saltString = new String(salt, "ISO-8859-1");
 
-			//            // test if username/email already exists
-			//            if (UserDAO.userExists(username, conn)){
-			//                request.setAttribute("errorRegister", "Username already taken.");
-			//                throw new Exception();
-			//            } else if (UserDAO.emailExists(email, conn)){
-			//                request.setAttribute("errorRegister", "An account registered to this email already exists.");
-			//                throw new Exception();
-			//            }
+			// test if username/email already exists
 
 			// insert user into DB
 			PreparedStatement registerUser = null;
@@ -96,7 +92,6 @@ public class Database implements IDatabase{
 			newAccount = retrieveAccount(username, password);
 
 			registerUser.close();
-			dbConnection.close();
 
 		} catch (NoSuchAlgorithmException ex) {
 			System.err.println("Invalid Encrpytion Algorithm: " + ENCRYPTION_ALGORITHM);
@@ -117,7 +112,6 @@ public class Database implements IDatabase{
 		} else {
 			throw new FailedAccountException("Error creating account for " + username);
 		}
-
 
 	}
 	/**
@@ -219,36 +213,136 @@ public class Database implements IDatabase{
 
 	}
 
-	//	public CNPSession createSession(Account sessionLeader) {
-	//		// TODO implement
-	//		return new CNPSession();
-	//	}
-	//	
-	//	public CNPPrivateSession createSession(Account sessionLeader, String sessionPassword) {
-	//		// TODO implement
-	//		return new CNPPrivateSession();
-	//	}
-	//	
-	//	public CNPSession retrieveSession(String sessionName) {
-	//		// TODO implement
-	//		return new CNPSession();
-	//	}
-	//	
-	//	public CNPPrivateSession retrieveSession(String sessionName, String sessionPassword) {
-	//		// TODO implement
-	//		return new CNPPrivateSession();
-	//	}
-	//	
-	//	public boolean sessionIsPrivate(String sessionName) {
-	//		// TODO implement
-	//		return false;
-	//	}
-	//	
-	//	public boolean createSessionAccount(CNPSession session, Account account,
-	//			Account.FilePermissionLevel filePermission, Account.ChatPermissionLevel chatPermission) {
-	//		// TODO implement
-	//		return false;
-	//	}
+
+	public CNPSession createSession(int sessionLeader, CNPServer server) throws SQLException {
+
+		// create session and store in database			
+		CNPSession newSession = null;
+
+		// TODO test if session already exists
+
+		// insert session into DB
+		PreparedStatement createSession = null;
+		String sessionName = CNPSession.generateString(5);
+		String insertion = "INSERT INTO Session (SessionLeader, SessionName, IsPublic) "
+				+ "VALUES (? , ?, ?)";
+
+		createSession = dbConnection.prepareStatement(insertion);
+		createSession.setInt(1, sessionLeader);
+		createSession.setString(2, sessionName);
+		createSession.setBoolean(3, true);
+
+		createSession.executeUpdate();
+
+		// return the session that was just inserted
+		newSession = retrieveSession(sessionName, server);
+
+		createSession.close();
+
+		return newSession;
+
+	}
+
+	public CNPPrivateSession createSession(int sessionLeader, CNPServer server, String sessionPassword) 
+			throws SQLException {
+
+		// create session and store in database
+		CNPPrivateSession newSession = null;
+
+		// TODO test if session already exists
+
+		// salt and hash password
+		// http://stackoverflow.com/questions/2860943/suggestions-for-library-to-hash-passwords-in-java
+		// http://stackoverflow.com/questions/5499924/convert-java-string-to-byte-array
+		String hashString = null, saltString = null;
+		byte[] salt = new byte[16];
+		random.nextBytes(salt);
+
+		try {
+			KeySpec spec = new PBEKeySpec(sessionPassword.toCharArray(), salt, 2048, 160);
+			SecretKeyFactory f = SecretKeyFactory.getInstance(ENCRYPTION_ALGORITHM);
+			hashString = new String(f.generateSecret(spec).getEncoded());
+			saltString = new String(salt, "ISO-8859-1");
+
+			// insert session into DB
+			PreparedStatement createSession = null;
+			String sessionName = CNPSession.generateString(5);
+			String insertion = "INSERT INTO Session (SessionLeader, SessionName, IsPublic, SessionPassword, SessionSalt) "
+					+ "VALUES (? , ?, ?, ?, ?)";
+
+			createSession = dbConnection.prepareStatement(insertion);
+			createSession.setInt(1, sessionLeader);
+			createSession.setString(2, sessionName);
+			createSession.setBoolean(3, false);
+			createSession.setString(4, hashString);
+			createSession.setString(5, saltString);
+
+			createSession.executeUpdate();
+
+			// return the account that was just inserted
+			newSession = retrieveSession(sessionName, server, sessionPassword);
+
+			createSession.close();
+
+		} catch (NoSuchAlgorithmException ex) {
+			System.err.println("Invalid Encrpytion Algorithm: " + ENCRYPTION_ALGORITHM);
+			throw new FailedAccountException("Error creating session.");
+		} catch (InvalidKeySpecException e) {
+			System.err.println("Invalid key spec.");
+			throw new FailedAccountException("Error creating session.");
+		} catch (UnsupportedEncodingException e) {
+			System.err.println("Unsupported encoding.");
+			throw new FailedAccountException("Error creating session.");
+		}
+
+		return newSession;
+	}
+
+	public CNPSession retrieveSession(String sessionName, CNPServer server) throws SQLException {
+
+		PreparedStatement retrieveSession = null;
+		ResultSet rset = null;
+		CNPSession sessionRetrieved = null;
+
+		String query = "SELECT * "
+				+ "FROM Sesson "
+				+ "WHERE SessionName = ?";
+
+
+		// retrieve user with given username
+		retrieveSession = dbConnection.prepareStatement(query);
+		retrieveSession.setString(1, sessionName);
+
+		//run the query, return a result set        
+		rset = retrieveSession.executeQuery();
+
+		int idRetrieved = rset.getInt("SessionID");
+		String nameRetrieved = rset.getString("SessionName");
+		int sessionLeader = rset.getInt("SessionLeader");
+		sessionRetrieved = new CNPSession(idRetrieved, nameRetrieved, server, sessionLeader);
+
+		//clean up database classes
+		retrieveSession.close();
+		rset.close();
+
+		return sessionRetrieved;
+	}
+
+	public CNPPrivateSession retrieveSession(String sessionName, CNPServer server, String sessionPassword) {
+		// TODO implement - will have to do join - also, i think SQLite actually does support foreign keys
+		return new CNPPrivateSession(1, sessionName, server, 1, sessionPassword, "salt");
+	}
+
+	public boolean sessionIsPrivate(String sessionName) {
+		// TODO implement
+		return false;
+	}
+
+	public boolean createSessionAccount(CNPSession session, Account account,
+			Account.FilePermissionLevel filePermission, Account.ChatPermissionLevel chatPermission) {
+		// TODO implement
+		return false;
+	}
 
 	// if we use this, we should salt the input before hashing
 	//	/**

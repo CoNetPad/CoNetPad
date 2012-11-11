@@ -21,6 +21,10 @@ public class ServerSourceFile extends SourceFile {
 		super(filename, type, initialText);
 		// TODO Auto-generated constructor stub
 	}
+	
+	public ServerSourceFile(String filename, SourceType type) {
+		super(filename, type, "");
+	}
 
 	public void addTask(EditorTask task) {
 		taskQueue.submit(task);

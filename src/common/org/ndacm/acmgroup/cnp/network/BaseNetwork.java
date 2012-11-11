@@ -2,30 +2,30 @@ package org.ndacm.acmgroup.cnp.network;
 
 import javax.swing.event.EventListenerList;
 
-import org.ndacm.acmgroup.cnp.network.events.Component;
-import org.ndacm.acmgroup.cnp.network.events.MessageReceivedEvent;
-import org.ndacm.acmgroup.cnp.network.events.MessageReceivedEventListener;
+import org.ndacm.acmgroup.cnp.network.events.TaskEventSource;
+import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEventListener;
+import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
 
-public class BaseNetwork implements Component {
+public class BaseNetwork implements TaskEventSource {
 
 	private EventListenerList listenerList = new EventListenerList();
 
-	public void addMessageReceivedEventListener(
-			MessageReceivedEventListener listener) {
-		listenerList.add(MessageReceivedEventListener.class, listener);
+	public void addTaskReceivedEventListener(
+			TaskReceivedEventListener listener) {
+		listenerList.add(TaskReceivedEventListener.class, listener);
 	}
 
-	public void removeMessageReceivedEventListener(
-			MessageReceivedEventListener listener) {
-		listenerList.remove(MessageReceivedEventListener.class, listener);
+	public void removeTaskReceivedEventListener(
+			TaskReceivedEventListener listener) {
+		listenerList.remove(TaskReceivedEventListener.class, listener);
 	}
 
-	public void fireMessageReceivedEvent(MessageReceivedEvent evt) {
+	public void fireTaskReceivedEvent(TaskReceivedEvent evt) {
 		Object[] listeners = listenerList.getListenerList();
 		for (int i = 0; i < listeners.length; i += 2) {
-			if (listeners[i] == MessageReceivedEventListener.class) {
-				((MessageReceivedEventListener) listeners[i + 1])
-						.MessageReceivedEventOccurred(evt);
+			if (listeners[i] == TaskReceivedEventListener.class) {
+				((TaskReceivedEventListener) listeners[i + 1])
+				.TaskReceivedEventOccurred(evt);
 			}
 		}
 	}
