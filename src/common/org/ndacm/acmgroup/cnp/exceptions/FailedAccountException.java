@@ -4,8 +4,10 @@
  */
 package org.ndacm.acmgroup.cnp.exceptions;
 
+import java.sql.SQLException;
 
-public class FailedAccountException extends Exception {
+
+public class FailedAccountException extends SQLException {
 	
 	private String msg;	//The Error message
 	public FailedAccountException()

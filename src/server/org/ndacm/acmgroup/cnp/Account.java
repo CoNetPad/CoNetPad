@@ -6,20 +6,22 @@ package org.ndacm.acmgroup.cnp;
 
 public class Account {
 	
+	private int userID;
 	private String username;		//Username of account
 	private String email;			//Email of Accout
-	private int userid;
+	
+	
 	public Account()
 	{
 		username = "guest";
 		email = "none";
-		userid = 0;
+		userID = 0;
 	}
-	public Account(String uname, String eml, int id)
+	public Account(int id, String uname, String eml)
 	{
 		username = uname;
 		email = eml;
-		userid = id;
+		userID = id;
 	}
 	/**
 	 * getUsername()
@@ -48,8 +50,18 @@ public class Account {
 	 */
 	public int getUserID()
 	{
-		return userid;
+		return userID;
 	}
+	
+	public void setUserID(int id) {
+		userID = id;
+	}
+	
+	
+	public void setUserName(String name) {
+		username = name;
+	}
+	
 	public enum FilePermissionLevel {
 		READ,
 		READ_WRITE,

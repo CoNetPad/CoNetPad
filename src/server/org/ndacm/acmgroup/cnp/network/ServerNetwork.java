@@ -5,25 +5,30 @@ import java.net.ServerSocket;
 import java.util.ArrayList;
 
 /**
+ * This class will be in charge of handling all the network connections,
+ * listening for new clients and sending/receiving messages.
+ *         
  * @author cesar
- * 
- *         This class will be in charge of handling all the network connections,
- *         listening for new clients and sending/receiving messages.
  */
 public class ServerNetwork extends BaseNetwork {
 
+	public static final int SOCKET_NUMBER = 4444;
+
 	private ServerSocket serverSocket;
 	private ArrayList<CNPConnection> clientList;
+	private boolean shouldStop = false; // whether the server should be stopped or not
 
 	public void startListening() {
+
 		try {
-			System.out.println("Trying to open socket");
-			serverSocket = new ServerSocket(4444);
+			System.out.println("Trying to open socket: " + SOCKET_NUMBER);
+			serverSocket = new ServerSocket(SOCKET_NUMBER);
 		} catch (IOException e) {
-			System.err.println("Could not listen on port: 4444");
-			System.err.println("Exiting");
+			System.err.println("Could not listen on port: " + SOCKET_NUMBER);
+			System.err.println("Exiting.");
 			System.exit(-1);
 		}
+
 		System.out.println("Starting to listen for clients");
 		int id = 0;
 
@@ -31,26 +36,40 @@ public class ServerNetwork extends BaseNetwork {
 
 		System.out.println("Starting clients pool");
 
-		while (true) {
+
+		while (!shouldStop) {
+			// listen for threads
 			try {
 				CNPConnection thread = new CNPConnection(serverSocket.accept(),
 						id, this);
 				clientList.add(thread);
 				thread.start();
-				System.out.println("Client connected");
+				System.out.println("Client connected.");
 				id++;
 			} catch (IOException e) {
-				System.err.println("Error while connecting client " + id);
-				break;
+				System.err.println("Error while connecting client.");
 			}
 		}
 
-		System.out.println("Closing connections");
+		//  shut down server
+		try {
+			serverSocket.close();
+		} catch (IOException e) {
+			System.err.println("Error while closing server socket");
+		}
 
+		// close client connections
+		System.out.println("Closing connections.");
+		for (int i = 0; i < clientList.size(); i++) {
+			clientList.get(i).close();
+		}
+
+
+		// wait for client threads to die
 		for (int i = 0; i < clientList.size(); i++) {
 			try {
 				clientList.get(i).join();
-				System.out.println("Thread " + i + " closed");
+				System.out.println("Thread " + i + " closed.");
 			} catch (InterruptedException e) {
 				System.err.println("Error while closing thread " + i);
 			}
@@ -59,21 +78,15 @@ public class ServerNetwork extends BaseNetwork {
 
 	public void stopServer() {
 		System.out.println("Closing network");
-		try {
-			serverSocket.close();
-		} catch (IOException e) {
-			System.err.println("Error while closing server socket");
-		}
-		for (int i = 0; i < clientList.size(); i++) {
-			clientList.get(i).close();
-		}
+		shouldStop = true;
+
 	}
 
 	public void stopClient(int id) {
 		System.out.println("Closing connection with client " + id);
 		clientList.get(id).close();
 	}
-	
+
 	public void sendMessageToClient(int id, ProtoCNPTask task) {
 		clientList.get(id).sendCommand(task);
 	}

@@ -28,7 +28,7 @@ public class DatabaseTest {
 				try
 				{
 					Account test = db.createAccount("John", "Jdoe@gmail.com", "test");
-					Account result = new Account("John", "Jdoe@gmail.com", 1);
+					Account result = new Account(1, "John", "Jdoe@gmail.com");
 					assertTrue(result.equals(test));
 				}
 				catch(FailedAccountException e)
@@ -55,7 +55,7 @@ public class DatabaseTest {
 				try
 				{
 					Account test = db.retrieveAccount("John", "test");
-					Account result = new Account("John", "Jdoe@gmail.com", 1);
+					Account result = new Account(1, "John", "Jdoe@gmail.com");
 					assertTrue(result.equals(test));
 				}
 				catch(FailedAccountException e)
