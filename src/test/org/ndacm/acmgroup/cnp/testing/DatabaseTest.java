@@ -1,3 +1,8 @@
+/**
+ * Database Test Cases
+ * This is J-Unit test script that tests the funcionality of the database.
+ */
+
 package org.ndacm.acmgroup.cnp.testing;
 
 import static org.junit.Assert.*;
@@ -9,6 +14,9 @@ import org.ndacm.acmgroup.cnp.exceptions.FailedAccountException;
 
 public class DatabaseTest {
 
+	/**
+	 * This tests to see if the new database object works
+	 */
 	@Test
 	public void testDatabase() {
 		try{
@@ -20,6 +28,9 @@ public class DatabaseTest {
 		}
 	}
 
+	/**
+	 * This tests the functionality of creating a new account
+	 */
 	@Test
 	public void testCreateAccount() {
 
@@ -28,7 +39,7 @@ public class DatabaseTest {
 				try
 				{
 					Account test = db.createAccount("John", "Jdoe@gmail.com", "test");
-					Account result = new Account("John", "Jdoe@gmail.com");
+					Account result = new Account("John", "Jdoe@gmail.com", 11);
 					assertTrue(result.equals(test));
 				}
 				catch(FailedAccountException e)
@@ -47,6 +58,9 @@ public class DatabaseTest {
 				e.printStackTrace();
 			}
 	}
+	/**
+	 * This tests the funcionality of retrieving an account.
+	 */
 	@Test
 	public void testRetrieveAccount()
 	{
@@ -55,7 +69,7 @@ public class DatabaseTest {
 				try
 				{
 					Account test = db.retrieveAccount("John", "test");
-					Account result = new Account("John", "Jdoe@gmail.com");
+					Account result = new Account("John", "Jdoe@gmail.com", 13);
 					assertTrue(result.equals(test));
 				}
 				catch(FailedAccountException e)

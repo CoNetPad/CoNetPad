@@ -8,19 +8,28 @@ public class Account {
 	
 	private String username;		//Username of account
 	private String email;			//Email of Accout
-	private int userid;
+	private int userid;				//Database ID of the account
 	public Account()
 	{
 		username = "guest";
 		email = "none";
 		userid = 0;
 	}
+	
+	/**
+	 * Constructor
+	 * @param uname	The username of the account
+	 * @param eml	The email of the account
+	 * @param id	The database ID of the account
+	 */
 	public Account(String uname, String eml, int id)
 	{
 		username = uname;
 		email = eml;
 		userid = id;
 	}
+	
+
 	/**
 	 * getUsername()
 	 * This gets the username of the account
@@ -69,7 +78,7 @@ public class Account {
 	 */
 	public boolean equals(Account a)
 	{
-		if( (a.getUsername().equals(username) ) && (a.getEmail().equals(email)) )
+		if( (a.getUsername().equals(username) ) && (a.getEmail().equals(email)) && (a.getUserID() == userid) )
 		{
 			return true;
 		}

@@ -62,7 +62,11 @@ public class Database implements IDatabase{
 			int result =stmt.executeUpdate(query);
 			if(result > 0)
 			{
-				return new Account(username, email);
+				query = "select last_insert_rowid();";
+				ResultSet rs = stmt.executeQuery(query);
+				int id = rs.getInt(1);
+				return new Account(username, email, id);
+			
 			}
 			else
 			{
@@ -91,14 +95,15 @@ public class Database implements IDatabase{
 		try
 		{
 		    String encryptPass = sha1(password);
-			query = "SELECT Username, Email FROM UserAccount WHERE Username='" + username + "' AND  AccountPassword='"
+			query = "SELECT UserID, Username, Email FROM UserAccount WHERE Username='" + username + "' AND  AccountPassword='"
 						+ encryptPass + "';";
 			ResultSet rs = stmt.executeQuery(query);
 			while(rs.next())
 			{
 				String uname = rs.getString("Username");
 				String email = rs.getString("Email");
-				return new Account(uname, email);
+				int id = rs.getInt("UserID");
+				return new Account(uname, email, id);
 			}
 			throw new FailedAccountException("No Account Found");
 			
