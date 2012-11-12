@@ -8,6 +8,7 @@ package org.ndacm.acmgroup.cnp.database;
 
 import org.ndacm.acmgroup.cnp.Account;
 import org.ndacm.acmgroup.cnp.exceptions.FailedAccountException;
+import org.ndacm.acmgroup.cnp.exceptions.FailedSessionException;
 import org.ndacm.acmgroup.cnp.server.CNPPrivateSession;
 import org.ndacm.acmgroup.cnp.server.CNPSession;
 
@@ -31,11 +32,11 @@ public interface IDatabase {
 	Account createAccount(String username, String email, String password)  throws SQLException, FailedAccountException;
 	
 	Account retrieveAccount(String username, String password) throws SQLException, FailedAccountException;
-//	
-//	CNPSession createSession(Account sessionLeader);
-//	
-//	CNPPrivateSession createSession(Account sessionLeader, String sessionPassword);
-//	
+	
+	CNPSession createSession(Account sessionLeader, String name, String channel, String gPath) throws SQLException, FailedSessionException;
+	
+	CNPSession createSession(Account sessionLeader, String name, String channel, String gPath, String sessionPassword) throws SQLException, FailedSessionException;
+	
 //	CNPSession retrieveSession(String sessionName);
 //	
 //	CNPPrivateSession retrieveSession(String sessionName, String sessionPassword);

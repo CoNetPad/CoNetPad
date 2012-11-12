@@ -2,6 +2,7 @@
  * Class:  Database<br>
  * Description:  This is a class for handling our database stuff.  
  * @author Justin
+ * @version 2.0
  */
 package org.ndacm.acmgroup.cnp.database;
 
@@ -16,6 +17,9 @@ import java.sql.Statement;
 
 import org.ndacm.acmgroup.cnp.Account;
 import org.ndacm.acmgroup.cnp.exceptions.FailedAccountException;
+import org.ndacm.acmgroup.cnp.exceptions.FailedSessionException;
+import org.ndacm.acmgroup.cnp.server.CNPSession;
+import org.ndacm.acmgroup.cnp.server.CNPSession.SessionType;
 
 
 /**
@@ -118,16 +122,95 @@ public class Database implements IDatabase{
 		}
 	}
 	
-//	public CNPSession createSession(Account sessionLeader) {
-//		// TODO implement
-//		return new CNPSession();
-//	}
-//	
-//	public CNPPrivateSession createSession(Account sessionLeader, String sessionPassword) {
-//		// TODO implement
-//		return new CNPPrivateSession();
-//	}
-//	
+	/**
+	 * createSession()
+	 * This will create a new CNP Session
+	 * @param sessionLeader	The session leader of the new session
+	 * @param name 			The user-friendly name of the session
+	 * @param channel		The IRC channel
+	 * @param gpath			The path to the GIT
+	 */
+	public CNPSession createSession(Account sessionLeader, String name, String channel, String gPath) throws SQLException, FailedSessionException{
+		// TODO implement
+		String query = null;
+		try
+		{
+			query = "INSERT INTO Session (SessionLeader, SessionName, SessionType, IrcChannel, GitPath) " +
+					"VALUES(" + sessionLeader.getUserID() + ", '" + name + "', '" + SessionType.PUBLIC +
+					"', '" + channel + "', '" + gPath + "');";
+			int result =stmt.executeUpdate(query);
+			if(result > 0)
+			{
+				return new CNPSession(sessionLeader, name, SessionType.PUBLIC, channel, gPath);
+			}
+			else
+			{
+				
+				throw new FailedSessionException();
+			}
+		}
+		catch(SQLException e)
+		{
+			throw e;
+		}
+		
+	}
+	
+	@Override
+	public CNPSession createSession(Account sessionLeader, String name,String channel, String gPath, String sessionPassword)throws SQLException, FailedSessionException {
+		String query = null;
+		try
+		{
+			query = "INSERT INTO Session (SessionLeader, SessionName, SessionType, IrcChannel, GitPath) " +
+					"VALUES(" + sessionLeader.getUserID() + ", '" + name + "', '" + SessionType.PRIVATE +
+					"', '" + channel + "', '" + gPath + "');";
+			int result =stmt.executeUpdate(query);
+			if(result > 0)
+			{
+				try
+				{
+					query = "select last_insert_rowid();";
+					ResultSet rs = stmt.executeQuery(query);
+					int id = rs.getInt(1);
+					if(id > 0)
+					{
+						String ePass = Database.sha1(sessionPassword);
+						query = "INSERT INTO SessionPassword (SessionID, SessionPassword) VALUES (" + id + ", '"+ ePass + "');";
+						result =stmt.executeUpdate(query);
+						if(result > 0)
+						{
+							return new CNPSession(sessionLeader, name, SessionType.PRIVATE, channel, gPath, ePass);
+						}
+						else
+						{
+							throw new FailedSessionException("Could not insert sesison password");
+						}
+					}
+					else
+					{
+						throw new FailedSessionException("Error with creating private password");
+					}
+				}
+				catch(SQLException se)
+				{
+					throw se;
+				}
+				catch(NoSuchAlgorithmException e)
+				{
+					throw new FailedSessionException("Password failed");
+				}
+			}
+			else
+			{
+				
+				throw new FailedSessionException();
+			}
+		}
+		catch(SQLException e)
+		{
+			throw e;
+		}
+	}
 //	public CNPSession retrieveSession(String sessionName) {
 //		// TODO implement
 //		return new CNPSession();
@@ -156,7 +239,7 @@ public class Database implements IDatabase{
 	 * @return The encrypted value
 	 * @throws NoSuchAlgorithmException
 	 */
-   private static String sha1(String input) throws NoSuchAlgorithmException
+   public static String sha1(String input) throws NoSuchAlgorithmException
    {
 		MessageDigest md = MessageDigest.getInstance("SHA1");
 		md.update(input.getBytes()); 
@@ -171,6 +254,7 @@ public class Database implements IDatabase{
 		}
 		  return buf.toString();
 	}
+
 
 }
 

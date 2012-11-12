@@ -19,20 +19,90 @@ public class CNPSession {
 	private CNPServer server;
 	//private GitRepo gitRepo;
 	private Map<String, ServerSourceFile> sourceFiles; // implement with ConcurrentHashMap
-	
+	private String gitPath;
 	private ExecutorService taskCourier;
 	private ExecutorService chatQueue; // single-thread
-	
+	private SessionType type;
 	private Account sessionLeader;
+	private String ircChannel;
+	private String encryptedPassword;
 	private Map<Account, CNPConnection> clientConnections; // implement with ConcurrentHashMap
 	private Map<Account, Account.FilePermissionLevel> filePermissions; // implement with CHM ^
 	private Map<Account, Account.ChatPermissionLevel> chatPermissions;
+	
+	
+	
+	public enum SessionType {
+		PUBLIC,
+		PRIVATE
+	}
+	
 	
 	public CNPSession() {
 		// TODO implement
 		chatQueue = Executors.newSingleThreadExecutor();
 	}
+	public CNPSession(Account leader, String name, SessionType t, String channel, String gPath){
+		sessionLeader = leader;
+		sessionName = name;
+		type = t;
+		ircChannel = channel;
+		gitPath = gPath;
+		encryptedPassword = null;
+	}
+	public CNPSession(Account leader, String name, SessionType t, String channel, String gPath, String pass){
+		sessionLeader = leader;
+		sessionName = name;
+		type = t;
+		ircChannel = channel;
+		gitPath = gPath;
+		encryptedPassword = pass;
+	}
+	public Account getSessionLeader()
+	{
+		return sessionLeader;
+	}
 	
+	public String getSessionName()
+	{
+		return sessionName;
+	}
+	public String getIrcChannel()
+	{
+		return ircChannel;
+	}
+	public SessionType getType()
+	{
+		return type;
+	}
+	public String getEncryptedPassword()
+	{
+		return encryptedPassword;
+	}
+	public String getGitPath()
+	{
+		return gitPath;
+	}
+	public boolean equals(CNPSession s)
+	{
+		boolean passMatch = true;
+		
+		if(type == SessionType.PRIVATE)
+		{
+			if(!s.getEncryptedPassword().equals(encryptedPassword))
+			{
+				passMatch = false;
+			}
+		}
+		
+		if( (s.getSessionName().equals(sessionName)) && (s.getSessionLeader().equals(sessionLeader)) &&
+				(s.getType() == type) && (s.getGitPath().equals(gitPath)) && (s.getIrcChannel().equals(ircChannel)))
+		{
+			
+			return true && passMatch;
+		}
+		return false;
+	}
 	public boolean addUser(Account userAccount) {
 		// TODO implement
 		return false;
