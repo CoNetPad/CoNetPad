@@ -27,17 +27,17 @@ public class CNPServer {
 	private SecretKey key;
 	private Cipher cipher;
 	
-	public CNPServer() {
+	public CNPServer() throws Exception {
 		// TODO implement
-		
+		database = new Database();
 		
 	}
 	
-	public Account createAccount(String username, String email, String password) {	
+	public Account createAccount(String username, String email, String password) throws Exception {	
 		return database.createAccount(username, email, password);
 	}
 	
-	public Account retrieveAccount(String username, String password) {
+	public Account retrieveAccount(String username, String password) throws Exception {
 		return database.retrieveAccount(username, password);
 	}
 	

@@ -11,11 +11,13 @@ import org.ndacm.acmgroup.cnp.network.CNPConnection;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
 
+
+
 public class CNPSession {
 	
 	private String sessionName;
 	private CNPServer server;
-	private GitRepo gitRepo;
+	//private GitRepo gitRepo;
 	private Map<String, ServerSourceFile> sourceFiles; // implement with ConcurrentHashMap
 	
 	private ExecutorService taskCourier;
