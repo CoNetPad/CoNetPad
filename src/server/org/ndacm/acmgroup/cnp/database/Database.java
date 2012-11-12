@@ -1,8 +1,9 @@
 /**
  * Class:  Database<br>
- * Description:  This is a class for handling our database stuff.  
+ * Description:  This is a class for handling our database stuff.
+ * See IDatabase for comments  
  * @author Justin
- * @version 2.0
+ * @version 3.0
  */
 package org.ndacm.acmgroup.cnp.database;
 
@@ -18,6 +19,7 @@ import java.sql.Statement;
 import org.ndacm.acmgroup.cnp.Account;
 import org.ndacm.acmgroup.cnp.exceptions.FailedAccountException;
 import org.ndacm.acmgroup.cnp.exceptions.FailedSessionException;
+import org.ndacm.acmgroup.cnp.server.CNPPrivateSession;
 import org.ndacm.acmgroup.cnp.server.CNPSession;
 import org.ndacm.acmgroup.cnp.server.CNPSession.SessionType;
 
@@ -162,7 +164,7 @@ public class Database implements IDatabase{
 		try
 		{
 			query = "INSERT INTO Session (SessionLeader, SessionName, SessionType, IrcChannel, GitPath) " +
-					"VALUES(" + sessionLeader.getUserID() + ", '" + name + "', '" + SessionType.PRIVATE +
+					"VALUES(" + sessionLeader.getUserID() + ", '" + name + "', '" + SessionType.PRIVATE.intValue() +
 					"', '" + channel + "', '" + gPath + "');";
 			int result =stmt.executeUpdate(query);
 			if(result > 0)
@@ -211,16 +213,78 @@ public class Database implements IDatabase{
 			throw e;
 		}
 	}
-//	public CNPSession retrieveSession(String sessionName) {
-//		// TODO implement
-//		return new CNPSession();
-//	}
-//	
-//	public CNPPrivateSession retrieveSession(String sessionName, String sessionPassword) {
-//		// TODO implement
-//		return new CNPPrivateSession();
-//	}
-//	
+	public CNPSession retrieveSession(String sessionName)throws SQLException, FailedSessionException, FailedAccountException {
+		String query = null;
+		try
+		{
+			query = "SELECT SessionLeader, SessionName, SessionType, IrcChannel, GitPath FROM Session WHERE SessionName ='" + sessionName + "';";
+			ResultSet rs = stmt.executeQuery(query);
+			while(rs.next())
+			{
+				int sessionLeader = rs.getInt("SessionLeader");
+				String name = rs.getString("SessionName");
+				SessionType type = SessionType.getType( rs.getInt("SessionType") );
+				String channel = rs.getString("IrcChannel");
+				String gitPath = rs.getString("GitPath");
+				Account act = getAccountById(sessionLeader);
+				return new  CNPSession(act, name, type, channel, gitPath);
+			}
+			throw new FailedSessionException("No Session found");
+		}
+		catch(FailedAccountException e)
+		{
+			throw e;
+		}
+		catch(SQLException e)
+		{
+			throw e;
+		}
+	}
+	
+	public CNPSession retrieveSession(String sessionName, String sessionPassword)throws SQLException, FailedSessionException, FailedAccountException {
+		String query = null;
+		try
+		{		
+			query = "SELECT SessionID, SessionLeader, SessionName, SessionType, IrcChannel, GitPath FROM Session WHERE SessionName ='" + sessionName + "';";
+			ResultSet rs = stmt.executeQuery(query);
+			String ePass = sha1(sessionPassword);
+			while(rs.next())
+			{
+				int sessionID = rs.getInt("SessionID");
+				int sessionLeader = rs.getInt("SessionLeader");
+				String name = rs.getString("SessionName");
+				SessionType type = SessionType.getType( rs.getInt("SessionType") );
+				String channel = rs.getString("IrcChannel");
+				String gitPath = rs.getString("GitPath");
+				Account act = getAccountById(sessionLeader);
+				query = "SELECT SessionPassword FROM SessionPassword WHERE SessionID=" + sessionID + " LIMIT 1;";
+				rs = stmt.executeQuery(query);
+				while(rs.next())
+				{
+					String pass = rs.getString("SessionPassword");
+					if(ePass.equals(pass))
+					{	return new CNPSession(act, name, type, channel, gitPath, pass);	}
+					else
+					{	throw new FailedSessionException("Passwords for private session did not match");	}
+				}
+				throw new FailedSessionException("No Session found");
+			}
+			throw new FailedSessionException("No Session found");
+		}
+		catch(FailedAccountException e)
+		{
+			throw e;
+		}
+		catch(NoSuchAlgorithmException e)
+		{
+			throw new FailedSessionException("Error with encrpyting password");
+		}
+		catch(SQLException e)
+		{
+			throw e;
+		}
+	}
+	
 //	public boolean sessionIsPrivate(String sessionName) {
 //		// TODO implement
 //		return false;
@@ -231,6 +295,30 @@ public class Database implements IDatabase{
 //		// TODO implement
 //		return false;
 //	}
+	
+	public Account getAccountById(int id) throws SQLException, FailedAccountException
+	{
+		String query = null;
+		try
+		{
+			query = "SELECT UserID, UserName, Email FROM UserAccount WHERE UserID =" + id + ";";
+			ResultSet rs = stmt.executeQuery(query);
+			while(rs.next())
+			{
+				int userID = rs.getInt("UserID");
+				String userName = rs.getString("UserName");
+				String email = rs.getString("Email");
+				return new Account(userName, email, userID);
+				
+			}
+		}
+		catch(SQLException e)
+		{
+			throw e;
+		}
+		throw new FailedAccountException("Unable to retrive Account by database id.");
+		
+	}
 	
 	/**
 	 * sha1()

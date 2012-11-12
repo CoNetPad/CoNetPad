@@ -34,7 +34,25 @@ public class CNPSession {
 	
 	public enum SessionType {
 		PUBLIC,
-		PRIVATE
+		PRIVATE;
+		
+		public int intValue()
+		{
+			if(this.equals(SessionType.PUBLIC) )
+			{
+				return 0;
+			}
+			return 1;
+		}
+		
+		public static SessionType getType(int i)
+		{
+			if(i == 0)
+			{	return SessionType.PUBLIC;	}
+			if(i == 1)
+			{	return SessionType.PRIVATE;	}
+			return SessionType.PUBLIC;
+		}
 	}
 	
 	
@@ -89,9 +107,16 @@ public class CNPSession {
 		
 		if(type == SessionType.PRIVATE)
 		{
-			if(!s.getEncryptedPassword().equals(encryptedPassword))
+			if( (s.getEncryptedPassword() == null) || (encryptedPassword == null))
 			{
-				passMatch = false;
+				return false;
+			}
+			else
+			{
+				if(!s.getEncryptedPassword().equals(encryptedPassword))
+				{
+					passMatch = false;
+				}
 			}
 		}
 		
@@ -99,7 +124,7 @@ public class CNPSession {
 				(s.getType() == type) && (s.getGitPath().equals(gitPath)) && (s.getIrcChannel().equals(ircChannel)))
 		{
 			
-			return true && passMatch;
+			return true & passMatch;
 		}
 		return false;
 	}
@@ -140,5 +165,6 @@ public class CNPSession {
 	public void distributeTask(TaskResponse task) { // have throw TaskExecutionException
 		taskCourier.submit(task);
 	}
+
 	
 }
