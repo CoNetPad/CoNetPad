@@ -285,11 +285,23 @@ public class Database implements IDatabase{
 		}
 	}
 	
-//	public boolean sessionIsPrivate(String sessionName) {
-//		// TODO implement
-//		return false;
-//	}
-//	
+	public boolean sessionIsPrivate(String sessionName) {
+		// TODO implement
+		try{
+			CNPSession session = this.retrieveSession(sessionName);
+			if(session.getType() == SessionType.PRIVATE)
+			{
+				return true;
+			}
+				
+		}
+		catch(Exception e)
+		{
+			return false;
+		}
+		return false;
+	}
+	
 //	public boolean createSessionAccount(CNPSession session, Account account,
 //			Account.FilePermissionLevel filePermission, Account.ChatPermissionLevel chatPermission) {
 //		// TODO implement

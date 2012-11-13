@@ -86,8 +86,8 @@ public interface IDatabase {
 	 */
 	CNPSession retrieveSession(String sessionName, String sessionPassword)throws SQLException, FailedSessionException, FailedAccountException;
 	
-//	boolean sessionIsPrivate(String sessionName);
-//	
+	boolean sessionIsPrivate(String sessionName);
+	
 //	boolean createSessionAccount(CNPSession session, Account account,
 //			Account.FilePermissionLevel filePermission, Account.ChatPermissionLevel chatPermission);
 }
