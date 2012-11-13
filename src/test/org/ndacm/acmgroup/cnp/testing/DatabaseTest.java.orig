@@ -5,9 +5,7 @@
 
 package org.ndacm.acmgroup.cnp.testing;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
@@ -17,7 +15,6 @@ import org.ndacm.acmgroup.cnp.Account;
 import org.ndacm.acmgroup.cnp.database.Database;
 import org.ndacm.acmgroup.cnp.exceptions.FailedAccountException;
 import org.ndacm.acmgroup.cnp.exceptions.FailedSessionException;
-import org.ndacm.acmgroup.cnp.server.CNPServer;
 import org.ndacm.acmgroup.cnp.server.CNPSession;
 import org.ndacm.acmgroup.cnp.server.CNPSession.SessionType;
 
@@ -66,7 +63,11 @@ public class DatabaseTest {
 				try
 				{
 					Account test = db.createAccount("John", "Jdoe@gmail.com", "test");
+<<<<<<< HEAD
+					Account result = new Account(1, "John", "Jdoe@gmail.com");
+=======
 					Account result = new Account("John", "Jdoe@gmail.com", 11);
+>>>>>>> master
 					assertTrue(result.equals(test));
 				}
 				catch(FailedAccountException e)
@@ -96,7 +97,11 @@ public class DatabaseTest {
 				try
 				{
 					Account test = db.retrieveAccount("John", "test");
+<<<<<<< HEAD
+					Account result = new Account(1, "John", "Jdoe@gmail.com");
+=======
 					Account result = new Account("John", "Jdoe@gmail.com", 17);
+>>>>>>> master
 					assertTrue(result.equals(test));
 				}
 				catch(FailedAccountException e)
@@ -128,15 +133,14 @@ public class DatabaseTest {
 	@Test
 	public void testCreateSession()
 	{
-		CNPServer server = new CNPServer("basedir");
 		try{
 			Database db = new Database();
 				try
 				{
 					Account act = db.retrieveAccount("John", "test");
-					CNPSession test = db.createSession(act, "SessionName1", server);
+					CNPSession test = db.createSession(act, "SessionName1", "testChannel", "somePath");
 		
-					CNPSession result = new CNPSession(act, "SessionName1", SessionType.PUBLIC);
+					CNPSession result = new CNPSession(act, "SessionName1", SessionType.PUBLIC, "testChannel", "somePath");
 					assertTrue(result.equals(test));
 				}
 				catch(FailedSessionException e)
@@ -167,14 +171,13 @@ public class DatabaseTest {
 	{
 		try{
 			Database db = new Database();
-			CNPServer server = new CNPServer("basedir");
 				try
 				{
 					String ePass = Database.sha1("test");
 					Account act = db.retrieveAccount("John", "test");
-					CNPSession test = db.createSession(act, "SessionName", server);
+					CNPSession test = db.createSession(act, "SessionName", "testChannel", "somePath", "test");
 		
-					CNPSession result = new CNPSession(act, "SessionName", SessionType.PRIVATE, ePass);
+					CNPSession result = new CNPSession(act, "SessionName", SessionType.PRIVATE, "testChannel", "somePath", ePass);
 					assertTrue(result.equals(test));
 				}
 				catch(FailedSessionException e)
@@ -213,7 +216,7 @@ public class DatabaseTest {
 				{
 					CNPSession test = db.retrieveSession("SessionName1");
 					Account act = db.getAccountById(17);
-					CNPSession result = new CNPSession(act, "SessionName1", SessionType.PUBLIC);
+					CNPSession result = new CNPSession(act, "SessionName1", SessionType.PUBLIC, "testChannel", "somePath");
 					assertTrue(result.equals(test));
 					
 				}
@@ -252,7 +255,7 @@ public class DatabaseTest {
 				{
 					CNPSession test = db.retrieveSession("SessionName");
 					Account act = db.getAccountById(13);
-					CNPSession result = new CNPSession(act, "SessionName2", SessionType.PUBLIC);
+					CNPSession result = new CNPSession(act, "SessionName2", SessionType.PUBLIC, "testChannel", "somePath");
 					assertTrue(!result.equals(test));
 					
 				}
@@ -292,7 +295,7 @@ public class DatabaseTest {
 					CNPSession test = db.retrieveSession("SessionName", "test");
 					Account act = db.getAccountById(17);
 					
-					CNPSession result = new CNPSession(act, "SessionName", SessionType.PRIVATE, epass);
+					CNPSession result = new CNPSession(act, "SessionName", SessionType.PRIVATE, "testChannel", "somePath", epass);
 			
 					assertTrue(result.equals(test));
 					

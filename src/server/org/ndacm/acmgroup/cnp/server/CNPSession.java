@@ -20,6 +20,7 @@ import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 public class CNPSession {
 	
 	private static final String SESSION_NAME_CHARS = "abcdefghijklmnopqrstuvwxyz";
+	private static int NAME_LENGTH = 5;
 	private static String baseDirectory;
 	private static Random rnd = new Random();
 	
@@ -28,18 +29,44 @@ public class CNPSession {
 	private String sessionName;
 	private JGit gitRepo;
 	private Map<String, ServerSourceFile> sourceFiles; // implement with ConcurrentHashMap
-	private String sourceFileDirectory;
-	
+	private String gitPath;
 	private ExecutorService taskCourier;
 	private ExecutorService sessionTaskQueue; // single-thread
-	
-	private int sessionLeader;
+	private SessionType type;
+	private Account sessionLeader;
+	private String ircChannel;
+	private String encryptedPassword;
 	private Map<Account, CNPConnection> clientConnections; // implement with ConcurrentHashMap
-	private Map<Account, FilePermissionLevel> filePermissions; // implement with CHM ^
-	private Map<Account, ChatPermissionLevel> chatPermissions;
+	private Map<Account, Account.FilePermissionLevel> filePermissions; // implement with CHM ^
+	private Map<Account, Account.ChatPermissionLevel> chatPermissions;
 	
 	
-	public CNPSession(int sessionID, String sessionName, CNPServer server, int sessionLeader) {
+	
+	public enum SessionType {
+		PUBLIC,
+		PRIVATE;
+		
+		public int intValue()
+		{
+			if(this.equals(SessionType.PUBLIC) )
+			{
+				return 0;
+			}
+			return 1;
+		}
+		
+		public static SessionType getType(int i)
+		{
+			if(i == 0)
+			{	return SessionType.PUBLIC;	}
+			if(i == 1)
+			{	return SessionType.PRIVATE;	}
+			return SessionType.PUBLIC;
+		}
+	}
+	
+
+	public CNPSession(int sessionID, String sessionName, CNPServer server, Account sessionLeader) {
 	
 		this.server = server;
 		
@@ -60,6 +87,75 @@ public class CNPSession {
 
 	}
 	
+	public CNPSession() {
+		// TODO implement
+		sessionTaskQueue = Executors.newSingleThreadExecutor();
+	}
+	public CNPSession(Account leader, String name, SessionType t){
+		sessionLeader = leader;
+		sessionName = name;
+		type = t;
+		encryptedPassword = null;
+	}
+	public CNPSession(Account leader, String name, SessionType t, String pass){
+		sessionLeader = leader;
+		sessionName = name;
+		type = t;
+		encryptedPassword = pass;
+	}
+	public Account getSessionLeader()
+	{
+		return sessionLeader;
+	}
+	
+	public String getSessionName()
+	{
+		return sessionName;
+	}
+	public String getIrcChannel()
+	{
+		return ircChannel;
+	}
+	public SessionType getType()
+	{
+		return type;
+	}
+	public String getEncryptedPassword()
+	{
+		return encryptedPassword;
+	}
+	public String getGitPath()
+	{
+		return gitPath;
+	}
+	public boolean equals(CNPSession s)
+	{
+		boolean passMatch = true;
+		
+		if(type == SessionType.PRIVATE)
+		{
+			if( (s.getEncryptedPassword() == null) || (encryptedPassword == null))
+			{
+				return false;
+			}
+			else
+			{
+				if(!s.getEncryptedPassword().equals(encryptedPassword))
+				{
+					passMatch = false;
+				}
+			}
+		}
+		
+		if( (s.getSessionName().equals(sessionName)) && (s.getSessionLeader().equals(sessionLeader)) &&
+				(s.getType() == type) && (s.getGitPath().equals(gitPath)) && (s.getIrcChannel().equals(ircChannel)))
+		{
+			
+			return true & passMatch;
+		}
+		return false;
+	}
+
 	public void addUser(Account userAccount, CNPConnection connection) {
 		clientConnections.put(userAccount, connection);
 	}
@@ -67,7 +163,7 @@ public class CNPSession {
 	public void removeUser (Account userAccount) {
 		clientConnections.remove(userAccount);
 	}
-	
+
 	public void createFile(String filename, SourceType type) {
 		ServerSourceFile file = new ServerSourceFile(filename, type);
 		sourceFiles.put(filename, file);
@@ -96,9 +192,9 @@ public class CNPSession {
 	}
 	
 	// http://stackoverflow.com/questions/2863852/how-to-generate-a-random-string-in-java
-	public static String generateString(int length) {
-		char[] text = new char[length];
-		for (int i = 0; i < length; i++) {
+	public static String generateString() {
+		char[] text = new char[NAME_LENGTH];
+		for (int i = 0; i < NAME_LENGTH; i++) {
 			text[i] = SESSION_NAME_CHARS.charAt(rnd.nextInt(SESSION_NAME_CHARS.length()));
 		}
 		return new String(text);

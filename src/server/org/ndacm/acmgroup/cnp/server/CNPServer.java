@@ -1,6 +1,7 @@
 package org.ndacm.acmgroup.cnp.server;
 
 import java.io.File;
+import java.net.Socket;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -8,11 +9,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
+import javax.net.ssl.SSLServerSocket;
 
 import org.ndacm.acmgroup.cnp.Account;
 import org.ndacm.acmgroup.cnp.Compiler;
 import org.ndacm.acmgroup.cnp.database.Database;
 import org.ndacm.acmgroup.cnp.exceptions.FailedAccountException;
+import org.ndacm.acmgroup.cnp.exceptions.FailedSessionException;
 import org.ndacm.acmgroup.cnp.network.ServerNetwork;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEventListener;
@@ -66,12 +69,12 @@ public class CNPServer implements TaskReceivedEventListener {
 		network.startListening();
 	}
 
-	public void createAccount(CreateAccountTask task) throws FailedAccountException {	
+	public void createAccount(CreateAccountTask task) throws SQLException {	
 		database.createAccount(task.getUsername(), task.getEmail(), task.getPassword());
 		// send back response
 	}
 
-	public void connectToSession(ConnectToSessionTask task) throws FailedAccountException {
+	public void connectToSession(ConnectToSessionTask task) throws SQLException {
 		
 		CNPSession session = null;
 		Account userAccount = database.retrieveAccount(task.getUsername(), task.getPassword());
@@ -89,15 +92,16 @@ public class CNPServer implements TaskReceivedEventListener {
 	}
 
 
-	public CNPSession createCNPSession(CreateSessionTask task) throws SQLException {
+	public CNPSession createCNPSession(CreateSessionTask task) throws FailedSessionException, SQLException {
 
-		return database.createSession(task.getSessionLeader(), this);
+		return database.createSession(task.getSessionLeader(), CNPSession.generateString(), this);
 		
 	}
+	
 
-	public CNPPrivateSession createCNPSession(CreatePrivateSessionTask task) throws SQLException {
+	public CNPSession createCNPSession(CreatePrivateSessionTask task) throws FailedSessionException, SQLException {
 
-		return database.createSession(task.getSessionLeader(), this, task.getSessionPassword());
+		return database.createSession(task.getSessionLeader(), CNPSession.generateString(), this, task.getSessionPassword());
 	}
 
 
@@ -121,7 +125,7 @@ public class CNPServer implements TaskReceivedEventListener {
 
 			try {
 				createAccount((CreateAccountTask) task);
-			} catch (FailedAccountException e) {
+			} catch (SQLException e) {
 				System.err.println("Failed to create account:\n" + e.getMessage());
 
 			}
@@ -131,7 +135,7 @@ public class CNPServer implements TaskReceivedEventListener {
 			ConnectToSessionTask connectTask = (ConnectToSessionTask) task;
 			try { 
 				connectToSession(connectTask);
-			} catch (FailedAccountException e) {
+			} catch (SQLException e) {
 				System.err.println("Failed to connect " + connectTask.getUsername() + 
 						" to " + connectTask.getSessionName());
 			}
@@ -142,6 +146,8 @@ public class CNPServer implements TaskReceivedEventListener {
 			try { 
 				createCNPSession(createTask);
 			} catch (SQLException e) {
+				System.err.println("Failed to create session.");
+			} catch (FailedSessionException e) {
 				System.err.println("Failed to create session.");
 			}
 			

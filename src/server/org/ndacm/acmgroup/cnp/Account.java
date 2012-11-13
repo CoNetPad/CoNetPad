@@ -6,23 +6,30 @@ package org.ndacm.acmgroup.cnp;
 
 public class Account {
 	
-	private int userID;
 	private String username;		//Username of account
 	private String email;			//Email of Accout
-	
-	
+	private int userID;				//Database ID of the account
 	public Account()
 	{
 		username = "guest";
 		email = "none";
 		userID = 0;
 	}
-	public Account(int id, String uname, String eml)
+	
+	/**
+	 * Constructor
+	 * @param uname	The username of the account
+	 * @param eml	The email of the account
+	 * @param id	The database ID of the account
+	 */
+	public Account(String uname, String eml, int id)
 	{
 		username = uname;
 		email = eml;
 		userID = id;
 	}
+	
+
 	/**
 	 * getUsername()
 	 * This gets the username of the account

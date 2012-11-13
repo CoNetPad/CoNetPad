@@ -1,9 +1,11 @@
 package org.ndacm.acmgroup.cnp.task;
 
+import org.ndacm.acmgroup.cnp.Account;
+
 
 public class CreateSessionTask extends Task {
 	
-	private int sessionLeader;
+	private Account sessionLeader;
 
 	@Override
 	public void execute() {
@@ -11,7 +13,7 @@ public class CreateSessionTask extends Task {
 		
 	}
 	
-	public int getSessionLeader() {
+	public Account getSessionLeader() {
 		return sessionLeader;
 	}
 
