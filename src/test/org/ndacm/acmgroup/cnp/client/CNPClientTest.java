@@ -7,7 +7,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.ndacm.acmgroup.cnp.client.CNPClient;
+import org.ndacm.acmgroup.cnp.CNPClient;
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
 
 /**

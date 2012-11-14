@@ -1,19 +1,22 @@
 package org.ndacm.acmgroup.cnp.task;
 
-import org.ndacm.acmgroup.cnp.Account;
-
-
 public class CreateSessionTask extends Task {
 	
-	private Account sessionLeader;
+	private int sessionLeader;
+	private String userAuthToken;
+	
+	public CreateSessionTask(int sessionLeader, String userAuthToken) {
+		this.sessionLeader = sessionLeader;
+		this.userAuthToken = userAuthToken;
+	}
 
 	@Override
-	public void execute() {
+	public void run() {
 		// TODO Auto-generated method stub
 		
 	}
-	
-	public Account getSessionLeader() {
+
+	public int getSessionLeader() {
 		return sessionLeader;
 	}
 

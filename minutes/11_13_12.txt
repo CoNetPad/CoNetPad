@@ -1,0 +1,5 @@
+Meeting Minutes for November 13, 2012
+
+1) Discussed what each person is working on.
+2) Decided to merge each person's own branch into master frequently, as long as there are not build errors.
+3) Put the creation of constructors/fields for Tasks on the high priority list.

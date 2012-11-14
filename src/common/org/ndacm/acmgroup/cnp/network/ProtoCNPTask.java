@@ -84,8 +84,9 @@ public class ProtoCNPTask extends Task {
 	}
 
 	@Override
-	public void execute() {
+	public void run() {
 		// TODO Auto-generated method stub
 		
 	}
+
 }

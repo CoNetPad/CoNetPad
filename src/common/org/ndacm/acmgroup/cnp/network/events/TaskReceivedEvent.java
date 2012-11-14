@@ -3,6 +3,7 @@ package org.ndacm.acmgroup.cnp.network.events;
 import java.util.EventObject;
 
 import org.ndacm.acmgroup.cnp.task.Task;
+import org.ndacm.acmgroup.cnp.task.message.TaskMessage;
 
 /**
  * @author cesar
@@ -15,14 +16,14 @@ public class TaskReceivedEvent extends EventObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private Task task;
+	private TaskMessage task;
 
 	/**
 	 * @param task
-	 *            This method should called by the Component that is firing the
+	 *            This method should called by the TaskEventSource that is firing the
 	 *            event.
 	 */
-	public TaskReceivedEvent(Task task) {
+	public TaskReceivedEvent(TaskMessage task) {
 		super(task);
 		this.task = task;
 	}
@@ -31,7 +32,7 @@ public class TaskReceivedEvent extends EventObject {
 	 * @return Objects receiving this event can use this method to retrieve the
 	 *         CNPTask.
 	 */
-	public Task getTask() {
+	public TaskMessage getTask() {
 		return task;
 	}
 }

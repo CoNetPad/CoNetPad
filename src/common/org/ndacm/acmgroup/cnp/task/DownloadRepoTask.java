@@ -1,24 +1,19 @@
 package org.ndacm.acmgroup.cnp.task;
 
-import java.io.File;
+public class DownloadRepoTask extends Task {
 
-import org.ndacm.acmgroup.cnp.server.CNPSession;
-
-public class DownloadRepoTask extends DownloadTask {
-
-	private String username;
-	private CNPSession session;
-	
-	@Override
-	public void execute() {
-		// TODO Auto-generated method stub
+	private int userID;
+	private String userAuthToken;
 		
+	public DownloadRepoTask(int userID, String userAuthToken) {
+		this.userID = userID;
+		this.userAuthToken = userAuthToken;
 	}
 
 	@Override
-	public File call() {
+	public void run() {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
 }

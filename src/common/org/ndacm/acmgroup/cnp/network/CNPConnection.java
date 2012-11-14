@@ -60,8 +60,7 @@ public class CNPConnection extends Thread {
 			System.out.println("Thread for client " + id + "started");
 			String inputLine;
 			while ((inputLine = in.readLine()) != null && !stop) {
-				component.fireTaskReceivedEvent(new TaskReceivedEvent(
-						new ProtoCNPTask(0, 0)));
+				//component.fireTaskReceivedEvent(new TaskReceivedEvent(new ProtoCNPTask(0, 0)));
 			}
 			System.out.println("Thread for client stopped correctly");
 		} catch (IOException e) {

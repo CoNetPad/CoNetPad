@@ -1,54 +1,33 @@
 package org.ndacm.acmgroup.cnp.task;
 
-import org.ndacm.acmgroup.cnp.*;
 import org.ndacm.acmgroup.cnp.Account.FilePermissionLevel;
-import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
-
-
 
 /**
  * A task to edit a source file. An EditorTask is issued by a single person and is 
  * represents a key press on a single file in a single session.
  * 
  */
-public class EditorTask extends Task implements Runnable{
+public class EditorTask extends Task {
 	
 	/**
 	 * The permission level that is required to execute this task.
 	 */
-	public static FilePermissionLevel PERMISSION;
+	public static FilePermissionLevel PERMISSION = FilePermissionLevel.READ_WRITE;
 
-	private Account userAccount;
+	private int userID;
 	private int keyPressed;
 	private int editIndex;
-	private ServerSourceFile sourceFile;
-	
-	/**
-	 * Fully-specified constructor for EditorTask.
-	 * 
-	 * @param userAccount The account of the user who created the edit task.
-	 * @param keyEntered The char associated with pressed key.
-	 * @param editIndex The 0-based index of the edit within the source file.
-	 * @param fileName The name of the file that was edited.
-	 * @param session The name/identifier for the CoNetPad session.
-	 */
-	public EditorTask(Account userAccount, int keyPressed, int editIndex, ServerSourceFile sourceFile) {
+	private String filename;
+	private String userAuthToken;
 		
-		PERMISSION = FilePermissionLevel.READ_WRITE;
-		
-		this.userAccount = userAccount;
+	public EditorTask(int userID, int keyPressed, int editIndex, String filename, String userAuthToken) {
+		this.userID = userID;
 		this.keyPressed = keyPressed;
 		this.editIndex = editIndex;
-		this.sourceFile = sourceFile;
+		this.filename = filename;
+		this.userAuthToken = userAuthToken;
 	}
-	
-	public Account getUserAccount() {
-		return userAccount;
-	}
-	
-	public ServerSourceFile getSourceFile() {
-		return sourceFile;
-	}
+
 	
 	public int getKeyPressed() {
 		return keyPressed;
@@ -58,13 +37,12 @@ public class EditorTask extends Task implements Runnable{
 		return editIndex;
 	}
 	
-	/**
-	 * Execute the task associated with this CNPTask.
-	 */
-	@Override
-	public void execute() {
-		run();
-		
+	public int getUserID() {
+		return userID;
+	}
+	
+	public String getFilename() {
+		return filename;
 	}
 
 	@Override
@@ -73,10 +51,5 @@ public class EditorTask extends Task implements Runnable{
 		
 	}
 
-//	@Override
-//	public void run() {
-		
-	//	sourceFile.editSource(this);
-	//}
 
 }

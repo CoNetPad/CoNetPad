@@ -14,12 +14,12 @@ import java.sql.SQLException;
 
 import org.junit.Test;
 import org.ndacm.acmgroup.cnp.Account;
+import org.ndacm.acmgroup.cnp.CNPServer;
+import org.ndacm.acmgroup.cnp.CNPSession;
+import org.ndacm.acmgroup.cnp.CNPSession.SessionType;
 import org.ndacm.acmgroup.cnp.database.Database;
 import org.ndacm.acmgroup.cnp.exceptions.FailedAccountException;
 import org.ndacm.acmgroup.cnp.exceptions.FailedSessionException;
-import org.ndacm.acmgroup.cnp.server.CNPServer;
-import org.ndacm.acmgroup.cnp.server.CNPSession;
-import org.ndacm.acmgroup.cnp.server.CNPSession.SessionType;
 
 public class DatabaseTest {
 

@@ -2,15 +2,9 @@ package org.ndacm.acmgroup.cnp.file;
 import java.awt.event.KeyEvent;
 import java.util.concurrent.ExecutorService;
 
-
-
-import org.ndacm.acmgroup.cnp.server.CNPSession;
-
-import org.ndacm.acmgroup.cnp.file.SourceFile;
-import org.ndacm.acmgroup.cnp.task.DownloadTask;
+import org.ndacm.acmgroup.cnp.CNPSession;
+import org.ndacm.acmgroup.cnp.task.DownloadFileTask;
 import org.ndacm.acmgroup.cnp.task.EditorTask;
-import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
-import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
 public class ServerSourceFile extends SourceFile {
 
@@ -30,7 +24,7 @@ public class ServerSourceFile extends SourceFile {
 		taskQueue.submit(task);
 	}
 
-	public boolean addTask(DownloadTask task) {
+	public boolean addTask(DownloadFileTask task) {
 		// TODO implement
 		return false;
 	}
@@ -49,8 +43,8 @@ public class ServerSourceFile extends SourceFile {
 		}
 
 		// create EditorTaskResponse and send it to users in session
-		TaskResponse response = new EditorTaskResponse(keyPressed, editIndex, filename, session);
-		session.distributeTask(response);
+		//TaskResponse response = new EditorTaskResponse(task.getUserName(), keyPressed, editIndex, task.getFilename());
+		//session.distributeTask(response);
 
 	}
 

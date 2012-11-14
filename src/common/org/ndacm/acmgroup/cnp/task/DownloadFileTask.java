@@ -1,29 +1,30 @@
 package org.ndacm.acmgroup.cnp.task;
 
-import java.io.File;
 import java.util.List;
 
-import org.ndacm.acmgroup.cnp.server.CNPSession;
+public class DownloadFileTask extends Task {
 
-
-
-public class DownloadFileTask extends DownloadTask {
-
-	private String username;
+	private int userID;
 	private List<String> filenames;
-	private CNPSession session;
-	private DownloadTask.FileType type;
+	private DownloadType type;
+	private String userAuthToken;
 	
+	public DownloadFileTask(int userID, List<String> filenames, DownloadType type, String userAuthToken) {
+		this.userID = userID;
+		this.filenames = filenames;
+		this.type = type;
+		this.userAuthToken = userAuthToken;
+	}
+
 	@Override
-	public void execute() {
+	public void run() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
-	public File call() {
-		// TODO Auto-generated method stub
-		return null;
+	public enum DownloadType {
+		BINARY,
+		SOURCE
 	}
 
 }

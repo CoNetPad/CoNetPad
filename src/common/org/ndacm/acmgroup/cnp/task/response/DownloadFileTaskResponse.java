@@ -1,0 +1,26 @@
+package org.ndacm.acmgroup.cnp.task.response;
+
+import java.io.File;
+
+import org.ndacm.acmgroup.cnp.task.DownloadFileTask.DownloadType;
+
+public class DownloadFileTaskResponse extends TaskResponse {
+
+	private File file;
+	private DownloadType type;
+	private boolean success;
+	
+	public DownloadFileTaskResponse(File file, DownloadType type,
+			boolean success) {
+		this.file = file;
+		this.type = type;
+		this.success = success;
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		
+	}
+
+}
