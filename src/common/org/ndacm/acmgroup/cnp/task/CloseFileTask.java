@@ -2,9 +2,9 @@ package org.ndacm.acmgroup.cnp.task;
 
 public class CloseFileTask extends Task {
 
-	private int userID;
-	private String filename;
-	private String userAuthToken;
+	protected int userID;
+	protected String filename;
+	protected String userAuthToken;
 	
 	public CloseFileTask(int userID, String filename, String userAuthToken) {
 		this.userID = userID;
@@ -17,6 +17,18 @@ public class CloseFileTask extends Task {
 		// TODO Auto-generated method stub
 		// make sure userID corresponds to sessionLeaderID
 		
+	}
+
+	public int getUserID() {
+		return userID;
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public String getUserAuthToken() {
+		return userAuthToken;
 	}
 
 }

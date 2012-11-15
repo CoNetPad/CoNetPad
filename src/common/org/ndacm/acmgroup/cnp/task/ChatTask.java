@@ -7,9 +7,9 @@ package org.ndacm.acmgroup.cnp.task;
  */
 public class ChatTask extends Task {
 	
-	private int userID;
-	private String message;
-	private String userAuthToken;
+	protected int userID;
+	protected String message;
+	protected String userAuthToken;
 	
 	/** 
 	 * Constructor that creates a ChatTask which is sent to all other session
@@ -34,6 +34,18 @@ public class ChatTask extends Task {
 	public String toString()
 	{
 		return this.userID + " " + this.message;
+	}
+
+	public int getUserID() {
+		return userID;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public String getUserAuthToken() {
+		return userAuthToken;
 	}
 
 }

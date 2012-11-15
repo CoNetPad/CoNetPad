@@ -14,11 +14,11 @@ public class EditorTask extends Task {
 	 */
 	public static FilePermissionLevel PERMISSION = FilePermissionLevel.READ_WRITE;
 
-	private int userID;
-	private int keyPressed;
-	private int editIndex;
-	private String filename;
-	private String userAuthToken;
+	protected int userID;
+	protected int keyPressed;
+	protected int editIndex;
+	protected String filename;
+	protected String userAuthToken;
 		
 	public EditorTask(int userID, int keyPressed, int editIndex, String filename, String userAuthToken) {
 		this.userID = userID;
@@ -28,6 +28,11 @@ public class EditorTask extends Task {
 		this.userAuthToken = userAuthToken;
 	}
 
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	public int getKeyPressed() {
 		return keyPressed;
@@ -45,10 +50,13 @@ public class EditorTask extends Task {
 		return filename;
 	}
 
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		
+	public static FilePermissionLevel getPERMISSION() {
+		return PERMISSION;
+	}
+
+
+	public String getUserAuthToken() {
+		return userAuthToken;
 	}
 
 

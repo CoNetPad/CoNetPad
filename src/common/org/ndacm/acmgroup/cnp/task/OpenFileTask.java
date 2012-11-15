@@ -2,9 +2,9 @@ package org.ndacm.acmgroup.cnp.task;
 
 public class OpenFileTask extends Task {
 	
-	private int userID;
-	private String filename;
-	private String userAuthToken;
+	protected int userID;
+	protected String filename;
+	protected String userAuthToken;
 
 	public OpenFileTask(int userID, String filename, String userAuthToken) {
 		this.userID = userID;
@@ -16,6 +16,18 @@ public class OpenFileTask extends Task {
 	public void run() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public int getUserID() {
+		return userID;
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public String getUserAuthToken() {
+		return userAuthToken;
 	}
 
 }

@@ -4,10 +4,10 @@ import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
 
 public class CreateFileTask extends Task {
 	
-	private int userID;
-	private String filename;
-	private SourceType type;
-	private String userAuthToken;
+	protected int userID;
+	protected String filename;
+	protected SourceType type;
+	protected String userAuthToken;
 
 	public CreateFileTask(int userID, String filename, SourceType type, String userAuthToken) {
 		this.userID = userID;
@@ -21,6 +21,22 @@ public class CreateFileTask extends Task {
 		// TODO Auto-generated method stub
 		// make sure userID = sessionLeaderID
 		
+	}
+
+	public int getUserID() {
+		return userID;
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public SourceType getType() {
+		return type;
+	}
+
+	public String getUserAuthToken() {
+		return userAuthToken;
 	}
 
 }

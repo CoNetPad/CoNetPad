@@ -2,9 +2,9 @@ package org.ndacm.acmgroup.cnp.task;
 
 public class DeleteSessionTask extends Task {
 	
-	private int userID;
-	private int sessionID;
-	private String userAuthToken;
+	protected int userID;
+	protected int sessionID;
+	protected String userAuthToken;
 	
 	public DeleteSessionTask(int userID, int sessionID, String userAuthToken) {
 		this.userID = userID;
@@ -16,6 +16,15 @@ public class DeleteSessionTask extends Task {
 		// TODO Auto-generated method stub
 		// make sure userID = sessionLeaderID
 		
+	}
+	public int getUserID() {
+		return userID;
+	}
+	public int getSessionID() {
+		return sessionID;
+	}
+	public String getUserAuthToken() {
+		return userAuthToken;
 	}
 
 

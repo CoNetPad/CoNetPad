@@ -2,8 +2,8 @@ package org.ndacm.acmgroup.cnp.task;
 
 public class DownloadRepoTask extends Task {
 
-	private int userID;
-	private String userAuthToken;
+	protected int userID;
+	protected String userAuthToken;
 		
 	public DownloadRepoTask(int userID, String userAuthToken) {
 		this.userID = userID;
@@ -14,6 +14,14 @@ public class DownloadRepoTask extends Task {
 	public void run() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public int getUserID() {
+		return userID;
+	}
+
+	public String getUserAuthToken() {
+		return userAuthToken;
 	}
 
 }

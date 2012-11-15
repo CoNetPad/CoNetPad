@@ -4,10 +4,10 @@ import java.util.List;
 
 public class DownloadFileTask extends Task {
 
-	private int userID;
-	private List<String> filenames;
-	private DownloadType type;
-	private String userAuthToken;
+	protected int userID;
+	protected List<String> filenames;
+	protected DownloadType type;
+	protected String userAuthToken;
 	
 	public DownloadFileTask(int userID, List<String> filenames, DownloadType type, String userAuthToken) {
 		this.userID = userID;
@@ -25,6 +25,22 @@ public class DownloadFileTask extends Task {
 	public enum DownloadType {
 		BINARY,
 		SOURCE
+	}
+
+	public int getUserID() {
+		return userID;
+	}
+
+	public List<String> getFilenames() {
+		return filenames;
+	}
+
+	public DownloadType getType() {
+		return type;
+	}
+
+	public String getUserAuthToken() {
+		return userAuthToken;
 	}
 
 }

@@ -3,9 +3,9 @@ package org.ndacm.acmgroup.cnp.task;
 
 public class JoinSessionTask extends Task {
 	
-	private int userID;
-	private String sessionName;
-	private String userAuthToken;
+	protected int userID;
+	protected String sessionName;
+	protected String userAuthToken;
 
 	public JoinSessionTask(int userID, String sessionName, String userAuthToken) {
 		this.userID = userID;
@@ -13,14 +13,22 @@ public class JoinSessionTask extends Task {
 		this.userAuthToken = userAuthToken;
 	}
 
-	public String getSessionName() {
-		return sessionName;
-	}
-
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public String getSessionName() {
+		return sessionName;
+	}
+
+	public int getUserID() {
+		return userID;
+	}
+
+	public String getUserAuthToken() {
+		return userAuthToken;
 	}
 
 }

@@ -2,8 +2,8 @@ package org.ndacm.acmgroup.cnp.task;
 
 public class CreateSessionTask extends Task {
 	
-	private int sessionLeader;
-	private String userAuthToken;
+	protected int sessionLeader;
+	protected String userAuthToken;
 	
 	public CreateSessionTask(int sessionLeader, String userAuthToken) {
 		this.sessionLeader = sessionLeader;
@@ -18,6 +18,10 @@ public class CreateSessionTask extends Task {
 
 	public int getSessionLeader() {
 		return sessionLeader;
+	}
+
+	public String getUserAuthToken() {
+		return userAuthToken;
 	}
 
 }

@@ -2,8 +2,8 @@ package org.ndacm.acmgroup.cnp.task;
 
 public class LoginTask extends Task {
 	
-	private String username;
-	private String password;
+	protected String username;
+	protected String password;
 
 	public LoginTask(String username, String password) {
 		this.username = username;
@@ -15,6 +15,14 @@ public class LoginTask extends Task {
 		// TODO Auto-generated method stub
 		// LoginTaskResult will return auth token
 		
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public String getPassword() {
+		return password;
 	}
 
 }

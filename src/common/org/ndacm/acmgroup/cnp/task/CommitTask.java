@@ -2,8 +2,8 @@ package org.ndacm.acmgroup.cnp.task;
 
 public class CommitTask extends Task {
 
-	private int userID;
-	private String userAuthToken;
+	protected int userID;
+	protected String userAuthToken;
 	
 	public CommitTask(int userID, String userAuthToken) {
 		this.userID = userID;
@@ -14,6 +14,14 @@ public class CommitTask extends Task {
 	public void run() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public int getUserID() {
+		return userID;
+	}
+
+	public String getUserAuthToken() {
+		return userAuthToken;
 	}
 
 }

@@ -18,11 +18,11 @@ import org.ndacm.acmgroup.cnp.task.Task;
  * 
  */
 public class ProtoCNPTask extends Task {
-	private static final char DIV = ':';
-	private static final char END = '&';
+	protected static final char DIV = ':';
+	protected static final char END = '&';
 
-	private int id;
-	private int message;
+	protected int id;
+	protected int message;
 
 	/**
 	 * @param id
