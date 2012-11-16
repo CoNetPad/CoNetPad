@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
+import javax.xml.soap.MessageFactory;
 
 import org.ndacm.acmgroup.cnp.database.Database;
 import org.ndacm.acmgroup.cnp.exceptions.FailedSessionException;
@@ -20,7 +21,7 @@ import org.ndacm.acmgroup.cnp.task.CreateSessionTask;
 import org.ndacm.acmgroup.cnp.task.EditorTask;
 import org.ndacm.acmgroup.cnp.task.JoinSessionTask;
 import org.ndacm.acmgroup.cnp.task.Task;
-import org.ndacm.acmgroup.cnp.task.message.MessageFactory;
+import org.ndacm.acmgroup.cnp.task.message.TaskMessageFactory;
 
 public class CNPServer implements TaskReceivedEventListener {
 
@@ -31,7 +32,7 @@ public class CNPServer implements TaskReceivedEventListener {
 	private Compiler compiler;
 	private String baseDirectory;
 	private Map<Integer, CNPSession> openSessions; // maps sessionID to CNPSession
-	private MessageFactory messageFactory;
+	private TaskMessageFactory messageFactory;
 	
 	private SecretKey key; // TODO implement
 	private Cipher cipher; // TODO implement
@@ -42,7 +43,7 @@ public class CNPServer implements TaskReceivedEventListener {
 		network = new ServerNetwork();
 		compiler = new Compiler();
 		openSessions = new ConcurrentHashMap<Integer, CNPSession>();
-		MessageFactory.initalizeMessageFactory(this);
+		TaskMessageFactory.initalizeMessageFactory(this);
 
 		try { 
 			database = new Database();
@@ -168,12 +169,5 @@ public class CNPServer implements TaskReceivedEventListener {
 		return openSessions.get(sessionID);
 	}
 	
-	public MessageFactory getMessageFactory() {
-		return messageFactory;
-	}
-
-
-
-
 
 }

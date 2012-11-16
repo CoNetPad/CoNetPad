@@ -84,7 +84,4 @@ public class ServerNetwork extends BaseNetwork {
 		clientList.get(id).close();
 	}
 
-	public void sendMessageToClient(int id, ProtoCNPTask task) {
-		clientList.get(id).sendCommand(task);
-	}
 }

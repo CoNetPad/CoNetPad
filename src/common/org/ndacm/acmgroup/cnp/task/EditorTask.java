@@ -23,25 +23,25 @@ public class EditorTask extends Task {
 	private int sessionID;
 	protected int keyPressed;
 	protected int editIndex;
-	protected int fileId;
+	protected int fileID;
 	protected SourceFile file;
 	protected String userAuthToken;
 
 	public EditorTask(int userID, String username, int sessionID,
-			int keyPressed, int editIndex, int fileId, SourceFile file,
+			int keyPressed, int editIndex, SourceFile file,
 			String userAuthToken) {
 		this.userID = userID;
 		this.username = username;
 		this.sessionID = sessionID;
 		this.keyPressed = keyPressed;
 		this.editIndex = editIndex;
-		this.fileId = fileId;
+		this.fileID = fileID;
 		this.userAuthToken = userAuthToken;
 	}
 
 	public EditorTask(int userID, int sessionID, int keyPressed, int editIndex,
 			int fileId, SourceFile file, String userAuthToken) {
-		this(userID, "", sessionID, keyPressed, editIndex, fileId, file,
+		this(userID, "", sessionID, keyPressed, editIndex, file,
 				userAuthToken);
 
 	}
@@ -99,6 +99,10 @@ public class EditorTask extends Task {
 
 	public String getUserAuthToken() {
 		return userAuthToken;
+	}
+	
+	public int getFileID() {
+		return fileID;
 	}
 
 }
