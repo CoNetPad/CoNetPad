@@ -81,6 +81,10 @@ public class EditorTask extends Task {
 		return username;
 	}
 
+	public void setSourceFile(SourceFile file) {
+		this.file = file;
+	}
+
 	public SourceFile getFile() {
 		return file;
 	}

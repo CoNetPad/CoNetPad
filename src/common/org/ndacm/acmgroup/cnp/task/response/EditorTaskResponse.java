@@ -16,7 +16,6 @@ public class EditorTaskResponse extends TaskResponse {
 		this.username = username;
 		this.keyPressed = keyPressed;
 		this.editIndex = editIndex;
-		this.file = file;
 	}
 
 	public int getKeyPressed() {

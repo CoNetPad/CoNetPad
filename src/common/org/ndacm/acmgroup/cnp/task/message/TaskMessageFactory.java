@@ -53,7 +53,7 @@ public class TaskMessageFactory {
 		TaskMessageFactory.server = server;
 	}
 
-	private static Task fromMessageToTask(TaskMessage message) {
+	public static Task fromMessageToTask(TaskMessage message) {
 		switch (message.getTaskType()) {
 		case Chat:
 			return new ChatTask(Integer.parseInt(message.getData()[0]),
@@ -124,12 +124,14 @@ public class TaskMessageFactory {
 			return new DownloadRepoTask(Integer.parseInt(message.getData()[0]),
 					message.getData()[1]);
 		case Editor:
-			return new EditorTask(Integer.parseInt(message.getData()[0]),
+			EditorTask task = new EditorTask(
+					Integer.parseInt(message.getData()[0]),
 					message.getData()[1],
 					Integer.parseInt(message.getData()[2]),
 					Integer.parseInt(message.getData()[3]),
 					Integer.parseInt(message.getData()[4]),
-					message.getData()[5], message.getData()[6]);
+					Integer.parseInt(message.getData()[4]), null,
+					message.getData()[5]);
 		case JoinPrivateSession:
 			return new JoinPrivateSessionTask(Integer.parseInt(message
 					.getData()[0]), message.getData()[1], message.getData()[2],
@@ -141,13 +143,14 @@ public class TaskMessageFactory {
 			return new LoginTask(message.getData()[0], message.getData()[1]);
 		case OpenFile:
 			return new OpenFileTask(Integer.parseInt(message.getData()[0]),
-					message.getData()[1], message.getData()[2]);
+					Integer.parseInt(message.getData()[1]),
+					message.getData()[2]);
 		default:
 			return null;
 		}
 	}
 
-	private static TaskMessage fromTaskToMessage(Task task) {
+	public static TaskMessage fromTaskToMessage(Task task) {
 
 		TaskMessage message = null;
 
@@ -263,14 +266,15 @@ public class TaskMessageFactory {
 		} else if (task instanceof OpenFileTask) {
 			OpenFileTask openFile = (OpenFileTask) task;
 			String[] data = { Integer.toString(openFile.getUserID()),
-					openFile.getFilename(), openFile.getUserAuthToken() };
+					Integer.toString(openFile.getFileID()),
+					openFile.getUserAuthToken() };
 			message = new TaskMessage(TaskType.OpenFile, data);
 		}
 
 		return message;
 	}
 
-	private static TaskResponse fromMessageToTaskResponse(TaskMessage message) {
+	public static TaskResponse fromMessageToTaskResponse(TaskMessage message) {
 
 		switch (message.getTaskType()) {
 		case Chat:
@@ -289,7 +293,8 @@ public class TaskMessageFactory {
 			return new CreateAccountTaskResponse(Integer.parseInt(message
 					.getData()[0]), Boolean.parseBoolean(message.getData()[1]));
 		case CreateFile:
-			return new CreateFileTaskResponse(message.getData()[0],
+			return new CreateFileTaskResponse(Integer.parseInt(message
+					.getData()[0]), message.getData()[1], null,
 					Boolean.parseBoolean(message.getData()[1]));
 		case CreatePrivateSession:
 		case CreateSessionTask:
@@ -314,7 +319,7 @@ public class TaskMessageFactory {
 			return new EditorTaskResponse(message.getData()[0],
 					Integer.parseInt(message.getData()[1]),
 					Integer.parseInt(message.getData()[2]),
-					message.getData()[3]);
+					Integer.parseInt(message.getData()[3]));
 		case JoinPrivateSession:
 		case JoinSession:
 			return new JoinSessionTaskResponse(message.getData()[0],
@@ -332,7 +337,7 @@ public class TaskMessageFactory {
 		}
 	}
 
-	private static TaskMessage fromTaskResponseToMessage(TaskResponse task) {
+	public static TaskMessage fromTaskResponseToMessage(TaskResponse task) {
 
 		TaskMessage message = null;
 
@@ -389,10 +394,10 @@ public class TaskMessageFactory {
 			message = new TaskMessage(TaskType.DownloadRepo, data);
 		} else if (task instanceof EditorTaskResponse) {
 			EditorTaskResponse editor = (EditorTaskResponse) task;
-			String[] data = { editor.getUserName(),
+			String[] data = { editor.getUsername(),
 					Integer.toString(editor.getKeyPressed()),
 					Integer.toString(editor.getEditIndex()),
-					editor.getFilename() };
+					Integer.toString(editor.getFileID()) };
 			message = new TaskMessage(TaskType.Editor, data);
 		} else if (task instanceof JoinSessionTaskResponse) {
 			JoinSessionTaskResponse joinSession = (JoinSessionTaskResponse) task;

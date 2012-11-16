@@ -70,17 +70,9 @@ public class CNPConnection extends Thread {
 		}
 	}
 
-	/**
-	 * @param command
-	 *            element to be transmitted.
-	 */
-	public void sendCommand(ProtoCNPTask command) {
-		out.println(command);
-	}
 	
 	public void sendTask(Task task) {
-		TaskMessage message = TaskMessageFactory.convertTaskToMessage(task);
-		// now just need to send message over the network
+		out.println(TaskMessageFactory.fromTaskToMessage(task).getMessageString());
 	}
 	
 
