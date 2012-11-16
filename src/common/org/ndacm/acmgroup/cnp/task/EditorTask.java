@@ -7,12 +7,12 @@ import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
 /**
- * A task to edit a source file. An EditorTask is issued by a single person and is 
- * represents a key press on a single file in a single session.
+ * A task to edit a source file. An EditorTask is issued by a single person and
+ * is represents a key press on a single file in a single session.
  * 
  */
 public class EditorTask extends Task {
-	
+
 	/**
 	 * The permission level that is required to execute this task.
 	 */
@@ -23,62 +23,68 @@ public class EditorTask extends Task {
 	private int sessionID;
 	protected int keyPressed;
 	protected int editIndex;
-	protected String fileKey;
+	protected int fileId;
+	protected SourceFile file;
 	protected String userAuthToken;
-		
-	public EditorTask(int userID, 
-			String username, 
-			int sessionID, 
-			int keyPressed, 
-			int editIndex, 
-			String fileKey, 
+
+	public EditorTask(int userID, String username, int sessionID,
+			int keyPressed, int editIndex, int fileId, SourceFile file,
 			String userAuthToken) {
 		this.userID = userID;
 		this.username = username;
 		this.sessionID = sessionID;
 		this.keyPressed = keyPressed;
 		this.editIndex = editIndex;
-		this.fileKey = fileKey;
+		this.fileId = fileId;
 		this.userAuthToken = userAuthToken;
+	}
+
+	public EditorTask(int userID, int sessionID, int keyPressed, int editIndex,
+			int fileId, SourceFile file, String userAuthToken) {
+		this(userID, "", sessionID, keyPressed, editIndex, fileId, file,
+				userAuthToken);
+
 	}
 
 	@Override
 	public void run() {
 		// edit source file
-		file.editSource(this);
-		
-		// notify clients of edit
-		TaskResponse response = new EditorTaskResponse(username, keyPressed, editIndex, file.getFileID());
-		file.distributeTask(response);
-		
+		if (file instanceof ServerSourceFile) {
+			ServerSourceFile serverFile = (ServerSourceFile) file;
+			serverFile.editSource(this);
+
+			// notify clients of edit
+			TaskResponse response = new EditorTaskResponse(username,
+					keyPressed, editIndex, file.getFileID());
+			serverFile.distributeTask(response);
+		}
+
 	}
-	
+
 	public int getKeyPressed() {
 		return keyPressed;
 	}
-	
+
 	public int getEditIndex() {
 		return editIndex;
 	}
-	
+
 	public int getUserID() {
 		return userID;
 	}
-	
+
 	public int getSessionID() {
 		return sessionID;
 	}
-	
+
 	public String getUsername() {
 		return username;
 	}
-	
 
-	
-	public ServerSourceFile getFile() {
+	public SourceFile getFile() {
 		return file;
 	}
-	
+
 	public String getFilename() {
 		return file.getFilename();
 	}
@@ -87,10 +93,8 @@ public class EditorTask extends Task {
 		return PERMISSION;
 	}
 
-
 	public String getUserAuthToken() {
 		return userAuthToken;
 	}
-
 
 }

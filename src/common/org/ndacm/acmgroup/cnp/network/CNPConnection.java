@@ -8,9 +8,8 @@ import java.net.Socket;
 
 import org.ndacm.acmgroup.cnp.network.events.TaskEventSource;
 import org.ndacm.acmgroup.cnp.task.Task;
-import org.ndacm.acmgroup.cnp.task.message.Message;
-import org.ndacm.acmgroup.cnp.task.message.MessageFactory;
-import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
+import org.ndacm.acmgroup.cnp.task.message.TaskMessage;
+import org.ndacm.acmgroup.cnp.task.message.TaskMessageFactory;
 
 /**
  * @author cesar
@@ -80,7 +79,7 @@ public class CNPConnection extends Thread {
 	}
 	
 	public void sendTask(Task task) {
-		Message message = MessageFactory.convertTaskToMessage(task);
+		TaskMessage message = TaskMessageFactory.convertTaskToMessage(task);
 		// now just need to send message over the network
 	}
 	
