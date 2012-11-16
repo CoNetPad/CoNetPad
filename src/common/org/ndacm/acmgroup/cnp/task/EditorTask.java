@@ -1,6 +1,10 @@
 package org.ndacm.acmgroup.cnp.task;
 
 import org.ndacm.acmgroup.cnp.Account.FilePermissionLevel;
+import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
+import org.ndacm.acmgroup.cnp.file.SourceFile;
+import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
+import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
 /**
  * A task to edit a source file. An EditorTask is issued by a single person and is 
@@ -15,22 +19,32 @@ public class EditorTask extends Task {
 	public static FilePermissionLevel PERMISSION = FilePermissionLevel.READ_WRITE;
 
 	protected int userID;
+	private String username;
+	private int sessionID;
 	protected int keyPressed;
 	protected int editIndex;
-	protected String filename;
+	protected ServerSourceFile file;
 	protected String userAuthToken;
 		
-	public EditorTask(int userID, int keyPressed, int editIndex, String filename, String userAuthToken) {
+	public EditorTask(int userID, String username, int sessionID, int keyPressed, 
+			int editIndex, ServerSourceFile file, String userAuthToken) {
 		this.userID = userID;
+		this.username = username;
+		this.sessionID = sessionID;
 		this.keyPressed = keyPressed;
 		this.editIndex = editIndex;
-		this.filename = filename;
+		this.file = file;
 		this.userAuthToken = userAuthToken;
 	}
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+		// edit source file
+		file.editSource(this);
+		
+		// notify clients of edit
+		TaskResponse response = new EditorTaskResponse(username, keyPressed, editIndex, file.getFileID());
+		file.distributeTask(response);
 		
 	}
 	
@@ -46,8 +60,22 @@ public class EditorTask extends Task {
 		return userID;
 	}
 	
+	public int getSessionID() {
+		return sessionID;
+	}
+	
+	public String getUsername() {
+		return username;
+	}
+	
+
+	
+	public ServerSourceFile getFile() {
+		return file;
+	}
+	
 	public String getFilename() {
-		return filename;
+		return file.getFilename();
 	}
 
 	public static FilePermissionLevel getPERMISSION() {

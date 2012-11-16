@@ -26,9 +26,9 @@ public class CNPClientTest {
 		
 		// initialize client1
 		client1 = new CNPClient("acmgroup.ndacm.org");
-		client1.addSourceFile("sourceFile1", SourceType.JAVA);
-		client1.addSourceFile("sourceFile2", SourceType.CPP);
-		client1.addSourceFile("sourceFile3", SourceType.GENERAL);
+		client1.addSourceFile(10, "sourceFile1", SourceType.JAVA);
+		client1.addSourceFile(11, "sourceFile2", SourceType.CPP);
+		client1.addSourceFile(12, "sourceFile3", SourceType.GENERAL);
 	}
 
 	/**

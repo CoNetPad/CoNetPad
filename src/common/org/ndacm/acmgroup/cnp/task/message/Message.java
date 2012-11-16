@@ -1,21 +1,21 @@
 package org.ndacm.acmgroup.cnp.task.message;
 
-import org.ndacm.acmgroup.cnp.task.message.MessageFactory.ID;
+import org.ndacm.acmgroup.cnp.task.message.MessageFactory.TaskType;
 
 public class Message {
-	private ID taskType;
+	private TaskType type;
 
 	private String[] data;
 	
-	public Message(ID tasktype, String[] data ){
-		this.taskType = tasktype;
+	public Message(TaskType type, String[] data ){
+		this.type = type;
 		this.data = data;
 	}
 	
 	public String getMessageString(){
 		StringBuffer buffer = new StringBuffer();
 		
-		buffer.append(taskType);
+		buffer.append(type);
 		for(String element : data){
 			buffer.append(element);
 		}
@@ -23,8 +23,8 @@ public class Message {
 		return buffer.toString();
 	}
 	
-	public ID getTaskType() {
-		return taskType;
+	public TaskType getTaskType() {
+		return type;
 	}
 
 	public String[] getData() {

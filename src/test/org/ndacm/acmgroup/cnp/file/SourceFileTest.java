@@ -3,7 +3,7 @@
  */
 package org.ndacm.acmgroup.cnp.file;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -21,7 +21,7 @@ public class SourceFileTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		file1 = new SourceFile("sourceFile1", SourceType.JAVA, "InitialText_1");
+		file1 = new ServerSourceFile(10, "sourceFile1", SourceType.JAVA, "InitialText_1");
 	}
 
 	/**

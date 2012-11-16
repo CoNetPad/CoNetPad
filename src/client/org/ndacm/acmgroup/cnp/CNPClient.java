@@ -16,16 +16,22 @@ import java.util.concurrent.Executors;
 
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
+import javax.swing.text.BadLocationException;
 
+import org.ndacm.acmgroup.cnp.file.ClientSourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
+import org.ndacm.acmgroup.cnp.gui.MainFrame;
+import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
+import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEventListener;
 import org.ndacm.acmgroup.cnp.task.ChatTask;
 import org.ndacm.acmgroup.cnp.task.DownloadFileTask;
 import org.ndacm.acmgroup.cnp.task.EditorTask;
+import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
 
 
 
-public class CNPClient {
+public class CNPClient implements TaskReceivedEventListener {
 
 	private SSLSocketFactory sslSocketFactory;
 	private SSLSocket socket;
@@ -35,16 +41,18 @@ public class CNPClient {
 	private String serverURL;
 	private String sessionName;
 	private ExecutorService clientExecutor;
-	private Map<String, SourceFile> sourceFiles;
+	private Map<Integer, ClientSourceFile> sourceFiles; // fileID - ClientSourceFile
 	
 	private int userID; // ID of account logged in as
 	private String authToken; // assigned by server after authentication
+	private MainFrame sourceFrame;
 
 	public CNPClient(String serverURL){
 
 		this.serverURL = serverURL;
-		sourceFiles = new ConcurrentHashMap<String, SourceFile>();
+		sourceFiles = new ConcurrentHashMap<Integer, ClientSourceFile>();
 		clientExecutor = Executors.newCachedThreadPool();
+		sourceFrame = new MainFrame();
 
 		// https://www.securecoding.cert.org/confluence/display/java/MSC00-J.+Use+SSLSocket+rather+than+Socket+for+secure+data+exchange
 		sslSocketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
@@ -80,8 +88,8 @@ public class CNPClient {
 		return false;
 	}
 	
-	public void addSourceFile(String filename, SourceType type) {
-		sourceFiles.put(filename, new SourceFile(filename, type, ""));
+	public void addSourceFile(int fileID, String filename, SourceType type) {
+		sourceFiles.put(fileID, new ClientSourceFile(fileID, filename, type, "", this));
 	}
 
 	/**
@@ -127,6 +135,18 @@ public class CNPClient {
 	public boolean sendChatMessage(String message) {
 		// TODO implement
 		return false;
+	}
+	
+	public void editSource(EditorTaskResponse task) throws BadLocationException {
+		task.getFile().editSource(task);
+		sourceFrame.updateSourceTab(task.getFileID(), task.getKeyPressed(), task.getEditIndex());
+	}
+
+
+	@Override
+	public void TaskReceivedEventOccurred(TaskReceivedEvent evt) {
+		clientExecutor.submit(evt.getTask());
+		
 	}
 
 

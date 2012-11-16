@@ -16,14 +16,14 @@ public class TaskReceivedEvent extends EventObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private TaskMessage task;
+	private Task task;
 
 	/**
 	 * @param task
 	 *            This method should called by the TaskEventSource that is firing the
 	 *            event.
 	 */
-	public TaskReceivedEvent(TaskMessage task) {
+	public TaskReceivedEvent(Task task) {
 		super(task);
 		this.task = task;
 	}
@@ -32,7 +32,7 @@ public class TaskReceivedEvent extends EventObject {
 	 * @return Objects receiving this event can use this method to retrieve the
 	 *         CNPTask.
 	 */
-	public TaskMessage getTask() {
+	public Task getTask() {
 		return task;
 	}
 }

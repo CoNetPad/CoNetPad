@@ -7,7 +7,10 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 import org.ndacm.acmgroup.cnp.network.events.TaskEventSource;
-import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
+import org.ndacm.acmgroup.cnp.task.Task;
+import org.ndacm.acmgroup.cnp.task.message.Message;
+import org.ndacm.acmgroup.cnp.task.message.MessageFactory;
+import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
 
 /**
  * @author cesar
@@ -75,6 +78,12 @@ public class CNPConnection extends Thread {
 	public void sendCommand(ProtoCNPTask command) {
 		out.println(command);
 	}
+	
+	public void sendTask(Task task) {
+		Message message = MessageFactory.convertTaskToMessage(task);
+		// now just need to send message over the network
+	}
+	
 
 	/**
 	 * This method will close all the buffers(read, write and socket). This

@@ -1,23 +1,54 @@
 package org.ndacm.acmgroup.cnp.task.response;
 
+import javax.swing.text.BadLocationException;
+
+import org.ndacm.acmgroup.cnp.CNPClient;
+import org.ndacm.acmgroup.cnp.file.ClientSourceFile;
+
 public class EditorTaskResponse extends TaskResponse {
 	
-	private String userName;
+	private String username;
 	private int keyPressed;
 	private int editIndex;
-	private String filename;
+	private ClientSourceFile file;
 	
-	public EditorTaskResponse(String userName, int keyPressed, int editIndex,
-			String filename) {
-		this.userName = userName;
+	public EditorTaskResponse(String username, int keyPressed, int editIndex,
+			int fileID) {
+		this.username = username;
 		this.keyPressed = keyPressed;
 		this.editIndex = editIndex;
-		this.filename = filename;
+		this.file = file;
+	}
+	
+	public int getKeyPressed() {
+		return keyPressed;
+	}
+	
+	public int getEditIndex() {
+		return editIndex;
+	}
+	
+	public String getUsername() {
+		return username;
+	}
+	
+	public int getFileID() {
+		return file.getFileID();
+	}
+	
+	public ClientSourceFile getFile() {
+		return file;
 	}
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+		CNPClient client = file.getClient();
+		try {
+			client.editSource(this);
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 

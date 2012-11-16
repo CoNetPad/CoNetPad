@@ -1,52 +1,55 @@
 package org.ndacm.acmgroup.cnp.file;
-import java.awt.event.KeyEvent;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import org.ndacm.acmgroup.cnp.CNPSession;
+import org.ndacm.acmgroup.cnp.Account;
+import org.ndacm.acmgroup.cnp.network.CNPConnection;
 import org.ndacm.acmgroup.cnp.task.DownloadFileTask;
 import org.ndacm.acmgroup.cnp.task.EditorTask;
+import org.ndacm.acmgroup.cnp.task.SendFileTask;
+import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
 public class ServerSourceFile extends SourceFile {
 
-	private CNPSession session;
-	private ExecutorService taskQueue;
-	
-	public ServerSourceFile(String filename, SourceType type, String initialText) {
-		super(filename, type, initialText);
-		// TODO Auto-generated constructor stub
-	}
-	
-	public ServerSourceFile(String filename, SourceType type) {
-		super(filename, type, "");
+	private ExecutorService fileTaskCourier;
+	private ExecutorService fileTaskQueue;
+	private Map<Account, CNPConnection> clientConnections; // clients that have this specific file open
+
+
+	public ServerSourceFile(int fileID, String filename, SourceType type, String initialText) {
+		super(fileID, filename, type, initialText);
+
+		fileTaskCourier = Executors.newCachedThreadPool();
+		fileTaskQueue = Executors.newSingleThreadExecutor();
+		clientConnections = new ConcurrentHashMap<Account, CNPConnection>();
 	}
 
-	public void addTask(EditorTask task) {
-		taskQueue.submit(task);
+	public ServerSourceFile(int fileID, String filename, SourceType type) {
+		super(fileID, filename, type, "");
 	}
 
-	public boolean addTask(DownloadFileTask task) {
+	public void executeTask(EditorTask task) {
+		fileTaskQueue.submit(task);
+	}
+
+	public boolean executeTask(DownloadFileTask task) {
 		// TODO implement
 		return false;
 	}
 
-	@Override
 	public void editSource(EditorTask task) {
-
-
-		int keyPressed = task.getKeyPressed();
-		int editIndex = task.getEditIndex();
-
-		if (keyPressed == KeyEvent.VK_BACK_SPACE) {
-			sourceRope = sourceRope.delete(editIndex, editIndex + 1);
-		} else {
-			sourceRope = sourceRope.insert(editIndex, Character.toString((char) keyPressed));
-		}
-
-		// create EditorTaskResponse and send it to users in session
-		//TaskResponse response = new EditorTaskResponse(task.getUserName(), keyPressed, editIndex, task.getFilename());
-		//session.distributeTask(response);
-
+		editSource(task.getKeyPressed(), task.getEditIndex());
 	}
+
+	public void distributeTask(TaskResponse response) {
+		for (CNPConnection client : clientConnections.values()) {
+			SendFileTask fileTask = new SendFileTask(response, client);
+			fileTaskCourier.submit(fileTask);
+		}
+	}
+
 
 
 }
