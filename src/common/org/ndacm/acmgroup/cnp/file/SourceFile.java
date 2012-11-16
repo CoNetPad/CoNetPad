@@ -3,13 +3,14 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 
 import org.ahmadsoft.ropes.Rope;
-
 import org.ndacm.acmgroup.cnp.task.EditorTask;
+import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
 
 
 
-public class SourceFile {
+public abstract class SourceFile {
 
+	private int fileID;
 	protected String filename;
 	protected Rope sourceRope;
 	protected SourceType type;
@@ -20,17 +21,15 @@ public class SourceFile {
 		GENERAL
 	}
 	
-	public SourceFile(String filename, SourceType type, String initialText) {
+	public SourceFile(int fileID, String filename, SourceType type, String initialText) {
+		this.fileID = fileID;
 		this.filename = filename;
 		this.type = type;
 		sourceRope = Rope.BUILDER.build(initialText);
 	}
 	
-	public void editSource(EditorTask task) {
-		
-		int keyPressed = task.getKeyPressed();
-		int editIndex = task.getEditIndex();
-		
+	public void editSource(int keyPressed, int editIndex) {
+
 		if (keyPressed == KeyEvent.VK_BACK_SPACE) {
 			sourceRope = sourceRope.delete(editIndex, editIndex + 1);
 		} else {
@@ -38,10 +37,19 @@ public class SourceFile {
 		}	
 
 	}
+
 	
 	public File toFile() {
 		// TODO implement
 		return new File("");
+	}
+	
+	public int getFileID() {
+		return fileID;
+	}
+	
+	public String getFilename() {
+		return filename;
 	}
 	
 	@Override

@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.ndacm.acmgroup.cnp.CNPServer;
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
 import org.ndacm.acmgroup.cnp.task.ChatTask;
 import org.ndacm.acmgroup.cnp.task.CloseFileTask;
@@ -41,9 +42,16 @@ import org.ndacm.acmgroup.cnp.task.response.OpenFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
 public class TaskMessageFactory {
-	public enum ID {
-		Chat, CloseFile, Commit, Compile, CreateAccount, CreateFile, CreatePrivateSession, CreateSessionTask, DeleteSession, DeleteFile, Disconnect, DownloadRepo, Editor, JoinPrivateSession, JoinSession, Login, OpenFile
+
+	public enum TaskType {
+		Chat, CloseFile, Commit, Compile, CreateAccount, CreateFile, CreatePrivateSession, CreateSessionTask, DeleteSession, DeleteFile, Disconnect, DownloadRepo, Editor, JoinPrivateSession, JoinSession, Login, OpenFile, EditorResponse
 	};
+
+	private static CNPServer server;
+
+	public static void initalizeMessageFactory(CNPServer server) {
+		TaskMessageFactory.server = server;
+	}
 
 	private static Task fromMessageToTask(TaskMessage message) {
 		switch (message.getTaskType()) {
@@ -117,9 +125,11 @@ public class TaskMessageFactory {
 					message.getData()[1]);
 		case Editor:
 			return new EditorTask(Integer.parseInt(message.getData()[0]),
-					Integer.parseInt(message.getData()[1]),
+					message.getData()[1],
 					Integer.parseInt(message.getData()[2]),
-					message.getData()[3], message.getData()[4]);
+					Integer.parseInt(message.getData()[3]),
+					Integer.parseInt(message.getData()[4]),
+					message.getData()[5], message.getData()[6]);
 		case JoinPrivateSession:
 			return new JoinPrivateSessionTask(Integer.parseInt(message
 					.getData()[0]), message.getData()[1], message.getData()[2],
@@ -145,17 +155,17 @@ public class TaskMessageFactory {
 			ChatTask chat = (ChatTask) task;
 			String[] data = { Integer.toString(chat.getUserID()),
 					chat.getMessage(), chat.getUserAuthToken() };
-			message = new TaskMessage(ID.Chat, data);
+			message = new TaskMessage(TaskType.Chat, data);
 		} else if (task instanceof CloseFileTask) {
 			CloseFileTask close = (CloseFileTask) task;
 			String[] data = { Integer.toString(close.getUserID()),
 					close.getFilename(), close.getUserAuthToken() };
-			message = new TaskMessage(ID.CloseFile, data);
+			message = new TaskMessage(TaskType.CloseFile, data);
 		} else if (task instanceof CommitTask) {
 			CommitTask commit = (CommitTask) task;
 			String[] data = { Integer.toString(commit.getUserID()),
 					commit.getUserAuthToken() };
-			message = new TaskMessage(ID.Commit, data);
+			message = new TaskMessage(TaskType.Commit, data);
 		} else if (task instanceof CompileTask) {
 			CompileTask compile = (CompileTask) task;
 			int listSize = compile.getSourceFilenames().size();
@@ -165,12 +175,12 @@ public class TaskMessageFactory {
 				data[i + 1] = compile.getSourceFilenames().get(i);
 			}
 			data[data.length - 2] = compile.getUserAuthToken();
-			message = new TaskMessage(ID.Compile, data);
+			message = new TaskMessage(TaskType.Compile, data);
 		} else if (task instanceof CreateAccountTask) {
 			CreateAccountTask create = (CreateAccountTask) task;
 			String[] data = { create.getUsername(), create.getEmail(),
 					create.getPassword() };
-			message = new TaskMessage(ID.CreateAccount, data);
+			message = new TaskMessage(TaskType.CreateAccount, data);
 		} else if (task instanceof CreateFileTask) {
 			CreateFileTask createFile = (CreateFileTask) task;
 			String[] data = { Integer.toString(createFile.getUserID()),
@@ -191,70 +201,70 @@ public class TaskMessageFactory {
 				break;
 			}
 
-			message = new TaskMessage(ID.CreateFile, data);
+			message = new TaskMessage(TaskType.CreateFile, data);
 		} else if (task instanceof CreatePrivateSessionTask) {
 			CreatePrivateSessionTask createPrivate = (CreatePrivateSessionTask) task;
 			String[] data = {
 					Integer.toString(createPrivate.getSessionLeader()),
 					createPrivate.getSessionPassword(),
 					createPrivate.getUserAuthToken() };
-			message = new TaskMessage(ID.CreatePrivateSession, data);
+			message = new TaskMessage(TaskType.CreatePrivateSession, data);
 		} else if (task instanceof CreateSessionTask) {
 			CreateSessionTask createSession = (CreateSessionTask) task;
 			String[] data = {
 					Integer.toString(createSession.getSessionLeader()),
 					createSession.getUserAuthToken() };
-			message = new TaskMessage(ID.CreateSessionTask, data);
+			message = new TaskMessage(TaskType.CreateSessionTask, data);
 		} else if (task instanceof DeleteFileTask) {
 			DeleteFileTask deleteFile = (DeleteFileTask) task;
 			String[] data = { Integer.toString(deleteFile.getUserID()),
 					deleteFile.getFilename(), deleteFile.getUserAuthToken() };
-			message = new TaskMessage(ID.DeleteFile, data);
+			message = new TaskMessage(TaskType.DeleteFile, data);
 		} else if (task instanceof DeleteSessionTask) {
 			DeleteSessionTask deleteSession = (DeleteSessionTask) task;
 			String[] data = { Integer.toString(deleteSession.getUserID()),
 					Integer.toString(deleteSession.getSessionID()),
 					deleteSession.getUserAuthToken() };
-			message = new TaskMessage(ID.DeleteSession, data);
+			message = new TaskMessage(TaskType.DeleteSession, data);
 		} else if (task instanceof DisconnectTask) {
 			DisconnectTask disconnect = (DisconnectTask) task;
 			String[] data = { Integer.toString(disconnect.getUserID()),
 					disconnect.getUserAuthToken() };
-			message = new TaskMessage(ID.Disconnect, data);
+			message = new TaskMessage(TaskType.Disconnect, data);
 		} else if (task instanceof DownloadRepoTask) {
 			DownloadRepoTask download = (DownloadRepoTask) task;
 			String[] data = { Integer.toString(download.getUserID()),
 					download.getUserAuthToken() };
-			message = new TaskMessage(ID.DownloadRepo, data);
+			message = new TaskMessage(TaskType.DownloadRepo, data);
 		} else if (task instanceof EditorTask) {
 			EditorTask editor = (EditorTask) task;
 			String[] data = { Integer.toString(editor.getUserID()),
 					Integer.toString(editor.getKeyPressed()),
 					Integer.toString(editor.getEditIndex()),
 					editor.getFilename(), editor.getUserAuthToken() };
-			message = new TaskMessage(ID.Editor, data);
+			message = new TaskMessage(TaskType.Editor, data);
 		} else if (task instanceof JoinPrivateSessionTask) {
 			JoinPrivateSessionTask joinPrivate = (JoinPrivateSessionTask) task;
 			String[] data = { Integer.toString(joinPrivate.getUserID()),
 					joinPrivate.getSessionName(),
 					joinPrivate.getSessionPassword(),
 					joinPrivate.getUserAuthToken() };
-			message = new TaskMessage(ID.JoinPrivateSession, data);
+			message = new TaskMessage(TaskType.JoinPrivateSession, data);
 		} else if (task instanceof JoinSessionTask) {
 			JoinSessionTask joinSession = (JoinSessionTask) task;
 			String[] data = { Integer.toString(joinSession.getUserID()),
 					joinSession.getSessionName(),
 					joinSession.getUserAuthToken() };
-			message = new TaskMessage(ID.JoinSession, data);
+			message = new TaskMessage(TaskType.JoinSession, data);
 		} else if (task instanceof LoginTask) {
 			LoginTask login = (LoginTask) task;
 			String[] data = { login.getUsername(), login.getPassword() };
-			message = new TaskMessage(ID.Login, data);
+			message = new TaskMessage(TaskType.Login, data);
 		} else if (task instanceof OpenFileTask) {
 			OpenFileTask openFile = (OpenFileTask) task;
 			String[] data = { Integer.toString(openFile.getUserID()),
 					openFile.getFilename(), openFile.getUserAuthToken() };
-			message = new TaskMessage(ID.OpenFile, data);
+			message = new TaskMessage(TaskType.OpenFile, data);
 		}
 
 		return message;
@@ -329,80 +339,102 @@ public class TaskMessageFactory {
 		if (task instanceof ChatTaskResponse) {
 			ChatTaskResponse chat = (ChatTaskResponse) task;
 			String[] data = { chat.getUsername(), chat.getMessage() };
-			message = new TaskMessage(ID.Chat, data);
+			message = new TaskMessage(TaskType.Chat, data);
 		} else if (task instanceof CloseFileTaskResponse) {
 			CloseFileTaskResponse close = (CloseFileTaskResponse) task;
 			String[] data = { close.getFilename(),
 					Boolean.toString(close.isSuccess()) };
-			message = new TaskMessage(ID.CloseFile, data);
+			message = new TaskMessage(TaskType.CloseFile, data);
 		} else if (task instanceof CommitTaskResponse) {
 			CommitTaskResponse commit = (CommitTaskResponse) task;
 			String[] data = { Boolean.toString(commit.isSuccess()) };
-			message = new TaskMessage(ID.Commit, data);
+			message = new TaskMessage(TaskType.Commit, data);
 		} else if (task instanceof CompileTaskResponse) {
 			CompileTaskResponse compile = (CompileTaskResponse) task;
 			String[] data = { Boolean.toString(compile.isSuccess()) };
-			message = new TaskMessage(ID.Compile, data);
+			message = new TaskMessage(TaskType.Compile, data);
 		} else if (task instanceof CreateAccountTaskResponse) {
 			CreateAccountTaskResponse create = (CreateAccountTaskResponse) task;
 			String[] data = { Integer.toString(create.getUserID()),
 					Boolean.toString(create.isSuccess()) };
-			message = new TaskMessage(ID.CreateAccount, data);
+			message = new TaskMessage(TaskType.CreateAccount, data);
 		} else if (task instanceof CreateFileTaskResponse) {
 			CreateFileTaskResponse createFile = (CreateFileTaskResponse) task;
 			String[] data = { createFile.getFilename(),
 					Boolean.toString(createFile.isSuccess()) };
-			message = new TaskMessage(ID.CreateFile, data);
+			message = new TaskMessage(TaskType.CreateFile, data);
 		} else if (task instanceof CreateSessionTaskResponse) {
 			CreateSessionTaskResponse createSession = (CreateSessionTaskResponse) task;
 			String[] data = { Integer.toString(createSession.getSessionID()),
 					Boolean.toString(createSession.isSuccess()) };
-			message = new TaskMessage(ID.CreateSessionTask, data);
+			message = new TaskMessage(TaskType.CreateSessionTask, data);
 		} else if (task instanceof DeleteFileTaskResponse) {
 			DeleteFileTaskResponse deleteFile = (DeleteFileTaskResponse) task;
 			String[] data = { deleteFile.getFilename(),
 					Boolean.toString(deleteFile.isSuccess()) };
-			message = new TaskMessage(ID.DeleteFile, data);
+			message = new TaskMessage(TaskType.DeleteFile, data);
 		} else if (task instanceof DeleteSessionTaskResponse) {
 			DeleteSessionTaskResponse deleteSession = (DeleteSessionTaskResponse) task;
 			String[] data = { deleteSession.getSessionName(),
 					Boolean.toString(deleteSession.isSuccess()) };
-			message = new TaskMessage(ID.DeleteSession, data);
+			message = new TaskMessage(TaskType.DeleteSession, data);
 		} else if (task instanceof DisconnectTaskResponse) {
 			DisconnectTaskResponse disconnect = (DisconnectTaskResponse) task;
 			String[] data = { Boolean.toString(disconnect.isSuccess()) };
-			message = new TaskMessage(ID.Disconnect, data);
+			message = new TaskMessage(TaskType.Disconnect, data);
 		} else if (task instanceof DownloadRepoTaskResponse) {
 			DownloadRepoTaskResponse download = (DownloadRepoTaskResponse) task;
 			String[] data = { download.getEncodedRepo(),
 					Boolean.toString(download.isSuccess()) };
-			message = new TaskMessage(ID.DownloadRepo, data);
+			message = new TaskMessage(TaskType.DownloadRepo, data);
 		} else if (task instanceof EditorTaskResponse) {
 			EditorTaskResponse editor = (EditorTaskResponse) task;
 			String[] data = { editor.getUserName(),
 					Integer.toString(editor.getKeyPressed()),
 					Integer.toString(editor.getEditIndex()),
 					editor.getFilename() };
-			message = new TaskMessage(ID.Editor, data);
+			message = new TaskMessage(TaskType.Editor, data);
 		} else if (task instanceof JoinSessionTaskResponse) {
 			JoinSessionTaskResponse joinSession = (JoinSessionTaskResponse) task;
 			String[] data = { joinSession.getSessionName(),
 					Boolean.toString(joinSession.isSuccess()) };
-			message = new TaskMessage(ID.JoinSession, data);
+			message = new TaskMessage(TaskType.JoinSession, data);
 		} else if (task instanceof LoginTaskResponse) {
 			LoginTaskResponse login = (LoginTaskResponse) task;
 			String[] data = { Integer.toString(login.getUserID()),
 					Boolean.toString(login.isSuccess()),
 					login.getUserAuthToken() };
-			message = new TaskMessage(ID.Login, data);
+			message = new TaskMessage(TaskType.Login, data);
 		} else if (task instanceof OpenFileTaskResponse) {
 			OpenFileTaskResponse openFile = (OpenFileTaskResponse) task;
 			String[] data = { openFile.getFilename(),
 					Boolean.toString(openFile.isSuccess()) };
-			message = new TaskMessage(ID.OpenFile, data);
+			message = new TaskMessage(TaskType.OpenFile, data);
 		}
 
 		return message;
+	}
+
+	public static TaskMessage convertTaskToMessage(Task task) {
+		return convertTaskToMessage(task);
+	}
+
+	public static TaskMessage converTaskToMessage(EditorTask task) {
+		String[] data = { Integer.toString(task.getUserID()),
+				task.getUsername(), Integer.toString(task.getSessionID()),
+				Integer.toString(task.getKeyPressed()),
+				Integer.toString(task.getEditIndex()),
+				Integer.toString(task.getFile().getFileID()),
+				task.getUserAuthToken() };
+		return new TaskMessage(TaskType.Editor, data);
+	}
+
+	public static TaskMessage convertTaskToMessage(EditorTaskResponse task) {
+		String[] data = { task.getUsername(),
+				Integer.toString(task.getKeyPressed()),
+				Integer.toString(task.getEditIndex()),
+				Integer.toString(task.getFileID()) };
+		return new TaskMessage(TaskType.EditorResponse, data);
 	}
 
 }

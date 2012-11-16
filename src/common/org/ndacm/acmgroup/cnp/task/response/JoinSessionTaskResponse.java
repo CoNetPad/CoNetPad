@@ -1,7 +1,7 @@
 package org.ndacm.acmgroup.cnp.task.response;
 
 public class JoinSessionTaskResponse extends TaskResponse {
-	
+
 	private String sessionName;
 	private boolean success;
 
@@ -12,15 +12,24 @@ public class JoinSessionTaskResponse extends TaskResponse {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		
+		client.executeTask(this);
+
 	}
 
 	public String getSessionName() {
 		return sessionName;
 	}
 
+	public void setSessionName(String sessionName) {
+		this.sessionName = sessionName;
+	}
+
 	public boolean isSuccess() {
 		return success;
 	}
+
+	public void setSuccess(boolean success) {
+		this.success = success;
+	}
+
 }

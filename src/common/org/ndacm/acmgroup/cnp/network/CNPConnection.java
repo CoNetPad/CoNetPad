@@ -7,7 +7,10 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 import org.ndacm.acmgroup.cnp.network.events.TaskEventSource;
-import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
+import org.ndacm.acmgroup.cnp.task.Task;
+import org.ndacm.acmgroup.cnp.task.message.Message;
+import org.ndacm.acmgroup.cnp.task.message.MessageFactory;
+import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
 
 /**
  * @author cesar
@@ -22,7 +25,7 @@ public class CNPConnection extends Thread {
 	private int id;
 	private PrintWriter out = null;
 	private BufferedReader in = null;
-	private TaskEventSource component;
+	private TaskEventSource taskSource;
 	private boolean stop = false;
 
 	/**
@@ -34,11 +37,11 @@ public class CNPConnection extends Thread {
 	 *            object that handles firing events, this will usually be the
 	 *            Network object.
 	 */
-	public CNPConnection(Socket socket, int id, TaskEventSource component) {
+	public CNPConnection(Socket socket, int id, TaskEventSource taskSource) {
 		super();
 		this.socket = socket;
 		this.id = id;
-		this.component = component;
+		this.taskSource = taskSource;
 		try {
 			out = new PrintWriter(socket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(
@@ -75,6 +78,12 @@ public class CNPConnection extends Thread {
 	public void sendCommand(ProtoCNPTask command) {
 		out.println(command);
 	}
+	
+	public void sendTask(Task task) {
+		Message message = MessageFactory.convertTaskToMessage(task);
+		// now just need to send message over the network
+	}
+	
 
 	/**
 	 * This method will close all the buffers(read, write and socket). This

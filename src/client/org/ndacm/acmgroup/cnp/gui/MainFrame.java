@@ -4,9 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.util.Map;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.Icon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -14,16 +16,20 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.LineBorder;
-import javax.swing.JSplitPane;
-import javax.swing.JButton;
-import javax.swing.JSeparator;
+import javax.swing.text.BadLocationException;
 
 public class MainFrame extends JFrame {
 
 	private JPanel contentPane;
+	private JTabbedPane tabbedPane;
+	private Map<Integer, JTextField> tabs; // fileID to tab component
+	private int columnWidth;
+	private static final int DEFAULT_WIDTH = 891;
+	private static final int DEFAULT_HEIGHT = 664;
 
 	/**
 	 * Launch the application.
@@ -46,7 +52,9 @@ public class MainFrame extends JFrame {
 	 */
 	public MainFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 891, 664);
+		setBounds(100, 100, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+		// column width should be updated whenever window resized (some percentage of the parent window)
+		columnWidth = (int) (DEFAULT_WIDTH * 0.75); // 
 		contentPane = new JPanel();
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -137,13 +145,25 @@ public class MainFrame extends JFrame {
 								Short.MAX_VALUE).addContainerGap()));
 		panel_1.setLayout(gl_panel_1);
 
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		contentPane.add(tabbedPane, BorderLayout.CENTER);
 
 		JPanel panel_2 = new JPanel();
+		// add to 
 		tabbedPane.addTab("New tab", null, panel_2, null);
 
 		JPanel panel_3 = new JPanel();
 		tabbedPane.addTab("New tab", null, panel_3, null);
+	}
+	
+	public void addTab(int fileID, String filename) {
+		JTextField fileTextField = new JTextField(columnWidth);
+		tabbedPane.addTab("filename", null, fileTextField, filename);
+		tabs.put(fileID, fileTextField);
+	}
+	
+	public void updateSourceTab(int fileID, int keyPressed, int editIndex) throws BadLocationException {
+		JTextField text = tabs.get(fileID);
+		text.getDocument().insertString(editIndex, Character.toString((char) keyPressed), null);
 	}
 }
