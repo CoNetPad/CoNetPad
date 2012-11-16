@@ -1,7 +1,7 @@
 package org.ndacm.acmgroup.cnp.task.response;
 
 public class OpenFileTaskResponse extends TaskResponse {
-	
+
 	private String filename;
 	private boolean success;
 
@@ -13,7 +13,15 @@ public class OpenFileTaskResponse extends TaskResponse {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public boolean isSuccess() {
+		return success;
 	}
 
 }

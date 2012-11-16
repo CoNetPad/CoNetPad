@@ -16,4 +16,12 @@ public class CreateAccountTaskResponse extends TaskResponse {
 		
 	}
 
+	public int getUserID() {
+		return userID;
+	}
+
+	public boolean isSuccess() {
+		return success;
+	}
+
 }

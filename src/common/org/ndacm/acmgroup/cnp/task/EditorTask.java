@@ -7,8 +7,8 @@ import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
 /**
- * A task to edit a source file. An EditorTask is issued by a single person and is 
- * represents a key press on a single file in a single session.
+ * A task to edit a source file. An EditorTask is issued by a single person and
+ * is represents a key press on a single file in a single session.
  * 
  */
 public class EditorTask extends Task {
@@ -23,23 +23,26 @@ public class EditorTask extends Task {
 	private int sessionID;
 	protected int keyPressed;
 	protected int editIndex;
+	protected int fileId;
 	protected SourceFile file;
 	protected String userAuthToken;
 
-	public EditorTask(int userID, String username, int sessionID, int keyPressed, 
-			int editIndex, SourceFile file, String userAuthToken) {
+	public EditorTask(int userID, String username, int sessionID,
+			int keyPressed, int editIndex, int fileId, SourceFile file,
+			String userAuthToken) {
 		this.userID = userID;
 		this.username = username;
 		this.sessionID = sessionID;
 		this.keyPressed = keyPressed;
 		this.editIndex = editIndex;
-		this.file = file;
+		this.fileId = fileId;
 		this.userAuthToken = userAuthToken;
 	}
 
-	public EditorTask(int userID, int sessionID, int keyPressed, 
-			int editIndex, SourceFile file, String userAuthToken) {
-		this(userID, "", sessionID, keyPressed, editIndex, file, userAuthToken);
+	public EditorTask(int userID, int sessionID, int keyPressed, int editIndex,
+			int fileId, SourceFile file, String userAuthToken) {
+		this(userID, "", sessionID, keyPressed, editIndex, fileId, file,
+				userAuthToken);
 
 	}
 
@@ -51,7 +54,8 @@ public class EditorTask extends Task {
 			serverFile.editSource(this);
 
 			// notify clients of edit
-			TaskResponse response = new EditorTaskResponse(username, keyPressed, editIndex, file.getFileID());
+			TaskResponse response = new EditorTaskResponse(username,
+					keyPressed, editIndex, file.getFileID());
 			serverFile.distributeTask(response);
 		}
 
@@ -77,7 +81,9 @@ public class EditorTask extends Task {
 		return username;
 	}
 
-
+	public void setSourceFile(SourceFile file) {
+		this.file = file;
+	}
 
 	public SourceFile getFile() {
 		return file;
@@ -91,10 +97,8 @@ public class EditorTask extends Task {
 		return PERMISSION;
 	}
 
-
 	public String getUserAuthToken() {
 		return userAuthToken;
 	}
-
 
 }
