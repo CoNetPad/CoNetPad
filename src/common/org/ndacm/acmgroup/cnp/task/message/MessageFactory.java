@@ -143,28 +143,28 @@ public class MessageFactory {
 	}
 
 	
-	public static Message convertTaskToMessage(Task task) {
-		return convertTaskToMessage(task);
-	}
-	
-	public static Message converTaskToMessage(EditorTask task) {
-		String[] data = { Integer.toString(task.getUserID()),
-				task.getUsername(),
-				Integer.toString(task.getSessionID()),
-				Integer.toString(task.getKeyPressed()),
-				Integer.toString(task.getEditIndex()),
-				Integer.toString(task.getFile().getFileID()),
-				task.getUserAuthToken() };
-		return new Message(TaskType.Editor, data);
-	}
-
-	public static Message convertTaskToMessage(EditorTaskResponse task) {
-		String[] data = { task.getUsername(),
-				Integer.toString(task.getKeyPressed()),
-				Integer.toString(task.getEditIndex()),
-				Integer.toString(task.getFileID())};
-		return new Message(TaskType.EditorResponse, data);
-	}
+//	public static Message convertTaskToMessage(Task task) {
+//		return convertTaskToMessage(task);
+//	}
+//	
+//	public static Message converTaskToMessage(EditorTask task) {
+//		String[] data = { Integer.toString(task.getUserID()),
+//				task.getUsername(),
+//				Integer.toString(task.getSessionID()),
+//				Integer.toString(task.getKeyPressed()),
+//				Integer.toString(task.getEditIndex()),
+//				Integer.toString(task.getFile().getFileID()),
+//				task.getUserAuthToken() };
+//		return new Message(TaskType.Editor, data);
+//	}
+//
+//	public static Message convertTaskToMessage(EditorTaskResponse task) {
+//		String[] data = { task.getUsername(),
+//				Integer.toString(task.getKeyPressed()),
+//				Integer.toString(task.getEditIndex()),
+//				Integer.toString(task.getFileID())};
+//		return new Message(TaskType.EditorResponse, data);
+//	}
 	
 	// repeat ^ for other types
 
@@ -257,17 +257,16 @@ public class MessageFactory {
 			String[] data = { Integer.toString(download.getUserID()),
 					download.getUserAuthToken() };
 			message = new Message(TaskType.DownloadRepo, data);
-//		} else if (task instanceof EditorTask) {
-//		
-//			EditorTask editor = (EditorTask) task;
-//			String[] data = { Integer.toString(editor.getUserID()),
-//					editor.getUsername(),
-//					Integer.toString(editor.getSessionID()),
-//					Integer.toString(editor.getKeyPressed()),
-//					Integer.toString(editor.getEditIndex()),
-//					Integer.toString(editor.getFile().getFileID()),
-//					editor.getUserAuthToken() };
-//			message = new Message(TaskType.Editor, data);
+		} else if (task instanceof EditorTask) {	
+			EditorTask editTask = (EditorTask) task;
+			String[] data = { Integer.toString(editTask.getUserID()),
+					editTask.getUsername(),
+					Integer.toString(editTask.getSessionID()),
+					Integer.toString(editTask.getKeyPressed()),
+					Integer.toString(editTask.getEditIndex()),
+					Integer.toString(editTask.getFile().getFileID()),
+					editTask.getUserAuthToken() };
+			message = new Message(TaskType.Editor, data);
 		} else if (task instanceof JoinPrivateSessionTask) {
 			JoinPrivateSessionTask joinPrivate = (JoinPrivateSessionTask) task;
 			String[] data = { Integer.toString(joinPrivate.getUserID()),
