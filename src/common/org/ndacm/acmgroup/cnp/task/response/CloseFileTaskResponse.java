@@ -1,11 +1,11 @@
 package org.ndacm.acmgroup.cnp.task.response;
 
-public class CreateFileTaskResponse extends TaskResponse {
+public class CloseFileTaskResponse extends TaskResponse {
 	
 	private String filename;
 	private boolean success;
 	
-	public CreateFileTaskResponse(String filename, boolean success) {
+	public CloseFileTaskResponse(String filename, boolean success) {
 		this.filename = filename;
 		this.success = success;
 	}

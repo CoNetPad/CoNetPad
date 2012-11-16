@@ -21,4 +21,20 @@ public class EditorTaskResponse extends TaskResponse {
 		
 	}
 
+	public String getUserName() {
+		return userName;
+	}
+
+	public int getKeyPressed() {
+		return keyPressed;
+	}
+
+	public int getEditIndex() {
+		return editIndex;
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+
 }

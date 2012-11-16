@@ -14,4 +14,7 @@ public class CommitTaskResponse extends TaskResponse {
 		
 	}
 
+	public boolean isSuccess(){
+		return this.success;
+	}
 }

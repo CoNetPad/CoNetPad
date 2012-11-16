@@ -18,4 +18,16 @@ public class LoginTaskResponse extends TaskResponse {
 		
 	}
 
+	public int getUserID() {
+		return userID;
+	}
+
+	public boolean isSuccess() {
+		return success;
+	}
+
+	public String getUserAuthToken() {
+		return userAuthToken;
+	}
+
 }

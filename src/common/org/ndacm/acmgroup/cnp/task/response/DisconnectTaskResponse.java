@@ -14,4 +14,8 @@ public class DisconnectTaskResponse extends TaskResponse {
 		
 	}
 
+	public boolean isSuccess() {
+		return success;
+	}
+
 }

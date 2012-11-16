@@ -15,6 +15,14 @@ public class DeleteSessionTaskResponse extends TaskResponse {
 		// TODO Auto-generated method stub
 		
 	}
+
+	public String getSessionName() {
+		return sessionName;
+	}
+
+	public boolean isSuccess() {
+		return success;
+	}
 	
 
 }

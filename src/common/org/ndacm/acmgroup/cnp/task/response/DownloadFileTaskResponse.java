@@ -23,4 +23,17 @@ public class DownloadFileTaskResponse extends TaskResponse {
 		
 	}
 
+	public String getEncodedFile() {
+		// TODO
+		return null;
+	}
+
+	public DownloadType getType() {
+		return type;
+	}
+
+	public boolean isSuccess() {
+		return success;
+	}
+
 }

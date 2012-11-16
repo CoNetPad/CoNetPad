@@ -16,4 +16,12 @@ public class CreateSessionTaskResponse extends TaskResponse {
 		
 	}
 
+	public int getSessionID() {
+		return sessionID;
+	}
+
+	public boolean isSuccess() {
+		return success;
+	}
+
 }

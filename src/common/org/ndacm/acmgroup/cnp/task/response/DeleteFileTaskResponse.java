@@ -15,4 +15,12 @@ public class DeleteFileTaskResponse extends TaskResponse {
 		// TODO Auto-generated method stub
 		
 	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public boolean isSuccess() {
+		return success;
+	}
 }
