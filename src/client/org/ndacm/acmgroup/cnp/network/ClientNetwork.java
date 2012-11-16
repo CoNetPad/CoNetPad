@@ -1,14 +1,10 @@
 package org.ndacm.acmgroup.cnp.network;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
+import org.ndacm.acmgroup.cnp.task.Task;
 
 public class ClientNetwork extends BaseNetwork {
 
@@ -58,6 +54,10 @@ public class ClientNetwork extends BaseNetwork {
 	public void disconnect() {
 		System.out.println("Closing connection with server");
 		serverConnection.close();
+	}
+	
+	public void sendTask(Task task) {
+		serverConnection.sendTask(task);
 	}
 	
 	public void sendMessage(ProtoCNPTask task){

@@ -12,7 +12,7 @@ import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
  * 
  */
 public class EditorTask extends Task {
-	
+
 	/**
 	 * The permission level that is required to execute this task.
 	 */
@@ -23,11 +23,11 @@ public class EditorTask extends Task {
 	private int sessionID;
 	protected int keyPressed;
 	protected int editIndex;
-	protected ServerSourceFile file;
+	protected SourceFile file;
 	protected String userAuthToken;
-		
+
 	public EditorTask(int userID, String username, int sessionID, int keyPressed, 
-			int editIndex, ServerSourceFile file, String userAuthToken) {
+			int editIndex, SourceFile file, String userAuthToken) {
 		this.userID = userID;
 		this.username = username;
 		this.sessionID = sessionID;
@@ -37,43 +37,52 @@ public class EditorTask extends Task {
 		this.userAuthToken = userAuthToken;
 	}
 
+	public EditorTask(int userID, int sessionID, int keyPressed, 
+			int editIndex, SourceFile file, String userAuthToken) {
+		this(userID, "", sessionID, keyPressed, editIndex, file, userAuthToken);
+
+	}
+
 	@Override
 	public void run() {
 		// edit source file
-		file.editSource(this);
-		
-		// notify clients of edit
-		TaskResponse response = new EditorTaskResponse(username, keyPressed, editIndex, file.getFileID());
-		file.distributeTask(response);
-		
+		if (file instanceof ServerSourceFile) {
+			ServerSourceFile serverFile = (ServerSourceFile) file;
+			serverFile.editSource(this);
+
+			// notify clients of edit
+			TaskResponse response = new EditorTaskResponse(username, keyPressed, editIndex, file.getFileID());
+			serverFile.distributeTask(response);
+		}
+
 	}
-	
+
 	public int getKeyPressed() {
 		return keyPressed;
 	}
-	
+
 	public int getEditIndex() {
 		return editIndex;
 	}
-	
+
 	public int getUserID() {
 		return userID;
 	}
-	
+
 	public int getSessionID() {
 		return sessionID;
 	}
-	
+
 	public String getUsername() {
 		return username;
 	}
-	
 
-	
-	public ServerSourceFile getFile() {
+
+
+	public SourceFile getFile() {
 		return file;
 	}
-	
+
 	public String getFilename() {
 		return file.getFilename();
 	}

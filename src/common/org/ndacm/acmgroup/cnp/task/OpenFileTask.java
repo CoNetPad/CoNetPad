@@ -3,18 +3,19 @@ package org.ndacm.acmgroup.cnp.task;
 public class OpenFileTask extends Task {
 	
 	protected int userID;
-	protected String filename;
+	protected int fileID;
 	protected String userAuthToken;
 
-	public OpenFileTask(int userID, String filename, String userAuthToken) {
+	public OpenFileTask(int userID, int fileID, String userAuthToken) {
 		this.userID = userID;
-		this.filename = filename;
+		this.fileID = fileID;
 		this.userAuthToken = userAuthToken;
 	}
 
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
+		// register use as listener of ServerSourceFile
 		
 	}
 
@@ -22,8 +23,8 @@ public class OpenFileTask extends Task {
 		return userID;
 	}
 
-	public String getFilename() {
-		return filename;
+	public int getFileID() {
+		return fileID;
 	}
 
 	public String getUserAuthToken() {

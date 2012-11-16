@@ -130,7 +130,7 @@ public class MessageFactory {
 			return new LoginTask(message.getData()[0], message.getData()[1]);
 		case OpenFile:
 			return new OpenFileTask(Integer.parseInt(message.getData()[0]),
-					message.getData()[1], message.getData()[2]);
+					Integer.parseInt(message.getData()[1]), message.getData()[2]);
 		case EditorResponse:
 			return new EditorTaskResponse(message.getData()[0],
 					Integer.parseInt(message.getData()[1]),
@@ -288,7 +288,7 @@ public class MessageFactory {
 		} else if (task instanceof OpenFileTask) {
 			OpenFileTask openFile = (OpenFileTask) task;
 			String[] data = { Integer.toString(openFile.getUserID()),
-					openFile.getFilename(), openFile.getUserAuthToken() };
+					Integer.toString(openFile.getFileID()), openFile.getUserAuthToken() };
 			message = new Message(TaskType.OpenFile, data);
 		}
 

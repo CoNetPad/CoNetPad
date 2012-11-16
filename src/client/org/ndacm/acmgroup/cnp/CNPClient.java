@@ -18,12 +18,18 @@ import org.ndacm.acmgroup.cnp.network.ClientNetwork;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEventListener;
 import org.ndacm.acmgroup.cnp.task.ChatTask;
+import org.ndacm.acmgroup.cnp.task.CreateFileTask;
 import org.ndacm.acmgroup.cnp.task.DownloadFileTask;
+import org.ndacm.acmgroup.cnp.task.EditorTask;
 import org.ndacm.acmgroup.cnp.task.JoinSessionTask;
+import org.ndacm.acmgroup.cnp.task.LoginTask;
+import org.ndacm.acmgroup.cnp.task.OpenFileTask;
 import org.ndacm.acmgroup.cnp.task.Task;
+import org.ndacm.acmgroup.cnp.task.response.CreateFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.JoinSessionTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.LoginTaskResponse;
+import org.ndacm.acmgroup.cnp.task.response.OpenFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
 
@@ -57,8 +63,21 @@ public class CNPClient implements TaskReceivedEventListener {
 		network.connect(serverURL);
 	}
 
+	public void loginToAccount(String username, String password) {
+		Task task = new LoginTask(username, password);
+		network.sendTask(task);
+	}
+
 	public void joinSession(String sessionName) {
-		Task task = new JoinSessionTask(userID,sessionName,authToken);
+		Task task = new JoinSessionTask(userID, sessionName, authToken);
+		network.sendTask(task);
+	}
+
+	public void editFile(int userID, int sessionID, int keyPressed, int editIndex, 
+			SourceFile file, String userAuthToken) {
+
+		Task task = new EditorTask(userID, sessionID, keyPressed, editIndex, file, userAuthToken);
+		network.sendTask(task);
 
 	}
 
@@ -67,8 +86,16 @@ public class CNPClient implements TaskReceivedEventListener {
 		return false;
 	}
 
-	public void addSourceFile(int fileID, String filename, SourceType type) {
-		sourceFiles.put(fileID, new ClientSourceFile(fileID, filename, type, "", this));
+	public void createSourceFile(int fileID, String filename, SourceType type) {
+		Task task = new CreateFileTask(userID, filename, type, authToken);
+		network.sendTask(task);
+		
+	}
+	
+	public void openSourceFile(int fileID) {
+		Task task = new OpenFileTask(userID, fileID, authToken);
+		network.sendTask(task);
+		
 	}
 
 	/**
@@ -113,6 +140,19 @@ public class CNPClient implements TaskReceivedEventListener {
 		}
 
 	}
+	
+	public void executeTask(CreateFileTaskResponse task) {
+		if (task.isSuccess()) { // client is a session leader
+			
+		sourceFiles.put(task.getFileID(), new ClientSourceFile(task.getFileID(), task.getFilename(), 
+				task.getType(), "", this));
+		// create new tab; populate file tree for other users (will register them only if they open)
+		}
+	}
+	
+	public void executeTask(OpenFileTaskResponse task) {
+		// open up tab for file (may need to also include code to synchronize it initially..)
+	}
 
 	public void executeTask(EditorTaskResponse task) throws BadLocationException {
 		task.getFile().editSource(task);
@@ -137,7 +177,7 @@ public class CNPClient implements TaskReceivedEventListener {
 	@Override
 	public void TaskReceivedEventOccurred(TaskReceivedEvent evt) {
 		Task task = evt.getTask();
-		
+
 		if (task instanceof TaskResponse) {
 			TaskResponse response = (TaskResponse) task;
 			response.setClient(this);
