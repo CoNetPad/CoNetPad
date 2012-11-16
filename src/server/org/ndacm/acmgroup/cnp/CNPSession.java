@@ -13,12 +13,14 @@ import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
 import org.ndacm.acmgroup.cnp.git.JGit;
 import org.ndacm.acmgroup.cnp.network.CNPConnection;
+import org.ndacm.acmgroup.cnp.task.EditorTask;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
 
 public class CNPSession {
 	
 	private static final String SESSION_NAME_CHARS = "abcdefghijklmnopqrstuvwxyz";
+	private static volatile int NEXT_FILEID;
 	private static int NAME_LENGTH = 5;
 	private static String baseDirectory;
 	private static Random rnd = new Random();
@@ -27,9 +29,9 @@ public class CNPSession {
 	private CNPServer server;
 	private String sessionName;
 	private JGit gitRepo;
-	private Map<String, ServerSourceFile> sourceFiles; // implement with ConcurrentHashMap
+	private Map<Integer, ServerSourceFile> sourceFiles; // maps fileID to ServerSourceFile
 	private String gitPath;
-	private ExecutorService taskCourier;
+	private ExecutorService sessionTaskCourier;
 	private ExecutorService sessionTaskQueue; // single-thread
 	private SessionType type;
 	private Account sessionLeader;
@@ -74,9 +76,9 @@ public class CNPSession {
 				sessionName + System.getProperty("file.separator");
 		
 		gitRepo = new JGit();
-		sourceFiles = new ConcurrentHashMap<String, ServerSourceFile>();
+		sourceFiles = new ConcurrentHashMap<Integer, ServerSourceFile>();
 		
-		taskCourier = Executors.newCachedThreadPool();
+		sessionTaskCourier = Executors.newCachedThreadPool();
 		sessionTaskQueue = Executors.newSingleThreadExecutor();
 		
 		this.sessionLeader = sessionLeader;
@@ -163,9 +165,10 @@ public class CNPSession {
 		clientConnections.remove(userAccount);
 	}
 
-	public void createFile(String filename, SourceType type) {
-		ServerSourceFile file = new ServerSourceFile(filename, type);
-		sourceFiles.put(filename, file);
+	public synchronized void createFile(String filename, SourceType type) {
+		ServerSourceFile file = new ServerSourceFile(NEXT_FILEID, filename, type);
+		sourceFiles.put(NEXT_FILEID, file);
+		NEXT_FILEID++;
 	}
 	
 	public void deleteFile(String filename) {
@@ -186,8 +189,14 @@ public class CNPSession {
 		return new File("");
 	}
 	
+	public void executeTask(EditorTask task) {
+		// execute task using ServerSourceFile's ExecutorService
+		ServerSourceFile file = task.getFile();
+		file.executeTask(task);
+	}
+	
 	public void distributeTask(TaskResponse task) { // have throw TaskExecutionException
-		taskCourier.submit(task);
+		sessionTaskCourier.submit(task);
 	}
 	
 	// http://stackoverflow.com/questions/2863852/how-to-generate-a-random-string-in-java
@@ -197,6 +206,10 @@ public class CNPSession {
 			text[i] = SESSION_NAME_CHARS.charAt(rnd.nextInt(SESSION_NAME_CHARS.length()));
 		}
 		return new String(text);
+	}
+	
+	public ServerSourceFile getFile(int fileID) {
+		return sourceFiles.get(fileID);
 	}
 	
 }

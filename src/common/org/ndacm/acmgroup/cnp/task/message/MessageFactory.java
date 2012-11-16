@@ -3,6 +3,7 @@ package org.ndacm.acmgroup.cnp.task.message;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.ndacm.acmgroup.cnp.CNPServer;
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
 import org.ndacm.acmgroup.cnp.task.ChatTask;
 import org.ndacm.acmgroup.cnp.task.CloseFileTask;
@@ -22,13 +23,23 @@ import org.ndacm.acmgroup.cnp.task.JoinSessionTask;
 import org.ndacm.acmgroup.cnp.task.LoginTask;
 import org.ndacm.acmgroup.cnp.task.OpenFileTask;
 import org.ndacm.acmgroup.cnp.task.Task;
+import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
 
 public class MessageFactory {
-	public enum ID {
-		Chat, CloseFile, Commit, Compile, CreateAccount, CreateFile, CreatePrivateSession, CreateSessionTask, DeleteSession, DeleteFile, Disconnect, DownloadRepo, Editor, JoinPrivateSession, JoinSession, Login, OpenFile
+	
+	private static CNPServer server;
+	
+	public static void initalizeMessageFactory(CNPServer server) {
+		MessageFactory.server = server;
+	}
+	
+	public enum TaskType {
+		Chat, CloseFile, Commit, Compile, CreateAccount, CreateFile, CreatePrivateSession, CreateSessionTask, 
+		DeleteSession, DeleteFile, Disconnect, DownloadRepo, Editor, JoinPrivateSession, JoinSession, Login, 
+		OpenFile, EditorResponse
 	};
 
-	private static Task fromMessageToTask(Message message) {
+	public static Task convertMessageToTask(Message message) {
 		switch (message.getTaskType()) {
 		case Chat:
 			return new ChatTask(Integer.parseInt(message.getData()[0]),
@@ -99,10 +110,15 @@ public class MessageFactory {
 			return new DownloadRepoTask(Integer.parseInt(message.getData()[0]),
 					message.getData()[1]);
 		case Editor:
+			int sessionID = Integer.parseInt(message.getData()[2]);
+			int fileID = Integer.parseInt(message.getData()[5]);
 			return new EditorTask(Integer.parseInt(message.getData()[0]),
-					Integer.parseInt(message.getData()[1]),
-					Integer.parseInt(message.getData()[2]),
-					message.getData()[3], message.getData()[4]);
+					message.getData()[1],
+					sessionID,
+					Integer.parseInt(message.getData()[3]),
+					Integer.parseInt(message.getData()[4]),
+					server.getSession(sessionID).getFile(fileID),
+					message.getData()[6]);
 		case JoinPrivateSession:
 			return new JoinPrivateSessionTask(Integer.parseInt(message
 					.getData()[0]), message.getData()[1], message.getData()[2],
@@ -115,12 +131,44 @@ public class MessageFactory {
 		case OpenFile:
 			return new OpenFileTask(Integer.parseInt(message.getData()[0]),
 					message.getData()[1], message.getData()[2]);
+		case EditorResponse:
+			return new EditorTaskResponse(message.getData()[0],
+					Integer.parseInt(message.getData()[1]),
+					Integer.parseInt(message.getData()[2]),
+					Integer.parseInt(message.getData()[3]));
+			
 		default:
 			return null;
 		}
 	}
 
-	private static Message fromTaskToMessage(Task task) {
+	
+	public static Message convertTaskToMessage(Task task) {
+		return convertTaskToMessage(task);
+	}
+	
+	public static Message converTaskToMessage(EditorTask task) {
+		String[] data = { Integer.toString(task.getUserID()),
+				task.getUsername(),
+				Integer.toString(task.getSessionID()),
+				Integer.toString(task.getKeyPressed()),
+				Integer.toString(task.getEditIndex()),
+				Integer.toString(task.getFile().getFileID()),
+				task.getUserAuthToken() };
+		return new Message(TaskType.Editor, data);
+	}
+
+	public static Message convertTaskToMessage(EditorTaskResponse task) {
+		String[] data = { task.getUsername(),
+				Integer.toString(task.getKeyPressed()),
+				Integer.toString(task.getEditIndex()),
+				Integer.toString(task.getFileID())};
+		return new Message(TaskType.EditorResponse, data);
+	}
+	
+	// repeat ^ for other types
+
+	public static Message fromTaskToMessage(Task task) {
 
 		Message message = null;
 
@@ -128,17 +176,17 @@ public class MessageFactory {
 			ChatTask chat = (ChatTask) task;
 			String[] data = { Integer.toString(chat.getUserID()),
 					chat.getMessage(), chat.getUserAuthToken() };
-			message = new Message(ID.Chat, data);
+			message = new Message(TaskType.Chat, data);
 		} else if (task instanceof CloseFileTask) {
 			CloseFileTask close = (CloseFileTask) task;
 			String[] data = { Integer.toString(close.getUserID()),
 					close.getFilename(), close.getUserAuthToken() };
-			message = new Message(ID.CloseFile, data);
+			message = new Message(TaskType.CloseFile, data);
 		} else if (task instanceof CommitTask) {
 			CommitTask commit = (CommitTask) task;
 			String[] data = { Integer.toString(commit.getUserID()),
 					commit.getUserAuthToken() };
-			message = new Message(ID.Commit, data);
+			message = new Message(TaskType.Commit, data);
 		} else if (task instanceof CompileTask) {
 			CompileTask compile = (CompileTask) task;
 			int listSize = compile.getSourceFilenames().size();
@@ -148,12 +196,12 @@ public class MessageFactory {
 				data[i + 1] = compile.getSourceFilenames().get(i);
 			}
 			data[data.length - 2] = compile.getUserAuthToken();
-			message = new Message(ID.Compile, data);
+			message = new Message(TaskType.Compile, data);
 		} else if (task instanceof CreateAccountTask) {
 			CreateAccountTask create = (CreateAccountTask) task;
 			String[] data = { create.getUsername(), create.getEmail(),
 					create.getPassword() };
-			message = new Message(ID.CreateAccount, data);
+			message = new Message(TaskType.CreateAccount, data);
 		} else if (task instanceof CreateFileTask) {
 			CreateFileTask createFile = (CreateFileTask) task;
 			String[] data = { Integer.toString(createFile.getUserID()),
@@ -174,70 +222,74 @@ public class MessageFactory {
 				break;
 			}
 
-			message = new Message(ID.CreateFile, data);
+			message = new Message(TaskType.CreateFile, data);
 		} else if (task instanceof CreatePrivateSessionTask) {
 			CreatePrivateSessionTask createPrivate = (CreatePrivateSessionTask) task;
 			String[] data = {
 					Integer.toString(createPrivate.getSessionLeader()),
 					createPrivate.getSessionPassword(),
 					createPrivate.getUserAuthToken() };
-			message = new Message(ID.CreatePrivateSession, data);
+			message = new Message(TaskType.CreatePrivateSession, data);
 		} else if (task instanceof CreateSessionTask) {
 			CreateSessionTask createSession = (CreateSessionTask) task;
 			String[] data = {
 					Integer.toString(createSession.getSessionLeader()),
 					createSession.getUserAuthToken() };
-			message = new Message(ID.CreateSessionTask, data);
+			message = new Message(TaskType.CreateSessionTask, data);
 		} else if (task instanceof DeleteFileTask) {
 			DeleteFileTask deleteFile = (DeleteFileTask) task;
 			String[] data = { Integer.toString(deleteFile.getUserID()),
 					deleteFile.getFilename(), deleteFile.getUserAuthToken() };
-			message = new Message(ID.DeleteFile, data);
+			message = new Message(TaskType.DeleteFile, data);
 		} else if (task instanceof DeleteSessionTask) {
 			DeleteSessionTask deleteSession = (DeleteSessionTask) task;
 			String[] data = { Integer.toString(deleteSession.getUserID()),
 					Integer.toString(deleteSession.getSessionID()),
 					deleteSession.getUserAuthToken() };
-			message = new Message(ID.DeleteSession, data);
+			message = new Message(TaskType.DeleteSession, data);
 		} else if (task instanceof DisconnectTask) {
 			DisconnectTask disconnect = (DisconnectTask) task;
 			String[] data = { Integer.toString(disconnect.getUserID()),
 					disconnect.getUserAuthToken() };
-			message = new Message(ID.Disconnect, data);
+			message = new Message(TaskType.Disconnect, data);
 		} else if (task instanceof DownloadRepoTask) {
 			DownloadRepoTask download = (DownloadRepoTask) task;
 			String[] data = { Integer.toString(download.getUserID()),
 					download.getUserAuthToken() };
-			message = new Message(ID.DownloadRepo, data);
-		} else if (task instanceof EditorTask) {
-			EditorTask editor = (EditorTask) task;
-			String[] data = { Integer.toString(editor.getUserID()),
-					Integer.toString(editor.getKeyPressed()),
-					Integer.toString(editor.getEditIndex()),
-					editor.getFilename(), editor.getUserAuthToken() };
-			message = new Message(ID.Editor, data);
+			message = new Message(TaskType.DownloadRepo, data);
+//		} else if (task instanceof EditorTask) {
+//		
+//			EditorTask editor = (EditorTask) task;
+//			String[] data = { Integer.toString(editor.getUserID()),
+//					editor.getUsername(),
+//					Integer.toString(editor.getSessionID()),
+//					Integer.toString(editor.getKeyPressed()),
+//					Integer.toString(editor.getEditIndex()),
+//					Integer.toString(editor.getFile().getFileID()),
+//					editor.getUserAuthToken() };
+//			message = new Message(TaskType.Editor, data);
 		} else if (task instanceof JoinPrivateSessionTask) {
 			JoinPrivateSessionTask joinPrivate = (JoinPrivateSessionTask) task;
 			String[] data = { Integer.toString(joinPrivate.getUserID()),
 					joinPrivate.getSessionName(),
 					joinPrivate.getSessionPassword(),
 					joinPrivate.getUserAuthToken() };
-			message = new Message(ID.JoinPrivateSession, data);
+			message = new Message(TaskType.JoinPrivateSession, data);
 		} else if (task instanceof JoinSessionTask) {
 			JoinSessionTask joinSession = (JoinSessionTask) task;
 			String[] data = { Integer.toString(joinSession.getUserID()),
 					joinSession.getSessionName(),
 					joinSession.getUserAuthToken() };
-			message = new Message(ID.JoinSession, data);
+			message = new Message(TaskType.JoinSession, data);
 		} else if (task instanceof LoginTask) {
 			LoginTask login = (LoginTask) task;
 			String[] data = { login.getUsername(), login.getPassword() };
-			message = new Message(ID.Login, data);
+			message = new Message(TaskType.Login, data);
 		} else if (task instanceof OpenFileTask) {
 			OpenFileTask openFile = (OpenFileTask) task;
 			String[] data = { Integer.toString(openFile.getUserID()),
 					openFile.getFilename(), openFile.getUserAuthToken() };
-			message = new Message(ID.OpenFile, data);
+			message = new Message(TaskType.OpenFile, data);
 		}
 
 		return message;

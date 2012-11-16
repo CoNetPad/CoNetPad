@@ -117,9 +117,12 @@ public class TaskMessageFactory {
 					message.getData()[1]);
 		case Editor:
 			return new EditorTask(Integer.parseInt(message.getData()[0]),
-					Integer.parseInt(message.getData()[1]),
+					message.getData()[1],
 					Integer.parseInt(message.getData()[2]),
-					message.getData()[3], message.getData()[4]);
+					Integer.parseInt(message.getData()[3]),
+					Integer.parseInt(message.getData()[4]),
+					message.getData()[5],
+					message.getData()[6]);
 		case JoinPrivateSession:
 			return new JoinPrivateSessionTask(Integer.parseInt(message
 					.getData()[0]), message.getData()[1], message.getData()[2],

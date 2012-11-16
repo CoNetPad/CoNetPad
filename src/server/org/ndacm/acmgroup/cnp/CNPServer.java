@@ -1,7 +1,6 @@
 package org.ndacm.acmgroup.cnp;
 
 import java.io.File;
-import java.net.Socket;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -9,20 +8,19 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
-import javax.net.ssl.SSLServerSocket;
 
 import org.ndacm.acmgroup.cnp.database.Database;
-import org.ndacm.acmgroup.cnp.exceptions.FailedAccountException;
 import org.ndacm.acmgroup.cnp.exceptions.FailedSessionException;
 import org.ndacm.acmgroup.cnp.network.ServerNetwork;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEventListener;
-import org.ndacm.acmgroup.cnp.task.JoinSessionTask;
 import org.ndacm.acmgroup.cnp.task.CreateAccountTask;
 import org.ndacm.acmgroup.cnp.task.CreatePrivateSessionTask;
 import org.ndacm.acmgroup.cnp.task.CreateSessionTask;
 import org.ndacm.acmgroup.cnp.task.EditorTask;
+import org.ndacm.acmgroup.cnp.task.JoinSessionTask;
 import org.ndacm.acmgroup.cnp.task.Task;
+import org.ndacm.acmgroup.cnp.task.message.MessageFactory;
 
 public class CNPServer implements TaskReceivedEventListener {
 
@@ -32,8 +30,9 @@ public class CNPServer implements TaskReceivedEventListener {
 	private Database database;
 	private Compiler compiler;
 	private String baseDirectory;
-	private Map<String, CNPSession> openSessions; // maps session name to CNPSession
-
+	private Map<Integer, CNPSession> openSessions; // maps sessionID to CNPSession
+	private MessageFactory messageFactory;
+	
 	private SecretKey key; // TODO implement
 	private Cipher cipher; // TODO implement
 
@@ -42,7 +41,8 @@ public class CNPServer implements TaskReceivedEventListener {
 		this.baseDirectory = baseDirectory;
 		network = new ServerNetwork();
 		compiler = new Compiler();
-		openSessions = new ConcurrentHashMap<String, CNPSession>();
+		openSessions = new ConcurrentHashMap<Integer, CNPSession>();
+		MessageFactory.initalizeMessageFactory(this);
 
 		try { 
 			database = new Database();
@@ -114,14 +114,14 @@ public class CNPServer implements TaskReceivedEventListener {
 	@Override
 	public void TaskReceivedEventOccurred(TaskReceivedEvent evt) {
 
-//		Task task = evt.getTask();
-		Task task = null;
+		Task task = evt.getTask();
 		
 		if (task instanceof EditorTask) { // send to ServerSourceFile's taskQueue
 
 			EditorTask editorTask = (EditorTask) task;
-//		S	editorTask.getSourceFile().addTask(editorTask);
-
+			CNPSession session = openSessions.get(editorTask.getSessionID());
+			session.executeTask(editorTask);
+			
 		} else if (task instanceof CreateAccountTask) {
 
 			try {
@@ -162,6 +162,14 @@ public class CNPServer implements TaskReceivedEventListener {
 	
 	public String getBaseDirectory() {
 		return baseDirectory;
+	}
+	
+	public CNPSession getSession(int sessionID) {
+		return openSessions.get(sessionID);
+	}
+	
+	public MessageFactory getMessageFactory() {
+		return messageFactory;
 	}
 
 
