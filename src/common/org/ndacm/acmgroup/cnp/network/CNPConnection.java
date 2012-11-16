@@ -25,7 +25,7 @@ public class CNPConnection extends Thread {
 	private int id;
 	private PrintWriter out = null;
 	private BufferedReader in = null;
-	private TaskEventSource component;
+	private TaskEventSource taskSource;
 	private boolean stop = false;
 
 	/**
@@ -37,11 +37,11 @@ public class CNPConnection extends Thread {
 	 *            object that handles firing events, this will usually be the
 	 *            Network object.
 	 */
-	public CNPConnection(Socket socket, int id, TaskEventSource component) {
+	public CNPConnection(Socket socket, int id, TaskEventSource taskSource) {
 		super();
 		this.socket = socket;
 		this.id = id;
-		this.component = component;
+		this.taskSource = taskSource;
 		try {
 			out = new PrintWriter(socket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(

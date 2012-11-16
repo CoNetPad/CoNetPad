@@ -1,12 +1,6 @@
 package org.ndacm.acmgroup.cnp;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.Writer;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -14,37 +8,37 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
 import javax.swing.text.BadLocationException;
 
 import org.ndacm.acmgroup.cnp.file.ClientSourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
 import org.ndacm.acmgroup.cnp.gui.MainFrame;
+import org.ndacm.acmgroup.cnp.network.ClientNetwork;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEventListener;
 import org.ndacm.acmgroup.cnp.task.ChatTask;
 import org.ndacm.acmgroup.cnp.task.DownloadFileTask;
-import org.ndacm.acmgroup.cnp.task.EditorTask;
+import org.ndacm.acmgroup.cnp.task.JoinSessionTask;
+import org.ndacm.acmgroup.cnp.task.Task;
 import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
+import org.ndacm.acmgroup.cnp.task.response.JoinSessionTaskResponse;
+import org.ndacm.acmgroup.cnp.task.response.LoginTaskResponse;
+import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
 
 
 public class CNPClient implements TaskReceivedEventListener {
 
-	private SSLSocketFactory sslSocketFactory;
-	private SSLSocket socket;
-	private Writer serverOut;
-	private Reader serverIn;
-
 	private String serverURL;
 	private String sessionName;
-	private ExecutorService clientExecutor;
-	private Map<Integer, ClientSourceFile> sourceFiles; // fileID - ClientSourceFile
-	
 	private int userID; // ID of account logged in as
 	private String authToken; // assigned by server after authentication
+
+	private ExecutorService clientExecutor;
+	private Map<Integer, ClientSourceFile> sourceFiles; // fileID - ClientSourceFile
+
+	private ClientNetwork network;
 	private MainFrame sourceFrame;
 
 	public CNPClient(String serverURL){
@@ -54,40 +48,25 @@ public class CNPClient implements TaskReceivedEventListener {
 		clientExecutor = Executors.newCachedThreadPool();
 		sourceFrame = new MainFrame();
 
-		// https://www.securecoding.cert.org/confluence/display/java/MSC00-J.+Use+SSLSocket+rather+than+Socket+for+secure+data+exchange
-		sslSocketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
-		
-		try {
-			
-			socket = (SSLSocket) sslSocketFactory.createSocket("localhost", 9999);
-			serverOut = new PrintWriter(socket.getOutputStream(), true);
-			serverIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			
-		} catch (IOException e) {
-			// try to handle it
-		} finally {
-			if (socket != null) {
-				try {
-					socket.close();
-				} catch (IOException e) {
-					System.err.println("Error closing client socket.");
-					e.printStackTrace();
-				}
-			}
-		}
+		// register as task event listener with network
+		network.addTaskReceivedEventListener(this);
 	}
 
 
-	public boolean connect(String serverURL, String sessionName) {
-		// TODO implement
-		return false;
+	public void connectToServer(String serverURL) {
+		network.connect(serverURL);
+	}
+
+	public void joinSession(String sessionName) {
+		Task task = new JoinSessionTask(userID,sessionName,authToken);
+
 	}
 
 	public boolean compile(List<String> fileNames) {
 		// TODO implement
 		return false;
 	}
-	
+
 	public void addSourceFile(int fileID, String filename, SourceType type) {
 		sourceFiles.put(fileID, new ClientSourceFile(fileID, filename, type, "", this));
 	}
@@ -117,12 +96,30 @@ public class CNPClient implements TaskReceivedEventListener {
 		return list;
 	}
 
-	public boolean executeTask(ChatTask task) {
-		// TODO implement
-		return false;
+	public void executeTask(Task task) {
+		executeTask(task);
 	}
 
-	public boolean executeTask(EditorTask task) {
+	public void executeTask(LoginTaskResponse task) {
+		if (task.isSuccess()) {
+			userID = task.getUserID();
+			authToken = task.getUserAuthToken();
+		}
+	}
+
+	public void executeTask(JoinSessionTaskResponse task) {
+		if (task.isSuccess()) {
+			// open up main form and source files and stuff
+		}
+
+	}
+
+	public void executeTask(EditorTaskResponse task) throws BadLocationException {
+		task.getFile().editSource(task);
+		sourceFrame.updateSourceTab(task.getFileID(), task.getKeyPressed(), task.getEditIndex());
+	}
+
+	public boolean executeTask(ChatTask task) {
 		// TODO implement
 		return false;
 	}
@@ -136,17 +133,17 @@ public class CNPClient implements TaskReceivedEventListener {
 		// TODO implement
 		return false;
 	}
-	
-	public void editSource(EditorTaskResponse task) throws BadLocationException {
-		task.getFile().editSource(task);
-		sourceFrame.updateSourceTab(task.getFileID(), task.getKeyPressed(), task.getEditIndex());
-	}
-
 
 	@Override
 	public void TaskReceivedEventOccurred(TaskReceivedEvent evt) {
-		clientExecutor.submit(evt.getTask());
+		Task task = evt.getTask();
 		
+		if (task instanceof TaskResponse) {
+			TaskResponse response = (TaskResponse) task;
+			response.setClient(this);
+			clientExecutor.submit(response);
+		}
+
 	}
 
 

@@ -2,7 +2,6 @@ package org.ndacm.acmgroup.cnp.task.response;
 
 import javax.swing.text.BadLocationException;
 
-import org.ndacm.acmgroup.cnp.CNPClient;
 import org.ndacm.acmgroup.cnp.file.ClientSourceFile;
 
 public class EditorTaskResponse extends TaskResponse {
@@ -42,12 +41,10 @@ public class EditorTaskResponse extends TaskResponse {
 
 	@Override
 	public void run() {
-		CNPClient client = file.getClient();
 		try {
-			client.editSource(this);
+			client.executeTask(this);
 		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// do something
 		}
 		
 	}
