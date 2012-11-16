@@ -5,7 +5,6 @@
 
 package org.ndacm.acmgroup.cnp.testing;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -16,7 +15,6 @@ import org.junit.Test;
 import org.ndacm.acmgroup.cnp.Account;
 import org.ndacm.acmgroup.cnp.CNPServer;
 import org.ndacm.acmgroup.cnp.CNPSession;
-import org.ndacm.acmgroup.cnp.CNPSession.SessionType;
 import org.ndacm.acmgroup.cnp.database.Database;
 import org.ndacm.acmgroup.cnp.exceptions.FailedAccountException;
 import org.ndacm.acmgroup.cnp.exceptions.FailedSessionException;
@@ -42,11 +40,11 @@ public class DatabaseTest {
 	@Test
 	public void testVariables()
 	{
-		System.out.println("PUBLIC:  " + SessionType.PUBLIC.intValue() );
-		System.out.println("PRIVATE:  " + SessionType.PRIVATE.intValue() );
+//		System.out.println("PUBLIC:  " + SessionType.PUBLIC.intValue() );
+//		System.out.println("PRIVATE:  " + SessionType.PRIVATE.intValue() );
 	//	System.out.println("PRIVATE:  " + (int)SessionType.PRIVATE);
 		try{
-			assertEquals(SessionType.PUBLIC.intValue(), 0);
+//			assertEquals(SessionType.PUBLIC.intValue(), 0);
 		}
 		catch(AssertionError e)
 		{
@@ -122,210 +120,210 @@ public class DatabaseTest {
 			}
 	}
 	
-	/**
-	 * This tests the functionality of creating account
-	 */
-	@Test
-	public void testCreateSession()
-	{
-		CNPServer server = new CNPServer("basedir");
-		try{
-			Database db = new Database();
-				try
-				{
-					Account act = db.retrieveAccount("John", "test");
-					CNPSession test = db.createSession(act, "SessionName1", server);
-		
-					CNPSession result = new CNPSession(act, "SessionName1", SessionType.PUBLIC);
-					assertTrue(result.equals(test));
-				}
-				catch(FailedSessionException e)
-				{
-					
-					fail("Failed Session Exception Thrown:  " + e.toString());	
-				}
-				catch(SQLException se)
-				{
-					se.printStackTrace();
-					fail("SQL Exception thrown");
-				}
-				catch(AssertionError e)
-				{
-					fail("Sessions did not equal");
-				}
-			}
-			catch(Exception e)
-			{
-				e.printStackTrace();
-			}
-	}
-	/**
-	 * This tests the functionality of creating a private session
-	 */
-	@Test
-	public void testCreatePrivateSession()
-	{
-		try{
-			Database db = new Database();
-			CNPServer server = new CNPServer("basedir");
-				try
-				{
-					String ePass = Database.sha1("test");
-					Account act = db.retrieveAccount("John", "test");
-					CNPSession test = db.createSession(act, "SessionName", server);
-		
-					CNPSession result = new CNPSession(act, "SessionName", SessionType.PRIVATE, ePass);
-					assertTrue(result.equals(test));
-				}
-				catch(FailedSessionException e)
-				{
-					
-					fail("Failed Session Exception Thrown:  " + e.toString());	
-				}
-				catch(SQLException se)
-				{
-					se.printStackTrace();
-					fail("SQL Exception thrown");
-				}
-				catch(AssertionError e)
-				{
-					fail("Sessions did not equal");
-				}
-				catch(NoSuchAlgorithmException e)
-				{
-					fail("No such algorithm exception thrown");
-				}
-			}
-			catch(Exception e)
-			{
-				e.printStackTrace();
-			}
-	}
-	/**
-	 * This tests the functionality of retrieving a session
-	 */
-	@Test
-	public void testretrieveSession()
-	{
-		try{
-			Database db = new Database();
-				try
-				{
-					CNPSession test = db.retrieveSession("SessionName1");
-					Account act = db.getAccountById(17);
-					CNPSession result = new CNPSession(act, "SessionName1", SessionType.PUBLIC);
-					assertTrue(result.equals(test));
-					
-				}
-				catch(FailedSessionException e)
-				{
-					
-					fail("Failed Session Exception Thrown:  " + e.toString());	
-				}
-				catch(SQLException se)
-				{
-					se.printStackTrace();
-					fail("SQL Exception thrown");
-				}
-				catch(AssertionError e)
-				{
-					fail("Sessions did not equal");
-				}
-		
-			}
-			catch(Exception e)
-			{
-				e.printStackTrace();
-			}
-	}
-	
-	
-	/**
-	 * This tests the functionality of retrieving a session by making sure it wrks
-	 */
-	@Test
-	public void testretrieveSession2()
-	{
-		try{
-			Database db = new Database();
-				try
-				{
-					CNPSession test = db.retrieveSession("SessionName");
-					Account act = db.getAccountById(13);
-					CNPSession result = new CNPSession(act, "SessionName2", SessionType.PUBLIC);
-					assertTrue(!result.equals(test));
-					
-				}
-				catch(FailedSessionException e)
-				{
-					
-					fail("Failed Session Exception Thrown:  " + e.toString());	
-				}
-				catch(SQLException se)
-				{
-					se.printStackTrace();
-					fail("SQL Exception thrown");
-				}
-				catch(AssertionError e)
-				{
-					fail("Sessions equal function broken");
-				}
-		
-			}
-			catch(Exception e)
-			{
-				e.printStackTrace();
-			}
-	}
-	
-	/**
-	 * This tests the functionality of retrieving a session
-	 */
-	@Test
-	public void testretrievePrivateSession()
-	{
-		try{
-			Database db = new Database();
-				try
-				{
-					String epass = Database.sha1("test");
-					CNPSession test = db.retrieveSession("SessionName", "test");
-					Account act = db.getAccountById(17);
-					
-					CNPSession result = new CNPSession(act, "SessionName", SessionType.PRIVATE, epass);
-			
-					assertTrue(result.equals(test));
-					
-				}
-				catch(FailedAccountException e)
-				{
-					fail ("Could not get account by ID");
-				}
-				catch(FailedSessionException e)
-				{
-					
-					fail("Failed Session Exception Thrown:  " + e.toString());	
-				}
-				catch(SQLException se)
-				{
-					se.printStackTrace();
-					fail("SQL Exception thrown");
-				}
-				catch(AssertionError e)
-				{
-					fail("Sessions did not equal");
-				}	
-				catch(Exception e)
-				{
-					e.printStackTrace();
-					fail("Some Exception was thrown");
-				}
-		
-			}
-			catch(Exception e)
-			{
-				e.printStackTrace();
-			}
-	}
+//	/**
+//	 * This tests the functionality of creating account
+//	 */
+//	@Test
+//	public void testCreateSession()
+//	{
+//		CNPServer server = new CNPServer("basedir");
+//		try{
+//			Database db = new Database();
+//				try
+//				{
+//					Account act = db.retrieveAccount("John", "test");
+//					CNPSession test = db.createSession(act, "SessionName1", server);
+//		
+//					CNPSession result = new CNPSession(act, "SessionName1");
+//					assertTrue(result.equals(test));
+//				}
+//				catch(FailedSessionException e)
+//				{
+//					
+//					fail("Failed Session Exception Thrown:  " + e.toString());	
+//				}
+//				catch(SQLException se)
+//				{
+//					se.printStackTrace();
+//					fail("SQL Exception thrown");
+//				}
+//				catch(AssertionError e)
+//				{
+//					fail("Sessions did not equal");
+//				}
+//			}
+//			catch(Exception e)
+//			{
+//				e.printStackTrace();
+//			}
+//	}
+//	/**
+//	 * This tests the functionality of creating a private session
+//	 */
+//	@Test
+//	public void testCreatePrivateSession()
+//	{
+//		try{
+//			Database db = new Database();
+//			CNPServer server = new CNPServer("basedir");
+//				try
+//				{
+//					String ePass = Database.sha1("test");
+//					Account act = db.retrieveAccount("John", "test");
+//					CNPSession test = db.createSession(act, "SessionName", server);
+//		
+//					CNPSession result = new CNPSession(act, "SessionName", ePass);
+//					assertTrue(result.equals(test));
+//				}
+//				catch(FailedSessionException e)
+//				{
+//					
+//					fail("Failed Session Exception Thrown:  " + e.toString());	
+//				}
+//				catch(SQLException se)
+//				{
+//					se.printStackTrace();
+//					fail("SQL Exception thrown");
+//				}
+//				catch(AssertionError e)
+//				{
+//					fail("Sessions did not equal");
+//				}
+//				catch(NoSuchAlgorithmException e)
+//				{
+//					fail("No such algorithm exception thrown");
+//				}
+//			}
+//			catch(Exception e)
+//			{
+//				e.printStackTrace();
+//			}
+//	}
+//	/**
+//	 * This tests the functionality of retrieving a session
+//	 */
+//	@Test
+//	public void testretrieveSession()
+//	{
+//		try{
+//			Database db = new Database();
+//				try
+//				{
+//					CNPSession test = db.retrieveSession("SessionName1");
+//					Account act = db.getAccountById(17);
+//					CNPSession result = new CNPSession(act, "SessionName1");
+//					assertTrue(result.equals(test));
+//					
+//				}
+//				catch(FailedSessionException e)
+//				{
+//					
+//					fail("Failed Session Exception Thrown:  " + e.toString());	
+//				}
+//				catch(SQLException se)
+//				{
+//					se.printStackTrace();
+//					fail("SQL Exception thrown");
+//				}
+//				catch(AssertionError e)
+//				{
+//					fail("Sessions did not equal");
+//				}
+//		
+//			}
+//			catch(Exception e)
+//			{
+//				e.printStackTrace();
+//			}
+//	}
+//	
+//	
+//	/**
+//	 * This tests the functionality of retrieving a session by making sure it wrks
+//	 */
+//	@Test
+//	public void testretrieveSession2()
+//	{
+//		try{
+//			Database db = new Database();
+//				try
+//				{
+//					CNPSession test = db.retrieveSession("SessionName");
+//					Account act = db.getAccountById(13);
+//					CNPSession result = new CNPSession(act, "SessionName2");
+//					assertTrue(!result.equals(test));
+//					
+//				}
+//				catch(FailedSessionException e)
+//				{
+//					
+//					fail("Failed Session Exception Thrown:  " + e.toString());	
+//				}
+//				catch(SQLException se)
+//				{
+//					se.printStackTrace();
+//					fail("SQL Exception thrown");
+//				}
+//				catch(AssertionError e)
+//				{
+//					fail("Sessions equal function broken");
+//				}
+//		
+//			}
+//			catch(Exception e)
+//			{
+//				e.printStackTrace();
+//			}
+//	}
+//	
+//	/**
+//	 * This tests the functionality of retrieving a session
+//	 */
+//	@Test
+//	public void testretrievePrivateSession()
+//	{
+//		try{
+//			Database db = new Database();
+//				try
+//				{
+//					String epass = Database.sha1("test");
+//					CNPSession test = db.retrieveSession("SessionName", "test");
+//					Account act = db.getAccountById(17);
+//					
+//					CNPSession result = new CNPSession(act, "SessionName", epass);
+//			
+//					assertTrue(result.equals(test));
+//					
+//				}
+//				catch(FailedAccountException e)
+//				{
+//					fail ("Could not get account by ID");
+//				}
+//				catch(FailedSessionException e)
+//				{
+//					
+//					fail("Failed Session Exception Thrown:  " + e.toString());	
+//				}
+//				catch(SQLException se)
+//				{
+//					se.printStackTrace();
+//					fail("SQL Exception thrown");
+//				}
+//				catch(AssertionError e)
+//				{
+//					fail("Sessions did not equal");
+//				}	
+//				catch(Exception e)
+//				{
+//					e.printStackTrace();
+//					fail("Some Exception was thrown");
+//				}
+//		
+//			}
+//			catch(Exception e)
+//			{
+//				e.printStackTrace();
+//			}
+//	}
 	//END OF CLASS
 }

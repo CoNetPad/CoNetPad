@@ -34,8 +34,8 @@ public class CNPSession {
 	private String gitPath;
 	private ExecutorService sessionTaskCourier;
 	private ExecutorService sessionTaskQueue; // single-thread
-	private SessionType type;
-	private Account sessionLeader;
+//	private SessionType type;
+	private int sessionLeader;
 	private String ircChannel;
 	private String encryptedPassword;
 	private Map<Account, CNPConnection> clientConnections; // implement with ConcurrentHashMap
@@ -44,31 +44,31 @@ public class CNPSession {
 
 
 
-	public enum SessionType {
-		PUBLIC,
-		PRIVATE;
+//	public enum SessionType {
+//		PUBLIC,
+//		PRIVATE;
+//
+//		public int intValue()
+//		{
+//			if(this.equals(SessionType.PUBLIC) )
+//			{
+//				return 0;
+//			}
+//			return 1;
+//		}
+//
+//		public static SessionType getType(int i)
+//		{
+//			if(i == 0)
+//			{	return SessionType.PUBLIC;	}
+//			if(i == 1)
+//			{	return SessionType.PRIVATE;	}
+//			return SessionType.PUBLIC;
+//		}
+//	}
 
-		public int intValue()
-		{
-			if(this.equals(SessionType.PUBLIC) )
-			{
-				return 0;
-			}
-			return 1;
-		}
 
-		public static SessionType getType(int i)
-		{
-			if(i == 0)
-			{	return SessionType.PUBLIC;	}
-			if(i == 1)
-			{	return SessionType.PRIVATE;	}
-			return SessionType.PUBLIC;
-		}
-	}
-
-
-	public CNPSession(int sessionID, String sessionName, CNPServer server, Account sessionLeader) {
+	public CNPSession(int sessionID, String sessionName, CNPServer server, int sessionLeader) {
 
 		this.server = server;
 
@@ -93,19 +93,17 @@ public class CNPSession {
 		// TODO implement
 		sessionTaskQueue = Executors.newSingleThreadExecutor();
 	}
-	public CNPSession(Account leader, String name, SessionType t){
+	public CNPSession(int leader, String name){
 		sessionLeader = leader;
 		sessionName = name;
-		type = t;
 		encryptedPassword = null;
 	}
-	public CNPSession(Account leader, String name, SessionType t, String pass){
+	public CNPSession(int leader, String name, String pass){
 		sessionLeader = leader;
 		sessionName = name;
-		type = t;
 		encryptedPassword = pass;
 	}
-	public Account getSessionLeader()
+	public int getSessionLeader()
 	{
 		return sessionLeader;
 	}
@@ -118,10 +116,7 @@ public class CNPSession {
 	{
 		return ircChannel;
 	}
-	public SessionType getType()
-	{
-		return type;
-	}
+
 	public String getEncryptedPassword()
 	{
 		return encryptedPassword;
@@ -130,33 +125,33 @@ public class CNPSession {
 	{
 		return gitPath;
 	}
-	public boolean equals(CNPSession s)
-	{
-		boolean passMatch = true;
-
-		if(type == SessionType.PRIVATE)
-		{
-			if( (s.getEncryptedPassword() == null) || (encryptedPassword == null))
-			{
-				return false;
-			}
-			else
-			{
-				if(!s.getEncryptedPassword().equals(encryptedPassword))
-				{
-					passMatch = false;
-				}
-			}
-		}
-
-		if( (s.getSessionName().equals(sessionName)) && (s.getSessionLeader().equals(sessionLeader)) &&
-				(s.getType() == type) && (s.getGitPath().equals(gitPath)) && (s.getIrcChannel().equals(ircChannel)))
-		{
-
-			return true & passMatch;
-		}
-		return false;
-	}
+//	public boolean equals(CNPSession s)
+//	{
+//		boolean passMatch = true;
+//
+//		if(type == SessionType.PRIVATE)
+//		{
+//			if( (s.getEncryptedPassword() == null) || (encryptedPassword == null))
+//			{
+//				return false;
+//			}
+//			else
+//			{
+//				if(!s.getEncryptedPassword().equals(encryptedPassword))
+//				{
+//					passMatch = false;
+//				}
+//			}
+//		}
+//
+//		if( (s.getSessionName().equals(sessionName)) && (s.getSessionLeader().equals(sessionLeader)) &&
+//				(s.getType() == type) && (s.getGitPath().equals(gitPath)) && (s.getIrcChannel().equals(ircChannel)))
+//		{
+//
+//			return true & passMatch;
+//		}
+//		return false;
+//	}
 
 	public void addUser(Account userAccount, CNPConnection connection) {
 		clientConnections.put(userAccount, connection);

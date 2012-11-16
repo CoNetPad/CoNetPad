@@ -7,7 +7,7 @@ public class CNPPrivateSession extends CNPSession {
 	private String sessionPassword; // hash
 	private String sessionSalt;
 	
-	public CNPPrivateSession(int sessionID, String sessionName, CNPServer server, Account sessionLeader, String pass, String salt) {
+	public CNPPrivateSession(int sessionID, String sessionName, CNPServer server, int sessionLeader, String pass, String salt) {
 		super(sessionID, sessionName, server, sessionLeader);
 		sessionPassword = pass;
 		sessionSalt = salt;

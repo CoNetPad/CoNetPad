@@ -47,7 +47,7 @@ public interface IDatabase {
 	 * @throws SQLException
 	 * @throws FailedSessionException
 	 */
-	CNPSession createSession(Account sessionLeader, String sessionName, CNPServer server) throws SQLException, FailedSessionException;
+	CNPSession createSession(int sessionLeader, CNPServer server) throws SQLException, FailedSessionException;
 	
 	/**
 	 * This creates a new session that is private
@@ -60,7 +60,7 @@ public interface IDatabase {
 	 * @throws SQLException
 	 * @throws FailedSessionException
 	 */
-	CNPSession createSession(Account sessionLeader, String sessionName, CNPServer server, String sessionPassword) throws SQLException, FailedSessionException;
+	CNPSession createSession(int sessionLeader, CNPServer server, String sessionPassword) throws SQLException, FailedSessionException;
 	
 	/**
 	 * This retrieves the session
@@ -70,7 +70,7 @@ public interface IDatabase {
 	 * @throws FailedSessionException
 	 * @throws FailedAccountException
 	 */
-	CNPSession retrieveSession(String sessionName)throws SQLException, FailedSessionException, FailedAccountException;
+	CNPSession retrieveSession(String sessionName, CNPServer server)throws SQLException, FailedSessionException, FailedAccountException;
 	
 	/**
 	 * This retrieves a private session
@@ -81,7 +81,7 @@ public interface IDatabase {
 	 * @throws FailedSessionException
 	 * @throws FailedAccountException
 	 */
-	CNPSession retrieveSession(String sessionName, String sessionPassword)throws SQLException, FailedSessionException, FailedAccountException;
+	CNPSession retrieveSession(String sessionName, CNPServer server, String sessionPassword)throws SQLException, FailedSessionException, FailedAccountException;
 	
 	boolean sessionIsPrivate(String sessionName);
 	
