@@ -25,6 +25,7 @@ import org.ndacm.acmgroup.cnp.task.JoinSessionTask;
 import org.ndacm.acmgroup.cnp.task.LoginTask;
 import org.ndacm.acmgroup.cnp.task.OpenFileTask;
 import org.ndacm.acmgroup.cnp.task.Task;
+import org.ndacm.acmgroup.cnp.task.response.ChatTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.CreateFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.JoinSessionTaskResponse;
@@ -187,14 +188,13 @@ public class CNPClient implements TaskReceivedEventListener {
 	public void TaskReceivedEventOccurred(TaskReceivedEvent evt) {
 		Task task = evt.getTask();
 
-		ChatTask cTask = (ChatTask) evt.getTask();
+		ChatTaskResponse cTask = (ChatTaskResponse) evt.getTask();
 		System.out.println(userID + ": " + cTask.getMessage());
 
 		if (1 > 0) {
 			return;
 		}
 
-		
 		if (task instanceof TaskResponse) {
 			TaskResponse response = (TaskResponse) task;
 			response.setClient(this);

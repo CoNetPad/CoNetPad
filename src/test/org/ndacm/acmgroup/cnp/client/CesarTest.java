@@ -15,6 +15,7 @@ public class CesarTest {
 			e.printStackTrace();
 		}
 		new Thread( new ClientTestRunnable()).start();
+		new Thread( new ClientTestRunnable()).start();
 
 	}
 

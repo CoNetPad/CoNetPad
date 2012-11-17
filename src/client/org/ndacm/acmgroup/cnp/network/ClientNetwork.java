@@ -22,6 +22,7 @@ public class ClientNetwork extends BaseNetwork {
 		try {
 			serverConnection = new CNPConnection(new Socket(ipAddress, 4444),
 					0, this, false);
+			serverConnection.start();
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
