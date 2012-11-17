@@ -21,38 +21,13 @@ public class ClientNetwork extends BaseNetwork {
 	public void connect(String ipAddress) {
 		try {
 			serverConnection = new CNPConnection(new Socket(ipAddress, 4444),
-					0, this);
+					0, this, false);
+			serverConnection.start();
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		// //
-		// https://www.securecoding.cert.org/confluence/display/java/MSC00-J.+Use+SSLSocket+rather+than+Socket+for+secure+data+exchange
-		// sslSocketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
-		//
-		// try {
-		//
-		// socket = (SSLSocket) sslSocketFactory.createSocket("localhost",
-		// 9999);
-		// serverOut = new PrintWriter(socket.getOutputStream(), true);
-		// serverIn = new BufferedReader(new
-		// InputStreamReader(socket.getInputStream()));
-		//
-		// } catch (IOException e) {
-		// // try to handle it
-		// } finally {
-		// if (socket != null) {
-		// try {
-		// socket.close();
-		// } catch (IOException e) {
-		// System.err.println("Error closing client socket.");
-		// e.printStackTrace();
-		// }
-		// }
-		// }
-
 	}
 
 	public void disconnect() {
