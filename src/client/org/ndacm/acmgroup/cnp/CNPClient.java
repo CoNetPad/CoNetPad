@@ -46,12 +46,12 @@ public class CNPClient implements TaskReceivedEventListener {
 	private ClientNetwork network;
 	private MainFrame sourceFrame;
 
-	public CNPClient(String serverURL) {
+	public CNPClient() {
 
-		this.serverURL = serverURL;
 		sourceFiles = new ConcurrentHashMap<Integer, ClientSourceFile>();
 		clientExecutor = Executors.newCachedThreadPool();
-		sourceFrame = new MainFrame();
+		network = new ClientNetwork();
+		// sourceFrame = new MainFrame();
 
 		// register as task event listener with network
 		network.addTaskReceivedEventListener(this);
@@ -59,6 +59,7 @@ public class CNPClient implements TaskReceivedEventListener {
 
 	public void connectToServer(String serverURL) {
 		network.connect(serverURL);
+		this.serverURL = serverURL;
 	}
 
 	public void loginToAccount(String username, String password) {
@@ -95,6 +96,12 @@ public class CNPClient implements TaskReceivedEventListener {
 		Task task = new OpenFileTask(userID, fileID, authToken);
 		network.sendTask(task);
 
+	}
+
+	public boolean sendChatMessage(String message) {
+		Task task = new ChatTask(userID, message, authToken);
+		network.sendTask(task);
+		return false;
 	}
 
 	/**
@@ -176,15 +183,18 @@ public class CNPClient implements TaskReceivedEventListener {
 		return false;
 	}
 
-	public boolean sendChatMessage(String message) {
-		// TODO implement
-		return false;
-	}
-
 	@Override
 	public void TaskReceivedEventOccurred(TaskReceivedEvent evt) {
 		Task task = evt.getTask();
 
+		ChatTask cTask = (ChatTask) evt.getTask();
+		System.out.println(userID + ": " + cTask.getMessage());
+
+		if (1 > 0) {
+			return;
+		}
+
+		
 		if (task instanceof TaskResponse) {
 			TaskResponse response = (TaskResponse) task;
 			response.setClient(this);

@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 
+import org.ndacm.acmgroup.cnp.task.Task;
+import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
+
 /**
  * This class will be in charge of handling all the network connections,
  * listening for new clients and sending/receiving messages.
@@ -39,7 +42,7 @@ public class ServerNetwork extends BaseNetwork {
 		while (!shouldStop) {
 			// listen for threads
 			try {
-				CNPConnection thread = new CNPConnection(serverSocket.accept(),	id, this);
+				CNPConnection thread = new CNPConnection(serverSocket.accept(),	id, this, true);
 				clientList.add(thread);
 				thread.start();
 				System.out.println("Client connected.");
@@ -84,7 +87,7 @@ public class ServerNetwork extends BaseNetwork {
 		clientList.get(id).close();
 	}
 
-	public void sendMessageToClient(int id, ProtoCNPTask task) {
-		clientList.get(id).sendCommand(task);
+	public void sendTaskResponseToClient(int id, TaskResponse task) {
+		clientList.get(id).sendTaskResponse(task);
 	}
 }

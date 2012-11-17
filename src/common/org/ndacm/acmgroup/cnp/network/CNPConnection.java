@@ -7,9 +7,11 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 import org.ndacm.acmgroup.cnp.network.events.TaskEventSource;
+import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
 import org.ndacm.acmgroup.cnp.task.Task;
 import org.ndacm.acmgroup.cnp.task.message.TaskMessage;
 import org.ndacm.acmgroup.cnp.task.message.TaskMessageFactory;
+import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
 /**
  * @author cesar
@@ -25,6 +27,7 @@ public class CNPConnection extends Thread {
 	private PrintWriter out = null;
 	private BufferedReader in = null;
 	private TaskEventSource taskSource;
+	private boolean isServer = false;
 	private boolean stop = false;
 
 	/**
@@ -36,11 +39,13 @@ public class CNPConnection extends Thread {
 	 *            object that handles firing events, this will usually be the
 	 *            Network object.
 	 */
-	public CNPConnection(Socket socket, int id, TaskEventSource taskSource) {
+	public CNPConnection(Socket socket, int id, TaskEventSource taskSource,
+			boolean isServer) {
 		super();
 		this.socket = socket;
 		this.id = id;
 		this.taskSource = taskSource;
+		this.isServer = isServer;
 		try {
 			out = new PrintWriter(socket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(
@@ -59,10 +64,18 @@ public class CNPConnection extends Thread {
 	public void run() {
 
 		try {
-			System.out.println("Thread for client " + id + "started");
+			System.out.println("Thread for client " + id + " started");
 			String inputLine;
 			while ((inputLine = in.readLine()) != null && !stop) {
-				//component.fireTaskReceivedEvent(new TaskReceivedEvent(new ProtoCNPTask(0, 0)));
+				TaskMessage message = new TaskMessage(inputLine);
+				Task task = null;
+				if (isServer) {
+					task = TaskMessageFactory.fromMessageToTask(message);
+				} else {
+					task = TaskMessageFactory
+							.fromMessageToTaskResponse(message);
+				}
+				taskSource.fireTaskReceivedEvent(new TaskReceivedEvent(task));
 			}
 			System.out.println("Thread for client stopped correctly");
 		} catch (IOException e) {
@@ -70,11 +83,15 @@ public class CNPConnection extends Thread {
 		}
 	}
 
-	
 	public void sendTask(Task task) {
-		out.println(TaskMessageFactory.fromTaskToMessage(task).getMessageString());
+		out.println(TaskMessageFactory.fromTaskToMessage(task)
+				.getMessageString());
 	}
-	
+
+	public void sendTaskResponse(TaskResponse task) {
+		out.println(TaskMessageFactory.fromTaskResponseToMessage(task)
+				.getMessageString());
+	}
 
 	/**
 	 * This method will close all the buffers(read, write and socket). This

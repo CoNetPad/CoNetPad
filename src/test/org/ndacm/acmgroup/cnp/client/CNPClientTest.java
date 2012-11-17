@@ -25,7 +25,8 @@ public class CNPClientTest {
 	public static void setUpBeforeClass() throws Exception {
 		
 		// initialize client1
-		client1 = new CNPClient("acmgroup.ndacm.org");
+		client1 = new CNPClient();
+		client1.connectToServer("acmgroup.ndacm.org");
 		client1.createSourceFile(10, "sourceFile1", SourceType.JAVA);
 		client1.createSourceFile(11, "sourceFile2", SourceType.CPP);
 		client1.createSourceFile(12, "sourceFile3", SourceType.GENERAL);
