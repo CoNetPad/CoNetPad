@@ -118,10 +118,14 @@ public class CNPServer implements TaskReceivedEventListener {
 	@Override
 	public void TaskReceivedEventOccurred(TaskReceivedEvent evt) {
 
+		//TODO
+		//REMOVE BLOCK
+		//THIS IS FOR TESTING PURPOSES ONLY!
 		ChatTask cTask = (ChatTask) evt.getTask();
 		System.out.println("server: " + cTask.getMessage());
-		network.sendTaskResponseToClient(0, new ChatTaskResponse("example",
+		network.sendTaskResponseToAllClients(new ChatTaskResponse("example",
 				cTask.getMessage()));
+		
 		if (1 > 0) {
 			return;
 		}

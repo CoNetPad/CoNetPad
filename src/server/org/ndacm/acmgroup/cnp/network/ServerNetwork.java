@@ -91,4 +91,10 @@ public class ServerNetwork extends BaseNetwork {
 	public void sendTaskResponseToClient(int id, TaskResponse task) {
 		clientList.get(id).sendTaskResponse(task);
 	}
+	
+	public void sendTaskResponseToAllClients(TaskResponse task) {
+		for(CNPConnection client : clientList){
+			client.sendTaskResponse(task);			
+		}
+	}
 }
