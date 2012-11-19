@@ -405,8 +405,6 @@ public class Database implements IDatabase{
 					String salt = rset.getString("SessionSalt");
 					String sessionPassword2 = rset.getString("SessionPassword");
 					String sessionPasswordHash = this.encrypt(sessionPassword, salt);
-					System.out.println("Password 1: " + sessionPassword2);
-					System.out.println("Password 2: " + sessionPasswordHash);
 					retrieveSession.close();
 					rset.close();
 					if(sessionPassword2.equals(sessionPasswordHash))
@@ -446,7 +444,12 @@ public class Database implements IDatabase{
 		{
 			System.err.println("SQL Error" + e.toString());
 			throw new FailedSessionException("SQL Error.");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			System.err.println("Password Encoding error");
+			throw new FailedSessionException("Encoding error");
 		}
+		
 
 	}
 
@@ -462,10 +465,10 @@ public class Database implements IDatabase{
 		// TODO implement
 		return false;
 	}
-	private String encrypt(String input, String salt) throws NoSuchAlgorithmException, InvalidKeySpecException 
+	private String encrypt(String input, String salt) throws NoSuchAlgorithmException, InvalidKeySpecException, UnsupportedEncodingException
 	{
-		
-		KeySpec spec = new PBEKeySpec(input.toCharArray(), salt.getBytes(), 2048, 160);
+		byte[] salt2 = salt.getBytes("ISO-8859-1");
+		KeySpec spec = new PBEKeySpec(input.toCharArray(), salt2, 2048, 160);
 		SecretKeyFactory f = SecretKeyFactory.getInstance(ENCRYPTION_ALGORITHM);
 		return new String(f.generateSecret(spec).getEncoded());
 	}

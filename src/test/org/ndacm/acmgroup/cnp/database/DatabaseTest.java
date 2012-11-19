@@ -254,7 +254,7 @@ public class DatabaseTest {
 				try
 				{
 					CNPServer server = new CNPServer(""); 
-					CNPPrivateSession test = db.retrieveSession("jczbf", server, "test"); 
+					CNPPrivateSession test = db.retrieveSession("cdeef", server, "test"); 
 					//CNPSession result = new CNPSession(int sessionID, String sessionName, CNPServer server, int sessionLeader);
 					//assertTrue(result.equals(test));
 				}
