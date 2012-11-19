@@ -1,362 +1,4 @@
-///**
-// * Class:  Database<br>
-// * Description:  This is a class for handling our database stuff.
-// * See IDatabase for comments  
-// * @author Justin
-// * @version 3.0
-// */
-//package org.ndacm.acmgroup.cnp.database;
-//
-//
-//import java.security.MessageDigest;
-//import java.security.NoSuchAlgorithmException;
-//import java.sql.Connection;
-//import java.sql.DriverManager;
-//import java.sql.ResultSet;
-//import java.sql.SQLException;
-//import java.sql.Statement;
-//
-//import org.ndacm.acmgroup.cnp.Account;
-//import org.ndacm.acmgroup.cnp.CNPServer;
-//import org.ndacm.acmgroup.cnp.CNPSession;
-//import org.ndacm.acmgroup.cnp.CNPSession.SessionType;
-//import org.ndacm.acmgroup.cnp.exceptions.FailedAccountException;
-//import org.ndacm.acmgroup.cnp.exceptions.FailedSessionException;
-//
-//
-///**
-// * @author Justin
-// *
-// */
-//public class Database implements IDatabase{
-//	
-//	private static final String driverClass = "org.sqlite.JDBC";
-//	private Connection dbConnection;
-//	private String dbFile = "jdbc:sqlite:src//sqllite//CoNetPad.db3";
-//	private Statement stmt;
-//	
-//	/**
-//	 * Default Constructor
-//	 * @throws Exception
-//	 */
-//	public Database() throws Exception
-//	{
-//	     Class.forName(driverClass);
-//	     dbConnection = DriverManager.getConnection(dbFile);
-//	     stmt = dbConnection.createStatement();
-//
-//	}
-//	/**
-//	 * createAccount()
-//	 * This Creates a new user account and returns an object
-//	 * @param username - String The string username you wish to use to create new account
-//	 * @param email - String The password of the new account
-//	 * @param password - String The RAW password to be given.  Encrpytion is done for you.
-//	 * @return Returns an new Account Object or throws an FailedAccountException
-//	 * @throws SQLException, FailedAccountException
-//	 */
-//	public Account createAccount(String username, String email, String password) throws SQLException, FailedAccountException 
-//	{
-//		// TODO implement
-//		// also store in DB
-//		try
-//		{
-//		    String encryptPass = sha1(password);
-//		 
-//			String query = "INSERT INTO UserAccount (Username, AccountPassword, Email) VALUES ('" + username + "', '"
-//						+ encryptPass + "', '" + email + "');";
-//			int result =stmt.executeUpdate(query);
-//			if(result > 0)
-//			{
-//				query = "select last_insert_rowid();";
-//				ResultSet rs = stmt.executeQuery(query);
-//				int id = rs.getInt(1);
-//				return new Account(username, email, id);
-//			
-//			}
-//			else
-//			{
-//				
-//				throw new FailedAccountException();
-//			}
-//		}
-//		catch(Exception e)
-//		{
-//			e.printStackTrace();
-//			throw new FailedAccountException("Encrpytion failed");
-//		}
-//	}
-//	/**
-//	 * retrieveAccount()
-//	 * Gets an existing account from the database and returns it into an Account Object
-//	 * @param username The username you wish to try and get
-//	 * @param password The password you wish to verify with.  Make sure its RAW and not encrpypted.
-//	 * @return Account The account object of the the user account
-//	 * @throws SQLException
-//	 * @throws FailedAccountException
-//	 */
-//	public Account retrieveAccount(String username, String password) throws SQLException, FailedAccountException {
-//		// TODO implement
-//		String query = null;
-//		try
-//		{
-//		    String encryptPass = sha1(password);
-//			query = "SELECT UserID, Username, Email FROM UserAccount WHERE Username='" + username + "' AND  AccountPassword='"
-//						+ encryptPass + "';";
-//			ResultSet rs = stmt.executeQuery(query);
-//			while(rs.next())
-//			{
-//				String uname = rs.getString("Username");
-//				String email = rs.getString("Email");
-//				int id = rs.getInt("UserID");
-//				return new Account(uname, email, id);
-//			}
-//			throw new FailedAccountException("No Account Found");
-//			
-//		}
-//		catch(NoSuchAlgorithmException e)
-//		{
-//			throw new FailedAccountException("Encrpytion failed");
-//		}
-//		catch(SQLException e)
-//		{
-//			throw new FailedAccountException("SQL Error");
-//		}
-//	}
-//	
-//	/**
-//	 * createSession()
-//	 * This will create a new CNP Session
-//	 * @param sessionLeader	The session leader of the new session
-//	 * @param name 			The user-friendly name of the session
-//	 * @param channel		The IRC channel
-//	 * @param gpath			The path to the GIT
-//	 */
-//	public CNPSession createSession(Account sessionLeader, String sessionName, CNPServer server) throws SQLException, FailedSessionException{
-//		// TODO implement
-//		String query = null;
-//		try
-//		{
-//			query = "INSERT INTO Session (SessionLeader, SessionName, SessionType) " +
-//					"VALUES(" + sessionLeader.getUserID() + ", '" + sessionName + "', '" + SessionType.PUBLIC + "');";
-//			int result =stmt.executeUpdate(query);
-//			if(result > 0)
-//			{
-//				return new CNPSession(sessionLeader, sessionName, SessionType.PUBLIC);
-//			}
-//			else
-//			{
-//				
-//				throw new FailedSessionException();
-//			}
-//		}
-//		catch(SQLException e)
-//		{
-//			throw e;
-//		}
-//		
-//	}
-//	
-//	@Override
-//	public CNPSession createSession(Account sessionLeader, String sessionName, CNPServer server, String sessionPassword) throws SQLException, FailedSessionException {
-//		String query = null;
-//		try
-//		{
-//			query = "INSERT INTO Session (SessionLeader, SessionName, SessionType) " +
-//					"VALUES(" + sessionLeader.getUserID() + ", '" + sessionName + "', '" + SessionType.PRIVATE.intValue() + "');";
-//			int result =stmt.executeUpdate(query);
-//			if(result > 0)
-//			{
-//				try
-//				{
-//					query = "select last_insert_rowid();";
-//					ResultSet rs = stmt.executeQuery(query);
-//					int id = rs.getInt(1);
-//					if(id > 0)
-//					{
-//						String ePass = Database.sha1(sessionPassword);
-//						query = "INSERT INTO SessionPassword (SessionID, SessionPassword) VALUES (" + id + ", '"+ ePass + "');";
-//						result =stmt.executeUpdate(query);
-//						if(result > 0)
-//						{
-//							return new CNPSession(sessionLeader, sessionName, SessionType.PRIVATE, ePass);
-//						}
-//						else
-//						{
-//							throw new FailedSessionException("Could not insert sesison password");
-//						}
-//					}
-//					else
-//					{
-//						throw new FailedSessionException("Error with creating private password");
-//					}
-//				}
-//				catch(SQLException se)
-//				{
-//					throw se;
-//				}
-//				catch(NoSuchAlgorithmException e)
-//				{
-//					throw new FailedSessionException("Password failed");
-//				}
-//			}
-//			else
-//			{
-//				
-//				throw new FailedSessionException();
-//			}
-//		}
-//		catch(SQLException e)
-//		{
-//			throw e;
-//		}
-//	}
-//	public CNPSession retrieveSession(String sessionName)throws SQLException, FailedSessionException, FailedAccountException {
-//		String query = null;
-//		try
-//		{
-//			query = "SELECT SessionLeader, SessionName, SessionType, IrcChannel, GitPath FROM Session WHERE SessionName ='" + sessionName + "';";
-//			ResultSet rs = stmt.executeQuery(query);
-//			while(rs.next())
-//			{
-//				int sessionLeader = rs.getInt("SessionLeader");
-//				String name = rs.getString("SessionName");
-//				SessionType type = SessionType.getType( rs.getInt("SessionType") );
-//				String channel = rs.getString("IrcChannel");
-//				String gitPath = rs.getString("GitPath");
-//				Account act = getAccountById(sessionLeader);
-//				return new  CNPSession(act, name, type);
-//			}
-//			throw new FailedSessionException("No Session found");
-//		}
-//		catch(FailedAccountException e)
-//		{
-//			throw e;
-//		}
-//		catch(SQLException e)
-//		{
-//			throw e;
-//		}
-//	}
-//	
-//	public CNPSession retrieveSession(String sessionName, String sessionPassword)throws SQLException, FailedSessionException, FailedAccountException {
-//		String query = null;
-//		try
-//		{		
-//			query = "SELECT SessionID, SessionLeader, SessionName, SessionType, IrcChannel, GitPath FROM Session WHERE SessionName ='" + sessionName + "';";
-//			ResultSet rs = stmt.executeQuery(query);
-//			String ePass = sha1(sessionPassword);
-//			while(rs.next())
-//			{
-//				int sessionID = rs.getInt("SessionID");
-//				int sessionLeader = rs.getInt("SessionLeader");
-//				String name = rs.getString("SessionName");
-//				SessionType type = SessionType.getType( rs.getInt("SessionType") );
-//				String channel = rs.getString("IrcChannel");
-//				String gitPath = rs.getString("GitPath");
-//				Account act = getAccountById(sessionLeader);
-//				query = "SELECT SessionPassword FROM SessionPassword WHERE SessionID=" + sessionID + " LIMIT 1;";
-//				rs = stmt.executeQuery(query);
-//				while(rs.next())
-//				{
-//					String pass = rs.getString("SessionPassword");
-//					if(ePass.equals(pass))
-//					{	return new CNPSession(act, name, type, channel);	}
-//					else
-//					{	throw new FailedSessionException("Passwords for private session did not match");	}
-//				}
-//				throw new FailedSessionException("No Session found");
-//			}
-//			throw new FailedSessionException("No Session found");
-//		}
-//		catch(FailedAccountException e)
-//		{
-//			throw e;
-//		}
-//		catch(NoSuchAlgorithmException e)
-//		{
-//			throw new FailedSessionException("Error with encrpyting password");
-//		}
-//		catch(SQLException e)
-//		{
-//			throw e;
-//		}
-//	}
-//	
-//	public boolean sessionIsPrivate(String sessionName) {
-//		// TODO implement
-//		try{
-//			CNPSession session = this.retrieveSession(sessionName);
-//			if(session.getType() == SessionType.PRIVATE)
-//			{
-//				return true;
-//			}
-//				
-//		}
-//		catch(Exception e)
-//		{
-//			return false;
-//		}
-//		return false;
-//	}
-//	
-////	public boolean createSessionAccount(CNPSession session, Account account,
-////			Account.FilePermissionLevel filePermission, Account.ChatPermissionLevel chatPermission) {
-////		// TODO implement
-////		return false;
-////	}
-//	
-//	public Account getAccountById(int id) throws SQLException, FailedAccountException
-//	{
-//		String query = null;
-//		try
-//		{
-//			query = "SELECT UserID, UserName, Email FROM UserAccount WHERE UserID =" + id + ";";
-//			ResultSet rs = stmt.executeQuery(query);
-//			while(rs.next())
-//			{
-//				int userID = rs.getInt("UserID");
-//				String userName = rs.getString("UserName");
-//				String email = rs.getString("Email");
-//				return new Account(userName, email, userID);
-//				
-//			}
-//		}
-//		catch(SQLException e)
-//		{
-//			throw e;
-//		}
-//		throw new FailedAccountException("Unable to retrive Account by database id.");
-//		
-//	}
-//	
-//	/**
-//	 * sha1()
-//	 * This returns the string version of the SHA1 Encryption
-//	 * @param input This is the string you wish to get the SHA1 Hash
-//	 * @return The encrypted value
-//	 * @throws NoSuchAlgorithmException
-//	 */
-//   public static String sha1(String input) throws NoSuchAlgorithmException
-//   {
-//		MessageDigest md = MessageDigest.getInstance("SHA1");
-//		md.update(input.getBytes()); 
-//		byte[] b = md.digest();
-//		char hexDigit[] = {'0', '1', '2', '3', '4', '5', '6', '7',
-//		 '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-//		StringBuffer buf = new StringBuffer();
-//		for (int j=0; j<b.length; j++) 
-//		{
-//			buf.append(hexDigit[(b[j] >> 4) & 0x0f]);
-//			buf.append(hexDigit[b[j] & 0x0f]);
-//		}
-//		  return buf.toString();
-//	}
-//
-//
-//}
-//
-//
+
 
 package org.ndacm.acmgroup.cnp.database;
 
@@ -380,6 +22,7 @@ import org.ndacm.acmgroup.cnp.CNPPrivateSession;
 import org.ndacm.acmgroup.cnp.CNPServer;
 import org.ndacm.acmgroup.cnp.CNPSession;
 import org.ndacm.acmgroup.cnp.exceptions.FailedAccountException;
+import org.ndacm.acmgroup.cnp.exceptions.FailedSessionException;
 
 /**
  * Class:  Database<br>
@@ -466,6 +109,11 @@ public class Database implements IDatabase{
 			System.err.println("SQL error.");
 			throw new FailedAccountException("Error creating account for " + username);
 		}
+		catch(Exception e)
+		{
+			System.err.println("Unknown Exception thrown:  " + e.getStackTrace());
+			throw new FailedAccountException("Some Exception Thrown.");
+		}
 
 		if (newAccount != null) {
 			return newAccount;
@@ -483,33 +131,6 @@ public class Database implements IDatabase{
 	 * @throws FailedAccountException
 	 */
 	public Account retrieveAccount(String username, String password) throws FailedAccountException {
-
-		// we should probably salt password too
-		//		String query = null;
-		//		try
-		//		{
-		//		    String encryptPass = sha1(password);
-		//			query = "SELECT Username, Email FROM UserAccount WHERE Username='" + username + "' AND  AccountPassword='"
-		//						+ encryptPass + "';";
-		//			ResultSet rs = stmt.executeQuery(query);
-		//			while(rs.next())
-		//			{
-		//				String uname = rs.getString("Username");
-		//				String email = rs.getString("Email");
-		//				return new Account(uname, email, 1); // TODO fix
-		//			}
-		//			throw new FailedAccountException("No Account Found");
-		//			
-		//		}
-		//		catch(NoSuchAlgorithmException e)
-		//		{
-		//			throw new FailedAccountException("Encrpytion failed");
-		//		}
-		//		catch(SQLException e)
-		//		{
-		//			throw new FailedAccountException("SQL Error");
-		//		}
-
 
 		PreparedStatement retrieveAccount = null;
 		ResultSet rset = null;
@@ -563,7 +184,11 @@ public class Database implements IDatabase{
 			System.err.println("Invalid key spec.");
 			throw new FailedAccountException("Error retrieving account for " + username);
 		}
-
+		catch(NullPointerException e)
+		{
+				System.err.println("Some other Error was caught");
+			throw new FailedAccountException("Error  " + e.getStackTrace() );
+		}
 		// check if hashes match. if so, return account.
 		if (hashSupplied.equals(hashRetrieved)) {
 			return accountRetrieved;
@@ -580,31 +205,48 @@ public class Database implements IDatabase{
 		CNPSession newSession = null;
 
 		// TODO test if session already exists
-
+		
 		// insert session into DB
-		PreparedStatement createSession = null;
-		String sessionName = CNPSession.generateString();
-		String insertion = "INSERT INTO Session (SessionLeader, SessionName, IsPublic) "
-				+ "VALUES (? , ?, ?)";
-
-		createSession = dbConnection.prepareStatement(insertion);
-		createSession.setInt(1, sessionLeader);
-		createSession.setString(2, sessionName);
-		createSession.setBoolean(3, true);
-
-		createSession.executeUpdate();
-
-		// return the session that was just inserted
-		newSession = retrieveSession(sessionName, server);
-
-		createSession.close();
-
-		return newSession;
+		PreparedStatement createSession = null, retrieveSession = null;
+	
+		String query = "SELECT * "
+				+ "FROM UserAccount "
+				+ "WHERE UserID = ?";
+		
+		retrieveSession = dbConnection.prepareStatement(query);
+		retrieveSession.setInt(1, sessionLeader);
+		ResultSet rset = retrieveSession.executeQuery();
+		if(rset.next())
+		{
+			
+			String sessionName = CNPSession.generateString();
+			String insertion = "INSERT INTO Session (SessionLeader, SessionName, IsPublic) "
+					+ "VALUES (? , ?, ?)";
+	
+			createSession = dbConnection.prepareStatement(insertion);
+			createSession.setInt(1, sessionLeader);
+			createSession.setString(2, sessionName);
+			createSession.setBoolean(3, true);
+	
+			createSession.executeUpdate();
+	
+			// return the session that was just inserted
+			newSession = retrieveSession(sessionName, server);
+	
+			createSession.close();
+			return newSession;
+		}
+		else
+		{
+			System.err.println("The SessionLeader was not found.");
+			throw new FailedAccountException("Could not find Session Leader.");
+		}
+	
 
 	}
 
 	public CNPPrivateSession createSession(int sessionLeader, CNPServer server, String sessionPassword) 
-			throws SQLException {
+			throws SQLException, FailedSessionException {
 
 		// create session and store in database
 		CNPPrivateSession newSession = null;
@@ -654,6 +296,10 @@ public class Database implements IDatabase{
 			System.err.println("Unsupported encoding.");
 			throw new FailedAccountException("Error creating session.");
 		}
+		catch(FailedSessionException e)
+		{
+			throw e;
+		}
 
 		return newSession;
 	}
@@ -663,9 +309,9 @@ public class Database implements IDatabase{
 		PreparedStatement retrieveSession = null;
 		ResultSet rset = null;
 		CNPSession sessionRetrieved = null;
-
+		
 		String query = "SELECT * "
-				+ "FROM Sesson "
+				+ "FROM Session "
 				+ "WHERE SessionName = ?";
 
 
@@ -688,9 +334,81 @@ public class Database implements IDatabase{
 		return sessionRetrieved;
 	}
 
-	public CNPPrivateSession retrieveSession(String sessionName, CNPServer server, String sessionPassword) {
-		// TODO implement - will have to do join - also, i think SQLite actually does support foreign keys
-		return new CNPPrivateSession(1, sessionName, server, 1, sessionPassword, "salt");
+	public CNPPrivateSession retrieveSession(String sessionName, CNPServer server, String sessionPassword) throws FailedSessionException, FailedAccountException 
+	{
+		PreparedStatement retrieveSession = null;
+		ResultSet rset = null;
+
+		String query = "SELECT * "
+				+ "FROM Sesson "
+				+ "WHERE SessionName = ?";
+
+		try{
+			// retrieve user with given username
+			retrieveSession = dbConnection.prepareStatement(query);
+			retrieveSession.setString(1, sessionName);
+	
+			//run the query, return a result set        
+			rset = retrieveSession.executeQuery();
+			if(rset.next())
+			{
+				int idRetrieved = rset.getInt("SessionID");
+				String nameRetrieved = rset.getString("SessionName");
+				int sessionLeader = rset.getInt("SessionLeader");
+				String salt = rset.getString("AccountSalt");
+				//Verify Password
+				query = "SELECT * "
+						+ "FROM SessonPassword "
+						+ "WHERE SessionID = ?";
+				retrieveSession = dbConnection.prepareStatement(query);
+				retrieveSession.setInt(1, idRetrieved );
+				//run the query, return a result set        
+				rset = retrieveSession.executeQuery();
+				if(rset.next())
+				{
+					retrieveSession.close();
+					rset.close();
+					String sessionPassword2 = rset.getString("SessionPassword");
+					String sessionPaswordHash = this.encrypt(sessionPassword, salt);
+					if(sessionPassword2.equals(sessionPaswordHash))
+					{
+						return new CNPPrivateSession(idRetrieved, nameRetrieved, server, sessionLeader);
+					}
+					else
+					{
+						System.err.println("Passwords Did not Match.");
+						throw new FailedSessionException("Passwords did not match");
+					}
+					
+				}
+				else
+				{
+					System.err.println("No SessionPassword Found");
+					throw new FailedSessionException("Session Password was given, but no correspodning session password found.");
+				}	
+			}
+			else
+			{
+				System.err.println("No Session Found");
+				throw new FailedSessionException("No Sesison was found");
+			}
+		}
+		catch (NoSuchAlgorithmException ex) 
+		{
+			System.err.println("Invalid Encrpytion Algorithm: " + ENCRYPTION_ALGORITHM);
+			throw new FailedAccountException("Error creating session.");
+		} 
+		catch (InvalidKeySpecException e) 
+		{
+			System.err.println("Invalid key spec.");
+			throw new FailedAccountException("Error creating session.");
+		} 
+		catch(SQLException e)
+		{
+			System.err.println("SQL Error");
+			throw new FailedSessionException("SQL Error.");
+		}
+
 	}
 
 	public boolean sessionIsPrivate(String sessionName) {
@@ -703,30 +421,14 @@ public class Database implements IDatabase{
 		// TODO implement
 		return false;
 	}
-
-	// if we use this, we should salt the input before hashing
-	//	/**
-	//	 * sha1()
-	//	 * This returns the string version of the SHA1 Encryption
-	//	 * @param input This is the string you wish to get the SHA1 Hash
-	//	 * @return The encrypted value
-	//	 * @throws NoSuchAlgorithmException
-	//	 */
-	//   private static String sha1(String input) throws NoSuchAlgorithmException
-	//   {
-	//		MessageDigest md = MessageDigest.getInstance("SHA1");
-	//		md.update(input.getBytes()); 
-	//		byte[] b = md.digest();
-	//		char hexDigit[] = {'0', '1', '2', '3', '4', '5', '6', '7',
-	//		 '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-	//		StringBuffer buf = new StringBuffer();
-	//		for (int j=0; j<b.length; j++) 
-	//		{
-	//			buf.append(hexDigit[(b[j] >> 4) & 0x0f]);
-	//			buf.append(hexDigit[b[j] & 0x0f]);
-	//		}
-	//		  return buf.toString();
-	//	}
+	private String encrypt(String input, String salt) throws NoSuchAlgorithmException, InvalidKeySpecException 
+	{
+		
+		KeySpec spec = new PBEKeySpec(input.toCharArray(), salt.getBytes(), 2048, 160);
+		SecretKeyFactory f = SecretKeyFactory.getInstance(ENCRYPTION_ALGORITHM);
+		return new String(f.generateSecret(spec).getEncoded());
+	}
+	
 
 }
 

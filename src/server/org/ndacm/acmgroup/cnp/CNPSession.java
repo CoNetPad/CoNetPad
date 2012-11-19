@@ -44,29 +44,6 @@ public class CNPSession {
 
 
 
-//	public enum SessionType {
-//		PUBLIC,
-//		PRIVATE;
-//
-//		public int intValue()
-//		{
-//			if(this.equals(SessionType.PUBLIC) )
-//			{
-//				return 0;
-//			}
-//			return 1;
-//		}
-//
-//		public static SessionType getType(int i)
-//		{
-//			if(i == 0)
-//			{	return SessionType.PUBLIC;	}
-//			if(i == 1)
-//			{	return SessionType.PRIVATE;	}
-//			return SessionType.PUBLIC;
-//		}
-//	}
-
 
 	public CNPSession(int sessionID, String sessionName, CNPServer server, int sessionLeader) {
 
@@ -125,34 +102,10 @@ public class CNPSession {
 	{
 		return gitPath;
 	}
-//	public boolean equals(CNPSession s)
-//	{
-//		boolean passMatch = true;
-//
-//		if(type == SessionType.PRIVATE)
-//		{
-//			if( (s.getEncryptedPassword() == null) || (encryptedPassword == null))
-//			{
-//				return false;
-//			}
-//			else
-//			{
-//				if(!s.getEncryptedPassword().equals(encryptedPassword))
-//				{
-//					passMatch = false;
-//				}
-//			}
-//		}
-//
-//		if( (s.getSessionName().equals(sessionName)) && (s.getSessionLeader().equals(sessionLeader)) &&
-//				(s.getType() == type) && (s.getGitPath().equals(gitPath)) && (s.getIrcChannel().equals(ircChannel)))
-//		{
-//
-//			return true & passMatch;
-//		}
-//		return false;
-//	}
-
+	public int getSessionID()
+	{
+		return sessionID;
+	}
 	public void addUser(Account userAccount, CNPConnection connection) {
 		clientConnections.put(userAccount, connection);
 	}
@@ -210,5 +163,13 @@ public class CNPSession {
 	public ServerSourceFile getFile(int fileID) {
 		return sourceFiles.get(fileID);
 	}
-
+	public boolean equals(CNPSession session)
+	{
+		//int sessionID, String sessionName, CNPServer server, int sessionLeader
+		if( (sessionID == session.getSessionID()) && (sessionName.equals(session.getSessionName())) && (sessionLeader == session.getSessionLeader()) )
+		{
+			return true;
+		}
+		return false;
+	}
 }
