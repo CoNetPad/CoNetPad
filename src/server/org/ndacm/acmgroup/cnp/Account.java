@@ -70,15 +70,33 @@ public class Account {
 	}
 	
 	public enum FilePermissionLevel {
-		READ,
-		READ_WRITE,
-		UNRESTRICTED
+		READ(0),
+		READ_WRITE(2),
+		UNRESTRICTED(3);
+		private int value;
+		FilePermissionLevel(int val)
+		{
+			this.value = val;
+		}
+		public int toInt()
+		{
+			return this.value;
+		}
 	}
 	
 	public enum ChatPermissionLevel {
-		MUTE,
-		TO_LEADER,
-		VOICE
+		MUTE(0),
+		TO_LEADER(1),
+		VOICE(2);
+		private int value;
+		ChatPermissionLevel(int val)
+		{
+			this.value = val;
+		}
+		public int toInt()
+		{
+			return this.value;
+		}
 	}
 	/**
 	 * equals()

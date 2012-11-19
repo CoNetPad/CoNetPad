@@ -469,11 +469,37 @@ public class Database implements IDatabase{
 		
 	}
 
-	public boolean createSessionAccount(CNPSession session, Account account,
-			Account.FilePermissionLevel filePermission, Account.ChatPermissionLevel chatPermission) {
+	public boolean createSessionAccount(CNPSession session, Account account,Account.FilePermissionLevel filePermission, Account.ChatPermissionLevel chatPermission) throws SQLException 
+	{
 		// TODO implement
-		return false;
+		PreparedStatement createSA= null;
+		String insertion = "INSERT INTO SessionUser (SessionID, UserID, FilePermissionLevel, ChatPermissionLevel) "
+				+ "VALUES (? , ?, ?, ?)";
+		try{
+			createSA = dbConnection.prepareStatement(insertion);
+			createSA.setInt(1, session.getSessionID() );
+			createSA.setInt(2, account.getUserID());
+			createSA.setInt(3, filePermission.toInt());
+			createSA.setInt(4, chatPermission.toInt());
+			int rows = createSA.executeUpdate();
+			if(rows > 0)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+			
+		}
+		catch(SQLException e)
+		{
+			throw e;
+		}
+		
 	}
+	
+	
 	private String encrypt(String input, String salt) throws NoSuchAlgorithmException, InvalidKeySpecException, UnsupportedEncodingException
 	{
 		byte[] salt2 = salt.getBytes("ISO-8859-1");

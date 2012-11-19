@@ -317,6 +317,40 @@ public class DatabaseTest {
 	}
 	
 	
-	
+	/**
+	 * This tests the functionality of SessionAccount
+	 */
+	@Test
+	public void testCreateSessionAccount() {
+
+			try{
+			Database db = new Database();
+				try
+				{
+					CNPServer server = new CNPServer(""); 
+					CNPSession session = new CNPSession(1, "beer", server,3);
+					Account act = new Account("John", "john@gmail.com", 32);
+					boolean test = db.createSessionAccount(session, act,Account.FilePermissionLevel.READ_WRITE, Account.ChatPermissionLevel.VOICE); 
+					boolean result = true;
+					//CNPSession result = new CNPSession(int sessionID, String sessionName, CNPServer server, int sessionLeader);
+					//assertTrue(result.equals(test));
+					assertTrue(test);
+				}
+				catch(SQLException e)
+				{
+					System.out.println("Error : " + e.toString());
+					fail("ERrror with SQL");
+				}
+				catch(AssertionError e)
+				{
+					fail("Could not create SessionAccount");
+				}
+
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+	}
 	
 }

@@ -17,74 +17,83 @@ import org.ndacm.acmgroup.cnp.exceptions.FailedSessionException;
 public interface IDatabase {
 	
 	/**
-	 * createAccount()
-	 * This creates a new account in the database and object
-	 * @param username	The username you want to use for the new account
-	 * @param email		The email you want to use for the new account
-	 * @param password	The password you want to use for the new account.  Let it be RAW as the method will encrypt it.
-	 * @return			Return a new account Object
+	 * This creates a new account
+	 * @param username		The username of the new account
+	 * @param email			The email address of the new account
+	 * @param password		The un-encrypted password
+	 * @return				The newly created account object
 	 * @throws SQLException
 	 * @throws FailedAccountException
 	 */
 	Account createAccount(String username, String email, String password)  throws SQLException, FailedAccountException;
 	/**
 	 * This retrieves an account
-	 * @param username	The username of the account
-	 * @param password	The password of the account (unencrypted)
-	 * @return			The account object .
+	 * @param username		The username of the account
+	 * @param password		The un-encrpyted password
+	 * @return				The account object
 	 * @throws SQLException
 	 * @throws FailedAccountException
 	 */
 	Account retrieveAccount(String username, String password) throws SQLException, FailedAccountException;
 	
 	/**
-	 * This creates a new session.
-	 * @param sessionLeader	The account object of the leader
-	 * @param name			The name of the session
-	 * @param channel		The IRC channel
-	 * @param gPath			The path to the GIt
-	 * @return				The CNP session
+	 * This creates a public session
+	 * @param sessionLeader			The database Id of the session leader.
+	 * @param server				The CNPServer
+	 * @return						The Session object
 	 * @throws SQLException
 	 * @throws FailedSessionException
 	 */
 	CNPSession createSession(int sessionLeader, CNPServer server) throws SQLException, FailedSessionException;
 	
 	/**
-	 * This creates a new session that is private
-	 * @param sessionLeader		The account object of the leader
-	 * @param name				The name of the session
-	 * @param channel			The irc channel
-	 * @param gPath				The git path
-	 * @param sessionPassword	The unecrypted password
-	 * @return					The CNP session
+	 * This creates a private Session
+	 * @param sessionLeader			The database ID of the leader
+	 * @param server				The CNPServer
+	 * @param sessionPassword		The un-encrypted password of the session
+	 * @return						The session object
 	 * @throws SQLException
 	 * @throws FailedSessionException
 	 */
 	CNPSession createSession(int sessionLeader, CNPServer server, String sessionPassword) throws SQLException, FailedSessionException;
 	
 	/**
-	 * This retrieves the session
-	 * @param sessionName	The name of the session
-	 * @return				The session object
+	 * This retrieves a public session
+	 * @param sessionName		The unique name of the session
+	 * @param server			The CNPServer 
+	 * @return					The public session object
 	 * @throws SQLException
 	 * @throws FailedSessionException
 	 * @throws FailedAccountException
 	 */
 	CNPSession retrieveSession(String sessionName, CNPServer server)throws SQLException, FailedSessionException, FailedAccountException;
-	
+		
 	/**
-	 * This retrieves a private session
-	 * @param sessionName		The Session name
-	 * @param sessionPassword	The session Password unecrpyted
-	 * @return					The CNPSession
+	 * This retrieves a private session.
+	 * @param sessionName			The unique session name
+	 * @param server				The CNPServer 
+	 * @param sessionPassword		The Un-encrypted password of the Session
+	 * @return						The Private sesion object
 	 * @throws SQLException
 	 * @throws FailedSessionException
 	 * @throws FailedAccountException
 	 */
 	CNPSession retrieveSession(String sessionName, CNPServer server, String sessionPassword)throws SQLException, FailedSessionException, FailedAccountException;
-	
+	/**
+	 * This determines if a given session is private or not
+	 * @param sessionName	The unique session name
+	 * @return				True if it is private, false if its not
+	 * @throws SQLException
+	 */
 	boolean sessionIsPrivate(String sessionName) throws SQLException ;
-	
-//	boolean createSessionAccount(CNPSession session, Account account,
-//			Account.FilePermissionLevel filePermission, Account.ChatPermissionLevel chatPermission);
+	/**
+	 * This attaches a user to a session
+	 * @param session			The session object
+	 * @param account			The account object
+	 * @param filePermission	The file permission of the user
+	 * @param chatPermission	The chat permission of the user
+	 * @return					True if it was successful or false it i failed
+	 */
+	boolean createSessionAccount(CNPSession session, Account account,
+			Account.FilePermissionLevel filePermission, Account.ChatPermissionLevel chatPermission) throws SQLException;
 }
