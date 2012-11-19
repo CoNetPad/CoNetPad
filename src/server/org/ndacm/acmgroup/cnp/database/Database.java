@@ -71,11 +71,8 @@ public class Database implements IDatabase{
 		random.nextBytes(salt);
 
 		try {
-			KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 2048, 160);
-			SecretKeyFactory f = SecretKeyFactory.getInstance(ENCRYPTION_ALGORITHM);
-			hashString = new String(f.generateSecret(spec).getEncoded());
 			saltString = new String(salt, "ISO-8859-1");
-
+			hashString = this.encrypt(password, saltString);
 			// test if username/email already exists
 
 			// insert user into DB
@@ -135,9 +132,6 @@ public class Database implements IDatabase{
 		PreparedStatement retrieveAccount = null;
 		ResultSet rset = null;
 		Account accountRetrieved = null;
-		String saltRetrieved = null;
-		String hashRetrieved = null;
-
 		String query = "SELECT * "
 				+ "FROM UserAccount "
 				+ "WHERE username = ?";
@@ -154,33 +148,33 @@ public class Database implements IDatabase{
 				int idRetrieved = rset.getInt("UserID");
 				String nameRetrieved = rset.getString("UserName");
 				String emailRetrieved = rset.getString("Email");
-				accountRetrieved = new Account(nameRetrieved, emailRetrieved, idRetrieved);
-	
-				hashRetrieved = rset.getString("AccountPassword");
-				saltRetrieved = rset.getString("AccountSalt");
-	
-				//clean up database classes
+				String hashRetrieved = rset.getString("AccountPassword");
+				String saltRetrieved = rset.getString("AccountSalt");
+				String hashPass = this.encrypt(password, saltRetrieved);
 				retrieveAccount.close();
 				rset.close();
+				if(hashRetrieved.equals(hashPass))
+				{
+					return new Account(nameRetrieved, emailRetrieved, idRetrieved);
+					
+				}
+				else
+				{
+					throw new FailedAccountException("Passwords did not match");
+				}
+				//clean up database classes
+			
 			}
 			else
 			{
 				throw new FailedAccountException("No User Account was found");
 			}
 
-		} catch (SQLException ex) {
+		} 
+		catch (SQLException ex) {
 			throw new FailedAccountException("Error retrieving account for " + username);
 		}
-
-		String hashSupplied = null;
-
-		// generate hash for the password string supplied (using the salt from userRetrieved)
-		try {
-			byte[] salt = saltRetrieved.getBytes("ISO-8859-1");
-			KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 2048, 160);
-			SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-			hashSupplied = new String(f.generateSecret(spec).getEncoded());
-		} catch (NoSuchAlgorithmException ex) {
+		catch (NoSuchAlgorithmException ex) {
 			System.err.println("Invalid Encrpytion Algorithm: " + ENCRYPTION_ALGORITHM);
 			throw new FailedAccountException("Error retrieving account for " + username);
 		} catch (UnsupportedEncodingException ex) {
@@ -195,12 +189,7 @@ public class Database implements IDatabase{
 				System.err.println("Some other Error was caught");
 			throw new FailedAccountException("Error  " + e.getStackTrace() );
 		}
-		// check if hashes match. if so, return account.
-		if (hashSupplied.equals(hashRetrieved)) {
-			return accountRetrieved;
-		} else {
-			throw new FailedAccountException("Incorrect password supplied for " + username);
-		}
+
 
 	}
 
@@ -275,11 +264,8 @@ public class Database implements IDatabase{
 		random.nextBytes(salt);
 
 		try {
-			KeySpec spec = new PBEKeySpec(sessionPassword.toCharArray(), salt, 2048, 160);
-			SecretKeyFactory f = SecretKeyFactory.getInstance(ENCRYPTION_ALGORITHM);
-			hashString = new String(f.generateSecret(spec).getEncoded());
 			saltString = new String(salt, "ISO-8859-1");
-
+			hashString = this.encrypt(sessionPassword, saltString);
 			// insert session into DB
 			PreparedStatement createSession = null;
 			String sessionName = CNPSession.generateString();
@@ -455,9 +441,32 @@ public class Database implements IDatabase{
 
 	
 	
-	public boolean sessionIsPrivate(String sessionName) {
+	public boolean sessionIsPrivate(String sessionName) throws SQLException {
 		// TODO implement
-		return false;
+		
+		String query = "SELECT Session.SessionID, Session.SessionName, SessionPassword.SessionPassword, SessionPassword.SessionSalt"
+					+ " FROM Session, SessionPassword"
+					+ " WHERE Session.SessionID = SessionPassword.SessionID AND Session.SessionName = ?";
+		try
+		{
+			PreparedStatement retrieveSession = dbConnection.prepareStatement(query);
+			retrieveSession.setString(1, sessionName);
+			ResultSet rs = retrieveSession.executeQuery();
+			
+			if(rs.next())
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		catch(SQLException e)
+		{
+			throw e;
+		}
+		
 	}
 
 	public boolean createSessionAccount(CNPSession session, Account account,

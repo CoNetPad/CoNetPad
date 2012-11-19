@@ -281,4 +281,42 @@ public class DatabaseTest {
 				e.printStackTrace();
 			}
 	}
+	
+	/**
+	 * This tests the functionality of creating a is Session Private
+	 */
+	@Test
+	public void testSessionIsPrivate() {
+
+			try{
+			Database db = new Database();
+				try
+				{
+					CNPServer server = new CNPServer(""); 
+					boolean test = db.sessionIsPrivate("cdeef");
+					boolean result = true;
+					//CNPSession result = new CNPSession(int sessionID, String sessionName, CNPServer server, int sessionLeader);
+					//assertTrue(result.equals(test));
+					assertTrue(test);
+				}
+				catch(SQLException e)
+				{
+					System.out.println("Error : " + e.toString());
+					fail("ERrror with SQL");
+				}
+				catch(AssertionError e)
+				{
+					fail("Session is not private");
+				}
+
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+	}
+	
+	
+	
+	
 }
