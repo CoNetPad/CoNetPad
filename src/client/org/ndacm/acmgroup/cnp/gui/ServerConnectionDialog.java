@@ -1,24 +1,20 @@
 package org.ndacm.acmgroup.cnp.gui;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.border.LineBorder;
-import java.awt.Color;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.EtchedBorder;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JFormattedTextField;
 
 public class ServerConnectionDialog extends JDialog {
-	private JTextField textField;
 
 	/**
 	 * Launch the application.
@@ -42,11 +38,11 @@ public class ServerConnectionDialog extends JDialog {
 		JLabel lblServer = new JLabel("Server:");
 		
 		JCheckBox chckbxRemember = new JCheckBox("Remember");
-		textField = new JTextField();
-		textField.setColumns(10);
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		
+		JFormattedTextField formattedServer = new JFormattedTextField();
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.TRAILING)
@@ -56,9 +52,9 @@ public class ServerConnectionDialog extends JDialog {
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addComponent(chckbxRemember)
-						.addComponent(textField, GroupLayout.DEFAULT_SIZE, 520, Short.MAX_VALUE))
+						.addComponent(formattedServer, GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE))
 					.addContainerGap())
-				.addComponent(panel, GroupLayout.DEFAULT_SIZE, 580, Short.MAX_VALUE)
+				.addComponent(panel, GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -66,16 +62,24 @@ public class ServerConnectionDialog extends JDialog {
 					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblServer)
-						.addComponent(textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(formattedServer, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addComponent(chckbxRemember)
-					.addPreferredGap(ComponentPlacement.RELATED, 162, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED, 5, Short.MAX_VALUE)
 					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 49, GroupLayout.PREFERRED_SIZE))
 		);
 		
 		JButton btnConnect = new JButton("Connect");
+		btnConnect.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
 		
 		JButton btnExit = new JButton("Exit");
+		btnExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		GroupLayout gl_panel = new GroupLayout(panel);
 		gl_panel.setHorizontalGroup(
 			gl_panel.createParallelGroup(Alignment.LEADING)
