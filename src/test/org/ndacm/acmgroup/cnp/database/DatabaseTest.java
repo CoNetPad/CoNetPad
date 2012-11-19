@@ -13,6 +13,7 @@ import java.sql.SQLException;
 
 import org.junit.Test;
 import org.ndacm.acmgroup.cnp.Account;
+import org.ndacm.acmgroup.cnp.CNPPrivateSession;
 import org.ndacm.acmgroup.cnp.CNPServer;
 import org.ndacm.acmgroup.cnp.CNPSession;
 import org.ndacm.acmgroup.cnp.database.Database;
@@ -162,5 +163,122 @@ public class DatabaseTest {
 				e.printStackTrace();
 			}
 	}
+	/**
+	 * This tests the functionality of creating a new Session
+	 */
+	@Test
+	public void testRetrieveSession() {
 
+			try{
+			Database db = new Database();
+				try
+				{
+					CNPServer server = new CNPServer(""); 
+					CNPSession test = db.retrieveSession("jpfam", server);
+					CNPSession result = new CNPSession(1, "jpfam",  server, 32);
+					assertTrue(result.equals(test));
+
+				}
+				catch(FailedSessionException e)
+				{
+					fail("Failed Session Exception Thrown:  " + e.toString());
+					e.printStackTrace();
+				}
+				catch(AssertionError e)
+				{
+					fail("Sessions did not equal");
+				}
+				catch(SQLException e)
+				{
+					e.printStackTrace();
+					fail("SQL Exception Thrown");
+				}
+				catch(Exception e)
+				{
+					e.printStackTrace();
+					fail("Some Exception was thrown");
+				}
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+	}
+	
+	/**
+	 * This tests the functionality of creating a new Private Session
+	 */
+	@Test
+	public void testCreatePrivateSession() {
+
+			try{
+			Database db = new Database();
+				try
+				{
+					CNPServer server = new CNPServer(""); 
+					CNPPrivateSession test = db.createSession(32, server, "test"); 
+					//CNPSession result = new CNPSession(int sessionID, String sessionName, CNPServer server, int sessionLeader);
+					//assertTrue(result.equals(test));
+				}
+				catch(FailedAccountException e)
+				{
+					fail("Failed Account Exception Thrown:  " + e.toString());
+					e.printStackTrace();
+	
+				}
+				catch(AssertionError e)
+				{
+					fail("Accouts did not equal");
+				}
+				catch(SQLException e)
+				{
+					e.printStackTrace();
+					fail("SQL Exception Thrown");
+				
+					
+				}
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+	}
+	/**
+	 * This tests the functionality of creating a new Private Session
+	 */
+	@Test
+	public void testRetrievePrivateSession() {
+
+			try{
+			Database db = new Database();
+				try
+				{
+					CNPServer server = new CNPServer(""); 
+					CNPPrivateSession test = db.retrieveSession("jczbf", server, "test"); 
+					//CNPSession result = new CNPSession(int sessionID, String sessionName, CNPServer server, int sessionLeader);
+					//assertTrue(result.equals(test));
+				}
+				catch(FailedAccountException e)
+				{
+					fail("Failed Account Exception Thrown:  " + e.toString());
+					e.printStackTrace();
+	
+				}
+				catch(AssertionError e)
+				{
+					fail("Accouts did not equal");
+				}
+				catch(SQLException e)
+				{
+					e.printStackTrace();
+					fail("SQL Exception Thrown");
+				
+					
+				}
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+	}
 }

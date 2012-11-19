@@ -58,8 +58,9 @@ public class CNPSession {
 
 		sessionTaskCourier = Executors.newCachedThreadPool();
 		sessionTaskQueue = Executors.newSingleThreadExecutor();
-
+		this.sessionID = sessionID;
 		this.sessionLeader = sessionLeader;
+		this.sessionName = sessionName;
 		clientConnections = new ConcurrentHashMap<Account, CNPConnection>();
 		filePermissions = new ConcurrentHashMap<Account, FilePermissionLevel>();
 		chatPermissions = new ConcurrentHashMap<Account, ChatPermissionLevel>();
@@ -166,7 +167,7 @@ public class CNPSession {
 	public boolean equals(CNPSession session)
 	{
 		//int sessionID, String sessionName, CNPServer server, int sessionLeader
-		if( (sessionID == session.getSessionID()) && (sessionName.equals(session.getSessionName())) && (sessionLeader == session.getSessionLeader()) )
+		if( (this.sessionID == session.getSessionID()) && (this.sessionName.equals(session.getSessionName())) && (this.sessionLeader == session.getSessionLeader()) )
 		{
 			return true;
 		}
