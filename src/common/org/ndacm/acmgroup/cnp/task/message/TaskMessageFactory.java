@@ -42,6 +42,12 @@ import org.ndacm.acmgroup.cnp.task.response.LoginTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.OpenFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
+/**
+ * @author Cesar Factory that will do the work of translating between
+ *         Task(Response) and Messages. The advantage of this class is that if
+ *         will handle all the different kinds of tasks or messages to be
+ *         translated.
+ */
 public class TaskMessageFactory {
 
 	public enum TaskType {
@@ -54,6 +60,11 @@ public class TaskMessageFactory {
 		TaskMessageFactory.server = server;
 	}
 
+	/**
+	 * @param message
+	 *            to be converted into a Task
+	 * @return a Task based on the information received in the message
+	 */
 	public static Task fromMessageToTask(TaskMessage message) {
 		switch (message.getTaskType()) {
 		case Chat:
@@ -125,11 +136,11 @@ public class TaskMessageFactory {
 			return new DownloadRepoTask(Integer.parseInt(message.getData()[0]),
 					message.getData()[1]);
 		case Editor:
-			CNPSession session =server.getSession(Integer.parseInt(message.getData()[1]));
+			CNPSession session = server.getSession(Integer.parseInt(message
+					.getData()[1]));
 			EditorTask task = new EditorTask(
-					
-					Integer.parseInt(message.getData()[0]),
-					message.getData()[1],
+
+			Integer.parseInt(message.getData()[0]), message.getData()[1],
 					Integer.parseInt(message.getData()[2]),
 					Integer.parseInt(message.getData()[3]),
 					Integer.parseInt(message.getData()[4]),
@@ -153,6 +164,11 @@ public class TaskMessageFactory {
 		}
 	}
 
+	/**
+	 * @param task
+	 *            to be translated into a message
+	 * @return message containing the string re[presentation of the task
+	 */
 	public static TaskMessage fromTaskToMessage(Task task) {
 
 		TaskMessage message = null;
@@ -277,6 +293,11 @@ public class TaskMessageFactory {
 		return message;
 	}
 
+	/**
+	 * @param message
+	 *            to be converted into a TaskResponse
+	 * @return a TaskResponse based on the information received in the message
+	 */
 	public static TaskResponse fromMessageToTaskResponse(TaskMessage message) {
 
 		switch (message.getTaskType()) {
@@ -339,6 +360,12 @@ public class TaskMessageFactory {
 			return null;
 		}
 	}
+
+	/**
+	 * @param taskResponse
+	 *            to be translated into a message
+	 * @return message containing the string representation of the taskResponse
+	 */
 
 	public static TaskMessage fromTaskResponseToMessage(TaskResponse task) {
 
