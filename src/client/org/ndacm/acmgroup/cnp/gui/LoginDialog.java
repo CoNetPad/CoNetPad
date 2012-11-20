@@ -30,7 +30,7 @@ public class LoginDialog extends JDialog {
 		this.client = client;
 		this.client.setLogDialog(this);
 		setTitle("CoNetPad Client");
-		setBounds(100, 100, 418, 173);
+		setBounds(100, 100, 418, 228);
 		JPanel panel = new JPanel();
 		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		JLabel lblUsername = new JLabel("Username:");
@@ -43,98 +43,53 @@ public class LoginDialog extends JDialog {
 		JFormattedTextField formattedPassword = new JFormattedTextField();
 
 		JFormattedTextField formattedSession = new JFormattedTextField();
+		
+		JLabel lblSessionToJoin = new JLabel("Session to join: If you have ");
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
-		groupLayout
-				.setHorizontalGroup(groupLayout
-						.createParallelGroup(Alignment.TRAILING)
-						.addComponent(panel, GroupLayout.DEFAULT_SIZE, 816,
-								Short.MAX_VALUE)
-						.addGroup(
-								groupLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.LEADING)
-														.addComponent(
-																lblPassword)
-														.addComponent(
-																lblUsername)
-														.addComponent(
-																lblSession))
-										.addPreferredGap(
-												ComponentPlacement.UNRELATED)
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.LEADING)
-														.addComponent(
-																formattedSession,
-																GroupLayout.DEFAULT_SIZE,
-																734,
-																Short.MAX_VALUE)
-														.addComponent(
-																formattedUsername,
-																GroupLayout.DEFAULT_SIZE,
-																736,
-																Short.MAX_VALUE)
-														.addComponent(
-																formattedPassword,
-																GroupLayout.DEFAULT_SIZE,
-																736,
-																Short.MAX_VALUE))
-										.addContainerGap()));
-		groupLayout
-				.setVerticalGroup(groupLayout
-						.createParallelGroup(Alignment.LEADING)
-						.addGroup(
-								groupLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.BASELINE)
-														.addComponent(
-																lblUsername)
-														.addComponent(
-																formattedUsername,
-																GroupLayout.PREFERRED_SIZE,
-																GroupLayout.DEFAULT_SIZE,
-																GroupLayout.PREFERRED_SIZE))
-										.addGap(6)
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.BASELINE)
-														.addComponent(
-																lblPassword)
-														.addComponent(
-																formattedPassword,
-																GroupLayout.PREFERRED_SIZE,
-																GroupLayout.DEFAULT_SIZE,
-																GroupLayout.PREFERRED_SIZE))
-										.addPreferredGap(
-												ComponentPlacement.RELATED)
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.BASELINE)
-														.addComponent(
-																lblSession)
-														.addComponent(
-																formattedSession,
-																GroupLayout.PREFERRED_SIZE,
-																GroupLayout.DEFAULT_SIZE,
-																GroupLayout.PREFERRED_SIZE))
-										.addPreferredGap(
-												ComponentPlacement.RELATED,
-												GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)
-										.addComponent(panel,
-												GroupLayout.PREFERRED_SIZE, 45,
-												GroupLayout.PREFERRED_SIZE)));
+		groupLayout.setHorizontalGroup(
+			groupLayout.createParallelGroup(Alignment.TRAILING)
+				.addComponent(panel, GroupLayout.DEFAULT_SIZE, 402, Short.MAX_VALUE)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblPassword)
+						.addComponent(lblUsername))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(formattedUsername, GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
+						.addComponent(formattedPassword, GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE))
+					.addContainerGap())
+				.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(lblSession)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(formattedSession, GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
+					.addContainerGap())
+				.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(lblSessionToJoin)
+					.addContainerGap(346, Short.MAX_VALUE))
+		);
+		groupLayout.setVerticalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblUsername)
+						.addComponent(formattedUsername, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(6)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblPassword)
+						.addComponent(formattedPassword, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblSessionToJoin)
+					.addPreferredGap(ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblSession)
+						.addComponent(formattedSession, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(34)
+					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE))
+		);
 		{
 			btnRegister = new JButton("Register");
 			btnRegister.addActionListener(new ActionListener() {
