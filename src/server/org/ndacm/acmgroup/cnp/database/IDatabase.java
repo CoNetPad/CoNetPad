@@ -96,4 +96,22 @@ public interface IDatabase {
 	 */
 	boolean createSessionAccount(CNPSession session, Account account,
 			Account.FilePermissionLevel filePermission, Account.ChatPermissionLevel chatPermission) throws SQLException;
+	/**
+	 * this deletes a public session
+	 * @param session		The public session
+	 * @return				Either the deletion was successful or not
+	 * @throws SQLException
+	 */
+	boolean deleteSession(CNPSession session)throws SQLException;
+	
+	
+	/**
+	 * this deletes a private session
+	 * @param session			The session object
+	 * @param password			The password string.  Un-Encrypted.
+	 * @return					True if the deletion was successful, false otherwise.
+	 * @throws SQLException
+	 * @throws FailedSessionException
+	 */
+	boolean deleteSession(CNPSession session, String password) throws SQLException, FailedSessionException;
 }

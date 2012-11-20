@@ -507,6 +507,75 @@ public class Database implements IDatabase{
 		SecretKeyFactory f = SecretKeyFactory.getInstance(ENCRYPTION_ALGORITHM);
 		return new String(f.generateSecret(spec).getEncoded());
 	}
+	@Override
+	public boolean deleteSession(CNPSession session) throws SQLException {
+		// TODO Auto-generated method stub
+		String query = "DELETE FROM Session WHERE SessionID = ?";
+		PreparedStatement deleteSA= null;
+		try{
+			deleteSA = dbConnection.prepareStatement(query);
+			deleteSA.setInt(1, session.getSessionID() );
+			
+			int rows = deleteSA.executeUpdate();
+			if(rows > 0)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		catch(SQLException e)
+		{
+			throw e;
+		}
+		
+	}
+	@Override
+	public boolean deleteSession(CNPSession session, String password)
+			throws SQLException, FailedSessionException {
+		// TODO Auto-generated method stub
+		String query = "DELETE FROM Session WHERE SessionID = ?";
+		String query2 = "SELECT * "
+				+ "FROM SessionPassword "
+				+ "WHERE SessionID = ?";
+		PreparedStatement deleteSA = null, retrieveSession = null;
+
+		try{
+			retrieveSession = dbConnection.prepareStatement(query2);
+			retrieveSession.setInt(1, session.getSessionID() );
+			
+			//run the query, return a result set        
+			ResultSet rset = retrieveSession.executeQuery();
+			if(rset.next())
+			{
+				String password1 = rset.getString("SessionPassword");
+				String salt = rset.getString("SessionSalt");
+				String password2 = this.encrypt(password, salt);
+			}
+			deleteSA = dbConnection.prepareStatement(query);
+			deleteSA.setInt(1, session.getSessionID() );
+			
+			int rows = deleteSA.executeUpdate();
+			if(rows > 0)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		catch(SQLException e)
+		{
+			throw e;
+		}
+		catch(Exception e)
+		{
+			throw new FailedSessionException("Error with encrpytion");
+		}
+	}
 	
 
 }
