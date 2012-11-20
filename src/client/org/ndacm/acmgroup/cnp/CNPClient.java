@@ -58,9 +58,13 @@ public class CNPClient implements TaskReceivedEventListener {
 		network.addTaskReceivedEventListener(this);
 	}
 
-	public void connectToServer(String serverURL) {
-		network.connect(serverURL);
-		this.serverURL = serverURL;
+	public boolean connectToServer(String serverURL) {
+		if (network.connect(serverURL)) {
+			this.serverURL = serverURL;
+		} else {
+			return false;
+		}
+		return true;
 	}
 
 	public void loginToAccount(String username, String password) {
