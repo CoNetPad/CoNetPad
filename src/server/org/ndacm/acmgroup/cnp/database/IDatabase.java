@@ -97,7 +97,16 @@ public interface IDatabase {
 	boolean createSessionAccount(CNPSession session, Account account,
 			Account.FilePermissionLevel filePermission, Account.ChatPermissionLevel chatPermission) throws SQLException;
 	
-	
+	/**
+	 * This attaches a user to a private session
+	 * @param session				The private session for the user to join
+	 * @param account				The account of the user
+	 * @param password				The password of the session.  Un-Encrypted	
+	 * @param filePermission		The file permission of the user
+	 * @param chatPermission		The chat permission ofthe user
+	 * @return						True if successful, false otherwise
+	 * @throws SQLException
+	 */
 	boolean createSessionAccount(CNPSession session, Account account, String password,
 			Account.FilePermissionLevel filePermission, Account.ChatPermissionLevel chatPermission) throws SQLException;
 	/**
