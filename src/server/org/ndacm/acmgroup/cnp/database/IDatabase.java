@@ -96,6 +96,10 @@ public interface IDatabase {
 	 */
 	boolean createSessionAccount(CNPSession session, Account account,
 			Account.FilePermissionLevel filePermission, Account.ChatPermissionLevel chatPermission) throws SQLException;
+	
+	
+	boolean createSessionAccount(CNPSession session, Account account, String password,
+			Account.FilePermissionLevel filePermission, Account.ChatPermissionLevel chatPermission) throws SQLException;
 	/**
 	 * this deletes a public session
 	 * @param session		The public session
@@ -114,6 +118,8 @@ public interface IDatabase {
 	 * @throws FailedAccountException
 	 */
 	boolean deleteAccount(Account account) throws SQLException, FailedAccountException;
+	
+	
 	
 	
 }

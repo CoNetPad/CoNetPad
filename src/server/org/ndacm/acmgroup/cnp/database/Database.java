@@ -18,6 +18,8 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
 import org.ndacm.acmgroup.cnp.Account;
+import org.ndacm.acmgroup.cnp.Account.ChatPermissionLevel;
+import org.ndacm.acmgroup.cnp.Account.FilePermissionLevel;
 import org.ndacm.acmgroup.cnp.CNPPrivateSession;
 import org.ndacm.acmgroup.cnp.CNPServer;
 import org.ndacm.acmgroup.cnp.CNPSession;
@@ -569,6 +571,60 @@ public class Database implements IDatabase{
 			throw e;
 		}
 		
+	}
+	@Override
+	public boolean createSessionAccount(CNPSession session, Account account,
+			String password, FilePermissionLevel filePermission,
+			ChatPermissionLevel chatPermission) throws SQLException {
+		
+		PreparedStatement createSA= null, retrieveSession=null;
+		String insertion = "INSERT INTO SessionUser (SessionID, UserID, FilePermissionLevel, ChatPermissionLevel) "
+				+ "VALUES (? , ?, ?, ?)";
+		String query = "SELECT * FROM SessionPassword WHERE SessionID = ?";
+		try{
+			retrieveSession  = dbConnection.prepareStatement(query);
+			retrieveSession.setInt(1, session.getSessionID());
+			ResultSet rs = retrieveSession.executeQuery();
+			if(rs.next() )
+			{
+				String password1 = rs.getString("SessionPassword");
+				String salt = rs.getString("SessionSal");
+				String password2 = this.encrypt(password, salt);
+				if(password1.equals(password2))
+				{
+					createSA = dbConnection.prepareStatement(insertion);
+					createSA.setInt(1, session.getSessionID() );
+					createSA.setInt(2, account.getUserID());
+					createSA.setInt(3, filePermission.toInt());
+					createSA.setInt(4, chatPermission.toInt());
+					int rows = createSA.executeUpdate();
+					if(rows > 0)
+					{
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+		}
+		catch(SQLException e)
+		{
+			throw e;
+		}
+		catch(Exception e)
+		{
+			return false;
+		}
+		return false;
+		
+		// TODO Auto-generated method stub
 	}
 	
 

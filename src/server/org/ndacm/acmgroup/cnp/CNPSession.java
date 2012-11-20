@@ -20,13 +20,34 @@ import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
 
 public class CNPSession {
-
+	
+	/**
+	 * The allowed characters for the Session name generator
+	 */
 	private static final String SESSION_NAME_CHARS = "abcdefghijklmnopqrstuvwxyz";
+	/**
+	 * A unique INTEGER for getting next file ID.
+	 */
 	private static volatile int NEXT_FILEID;
+	/**
+	 * Max length of session names
+	 */
 	private static int NAME_LENGTH = 5;
+	/**
+	 * The base directories of the files stored
+	 */
 	private static String baseDirectory;
+	/**
+	 * The Random generator
+	 */
 	private static Random rnd = new Random();
+	/**
+	 * The database object to run queries
+	 */
 	private Database db;
+	/**
+	 * ;
+	 */
 	private int sessionID;
 	private CNPServer server;
 	private String sessionName;
@@ -104,41 +125,68 @@ public class CNPSession {
 	
 	/**
 	 * This adds user to the session
-	 * @param userAccount
-	 * @param connection
+	 * @param userAccount			The account in which you wish to add
+	 * @param connection			The connection of the user
 	 */
 	public void addUser(Account userAccount, CNPConnection connection) {
 		clientConnections.put(userAccount, connection);
 	}
-
+	
+	/**
+	 * This removes an user from the session
+	 * @param userAccount		The account you wish to remove
+	 */
 	public void removeUser (Account userAccount) {
 		clientConnections.remove(userAccount);
 	}
 
+	/**
+	 * This creates a file to be worked on.  It is synchronized for multi-threading
+	 * @param filename				The name of the file.  No path
+	 * @param type					The file type.  Include period.
+	 */
 	public synchronized void createFile(String filename, SourceType type) {
 		ServerSourceFile file = new ServerSourceFile(NEXT_FILEID, filename, type);
 		sourceFiles.put(NEXT_FILEID, file);
 		NEXT_FILEID++;
 	}
-
+	
+	/**
+	 * This deletes the file
+	 * @param filename			The filename you wish to remove.  No need for file type
+	 */
 	public void deleteFile(String filename) {
 		sourceFiles.remove(filename);
 	}
-
+	
+	/**
+	 * This commits changes for the GIT using a message.  [Not Implemented]
+	 * @param message			The commit message
+	 * @return					True if it was successful, false otherwise
+	 */
 	public boolean commitAndPush(String message) {
 		// TODO implement
 		return false;
 	}
-
+	/**
+	 * This commits changes for the GIt not using a message.  [Not Implemented]
+	 * @return				True if successful, false otherwise.
+	 */
 	public boolean commitAndPush() {
 		return commitAndPush("");
 	}
-
+	/**
+	 * This clones a repository using git.	[Not Implemented]
+	 * @return		The new file?
+	 */
 	public File cloneRepo() {
 		// TODO implement
 		return new File("");
 	}
-
+	/**
+	 * This executes an editor task
+	 * @param task			The editor task that needs to be executed
+	 */
 	public void executeTask(EditorTask task) {
 		// execute task using ServerSourceFile's ExecutorService
 		SourceFile file = task.getFile();
@@ -148,11 +196,19 @@ public class CNPSession {
 		}
 	}
 
+	/**
+	 * This distributes a response task to the threads or users
+	 * @param task			The distribution task you wish to send out
+	 */
 	public void distributeTask(TaskResponse task) { // have throw TaskExecutionException
 		sessionTaskCourier.submit(task);
 	}
 
-	// http://stackoverflow.com/questions/2863852/how-to-generate-a-random-string-in-java
+	/**
+	 * This is a string generator for unique session names
+	 * @return			A unique string name.
+	 * Source:  http://stackoverflow.com/questions/2863852/how-to-generate-a-random-string-in-java
+	 */
 	public static String generateString() {
 		char[] text = new char[NAME_LENGTH];
 		for (int i = 0; i < NAME_LENGTH; i++) {
@@ -161,9 +217,21 @@ public class CNPSession {
 		return new String(text);
 	}
 
+	
+	/**
+	 * This gets a file given a file ID
+	 * @param fileID			The file ID you wish to get
+	 * @return					The serverSourceFile with the given ID.
+	 */
 	public ServerSourceFile getFile(int fileID) {
 		return sourceFiles.get(fileID);
 	}
+	
+	/**
+	 * This checks to see if two sessions are equal
+	 * @param session			The session you wish to test is equal
+	 * @return					True if the two sessions are equal, false otherwise
+	 */
 	public boolean equals(CNPSession session)
 	{
 		//int sessionID, String sessionName, CNPServer server, int sessionLeader
