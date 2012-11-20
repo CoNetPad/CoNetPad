@@ -44,7 +44,13 @@ public class CNPSession {
 
 
 
-
+	/**
+	 * This creates a new instance of a CNP Session
+	 * @param sessionID				The database ID of the session
+	 * @param sessionName			The unique session name
+	 * @param server				The sever object
+	 * @param sessionLeader			The database ID of the user who is the session leader
+	 */
 	public CNPSession(int sessionID, String sessionName, CNPServer server, int sessionLeader) {
 
 		this.server = server;
@@ -71,21 +77,18 @@ public class CNPSession {
 		// TODO implement
 		sessionTaskQueue = Executors.newSingleThreadExecutor();
 	}
-	public CNPSession(int leader, String name){
-		sessionLeader = leader;
-		sessionName = name;
-		encryptedPassword = null;
-	}
-	public CNPSession(int leader, String name, String pass){
-		sessionLeader = leader;
-		sessionName = name;
-		encryptedPassword = pass;
-	}
+	/**
+	 * This returns the database ID of the sesison leader
+	 * @return		Database Id of the session leader
+	 */
 	public int getSessionLeader()
 	{
 		return sessionLeader;
 	}
-
+	/**
+	 * This returns the unique session name
+	 * @return		The unique name of the session.
+	 */
 	public String getSessionName()
 	{
 		return sessionName;

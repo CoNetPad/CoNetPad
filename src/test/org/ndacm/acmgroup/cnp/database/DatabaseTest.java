@@ -353,4 +353,22 @@ public class DatabaseTest {
 			}
 	}
 	
+	
+	/**
+	 * This tests the functionality of Deleting an account
+	 */
+	@Test
+	public void testDeleteAccount() {
+		try{
+			//Database db = new Database();
+			//Account act = new Account()
+			//db.deleteAccount(act);
+			
+		}
+		catch(Exception e)
+		{
+			
+		}
+	}
+	
 }

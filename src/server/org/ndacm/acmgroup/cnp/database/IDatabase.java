@@ -2,7 +2,7 @@
  * IDatabase
  * This is the interface class for database classes
  * @author Justin
- * @version 1.5
+ * @version 3.0
  */
 package org.ndacm.acmgroup.cnp.database;
 
@@ -106,7 +106,7 @@ public interface IDatabase {
 	
 	
 	/**
-	 * this deletes a private session
+	 * This deletes a private session
 	 * @param session			The session object
 	 * @param password			The password string.  Un-Encrypted.
 	 * @return					True if the deletion was successful, false otherwise.
@@ -114,4 +114,15 @@ public interface IDatabase {
 	 * @throws FailedSessionException
 	 */
 	boolean deleteSession(CNPSession session, String password) throws SQLException, FailedSessionException;
+	
+	/**
+	 * This deletes the given account
+	 * @param account				The account to delete
+	 * @return						True if the deletion was successful, false otherwise
+	 * @throws SQLException
+	 * @throws FailedAccountException
+	 */
+	boolean deleteAccount(Account account) throws SQLException, FailedAccountException;
+	
+	
 }

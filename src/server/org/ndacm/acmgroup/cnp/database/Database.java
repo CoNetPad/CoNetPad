@@ -576,6 +576,30 @@ public class Database implements IDatabase{
 			throw new FailedSessionException("Error with encrpytion");
 		}
 	}
+	@Override
+	public boolean deleteAccount(Account account) throws SQLException, FailedAccountException {
+		String query = "DELETE FROM UserAccount WHERE UserID = ?";
+		PreparedStatement deleteUser= null;
+		try{
+			deleteUser = dbConnection.prepareStatement(query);
+			deleteUser.setInt(1, account.getUserID() );
+			
+			int rows = deleteUser.executeUpdate();
+			if(rows > 0)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		catch(SQLException e)
+		{
+			throw e;
+		}
+		
+	}
 	
 
 }
