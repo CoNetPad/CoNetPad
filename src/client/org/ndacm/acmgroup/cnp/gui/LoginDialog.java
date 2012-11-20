@@ -28,6 +28,7 @@ public class LoginDialog extends JDialog {
 	public LoginDialog(final CNPClient client) {
 		loginDialog = this;
 		this.client = client;
+		this.client.setLogDialog(this);
 		setTitle("CoNetPad Client");
 		setBounds(100, 100, 418, 173);
 		JPanel panel = new JPanel();
@@ -139,15 +140,16 @@ public class LoginDialog extends JDialog {
 			btnRegister.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					RegisterDialog dialog = new RegisterDialog(client);
+					dialog.setModalityType(ModalityType.APPLICATION_MODAL);
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setVisible(true);
-					loginDialog.setVisible(false);
 				}
 			});
 		}
 		JButton btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				client.closeConnection();
 				dispose();
 			}
 		});

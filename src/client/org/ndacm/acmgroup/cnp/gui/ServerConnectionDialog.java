@@ -28,7 +28,7 @@ public class ServerConnectionDialog extends JDialog {
 	public ServerConnectionDialog() {
 		client = new CNPClient();
 		setTitle("CoNetPad Client");
-		setBounds(100, 100, 387, 118);
+		setBounds(100, 100, 397, 145);
 		JLabel lblServer = new JLabel("Server:");
 
 		JCheckBox chckbxRemember = new JCheckBox("Remember");
@@ -108,6 +108,7 @@ public class ServerConnectionDialog extends JDialog {
 		JButton btnExit = new JButton("Exit");
 		btnExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				client.closeConnection();
 				dispose();
 			}
 		});

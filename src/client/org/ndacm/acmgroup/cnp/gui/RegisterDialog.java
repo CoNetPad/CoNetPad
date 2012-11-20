@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.EtchedBorder;
@@ -18,12 +19,14 @@ import org.ndacm.acmgroup.cnp.CNPClient;
 public class RegisterDialog extends JDialog {
 	private CNPClient client;
 	private LoginDialog logDialog;
+	private RegisterDialog regDialog;
 
 	/**
 	 * Create the dialog.
 	 */
 	public RegisterDialog(final CNPClient client) {
 		this.client = client;
+		this.client.setRegDialog(this);
 		setBounds(100, 100, 375, 200);
 		JPanel panel = new JPanel();
 		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
@@ -36,13 +39,13 @@ public class RegisterDialog extends JDialog {
 
 		final JLabel lblEmail = new JLabel("Email:");
 
-		JFormattedTextField formattedTextField = new JFormattedTextField();
+		final JFormattedTextField formattedUsername = new JFormattedTextField();
 
-		JFormattedTextField formattedTextField_1 = new JFormattedTextField();
+		final JFormattedTextField formattedEmail = new JFormattedTextField();
 
-		JFormattedTextField formattedTextField_2 = new JFormattedTextField();
+		final JFormattedTextField formattedPassword = new JFormattedTextField();
 
-		JFormattedTextField formattedTextField_3 = new JFormattedTextField();
+		final JFormattedTextField formattedPasswordAgain = new JFormattedTextField();
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
 		groupLayout
 				.setHorizontalGroup(groupLayout
@@ -69,25 +72,25 @@ public class RegisterDialog extends JDialog {
 														.createParallelGroup(
 																Alignment.LEADING)
 														.addComponent(
-																formattedTextField_3,
+																formattedPasswordAgain,
 																Alignment.TRAILING,
 																GroupLayout.DEFAULT_SIZE,
 																242,
 																Short.MAX_VALUE)
 														.addComponent(
-																formattedTextField_2,
+																formattedPassword,
 																Alignment.TRAILING,
 																GroupLayout.DEFAULT_SIZE,
 																271,
 																Short.MAX_VALUE)
 														.addComponent(
-																formattedTextField_1,
+																formattedEmail,
 																Alignment.TRAILING,
 																GroupLayout.DEFAULT_SIZE,
 																269,
 																Short.MAX_VALUE)
 														.addComponent(
-																formattedTextField,
+																formattedUsername,
 																Alignment.TRAILING,
 																GroupLayout.DEFAULT_SIZE,
 																269,
@@ -109,7 +112,7 @@ public class RegisterDialog extends JDialog {
 														.addComponent(
 																lblUsername)
 														.addComponent(
-																formattedTextField,
+																formattedUsername,
 																GroupLayout.PREFERRED_SIZE,
 																GroupLayout.DEFAULT_SIZE,
 																GroupLayout.PREFERRED_SIZE))
@@ -121,7 +124,7 @@ public class RegisterDialog extends JDialog {
 																Alignment.BASELINE)
 														.addComponent(lblEmail)
 														.addComponent(
-																formattedTextField_1,
+																formattedEmail,
 																GroupLayout.PREFERRED_SIZE,
 																GroupLayout.DEFAULT_SIZE,
 																GroupLayout.PREFERRED_SIZE))
@@ -134,7 +137,7 @@ public class RegisterDialog extends JDialog {
 														.addComponent(
 																lblPassword)
 														.addComponent(
-																formattedTextField_2,
+																formattedPassword,
 																GroupLayout.PREFERRED_SIZE,
 																GroupLayout.DEFAULT_SIZE,
 																GroupLayout.PREFERRED_SIZE))
@@ -147,7 +150,7 @@ public class RegisterDialog extends JDialog {
 														.addComponent(
 																lblPasswordAgain)
 														.addComponent(
-																formattedTextField_3,
+																formattedPasswordAgain,
 																GroupLayout.PREFERRED_SIZE,
 																GroupLayout.DEFAULT_SIZE,
 																GroupLayout.PREFERRED_SIZE))
@@ -161,17 +164,24 @@ public class RegisterDialog extends JDialog {
 		JButton btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				logDialog.setVisible(true);
 				dispose();
 			}
 		});
-		JButton btnCreate = new JButton("Create");
+		final JButton btnCreate = new JButton("Create");
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (lblPassword.getText().contentEquals(
-						lblPasswordAgain.getText())) {
-					client.createAccount(lblUsername.getText(),
+				if (formattedPassword.getText().contentEquals(
+						formattedPasswordAgain.getText())) {
+					client.createAccount(regDialog, lblUsername.getText(),
 							lblPassword.getText(), lblEmail.getText());
+					formattedUsername.setEnabled(false);
+					formattedEmail.setEnabled(false);
+					formattedPassword.setEnabled(false);
+					formattedPasswordAgain.setEnabled(false);
+					btnCreate.setEnabled(false);
+				} else {
+					JOptionPane.showMessageDialog(regDialog,
+							"Passwords do not match");
 				}
 			}
 		});

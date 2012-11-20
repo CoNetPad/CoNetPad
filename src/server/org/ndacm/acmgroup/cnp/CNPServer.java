@@ -23,6 +23,7 @@ import org.ndacm.acmgroup.cnp.task.JoinSessionTask;
 import org.ndacm.acmgroup.cnp.task.Task;
 import org.ndacm.acmgroup.cnp.task.message.TaskMessageFactory;
 import org.ndacm.acmgroup.cnp.task.response.ChatTaskResponse;
+import org.ndacm.acmgroup.cnp.task.response.CreateAccountTaskResponse;
 
 public class CNPServer implements TaskReceivedEventListener {
 
@@ -123,18 +124,6 @@ public class CNPServer implements TaskReceivedEventListener {
 	@Override
 	public void TaskReceivedEventOccurred(TaskReceivedEvent evt) {
 
-		// TODO
-		// REMOVE BLOCK
-		// THIS IS FOR TESTING PURPOSES ONLY!
-		ChatTask cTask = (ChatTask) evt.getTask();
-		System.out.println("server: " + cTask.getMessage());
-		network.sendTaskResponseToAllClients(new ChatTaskResponse("example",
-				cTask.getMessage()));
-
-		if (1 > 0) {
-			return;
-		}
-
 		Task task = evt.getTask();
 
 		if (task instanceof EditorTask) { // send to ServerSourceFile's
@@ -148,6 +137,9 @@ public class CNPServer implements TaskReceivedEventListener {
 
 			try {
 				createAccount((CreateAccountTask) task);
+				CreateAccountTaskResponse response = new CreateAccountTaskResponse(
+						task.getClientId(), true);
+				network.sendTaskResponseToClient(task.getClientId(), response);
 			} catch (SQLException e) {
 				System.err.println("Failed to create account:\n"
 						+ e.getMessage());
