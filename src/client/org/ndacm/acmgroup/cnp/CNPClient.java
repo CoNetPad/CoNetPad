@@ -8,8 +8,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
 
 import org.ndacm.acmgroup.cnp.file.ClientSourceFile;
@@ -97,9 +97,7 @@ public class CNPClient implements TaskReceivedEventListener {
 		network.sendTask(task);
 	}
 
-	public void createAccount(RegisterDialog register, String username,
-			String password, String email) {
-		this.regDialog = register;
+	public void createAccount(String username, String password, String email) {
 		Task task = new CreateAccountTask(username, password, email);
 		network.sendTask(task);
 	}
@@ -184,8 +182,13 @@ public class CNPClient implements TaskReceivedEventListener {
 
 	public void executeTask(CreateAccountTaskResponse task) {
 		if (task.isSuccess()) {
-			regDialog.dispose();
 			JOptionPane.showMessageDialog(logDialog, "Account created.");
+			Runnable doWorkRunnable = new Runnable() {
+				public void run() {
+					regDialog.dispose();
+				}
+			};
+			SwingUtilities.invokeLater(doWorkRunnable);
 		} else {
 			JOptionPane.showMessageDialog(logDialog,
 					"Error while creating an account.");

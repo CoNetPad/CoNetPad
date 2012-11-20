@@ -26,7 +26,8 @@ public class RegisterDialog extends JDialog {
 	 */
 	public RegisterDialog(final CNPClient client) {
 		this.client = client;
-		this.client.setRegDialog(this);
+		this.regDialog = this;
+		this.client.setRegDialog(regDialog);
 		setBounds(100, 100, 375, 200);
 		JPanel panel = new JPanel();
 		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
@@ -172,7 +173,7 @@ public class RegisterDialog extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				if (formattedPassword.getText().contentEquals(
 						formattedPasswordAgain.getText())) {
-					client.createAccount(regDialog, lblUsername.getText(),
+					client.createAccount(lblUsername.getText(),
 							lblPassword.getText(), lblEmail.getText());
 					formattedUsername.setEnabled(false);
 					formattedEmail.setEnabled(false);
