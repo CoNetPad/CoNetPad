@@ -8,21 +8,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
 
 import org.ndacm.acmgroup.cnp.file.ClientSourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
-import org.ndacm.acmgroup.cnp.gui.LoginDialog;
 import org.ndacm.acmgroup.cnp.gui.MainFrame;
-import org.ndacm.acmgroup.cnp.gui.RegisterDialog;
 import org.ndacm.acmgroup.cnp.network.ClientNetwork;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEventListener;
 import org.ndacm.acmgroup.cnp.task.ChatTask;
-import org.ndacm.acmgroup.cnp.task.CreateAccountTask;
 import org.ndacm.acmgroup.cnp.task.CreateFileTask;
 import org.ndacm.acmgroup.cnp.task.DownloadFileTask;
 import org.ndacm.acmgroup.cnp.task.EditorTask;
@@ -30,7 +25,7 @@ import org.ndacm.acmgroup.cnp.task.JoinSessionTask;
 import org.ndacm.acmgroup.cnp.task.LoginTask;
 import org.ndacm.acmgroup.cnp.task.OpenFileTask;
 import org.ndacm.acmgroup.cnp.task.Task;
-import org.ndacm.acmgroup.cnp.task.response.CreateAccountTaskResponse;
+import org.ndacm.acmgroup.cnp.task.response.ChatTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.CreateFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.JoinSessionTaskResponse;
@@ -51,9 +46,6 @@ public class CNPClient implements TaskReceivedEventListener {
 
 	private ClientNetwork network;
 	private MainFrame sourceFrame;
-	private RegisterDialog regDialog;
-
-	private LoginDialog logDialog;
 
 	public CNPClient() {
 
@@ -66,25 +58,9 @@ public class CNPClient implements TaskReceivedEventListener {
 		network.addTaskReceivedEventListener(this);
 	}
 
-	public boolean connectToServer(String serverURL) {
-		if (network.connect(serverURL)) {
-			this.serverURL = serverURL;
-		} else {
-			return false;
-		}
-		return true;
-	}
-
-	public void closeConnection() {
-		network.disconnect();
-	}
-
-	public void setRegDialog(RegisterDialog regDialog) {
-		this.regDialog = regDialog;
-	}
-
-	public void setLogDialog(LoginDialog logDialog) {
-		this.logDialog = logDialog;
+	public void connectToServer(String serverURL) {
+		network.connect(serverURL);
+		this.serverURL = serverURL;
 	}
 
 	public void loginToAccount(String username, String password) {
@@ -94,11 +70,6 @@ public class CNPClient implements TaskReceivedEventListener {
 
 	public void joinSession(String sessionName) {
 		Task task = new JoinSessionTask(userID, sessionName, authToken);
-		network.sendTask(task);
-	}
-
-	public void createAccount(String username, String password, String email) {
-		Task task = new CreateAccountTask(username, password, email);
 		network.sendTask(task);
 	}
 
@@ -170,34 +141,12 @@ public class CNPClient implements TaskReceivedEventListener {
 		if (task.isSuccess()) {
 			userID = task.getUserID();
 			authToken = task.getUserAuthToken();
-			Runnable doWorkRunnable = new Runnable() {
-				public void run() {
-					logDialog.openMainFrame();
-				}
-			};
-			SwingUtilities.invokeLater(doWorkRunnable);
 		}
 	}
 
 	public void executeTask(JoinSessionTaskResponse task) {
 		if (task.isSuccess()) {
 			// open up main form and source files and stuff
-		}
-
-	}
-
-	public void executeTask(CreateAccountTaskResponse task) {
-		if (task.isSuccess()) {
-			JOptionPane.showMessageDialog(logDialog, "Account created.");
-			Runnable doWorkRunnable = new Runnable() {
-				public void run() {
-					regDialog.dispose();
-				}
-			};
-			SwingUtilities.invokeLater(doWorkRunnable);
-		} else {
-			JOptionPane.showMessageDialog(logDialog,
-					"Error while creating an account.");
 		}
 
 	}
@@ -238,6 +187,13 @@ public class CNPClient implements TaskReceivedEventListener {
 	@Override
 	public void TaskReceivedEventOccurred(TaskReceivedEvent evt) {
 		Task task = evt.getTask();
+
+		ChatTaskResponse cTask = (ChatTaskResponse) evt.getTask();
+		System.out.println(userID + ": " + cTask.getMessage());
+
+		if (1 > 0) {
+			return;
+		}
 
 		if (task instanceof TaskResponse) {
 			TaskResponse response = (TaskResponse) task;

@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
+import javax.xml.soap.MessageFactory;
 
 import org.ndacm.acmgroup.cnp.database.Database;
 import org.ndacm.acmgroup.cnp.exceptions.FailedSessionException;
@@ -23,7 +24,6 @@ import org.ndacm.acmgroup.cnp.task.JoinSessionTask;
 import org.ndacm.acmgroup.cnp.task.Task;
 import org.ndacm.acmgroup.cnp.task.message.TaskMessageFactory;
 import org.ndacm.acmgroup.cnp.task.response.ChatTaskResponse;
-import org.ndacm.acmgroup.cnp.task.response.CreateAccountTaskResponse;
 
 public class CNPServer implements TaskReceivedEventListener {
 
@@ -60,14 +60,8 @@ public class CNPServer implements TaskReceivedEventListener {
 
 	// args[0] is base installation directory
 	public static void main(String[] args) {
-		CNPServer server;
-		if (args.length > 0) {
-			server = new CNPServer(args[0]);
-		} else {
-			server = new CNPServer("");
-		}
+		CNPServer server = new CNPServer(args[0]);
 		server.startNetwork();
-
 	}
 
 	// start listening for client connection
@@ -124,6 +118,18 @@ public class CNPServer implements TaskReceivedEventListener {
 	@Override
 	public void TaskReceivedEventOccurred(TaskReceivedEvent evt) {
 
+		//TODO
+		//REMOVE BLOCK
+		//THIS IS FOR TESTING PURPOSES ONLY!
+		ChatTask cTask = (ChatTask) evt.getTask();
+		System.out.println("server: " + cTask.getMessage());
+		network.sendTaskResponseToAllClients(new ChatTaskResponse("example",
+				cTask.getMessage()));
+		
+		if (1 > 0) {
+			return;
+		}
+
 		Task task = evt.getTask();
 
 		if (task instanceof EditorTask) { // send to ServerSourceFile's
@@ -137,9 +143,6 @@ public class CNPServer implements TaskReceivedEventListener {
 
 			try {
 				createAccount((CreateAccountTask) task);
-				CreateAccountTaskResponse response = new CreateAccountTaskResponse(
-						task.getClientId(), true);
-				network.sendTaskResponseToClient(task.getClientId(), response);
 			} catch (SQLException e) {
 				System.err.println("Failed to create account:\n"
 						+ e.getMessage());

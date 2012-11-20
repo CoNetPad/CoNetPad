@@ -18,6 +18,8 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
 import org.ndacm.acmgroup.cnp.Account;
+import org.ndacm.acmgroup.cnp.Account.ChatPermissionLevel;
+import org.ndacm.acmgroup.cnp.Account.FilePermissionLevel;
 import org.ndacm.acmgroup.cnp.CNPPrivateSession;
 import org.ndacm.acmgroup.cnp.CNPServer;
 import org.ndacm.acmgroup.cnp.CNPSession;
@@ -506,6 +508,123 @@ public class Database implements IDatabase{
 		KeySpec spec = new PBEKeySpec(input.toCharArray(), salt2, 2048, 160);
 		SecretKeyFactory f = SecretKeyFactory.getInstance(ENCRYPTION_ALGORITHM);
 		return new String(f.generateSecret(spec).getEncoded());
+	}
+	
+	
+	
+	@Override
+	public boolean deleteSession(CNPSession session) throws SQLException {
+		// TODO Auto-generated method stub
+		String query = "DELETE FROM Session WHERE SessionID = ?";
+		String query2 = "DELETE FROM SessionPassword WHERE SessionID = ?";
+		PreparedStatement deleteSA= null;
+		try{
+			deleteSA = dbConnection.prepareStatement(query);
+			deleteSA.setInt(1, session.getSessionID() );
+			
+			int rows1 = deleteSA.executeUpdate();
+			deleteSA = dbConnection.prepareStatement(query2);
+			deleteSA.setInt(1, session.getSessionID() );
+			int rows2 = deleteSA.executeUpdate();
+			int rows = rows1 + rows2;
+			if(rows > 0)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		catch(SQLException e)
+		{
+			throw e;
+		}
+		
+	}
+	
+	@Override
+	public boolean deleteAccount(Account account) throws SQLException, FailedAccountException {
+		String query = "DELETE FROM UserAccount WHERE UserID = ?";
+		String query1 = "DELETE FROM SessionUser WHERE UserId = ?";
+		PreparedStatement deleteUser= null;
+		try{
+			deleteUser = dbConnection.prepareStatement(query);
+			deleteUser.setInt(1, account.getUserID() );
+			int rows1 = deleteUser.executeUpdate();
+			deleteUser = dbConnection.prepareStatement(query1);
+			deleteUser.setInt(1, account.getUserID() );
+			int rows2 = deleteUser.executeUpdate();
+			
+			int rows = rows1 + rows2;
+			if(rows > 0)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		catch(SQLException e)
+		{
+			throw e;
+		}
+		
+	}
+	@Override
+	public boolean createSessionAccount(CNPSession session, Account account,
+			String password, FilePermissionLevel filePermission,
+			ChatPermissionLevel chatPermission) throws SQLException {
+		
+		PreparedStatement createSA= null, retrieveSession=null;
+		String insertion = "INSERT INTO SessionUser (SessionID, UserID, FilePermissionLevel, ChatPermissionLevel) "
+				+ "VALUES (? , ?, ?, ?)";
+		String query = "SELECT * FROM SessionPassword WHERE SessionID = ?";
+		try{
+			retrieveSession  = dbConnection.prepareStatement(query);
+			retrieveSession.setInt(1, session.getSessionID());
+			ResultSet rs = retrieveSession.executeQuery();
+			if(rs.next() )
+			{
+				String password1 = rs.getString("SessionPassword");
+				String salt = rs.getString("SessionSal");
+				String password2 = this.encrypt(password, salt);
+				if(password1.equals(password2))
+				{
+					createSA = dbConnection.prepareStatement(insertion);
+					createSA.setInt(1, session.getSessionID() );
+					createSA.setInt(2, account.getUserID());
+					createSA.setInt(3, filePermission.toInt());
+					createSA.setInt(4, chatPermission.toInt());
+					int rows = createSA.executeUpdate();
+					if(rows > 0)
+					{
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+		}
+		catch(SQLException e)
+		{
+			throw e;
+		}
+		catch(Exception e)
+		{
+			return false;
+		}
+		return false;
+		
+		// TODO Auto-generated method stub
 	}
 	
 

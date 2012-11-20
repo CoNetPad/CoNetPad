@@ -1,212 +1,141 @@
 package org.ndacm.acmgroup.cnp.gui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
-
-import org.ndacm.acmgroup.cnp.CNPClient;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JFormattedTextField;
 
 public class RegisterDialog extends JDialog {
-	private CNPClient client;
-	private LoginDialog logDialog;
-	private RegisterDialog regDialog;
+	private JButton btnRegister;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		try {
+			RegisterDialog dialog = new RegisterDialog();
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * Create the dialog.
 	 */
-	public RegisterDialog(final CNPClient client) {
-		this.client = client;
-		this.regDialog = this;
-		this.client.setRegDialog(regDialog);
+	public RegisterDialog() {
 		setBounds(100, 100, 375, 200);
 		JPanel panel = new JPanel();
 		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-
-		final JLabel lblUsername = new JLabel("Username:");
-
-		final JLabel lblPassword = new JLabel("Password:");
-
-		final JLabel lblPasswordAgain = new JLabel("Password again:");
-
-		final JLabel lblEmail = new JLabel("Email:");
-
-		final JFormattedTextField formattedUsername = new JFormattedTextField();
-
-		final JFormattedTextField formattedEmail = new JFormattedTextField();
-
-		final JFormattedTextField formattedPassword = new JFormattedTextField();
-
-		final JFormattedTextField formattedPasswordAgain = new JFormattedTextField();
+		
+		JLabel lblUsername = new JLabel("Username:");
+		
+		JLabel lblPassword = new JLabel("Password:");
+		
+		JLabel lblPasswordAgain = new JLabel("Password again:");
+		
+		JLabel lblEmail = new JLabel("Email:");
+		
+		JFormattedTextField formattedTextField = new JFormattedTextField();
+		
+		JFormattedTextField formattedTextField_1 = new JFormattedTextField();
+		
+		JFormattedTextField formattedTextField_2 = new JFormattedTextField();
+		
+		JFormattedTextField formattedTextField_3 = new JFormattedTextField();
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
-		groupLayout
-				.setHorizontalGroup(groupLayout
-						.createParallelGroup(Alignment.LEADING)
-						.addGroup(
-								groupLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.LEADING)
-														.addComponent(
-																lblPasswordAgain)
-														.addComponent(
-																lblPassword)
-														.addComponent(
-																lblUsername)
-														.addComponent(lblEmail))
-										.addPreferredGap(
-												ComponentPlacement.RELATED)
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.LEADING)
-														.addComponent(
-																formattedPasswordAgain,
-																Alignment.TRAILING,
-																GroupLayout.DEFAULT_SIZE,
-																242,
-																Short.MAX_VALUE)
-														.addComponent(
-																formattedPassword,
-																Alignment.TRAILING,
-																GroupLayout.DEFAULT_SIZE,
-																271,
-																Short.MAX_VALUE)
-														.addComponent(
-																formattedEmail,
-																Alignment.TRAILING,
-																GroupLayout.DEFAULT_SIZE,
-																269,
-																Short.MAX_VALUE)
-														.addComponent(
-																formattedUsername,
-																Alignment.TRAILING,
-																GroupLayout.DEFAULT_SIZE,
-																269,
-																Short.MAX_VALUE))
-										.addContainerGap())
-						.addComponent(panel, Alignment.TRAILING,
-								GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE));
-		groupLayout
-				.setVerticalGroup(groupLayout
-						.createParallelGroup(Alignment.LEADING)
-						.addGroup(
-								groupLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.BASELINE)
-														.addComponent(
-																lblUsername)
-														.addComponent(
-																formattedUsername,
-																GroupLayout.PREFERRED_SIZE,
-																GroupLayout.DEFAULT_SIZE,
-																GroupLayout.PREFERRED_SIZE))
-										.addPreferredGap(
-												ComponentPlacement.RELATED)
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.BASELINE)
-														.addComponent(lblEmail)
-														.addComponent(
-																formattedEmail,
-																GroupLayout.PREFERRED_SIZE,
-																GroupLayout.DEFAULT_SIZE,
-																GroupLayout.PREFERRED_SIZE))
-										.addPreferredGap(
-												ComponentPlacement.RELATED)
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.BASELINE)
-														.addComponent(
-																lblPassword)
-														.addComponent(
-																formattedPassword,
-																GroupLayout.PREFERRED_SIZE,
-																GroupLayout.DEFAULT_SIZE,
-																GroupLayout.PREFERRED_SIZE))
-										.addPreferredGap(
-												ComponentPlacement.RELATED)
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.BASELINE)
-														.addComponent(
-																lblPasswordAgain)
-														.addComponent(
-																formattedPasswordAgain,
-																GroupLayout.PREFERRED_SIZE,
-																GroupLayout.DEFAULT_SIZE,
-																GroupLayout.PREFERRED_SIZE))
-										.addPreferredGap(
-												ComponentPlacement.RELATED,
-												GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)
-										.addComponent(panel,
-												GroupLayout.PREFERRED_SIZE, 46,
-												GroupLayout.PREFERRED_SIZE)));
+		groupLayout.setHorizontalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblPasswordAgain)
+						.addComponent(lblPassword)
+						.addComponent(lblUsername)
+						.addComponent(lblEmail))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(formattedTextField_3, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
+						.addComponent(formattedTextField_2, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE)
+						.addComponent(formattedTextField_1, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
+						.addComponent(formattedTextField, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE))
+					.addContainerGap())
+				.addComponent(panel, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)
+		);
+		groupLayout.setVerticalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblUsername)
+						.addComponent(formattedTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblEmail)
+						.addComponent(formattedTextField_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblPassword)
+						.addComponent(formattedTextField_2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblPasswordAgain)
+						.addComponent(formattedTextField_3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE))
+		);
+		{
+			btnRegister = new JButton("Register");
+			btnRegister.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+				}
+			});
+		}
 		JButton btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				dispose();
 			}
 		});
-		final JButton btnCreate = new JButton("Create");
-		btnCreate.addActionListener(new ActionListener() {
+		JButton btnLogIn = new JButton("Log In");
+		btnLogIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (formattedPassword.getText().contentEquals(
-						formattedPasswordAgain.getText())) {
-					client.createAccount(lblUsername.getText(),
-							lblPassword.getText(), lblEmail.getText());
-					formattedUsername.setEnabled(false);
-					formattedEmail.setEnabled(false);
-					formattedPassword.setEnabled(false);
-					formattedPasswordAgain.setEnabled(false);
-					btnCreate.setEnabled(false);
-				} else {
-					JOptionPane.showMessageDialog(regDialog,
-							"Passwords do not match");
-				}
 			}
 		});
 		GroupLayout gl_panel = new GroupLayout(panel);
-		gl_panel.setHorizontalGroup(gl_panel.createParallelGroup(
-				Alignment.LEADING).addGroup(
-				Alignment.TRAILING,
-				gl_panel.createSequentialGroup()
-						.addContainerGap(211, Short.MAX_VALUE)
-						.addComponent(btnCreate)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(btnCancel).addContainerGap()));
-		gl_panel.setVerticalGroup(gl_panel.createParallelGroup(
-				Alignment.TRAILING)
-				.addGroup(
-						gl_panel.createSequentialGroup()
-								.addContainerGap(GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE)
-								.addGroup(
-										gl_panel.createParallelGroup(
-												Alignment.BASELINE)
-												.addComponent(btnCancel)
-												.addComponent(btnCreate))
-								.addContainerGap()));
+		gl_panel.setHorizontalGroup(
+			gl_panel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(btnRegister)
+					.addPreferredGap(ComponentPlacement.RELATED, 181, Short.MAX_VALUE)
+					.addComponent(btnLogIn)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(btnCancel)
+					.addContainerGap())
+		);
+		gl_panel.setVerticalGroup(
+			gl_panel.createParallelGroup(Alignment.LEADING)
+				.addGroup(Alignment.TRAILING, gl_panel.createSequentialGroup()
+					.addContainerGap(27, Short.MAX_VALUE)
+					.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(btnRegister)
+						.addComponent(btnCancel)
+						.addComponent(btnLogIn))
+					.addContainerGap())
+		);
 		panel.setLayout(gl_panel);
 		getContentPane().setLayout(groupLayout);
 	}
