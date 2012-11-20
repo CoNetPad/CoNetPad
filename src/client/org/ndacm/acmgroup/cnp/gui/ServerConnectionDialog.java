@@ -93,10 +93,11 @@ public class ServerConnectionDialog extends JDialog {
 		btnConnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (client.connectToServer(formattedServer.getText())) {
-					LoginDialog dialog = new LoginDialog();
+					LoginDialog dialog = new LoginDialog(client);
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setVisible(true);
 					serverConnectionDialog.setVisible(false);
+					serverConnectionDialog.dispose();
 				} else {
 					JOptionPane.showMessageDialog(serverConnectionDialog,
 							"Error connecting to server.");

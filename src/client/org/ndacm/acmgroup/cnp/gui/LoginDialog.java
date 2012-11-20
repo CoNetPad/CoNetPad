@@ -15,15 +15,19 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JFormattedTextField;
 
+import org.ndacm.acmgroup.cnp.CNPClient;
+
 public class LoginDialog extends JDialog {
 	private JButton btnRegister;
 	private LoginDialog loginDialog;
+	private CNPClient client;
 
 	/**
 	 * Create the dialog.
 	 */
-	public LoginDialog() {
+	public LoginDialog(final CNPClient client) {
 		loginDialog = this;
+		this.client = client;
 		setTitle("CoNetPad Client");
 		setBounds(100, 100, 418, 173);
 		JPanel panel = new JPanel();
@@ -134,7 +138,7 @@ public class LoginDialog extends JDialog {
 			btnRegister = new JButton("Register");
 			btnRegister.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					RegisterDialog dialog = new RegisterDialog();
+					RegisterDialog dialog = new RegisterDialog(client);
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setVisible(true);
 					loginDialog.setVisible(false);
@@ -150,6 +154,12 @@ public class LoginDialog extends JDialog {
 		JButton btnLogIn = new JButton("Log In");
 		btnLogIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				MainFrame frame = new MainFrame(client);
+				frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				frame.setVisible(true);
+				loginDialog.setVisible(false);
+				loginDialog.dispose();
+
 			}
 		});
 		GroupLayout gl_panel = new GroupLayout(panel);

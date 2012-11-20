@@ -8,7 +8,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
-import javax.xml.soap.MessageFactory;
 
 import org.ndacm.acmgroup.cnp.database.Database;
 import org.ndacm.acmgroup.cnp.exceptions.FailedSessionException;
@@ -60,8 +59,14 @@ public class CNPServer implements TaskReceivedEventListener {
 
 	// args[0] is base installation directory
 	public static void main(String[] args) {
-		CNPServer server = new CNPServer(args[0]);
+		CNPServer server;
+		if (args.length > 0) {
+			server = new CNPServer(args[0]);
+		} else {
+			server = new CNPServer("");
+		}
 		server.startNetwork();
+
 	}
 
 	// start listening for client connection
@@ -118,14 +123,14 @@ public class CNPServer implements TaskReceivedEventListener {
 	@Override
 	public void TaskReceivedEventOccurred(TaskReceivedEvent evt) {
 
-		//TODO
-		//REMOVE BLOCK
-		//THIS IS FOR TESTING PURPOSES ONLY!
+		// TODO
+		// REMOVE BLOCK
+		// THIS IS FOR TESTING PURPOSES ONLY!
 		ChatTask cTask = (ChatTask) evt.getTask();
 		System.out.println("server: " + cTask.getMessage());
 		network.sendTaskResponseToAllClients(new ChatTaskResponse("example",
 				cTask.getMessage()));
-		
+
 		if (1 > 0) {
 			return;
 		}

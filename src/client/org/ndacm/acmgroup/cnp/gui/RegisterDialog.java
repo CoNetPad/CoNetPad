@@ -1,40 +1,40 @@
 package org.ndacm.acmgroup.cnp.gui;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.border.EtchedBorder;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.border.EtchedBorder;
+
+import org.ndacm.acmgroup.cnp.CNPClient;
 
 public class RegisterDialog extends JDialog {
-	private JButton btnRegister;
+	private CNPClient client;
+	private LoginDialog logDialog;
 
 	/**
 	 * Create the dialog.
 	 */
-	public RegisterDialog() {
+	public RegisterDialog(final CNPClient client) {
+		this.client = client;
 		setBounds(100, 100, 375, 200);
 		JPanel panel = new JPanel();
 		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 
-		JLabel lblUsername = new JLabel("Username:");
+		final JLabel lblUsername = new JLabel("Username:");
 
-		JLabel lblPassword = new JLabel("Password:");
+		final JLabel lblPassword = new JLabel("Password:");
 
-		JLabel lblPasswordAgain = new JLabel("Password again:");
+		final JLabel lblPasswordAgain = new JLabel("Password again:");
 
-		JLabel lblEmail = new JLabel("Email:");
+		final JLabel lblEmail = new JLabel("Email:");
 
 		JFormattedTextField formattedTextField = new JFormattedTextField();
 
@@ -158,45 +158,43 @@ public class RegisterDialog extends JDialog {
 										.addComponent(panel,
 												GroupLayout.PREFERRED_SIZE, 46,
 												GroupLayout.PREFERRED_SIZE)));
-		{
-			btnRegister = new JButton("Register");
-			btnRegister.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-				}
-			});
-		}
 		JButton btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				logDialog.setVisible(true);
+				dispose();
 			}
 		});
-		JButton btnLogIn = new JButton("Log In");
-		btnLogIn.addActionListener(new ActionListener() {
+		JButton btnCreate = new JButton("Create");
+		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if (lblPassword.getText().contentEquals(
+						lblPasswordAgain.getText())) {
+					client.createAccount(lblUsername.getText(),
+							lblPassword.getText(), lblEmail.getText());
+				}
 			}
 		});
 		GroupLayout gl_panel = new GroupLayout(panel);
 		gl_panel.setHorizontalGroup(gl_panel.createParallelGroup(
 				Alignment.LEADING).addGroup(
+				Alignment.TRAILING,
 				gl_panel.createSequentialGroup()
-						.addContainerGap()
-						.addComponent(btnRegister)
-						.addPreferredGap(ComponentPlacement.RELATED, 181,
-								Short.MAX_VALUE).addComponent(btnLogIn)
+						.addContainerGap(211, Short.MAX_VALUE)
+						.addComponent(btnCreate)
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addComponent(btnCancel).addContainerGap()));
 		gl_panel.setVerticalGroup(gl_panel.createParallelGroup(
-				Alignment.LEADING)
+				Alignment.TRAILING)
 				.addGroup(
-						Alignment.TRAILING,
 						gl_panel.createSequentialGroup()
-								.addContainerGap(27, Short.MAX_VALUE)
+								.addContainerGap(GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE)
 								.addGroup(
 										gl_panel.createParallelGroup(
 												Alignment.BASELINE)
-												.addComponent(btnRegister)
 												.addComponent(btnCancel)
-												.addComponent(btnLogIn))
+												.addComponent(btnCreate))
 								.addContainerGap()));
 		panel.setLayout(gl_panel);
 		getContentPane().setLayout(groupLayout);

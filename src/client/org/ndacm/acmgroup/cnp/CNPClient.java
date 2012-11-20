@@ -18,6 +18,7 @@ import org.ndacm.acmgroup.cnp.network.ClientNetwork;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEventListener;
 import org.ndacm.acmgroup.cnp.task.ChatTask;
+import org.ndacm.acmgroup.cnp.task.CreateAccountTask;
 import org.ndacm.acmgroup.cnp.task.CreateFileTask;
 import org.ndacm.acmgroup.cnp.task.DownloadFileTask;
 import org.ndacm.acmgroup.cnp.task.EditorTask;
@@ -74,6 +75,11 @@ public class CNPClient implements TaskReceivedEventListener {
 
 	public void joinSession(String sessionName) {
 		Task task = new JoinSessionTask(userID, sessionName, authToken);
+		network.sendTask(task);
+	}
+
+	public void createAccount(String username, String password, String email) {
+		Task task = new CreateAccountTask(username, password, email);
 		network.sendTask(task);
 	}
 
@@ -191,13 +197,6 @@ public class CNPClient implements TaskReceivedEventListener {
 	@Override
 	public void TaskReceivedEventOccurred(TaskReceivedEvent evt) {
 		Task task = evt.getTask();
-
-		ChatTaskResponse cTask = (ChatTaskResponse) evt.getTask();
-		System.out.println(userID + ": " + cTask.getMessage());
-
-		if (1 > 0) {
-			return;
-		}
 
 		if (task instanceof TaskResponse) {
 			TaskResponse response = (TaskResponse) task;

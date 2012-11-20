@@ -5,14 +5,15 @@ import javax.swing.JDialog;
 import org.ndacm.acmgroup.cnp.gui.ServerConnectionDialog;
 
 public class Launcher {
+
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		try {
-			ServerConnectionDialog dialog = new ServerConnectionDialog();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
+			ServerConnectionDialog servDialog = new ServerConnectionDialog();
+			servDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			servDialog.setVisible(true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
