@@ -170,6 +170,12 @@ public class CNPClient implements TaskReceivedEventListener {
 		if (task.isSuccess()) {
 			userID = task.getUserID();
 			authToken = task.getUserAuthToken();
+			Runnable doWorkRunnable = new Runnable() {
+				public void run() {
+					logDialog.openMainFrame();
+				}
+			};
+			SwingUtilities.invokeLater(doWorkRunnable);
 		}
 	}
 

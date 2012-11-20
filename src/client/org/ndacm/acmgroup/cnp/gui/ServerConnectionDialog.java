@@ -108,7 +108,6 @@ public class ServerConnectionDialog extends JDialog {
 		JButton btnExit = new JButton("Exit");
 		btnExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				client.closeConnection();
 				dispose();
 			}
 		});
