@@ -507,16 +507,24 @@ public class Database implements IDatabase{
 		SecretKeyFactory f = SecretKeyFactory.getInstance(ENCRYPTION_ALGORITHM);
 		return new String(f.generateSecret(spec).getEncoded());
 	}
+	
+	
+	
 	@Override
 	public boolean deleteSession(CNPSession session) throws SQLException {
 		// TODO Auto-generated method stub
 		String query = "DELETE FROM Session WHERE SessionID = ?";
+		String query2 = "DELETE FROM SessionPassword WHERE SessionID = ?";
 		PreparedStatement deleteSA= null;
 		try{
 			deleteSA = dbConnection.prepareStatement(query);
 			deleteSA.setInt(1, session.getSessionID() );
 			
-			int rows = deleteSA.executeUpdate();
+			int rows1 = deleteSA.executeUpdate();
+			deleteSA = dbConnection.prepareStatement(query2);
+			deleteSA.setInt(1, session.getSessionID() );
+			int rows2 = deleteSA.executeUpdate();
+			int rows = rows1 + rows2;
 			if(rows > 0)
 			{
 				return true;
@@ -532,59 +540,21 @@ public class Database implements IDatabase{
 		}
 		
 	}
-	@Override
-	public boolean deleteSession(CNPSession session, String password)
-			throws SQLException, FailedSessionException {
-		// TODO Auto-generated method stub
-		String query = "DELETE FROM Session WHERE SessionID = ?";
-		String query2 = "SELECT * "
-				+ "FROM SessionPassword "
-				+ "WHERE SessionID = ?";
-		PreparedStatement deleteSA = null, retrieveSession = null;
-
-		try{
-			retrieveSession = dbConnection.prepareStatement(query2);
-			retrieveSession.setInt(1, session.getSessionID() );
-			
-			//run the query, return a result set        
-			ResultSet rset = retrieveSession.executeQuery();
-			if(rset.next())
-			{
-				String password1 = rset.getString("SessionPassword");
-				String salt = rset.getString("SessionSalt");
-				String password2 = this.encrypt(password, salt);
-			}
-			deleteSA = dbConnection.prepareStatement(query);
-			deleteSA.setInt(1, session.getSessionID() );
-			
-			int rows = deleteSA.executeUpdate();
-			if(rows > 0)
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
-		catch(SQLException e)
-		{
-			throw e;
-		}
-		catch(Exception e)
-		{
-			throw new FailedSessionException("Error with encrpytion");
-		}
-	}
+	
 	@Override
 	public boolean deleteAccount(Account account) throws SQLException, FailedAccountException {
 		String query = "DELETE FROM UserAccount WHERE UserID = ?";
+		String query1 = "DELETE FROM SessionUser WHERE UserId = ?";
 		PreparedStatement deleteUser= null;
 		try{
 			deleteUser = dbConnection.prepareStatement(query);
 			deleteUser.setInt(1, account.getUserID() );
+			int rows1 = deleteUser.executeUpdate();
+			deleteUser = dbConnection.prepareStatement(query1);
+			deleteUser.setInt(1, account.getUserID() );
+			int rows2 = deleteUser.executeUpdate();
 			
-			int rows = deleteUser.executeUpdate();
+			int rows = rows1 + rows2;
 			if(rows > 0)
 			{
 				return true;

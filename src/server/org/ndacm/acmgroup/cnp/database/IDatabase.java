@@ -105,16 +105,7 @@ public interface IDatabase {
 	boolean deleteSession(CNPSession session)throws SQLException;
 	
 	
-	/**
-	 * This deletes a private session
-	 * @param session			The session object
-	 * @param password			The password string.  Un-Encrypted.
-	 * @return					True if the deletion was successful, false otherwise.
-	 * @throws SQLException
-	 * @throws FailedSessionException
-	 */
-	boolean deleteSession(CNPSession session, String password) throws SQLException, FailedSessionException;
-	
+
 	/**
 	 * This deletes the given account
 	 * @param account				The account to delete

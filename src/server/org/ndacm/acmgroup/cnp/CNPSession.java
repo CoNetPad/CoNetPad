@@ -9,6 +9,7 @@ import java.util.concurrent.Executors;
 
 import org.ndacm.acmgroup.cnp.Account.ChatPermissionLevel;
 import org.ndacm.acmgroup.cnp.Account.FilePermissionLevel;
+import org.ndacm.acmgroup.cnp.database.Database;
 import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
@@ -25,18 +26,16 @@ public class CNPSession {
 	private static int NAME_LENGTH = 5;
 	private static String baseDirectory;
 	private static Random rnd = new Random();
-
+	private Database db;
 	private int sessionID;
 	private CNPServer server;
 	private String sessionName;
 	private JGit gitRepo;
 	private Map<Integer, ServerSourceFile> sourceFiles; // maps fileID to ServerSourceFile
-	private String gitPath;
 	private ExecutorService sessionTaskCourier;
 	private ExecutorService sessionTaskQueue; // single-thread
 //	private SessionType type;
 	private int sessionLeader;
-	private String ircChannel;
 	private String encryptedPassword;
 	private Map<Account, CNPConnection> clientConnections; // implement with ConcurrentHashMap
 	private Map<Account, Account.FilePermissionLevel> filePermissions; // implement with CHM ^
@@ -93,23 +92,21 @@ public class CNPSession {
 	{
 		return sessionName;
 	}
-	public String getIrcChannel()
-	{
-		return ircChannel;
-	}
 
-	public String getEncryptedPassword()
-	{
-		return encryptedPassword;
-	}
-	public String getGitPath()
-	{
-		return gitPath;
-	}
+	/**
+	 * This returns the Database ID of the session
+	 * @return		The database ID
+	 */
 	public int getSessionID()
 	{
 		return sessionID;
 	}
+	
+	/**
+	 * This adds user to the session
+	 * @param userAccount
+	 * @param connection
+	 */
 	public void addUser(Account userAccount, CNPConnection connection) {
 		clientConnections.put(userAccount, connection);
 	}
