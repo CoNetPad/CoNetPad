@@ -1,13 +1,7 @@
 package org.ndacm.acmgroup.cnp.task;
 
-import javax.swing.text.BadLocationException;
-
 import org.ndacm.acmgroup.cnp.Account.FilePermissionLevel;
-import org.ndacm.acmgroup.cnp.CNPSession;
 import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
-import org.ndacm.acmgroup.cnp.file.SourceFile;
-import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
-import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
 /**
  * A task to edit a source file. An EditorTask is issued by a single person and
@@ -85,7 +79,7 @@ public class EditorTask extends TaskRequest {
 		this.file = file;
 	}
 
-	public SourceFile getFile() {
+	public ServerSourceFile getFile() {
 		return file;
 	}
 

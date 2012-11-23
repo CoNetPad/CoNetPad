@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.ndacm.acmgroup.cnp.CNPServer;
-import org.ndacm.acmgroup.cnp.CNPSession;
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
 import org.ndacm.acmgroup.cnp.task.ChatTask;
 import org.ndacm.acmgroup.cnp.task.CloseFileTask;
@@ -68,8 +67,12 @@ public class TaskMessageFactory {
 	public static Task fromMessageToTask(TaskMessage message) {
 		switch (message.getTaskType()) {
 		case Chat:
-			return new ChatTask(Integer.parseInt(message.getData()[0]),
-					message.getData()[1], message.getData()[2]);
+			return new ChatTask(
+					Integer.parseInt(message.getData()[0]),
+					message.getData()[1],
+					Integer.parseInt(message.getData()[2]),
+					message.getData()[3],
+					message.getData()[4]);
 		case CloseFile:
 			return new CloseFileTask(Integer.parseInt(message.getData()[0]),
 					message.getData()[1], message.getData()[2]);
@@ -173,6 +176,8 @@ public class TaskMessageFactory {
 		if (task instanceof ChatTask) {
 			ChatTask chat = (ChatTask) task;
 			String[] data = { Integer.toString(chat.getUserID()),
+					chat.getUsername(),
+					Integer.toString(chat.getSessionID()),
 					chat.getMessage(), chat.getUserAuthToken() };
 			message = new TaskMessage(TaskType.Chat, data);
 		} else if (task instanceof CloseFileTask) {
@@ -348,8 +353,9 @@ public class TaskMessageFactory {
 		case Login:
 			return new LoginTaskResponse(
 					Integer.parseInt(message.getData()[0]),
-					Boolean.parseBoolean(message.getData()[1]),
-					message.getData()[2]);
+					message.getData()[1],
+					Boolean.parseBoolean(message.getData()[2]),
+					message.getData()[3]);
 		case OpenFile:
 			return new OpenFileTaskResponse(message.getData()[0],
 					Boolean.parseBoolean(message.getData()[1]));
@@ -434,6 +440,7 @@ public class TaskMessageFactory {
 		} else if (task instanceof LoginTaskResponse) {
 			LoginTaskResponse login = (LoginTaskResponse) task;
 			String[] data = { Integer.toString(login.getUserID()),
+					login.getUsername(),
 					Boolean.toString(login.isSuccess()),
 					login.getUserAuthToken() };
 			message = new TaskMessage(TaskType.Login, data);

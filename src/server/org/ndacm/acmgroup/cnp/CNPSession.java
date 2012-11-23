@@ -11,16 +11,18 @@ import org.ndacm.acmgroup.cnp.Account.ChatPermissionLevel;
 import org.ndacm.acmgroup.cnp.Account.FilePermissionLevel;
 import org.ndacm.acmgroup.cnp.database.Database;
 import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
-import org.ndacm.acmgroup.cnp.file.SourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
 import org.ndacm.acmgroup.cnp.git.JGit;
 import org.ndacm.acmgroup.cnp.network.CNPConnection;
-import org.ndacm.acmgroup.cnp.task.EditorTask;
+import org.ndacm.acmgroup.cnp.task.ChatTask;
+import org.ndacm.acmgroup.cnp.task.SendResponseTask;
+import org.ndacm.acmgroup.cnp.task.TaskRequest;
+import org.ndacm.acmgroup.cnp.task.response.ChatTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
 
 public class CNPSession {
-	
+
 	/**
 	 * The allowed characters for the Session name generator
 	 */
@@ -55,7 +57,7 @@ public class CNPSession {
 	private Map<Integer, ServerSourceFile> sourceFiles; // maps fileID to ServerSourceFile
 	private ExecutorService sessionTaskCourier;
 	private ExecutorService sessionTaskQueue; // single-thread
-//	private SessionType type;
+	//	private SessionType type;
 	private int sessionLeader;
 	private String encryptedPassword;
 	private Map<Account, CNPConnection> clientConnections; // implement with ConcurrentHashMap
@@ -122,7 +124,7 @@ public class CNPSession {
 	{
 		return sessionID;
 	}
-	
+
 	/**
 	 * This adds user to the session
 	 * @param userAccount			The account in which you wish to add
@@ -131,7 +133,7 @@ public class CNPSession {
 	public void addUser(Account userAccount, CNPConnection connection) {
 		clientConnections.put(userAccount, connection);
 	}
-	
+
 	/**
 	 * This removes an user from the session
 	 * @param userAccount		The account you wish to remove
@@ -150,7 +152,7 @@ public class CNPSession {
 		sourceFiles.put(NEXT_FILEID, file);
 		NEXT_FILEID++;
 	}
-	
+
 	/**
 	 * This deletes the file
 	 * @param filename			The filename you wish to remove.  No need for file type
@@ -158,7 +160,7 @@ public class CNPSession {
 	public void deleteFile(String filename) {
 		sourceFiles.remove(filename);
 	}
-	
+
 	/**
 	 * This commits changes for the GIT using a message.  [Not Implemented]
 	 * @param message			The commit message
@@ -183,25 +185,29 @@ public class CNPSession {
 		// TODO implement
 		return new File("");
 	}
-	/**
-	 * This executes an editor task
-	 * @param task			The editor task that needs to be executed
-	 */
-	public void executeTask(EditorTask task) {
-		// execute task using ServerSourceFile's ExecutorService
-		SourceFile file = task.getFile();
-		if (file instanceof ServerSourceFile) {
-			ServerSourceFile serverFile = (ServerSourceFile) file;
-			serverFile.executeTask(task);
-		}
+
+	public void executeTask(ChatTask task) {
+
+		ChatTaskResponse response = new ChatTaskResponse(task.getUsername(), task.getMessage());
+		distributeTask(response);
+
+	}
+
+	public void submitTask(TaskRequest task) {
+		sessionTaskQueue.submit(task);
 	}
 
 	/**
-	 * This distributes a response task to the threads or users
+	 * This distributes a response task to session users
 	 * @param task			The distribution task you wish to send out
 	 */
 	public void distributeTask(TaskResponse task) { // have throw TaskExecutionException
-		sessionTaskCourier.submit(task);
+
+		for (CNPConnection client : clientConnections.values()) {
+			SendResponseTask responseTask = new SendResponseTask(task, client);
+			sessionTaskCourier.submit(responseTask);
+		}
+
 	}
 
 	/**
@@ -210,14 +216,26 @@ public class CNPSession {
 	 * Source:  http://stackoverflow.com/questions/2863852/how-to-generate-a-random-string-in-java
 	 */
 	public static String generateString() {
-		char[] text = new char[NAME_LENGTH];
-		for (int i = 0; i < NAME_LENGTH; i++) {
-			text[i] = SESSION_NAME_CHARS.charAt(rnd.nextInt(SESSION_NAME_CHARS.length()));
+
+		boolean isUnique = false;
+
+		char[] text = null;
+		String sessionName = null;
+		while (!isUnique) {
+			text = new char[NAME_LENGTH];
+			for (int i = 0; i < NAME_LENGTH; i++) {
+				text[i] = SESSION_NAME_CHARS.charAt(rnd.nextInt(SESSION_NAME_CHARS.length()));
+			}
+			sessionName = new String(text);
+
+			if (CNPServer.sessionExists(sessionName)) {
+				isUnique = true;
+			}
 		}
-		return new String(text);
+		return sessionName;
 	}
 
-	
+
 	/**
 	 * This gets a file given a file ID
 	 * @param fileID			The file ID you wish to get
@@ -226,7 +244,7 @@ public class CNPSession {
 	public ServerSourceFile getFile(int fileID) {
 		return sourceFiles.get(fileID);
 	}
-	
+
 	/**
 	 * This checks to see if two sessions are equal
 	 * @param session			The session you wish to test is equal

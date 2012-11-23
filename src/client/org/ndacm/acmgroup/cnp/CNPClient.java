@@ -18,15 +18,17 @@ import org.ndacm.acmgroup.cnp.network.ClientNetwork;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEventListener;
 import org.ndacm.acmgroup.cnp.task.ChatTask;
+import org.ndacm.acmgroup.cnp.task.CreateAccountTask;
 import org.ndacm.acmgroup.cnp.task.CreateFileTask;
-import org.ndacm.acmgroup.cnp.task.DownloadFileTask;
 import org.ndacm.acmgroup.cnp.task.EditorTask;
 import org.ndacm.acmgroup.cnp.task.JoinSessionTask;
 import org.ndacm.acmgroup.cnp.task.LoginTask;
 import org.ndacm.acmgroup.cnp.task.OpenFileTask;
 import org.ndacm.acmgroup.cnp.task.Task;
 import org.ndacm.acmgroup.cnp.task.response.ChatTaskResponse;
+import org.ndacm.acmgroup.cnp.task.response.CreateAccountTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.CreateFileTaskResponse;
+import org.ndacm.acmgroup.cnp.task.response.DownloadFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.JoinSessionTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.LoginTaskResponse;
@@ -37,12 +39,14 @@ public class CNPClient implements TaskReceivedEventListener {
 
 	private String serverURL;
 	private String sessionName;
+	private int sessionID;
 	private int userID; // ID of account logged in as
+	private String username;
 	private String authToken; // assigned by server after authentication
 
 	private ExecutorService clientExecutor;
 	private Map<Integer, ClientSourceFile> sourceFiles; // fileID -
-														// ClientSourceFile
+	// ClientSourceFile
 
 	private ClientNetwork network;
 	private MainFrame sourceFrame;
@@ -61,6 +65,11 @@ public class CNPClient implements TaskReceivedEventListener {
 	public void connectToServer(String serverURL) {
 		network.connect(serverURL);
 		this.serverURL = serverURL;
+	}
+	
+	public void createAccount(String username, String email, String password) {
+		CreateAccountTask task = new CreateAccountTask(username, email, password);
+		network.sendTask(task);
 	}
 
 	public void loginToAccount(String username, String password) {
@@ -99,10 +108,9 @@ public class CNPClient implements TaskReceivedEventListener {
 
 	}
 
-	public boolean sendChatMessage(String message) {
-		Task task = new ChatTask(userID, message, authToken);
+	public void sendChatMessage(String message) {
+		Task task = new ChatTask(userID, username, sessionID, message, authToken);
 		network.sendTask(task);
-		return false;
 	}
 
 	/**
@@ -132,14 +140,17 @@ public class CNPClient implements TaskReceivedEventListener {
 		}
 		return list;
 	}
-
-	public void executeTask(Task task) {
-		executeTask(task);
+	
+	public void executeTask(CreateAccountTaskResponse task) {
+		if (task.isSuccess()) {
+			// do something
+		}
 	}
 
 	public void executeTask(LoginTaskResponse task) {
 		if (task.isSuccess()) {
 			userID = task.getUserID();
+			username = task.getUsername();
 			authToken = task.getUserAuthToken();
 		}
 	}
@@ -174,12 +185,11 @@ public class CNPClient implements TaskReceivedEventListener {
 				task.getEditIndex());
 	}
 
-	public boolean executeTask(ChatTask task) {
-		// TODO implement
-		return false;
+	public void executeTask(ChatTaskResponse task) {
+		sourceFrame.updateChat(task.getUsername(), task.getMessage());
 	}
 
-	public boolean executeTask(DownloadFileTask task) {
+	public boolean executeTask(DownloadFileTaskResponse task) {
 		// TODO implement
 		return false;
 	}
@@ -194,19 +204,6 @@ public class CNPClient implements TaskReceivedEventListener {
 			response.setClient(this);
 			clientExecutor.submit(response);
 		}
-		
-//		ChatTaskResponse cTask = (ChatTaskResponse) evt.getTask();
-//		System.out.println(userID + ": " + cTask.getMessage());
-//
-//		if (1 > 0) {
-//			return;
-//		}
-//
-//		if (task instanceof TaskResponse) {
-//			TaskResponse response = (TaskResponse) task;
-//			response.setClient(this);
-//			clientExecutor.submit(response);
-//		}
 
 	}
 

@@ -8,7 +8,7 @@ import org.ndacm.acmgroup.cnp.Account;
 import org.ndacm.acmgroup.cnp.network.CNPConnection;
 import org.ndacm.acmgroup.cnp.task.DownloadFileTask;
 import org.ndacm.acmgroup.cnp.task.EditorTask;
-import org.ndacm.acmgroup.cnp.task.SendFileTask;
+import org.ndacm.acmgroup.cnp.task.SendResponseTask;
 import org.ndacm.acmgroup.cnp.task.TaskRequest;
 import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
@@ -58,7 +58,7 @@ public class ServerSourceFile extends SourceFile {
 
 	public void distributeTask(TaskResponse response) {
 		for (CNPConnection client : clientConnections.values()) {
-			SendFileTask fileTask = new SendFileTask(response, client);
+			SendResponseTask fileTask = new SendResponseTask(response, client);
 			fileTaskCourier.submit(fileTask);
 		}
 	}

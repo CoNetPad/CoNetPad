@@ -1,9 +1,12 @@
 package org.ndacm.acmgroup.cnp.task;
 
+import org.ndacm.acmgroup.cnp.network.CNPConnection;
+
 public class LoginTask extends TaskRequest {
 	
 	protected String username;
 	protected String password;
+	private CNPConnection connection;
 
 	public LoginTask(String username, String password) {
 		this.username = username;
@@ -12,9 +15,7 @@ public class LoginTask extends TaskRequest {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		// LoginTaskResult will return auth token
-		
+		server.executeTask(this);
 	}
 
 	public String getUsername() {
@@ -23,6 +24,14 @@ public class LoginTask extends TaskRequest {
 
 	public String getPassword() {
 		return password;
+	}
+	
+	public void setConnection(CNPConnection connection) {
+		this.connection = connection;
+	}
+	
+	public CNPConnection getConnection() {
+		return connection;
 	}
 
 }

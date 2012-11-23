@@ -165,4 +165,8 @@ public class MainFrame extends JFrame {
 		JTextField text = tabs.get(fileID);
 		text.getDocument().insertString(editIndex, Character.toString((char) keyPressed), null);
 	}
+	
+	public void updateChat(String username, String message) {
+		// TODO implement
+	}
 }

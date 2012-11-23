@@ -3,11 +3,13 @@ package org.ndacm.acmgroup.cnp.task.response;
 public class LoginTaskResponse extends TaskResponse {
 
 	private int userID;
+	private String username;
 	private boolean success;
 	private String userAuthToken;
 
-	public LoginTaskResponse(int userID, boolean success, String userAuthToken) {
+	public LoginTaskResponse(int userID, String username, boolean success, String userAuthToken) {
 		this.userID = userID;
+		this.username = username;
 		this.success = success;
 		this.userAuthToken = userAuthToken;
 	}
@@ -36,6 +38,14 @@ public class LoginTaskResponse extends TaskResponse {
 
 	public String getUserAuthToken() {
 		return userAuthToken;
+	}
+	
+	public String getUsername() {
+		return username;
+	}
+	
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public void setUserAuthToken(String userAuthToken) {

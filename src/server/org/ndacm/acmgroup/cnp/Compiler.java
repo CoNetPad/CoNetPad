@@ -20,7 +20,7 @@ public class Compiler {
 	}
 
 	
-	private void coompileJava(ServerSourceFile sf)
+	private void compileJava(ServerSourceFile sf)
 	{
 		
 	}

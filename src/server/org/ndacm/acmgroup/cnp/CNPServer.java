@@ -4,38 +4,53 @@ import java.io.File;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 
 import org.ndacm.acmgroup.cnp.database.Database;
+import org.ndacm.acmgroup.cnp.exceptions.FailedAccountException;
 import org.ndacm.acmgroup.cnp.exceptions.FailedSessionException;
 import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
 import org.ndacm.acmgroup.cnp.network.ServerNetwork;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEventListener;
+import org.ndacm.acmgroup.cnp.task.ChatTask;
 import org.ndacm.acmgroup.cnp.task.CreateAccountTask;
 import org.ndacm.acmgroup.cnp.task.CreatePrivateSessionTask;
 import org.ndacm.acmgroup.cnp.task.CreateSessionTask;
 import org.ndacm.acmgroup.cnp.task.EditorTask;
 import org.ndacm.acmgroup.cnp.task.JoinSessionTask;
+import org.ndacm.acmgroup.cnp.task.LoginTask;
+import org.ndacm.acmgroup.cnp.task.SendResponseTask;
 import org.ndacm.acmgroup.cnp.task.Task;
 import org.ndacm.acmgroup.cnp.task.TaskRequest;
 import org.ndacm.acmgroup.cnp.task.message.TaskMessageFactory;
+import org.ndacm.acmgroup.cnp.task.response.CreateAccountTaskResponse;
+import org.ndacm.acmgroup.cnp.task.response.LoginTaskResponse;
 
 public class CNPServer implements TaskReceivedEventListener {
+
+	private static final int USER_TOKEN_LENGTH = 10;
+	private static final String TOKEN_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
 	private ServerNetwork network;
 	private Database database;
 	private Compiler compiler;
 	private String baseDirectory;
 	private Map<Integer, CNPSession> openSessions; // maps sessionID to //
-													// CNPSession
+	// CNPSession
 	private TaskMessageFactory messageFactory;
+	private ExecutorService serverExecutor; // for server-wide tasks (e.g. account creation)
+	private Map<Integer, String> userAuthTokens; // userID to userAuthToken
 
 	private SecretKey key; // TODO implement
 	private Cipher cipher; // TODO implement
+	private Random rand;
 
 	public CNPServer(String baseDirectory) {
 
@@ -43,7 +58,10 @@ public class CNPServer implements TaskReceivedEventListener {
 		network = new ServerNetwork();
 		compiler = new Compiler();
 		openSessions = new ConcurrentHashMap<Integer, CNPSession>();
+		userAuthTokens = new ConcurrentHashMap<Integer, String>();
 		TaskMessageFactory.initalizeMessageFactory(this);
+		serverExecutor = Executors.newCachedThreadPool();
+		rand = new Random();
 
 		try {
 			database = new Database();
@@ -66,12 +84,6 @@ public class CNPServer implements TaskReceivedEventListener {
 	// start listening for client connection
 	public void startNetwork() {
 		network.startListening();
-	}
-
-	public void createAccount(CreateAccountTask task) throws SQLException {
-		database.createAccount(task.getUsername(), task.getEmail(),
-				task.getPassword());
-		// send back response
 	}
 
 	public void connectToSession(JoinSessionTask task) throws SQLException {
@@ -113,50 +125,83 @@ public class CNPServer implements TaskReceivedEventListener {
 		// TODO implement
 		return new File(""); // return tar or something
 	}
-	
-	public void executeTask(EditorTask task){
-//		task.getFile().editSource(task);
-//		sourceFrame.updateSourceTab(task.getFileID(), task.getKeyPressed(),
-//				task.getEditIndex());
+
+	public void executeTask(CreateAccountTask task) {
+
+		CreateAccountTaskResponse response = null;
+		Account newAccount = null;
+
+		try {
+			newAccount = database.createAccount(task.getUsername(), task.getEmail(),
+					task.getPassword());
+			// create positive response
+			response =  new CreateAccountTaskResponse(newAccount.getUserID(), true);
+		} catch (FailedAccountException e) {
+			// negative response
+			response = new CreateAccountTaskResponse(-1, false);
+		}
+
+		// send back response
+		SendResponseTask accountResponseTask = new SendResponseTask(response, task.getConnection());
+		serverExecutor.submit(accountResponseTask);
+
+	}
+
+	public void executeTask(LoginTask task) {
+
+		LoginTaskResponse response = null;
+		Account loggedInAccount = null;
+
+		try {
+			loggedInAccount = database.retrieveAccount(task.getUsername(), task.getPassword());
+			String userAuthToken = generateToken();
+			userAuthTokens.put(loggedInAccount.getUserID(), userAuthToken);
+			// create positive response
+			response =  new LoginTaskResponse(loggedInAccount.getUserID(), loggedInAccount.getUsername(),
+					true, userAuthToken);
+		} catch (FailedAccountException e) {
+			// negative response
+			response = new LoginTaskResponse(-1, "", false, "");
+		}
+
+		// send back response
+		SendResponseTask accountResponseTask = new SendResponseTask(response, task.getConnection());
+		serverExecutor.submit(accountResponseTask);
+
 	}
 
 	@Override
 	public void TaskReceivedEventOccurred(TaskReceivedEvent evt) {
 
-//		//TODO
-//		//REMOVE BLOCK
-//		//THIS IS FOR TESTING PURPOSES ONLY!
-//		ChatTask cTask = (ChatTask) evt.getTask();
-//		System.out.println("server: " + cTask.getMessage());
-//		network.sendTaskResponseToAllClients(new ChatTaskResponse("example",
-//				cTask.getMessage()));
-//		
-//		if (1 > 0) {
-//			return;
-//		}
-
 		Task task = evt.getTask();
-		
+
 		if (task instanceof TaskRequest) {
 			TaskRequest request = (TaskRequest) task;
 			request.setServer(this); // for execution
-			
-			
+
+
 			if (request instanceof EditorTask) {
 				EditorTask editorTask = (EditorTask) request;
 				ServerSourceFile file = openSessions.get(editorTask.getSessionID()).getFile(editorTask.getFileID());
 				editorTask.setFile(file); // for execution
-				file.submitTask(editorTask);
-				
+				file.submitTask(editorTask); // submit to ExecutorService
+
 			} else if (task instanceof CreateAccountTask) {
+				CreateAccountTask accountTask = (CreateAccountTask) request;
+				accountTask.setConnection(evt.getConnection());
+				serverExecutor.submit(accountTask);
 
-				try {
-					createAccount((CreateAccountTask) task);
-				} catch (SQLException e) {
-					System.err.println("Failed to create account:\n"
-							+ e.getMessage());
+			} else if (task instanceof LoginTask) {
+				LoginTask loginTask = (LoginTask) request;
+				loginTask.setConnection(evt.getConnection());
+				serverExecutor.submit(loginTask);
 
-				}
+
+			} else if (task instanceof ChatTask) {
+				ChatTask chatTask = (ChatTask) request;
+				CNPSession session = openSessions.get(chatTask.getSessionID());
+				chatTask.setSession(session);
+				session.submitTask(chatTask);
 
 			} else if (task instanceof JoinSessionTask) {
 
@@ -184,7 +229,7 @@ public class CNPServer implements TaskReceivedEventListener {
 
 				// TODO implement
 			}
-			
+
 		}
 
 
@@ -196,5 +241,23 @@ public class CNPServer implements TaskReceivedEventListener {
 
 	public CNPSession getSession(int sessionID) {
 		return openSessions.get(sessionID);
+	}
+
+	public boolean userIsAuth(int userID, String authToken) {
+		return userAuthTokens.get(userID).equals(authToken);
+	}
+
+	public static boolean sessionExists(String sessionName) {
+		return Database.sessionExists(sessionName);
+	}
+
+	public String generateToken() {
+
+		char[] text = new char[USER_TOKEN_LENGTH];
+		for (int i = 0; i < USER_TOKEN_LENGTH; i++) {
+			text[i] = TOKEN_CHARS.charAt(rand.nextInt(TOKEN_CHARS.length()));
+		}
+		
+		return new String(text);
 	}
 }

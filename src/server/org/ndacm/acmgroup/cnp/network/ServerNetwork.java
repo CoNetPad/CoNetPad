@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 
-import org.ndacm.acmgroup.cnp.task.Task;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
 /**
@@ -14,13 +13,15 @@ import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 public class ServerNetwork extends BaseNetwork {
 
 	public static final int SOCKET_NUMBER = 4444;
-
+	public static int nextClientNum;
+	
 	private ServerSocket serverSocket;
 	private ArrayList<CNPConnection> clientList;
 	private boolean shouldStop; // whether the server should be stopped or not
 
 	public ServerNetwork() {
 		shouldStop = false;
+		nextClientNum = 1;
 		clientList = new ArrayList<CNPConnection>();
 	}
 

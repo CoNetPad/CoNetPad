@@ -1,10 +1,15 @@
 package org.ndacm.acmgroup.cnp.task;
 
+import org.ndacm.acmgroup.cnp.network.CNPConnection;
+
+
+
 public class CreateAccountTask extends TaskRequest {
 
 	protected String username;
 	protected String email;
 	protected String password;
+	private CNPConnection connection = null;
 
 	public CreateAccountTask(String username, String email, String password) {
 		this.username = username;
@@ -14,8 +19,7 @@ public class CreateAccountTask extends TaskRequest {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-
+		server.executeTask(this);
 	}
 
 	public String getUsername() {
@@ -29,5 +33,14 @@ public class CreateAccountTask extends TaskRequest {
 	public String getPassword() {
 		return password;
 	}
+	
+	public CNPConnection getConnection() {
+		return connection;
+	}
+	
+	public void setConnection(CNPConnection connection) {
+		this.connection = connection;
+	}
+
 
 }

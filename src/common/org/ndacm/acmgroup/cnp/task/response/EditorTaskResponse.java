@@ -2,8 +2,6 @@ package org.ndacm.acmgroup.cnp.task.response;
 
 import javax.swing.text.BadLocationException;
 
-import org.ndacm.acmgroup.cnp.file.ClientSourceFile;
-
 public class EditorTaskResponse extends TaskResponse {
 
 	private String username;

@@ -8,7 +8,6 @@ package org.ndacm.acmgroup.cnp.database;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
 import org.junit.Test;
@@ -16,7 +15,6 @@ import org.ndacm.acmgroup.cnp.Account;
 import org.ndacm.acmgroup.cnp.CNPPrivateSession;
 import org.ndacm.acmgroup.cnp.CNPServer;
 import org.ndacm.acmgroup.cnp.CNPSession;
-import org.ndacm.acmgroup.cnp.database.Database;
 import org.ndacm.acmgroup.cnp.exceptions.FailedAccountException;
 import org.ndacm.acmgroup.cnp.exceptions.FailedSessionException;
 
@@ -108,11 +106,6 @@ public class DatabaseTest {
 				catch(AssertionError e)
 				{
 					fail("Accouts did not equal");
-				}
-				catch(SQLException e)
-				{
-					fail("SQL Exception thrown");
-					e.printStackTrace();
 				}
 				catch(Exception e)
 				{
@@ -267,13 +260,6 @@ public class DatabaseTest {
 				catch(AssertionError e)
 				{
 					fail("Accouts did not equal");
-				}
-				catch(SQLException e)
-				{
-					e.printStackTrace();
-					fail("SQL Exception Thrown");
-				
-					
 				}
 			}
 			catch(Exception e)

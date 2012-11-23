@@ -2,8 +2,8 @@ package org.ndacm.acmgroup.cnp.network.events;
 
 import java.util.EventObject;
 
+import org.ndacm.acmgroup.cnp.network.CNPConnection;
 import org.ndacm.acmgroup.cnp.task.Task;
-import org.ndacm.acmgroup.cnp.task.message.TaskMessage;
 
 /**
  * @author cesar
@@ -17,15 +17,17 @@ public class TaskReceivedEvent extends EventObject {
 	private static final long serialVersionUID = 1L;
 
 	private Task task;
+	private CNPConnection connection;
 
 	/**
 	 * @param task
 	 *            This method should called by the TaskEventSource that is firing the
 	 *            event.
 	 */
-	public TaskReceivedEvent(Task task) {
+	public TaskReceivedEvent(Task task, CNPConnection connection) {
 		super(task);
 		this.task = task;
+		this.connection = connection;
 	}
 
 	/**
@@ -34,5 +36,13 @@ public class TaskReceivedEvent extends EventObject {
 	 */
 	public Task getTask() {
 		return task;
+	}
+	
+	public CNPConnection getConnection() {
+		return connection;
+	}
+	
+	public void setConnection(CNPConnection connection) {
+		this.connection = connection;
 	}
 }

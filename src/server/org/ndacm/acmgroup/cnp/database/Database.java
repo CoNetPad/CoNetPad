@@ -627,6 +627,11 @@ public class Database implements IDatabase{
 		// TODO Auto-generated method stub
 	}
 	
+	public static boolean sessionExists(String sessionName) {
+		// TODO implement
+		return false;
+	}
+	
 
 }
 
