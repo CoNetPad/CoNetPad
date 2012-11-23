@@ -18,16 +18,19 @@ public class ClientNetwork extends BaseNetwork {
 
 	}
 
-	public void connect(String ipAddress) {
+	public boolean connect(String ipAddress) {
 		try {
 			serverConnection = new CNPConnection(new Socket(ipAddress, 4444),
 					0, this, false);
 			serverConnection.start();
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
+			return false;
 		} catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		}
+		return true;
 	}
 
 	public void disconnect() {
