@@ -1,0 +1,16 @@
+org.ndacm.acmgroup.cnp
+org.ndacm.acmgroup.cnp.client
+org.ndacm.acmgroup.cnp.client.Cesar
+org.ndacm.acmgroup.cnp.database
+org.ndacm.acmgroup.cnp.exceptions
+org.ndacm.acmgroup.cnp.file
+org.ndacm.acmgroup.cnp.git
+org.ndacm.acmgroup.cnp.gui
+org.ndacm.acmgroup.cnp.network
+org.ndacm.acmgroup.cnp.network.events
+org.ndacm.acmgroup.cnp.server
+org.ndacm.acmgroup.cnp.session
+org.ndacm.acmgroup.cnp.task
+org.ndacm.acmgroup.cnp.task.message
+org.ndacm.acmgroup.cnp.task.response
+org.ndacm.acmgroup.cnp.task.response.message

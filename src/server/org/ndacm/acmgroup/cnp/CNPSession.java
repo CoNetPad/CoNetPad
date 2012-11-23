@@ -1,3 +1,9 @@
+/**
+ * CNP Session Class
+ * This is the class that handles the session specified in the SRS document
+ * @author Josh Tan
+ * @version 2.0
+ */
 package org.ndacm.acmgroup.cnp;
 
 import java.io.File;
@@ -185,14 +191,20 @@ public class CNPSession {
 		// TODO implement
 		return new File("");
 	}
-
+	/**
+	 * This executes a given chat class
+	 * @param task			The chat class you wish to execute
+	 */
 	public void executeTask(ChatTask task) {
-
+		
 		ChatTaskResponse response = new ChatTaskResponse(task.getUsername(), task.getMessage());
 		distributeTask(response);
 
 	}
-
+	/**
+	 * This submits a sessionTask to the queue for execution
+	 * @param task
+	 */
 	public void submitTask(SessionTask task) {
 		sessionTaskQueue.submit(task);
 	}

@@ -1,6 +1,8 @@
 /**
- * Class:  Account
- * Descrption:  This is a java object class to deal with user-accounts.
+ * Account class
+ * This is for handling each of the user accounts
+ * @version 2.0
+ * @author Justin Andres, Josh Tan
  */
 package org.ndacm.acmgroup.cnp;
 
@@ -43,7 +45,7 @@ public class Account {
 	/**
 	 * getEmail()
 	 * This gets the email of the account
-	 * @return
+	 * @return		The email address of the Account
 	 */
 	public String getEmail()
 	{
