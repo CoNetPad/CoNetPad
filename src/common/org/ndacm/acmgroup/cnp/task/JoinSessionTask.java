@@ -1,7 +1,7 @@
 package org.ndacm.acmgroup.cnp.task;
 
 
-public class JoinSessionTask extends Task {
+public class JoinSessionTask extends TaskRequest {
 	
 	protected int userID;
 	protected String sessionName;

@@ -8,22 +8,21 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
-import javax.xml.soap.MessageFactory;
 
 import org.ndacm.acmgroup.cnp.database.Database;
 import org.ndacm.acmgroup.cnp.exceptions.FailedSessionException;
+import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
 import org.ndacm.acmgroup.cnp.network.ServerNetwork;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEventListener;
-import org.ndacm.acmgroup.cnp.task.ChatTask;
 import org.ndacm.acmgroup.cnp.task.CreateAccountTask;
 import org.ndacm.acmgroup.cnp.task.CreatePrivateSessionTask;
 import org.ndacm.acmgroup.cnp.task.CreateSessionTask;
 import org.ndacm.acmgroup.cnp.task.EditorTask;
 import org.ndacm.acmgroup.cnp.task.JoinSessionTask;
 import org.ndacm.acmgroup.cnp.task.Task;
+import org.ndacm.acmgroup.cnp.task.TaskRequest;
 import org.ndacm.acmgroup.cnp.task.message.TaskMessageFactory;
-import org.ndacm.acmgroup.cnp.task.response.ChatTaskResponse;
 
 public class CNPServer implements TaskReceivedEventListener {
 
@@ -114,67 +113,80 @@ public class CNPServer implements TaskReceivedEventListener {
 		// TODO implement
 		return new File(""); // return tar or something
 	}
+	
+	public void executeTask(EditorTask task){
+//		task.getFile().editSource(task);
+//		sourceFrame.updateSourceTab(task.getFileID(), task.getKeyPressed(),
+//				task.getEditIndex());
+	}
 
 	@Override
 	public void TaskReceivedEventOccurred(TaskReceivedEvent evt) {
 
-		//TODO
-		//REMOVE BLOCK
-		//THIS IS FOR TESTING PURPOSES ONLY!
-		ChatTask cTask = (ChatTask) evt.getTask();
-		System.out.println("server: " + cTask.getMessage());
-		network.sendTaskResponseToAllClients(new ChatTaskResponse("example",
-				cTask.getMessage()));
-		
-		if (1 > 0) {
-			return;
-		}
+//		//TODO
+//		//REMOVE BLOCK
+//		//THIS IS FOR TESTING PURPOSES ONLY!
+//		ChatTask cTask = (ChatTask) evt.getTask();
+//		System.out.println("server: " + cTask.getMessage());
+//		network.sendTaskResponseToAllClients(new ChatTaskResponse("example",
+//				cTask.getMessage()));
+//		
+//		if (1 > 0) {
+//			return;
+//		}
 
 		Task task = evt.getTask();
+		
+		if (task instanceof TaskRequest) {
+			TaskRequest request = (TaskRequest) task;
+			request.setServer(this);
+			
+			
+			if (request instanceof EditorTask) {
+				EditorTask editorTask = (EditorTask) request;
+				ServerSourceFile file = openSessions.get(editorTask.getSessionID()).getFile(editorTask.getFileID());
+				editorTask.setSourceFile(file);
+				file.submitTask(editorTask);
+				
+			} else if (task instanceof CreateAccountTask) {
 
-		if (task instanceof EditorTask) { // send to ServerSourceFile's
-											// taskQueue
+				try {
+					createAccount((CreateAccountTask) task);
+				} catch (SQLException e) {
+					System.err.println("Failed to create account:\n"
+							+ e.getMessage());
 
-			EditorTask editorTask = (EditorTask) task;
-			CNPSession session = openSessions.get(editorTask.getSessionID());
-			session.executeTask(editorTask);
+				}
 
-		} else if (task instanceof CreateAccountTask) {
+			} else if (task instanceof JoinSessionTask) {
 
-			try {
-				createAccount((CreateAccountTask) task);
-			} catch (SQLException e) {
-				System.err.println("Failed to create account:\n"
-						+ e.getMessage());
+				JoinSessionTask connectTask = (JoinSessionTask) task;
+				try {
+					connectToSession(connectTask);
+				} catch (SQLException e) {
+					// System.err.println("Failed to connect " +
+					// connectTask.getUsername() +
+					// S " to " + connectTask.getSessionName());
+				}
 
+			} else if (task instanceof CreateSessionTask) {
+
+				CreateSessionTask createTask = (CreateSessionTask) task;
+				try {
+					createCNPSession(createTask);
+				} catch (SQLException e) {
+					System.err.println("Failed to create session.");
+				} catch (FailedSessionException e) {
+					System.err.println("Failed to create session.");
+				}
+
+			} else { // send to sessionTaskQueue if should
+
+				// TODO implement
 			}
-
-		} else if (task instanceof JoinSessionTask) {
-
-			JoinSessionTask connectTask = (JoinSessionTask) task;
-			try {
-				connectToSession(connectTask);
-			} catch (SQLException e) {
-				// System.err.println("Failed to connect " +
-				// connectTask.getUsername() +
-				// S " to " + connectTask.getSessionName());
-			}
-
-		} else if (task instanceof CreateSessionTask) {
-
-			CreateSessionTask createTask = (CreateSessionTask) task;
-			try {
-				createCNPSession(createTask);
-			} catch (SQLException e) {
-				System.err.println("Failed to create session.");
-			} catch (FailedSessionException e) {
-				System.err.println("Failed to create session.");
-			}
-
-		} else { // send to sessionTaskQueue if should
-
-			// TODO implement
+			
 		}
+
 
 	}
 

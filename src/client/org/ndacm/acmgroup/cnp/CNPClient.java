@@ -74,10 +74,10 @@ public class CNPClient implements TaskReceivedEventListener {
 	}
 
 	public void editFile(int userID, int sessionID, int keyPressed,
-			int editIndex, SourceFile file, String userAuthToken) {
+			int editIndex, int fileID, String userAuthToken) {
 
 		Task task = new EditorTask(userID, sessionID, keyPressed, editIndex,
-				file.getFileID(), file, userAuthToken);
+				fileID, userAuthToken);
 		network.sendTask(task);
 
 	}
@@ -169,7 +169,7 @@ public class CNPClient implements TaskReceivedEventListener {
 
 	public void executeTask(EditorTaskResponse task)
 			throws BadLocationException {
-		task.getFile().editSource(task);
+		sourceFiles.get(task.getFileID()).editSource(task);
 		sourceFrame.updateSourceTab(task.getFileID(), task.getKeyPressed(),
 				task.getEditIndex());
 	}
@@ -186,20 +186,27 @@ public class CNPClient implements TaskReceivedEventListener {
 
 	@Override
 	public void TaskReceivedEventOccurred(TaskReceivedEvent evt) {
+
 		Task task = evt.getTask();
-
-		ChatTaskResponse cTask = (ChatTaskResponse) evt.getTask();
-		System.out.println(userID + ": " + cTask.getMessage());
-
-		if (1 > 0) {
-			return;
-		}
 
 		if (task instanceof TaskResponse) {
 			TaskResponse response = (TaskResponse) task;
 			response.setClient(this);
 			clientExecutor.submit(response);
 		}
+		
+//		ChatTaskResponse cTask = (ChatTaskResponse) evt.getTask();
+//		System.out.println(userID + ": " + cTask.getMessage());
+//
+//		if (1 > 0) {
+//			return;
+//		}
+//
+//		if (task instanceof TaskResponse) {
+//			TaskResponse response = (TaskResponse) task;
+//			response.setClient(this);
+//			clientExecutor.submit(response);
+//		}
 
 	}
 

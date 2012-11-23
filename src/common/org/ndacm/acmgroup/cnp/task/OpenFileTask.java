@@ -1,6 +1,6 @@
 package org.ndacm.acmgroup.cnp.task;
 
-public class OpenFileTask extends Task {
+public class OpenFileTask extends TaskRequest {
 	
 	protected int userID;
 	protected int fileID;

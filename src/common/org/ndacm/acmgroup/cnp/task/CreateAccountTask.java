@@ -1,6 +1,6 @@
 package org.ndacm.acmgroup.cnp.task;
 
-public class CreateAccountTask extends Task {
+public class CreateAccountTask extends TaskRequest {
 
 	protected String username;
 	protected String email;

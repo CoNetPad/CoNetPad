@@ -1,6 +1,6 @@
 package org.ndacm.acmgroup.cnp.task;
 
-public class CreateSessionTask extends Task {
+public class CreateSessionTask extends TaskRequest {
 	
 	protected int sessionLeader;
 	protected String userAuthToken;

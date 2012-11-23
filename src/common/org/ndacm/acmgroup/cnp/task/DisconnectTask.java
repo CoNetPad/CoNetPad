@@ -1,6 +1,6 @@
 package org.ndacm.acmgroup.cnp.task;
 
-public class DisconnectTask extends Task {
+public class DisconnectTask extends TaskRequest {
 	
 	protected int userID;
 	protected String userAuthToken;

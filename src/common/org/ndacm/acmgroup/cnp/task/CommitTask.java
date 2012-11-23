@@ -1,6 +1,6 @@
 package org.ndacm.acmgroup.cnp.task;
 
-public class CommitTask extends Task {
+public class CommitTask extends TaskRequest {
 
 	protected int userID;
 	protected String userAuthToken;

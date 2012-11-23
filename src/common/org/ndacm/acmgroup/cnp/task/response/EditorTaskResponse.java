@@ -9,13 +9,14 @@ public class EditorTaskResponse extends TaskResponse {
 	private String username;
 	private int keyPressed;
 	private int editIndex;
-	private ClientSourceFile file;
+	private int fileID;
 
 	public EditorTaskResponse(String username, int keyPressed, int editIndex,
 			int fileID) {
 		this.username = username;
 		this.keyPressed = keyPressed;
 		this.editIndex = editIndex;
+		this.fileID = fileID;
 	}
 
 	public int getKeyPressed() {
@@ -31,12 +32,9 @@ public class EditorTaskResponse extends TaskResponse {
 	}
 
 	public int getFileID() {
-		return file.getFileID();
+		return fileID;
 	}
 
-	public ClientSourceFile getFile() {
-		return file;
-	}
 
 	@Override
 	public void run() {

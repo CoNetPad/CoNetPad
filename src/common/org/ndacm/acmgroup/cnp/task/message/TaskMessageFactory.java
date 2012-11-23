@@ -136,15 +136,12 @@ public class TaskMessageFactory {
 			return new DownloadRepoTask(Integer.parseInt(message.getData()[0]),
 					message.getData()[1]);
 		case Editor:
-			CNPSession session = server.getSession(Integer.parseInt(message
-					.getData()[1]));
-			EditorTask task = new EditorTask(
-
-			Integer.parseInt(message.getData()[0]), message.getData()[1],
+			return new EditorTask(
+					Integer.parseInt(message.getData()[0]),
+					Integer.parseInt(message.getData()[1]),
 					Integer.parseInt(message.getData()[2]),
 					Integer.parseInt(message.getData()[3]),
 					Integer.parseInt(message.getData()[4]),
-					session.getFile(Integer.parseInt(message.getData()[5])),
 					message.getData()[5]);
 		case JoinPrivateSession:
 			return new JoinPrivateSessionTask(Integer.parseInt(message

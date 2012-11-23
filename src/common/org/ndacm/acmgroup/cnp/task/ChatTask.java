@@ -5,7 +5,7 @@ package org.ndacm.acmgroup.cnp.task;
  * one ore more other session users.
  * 
  */
-public class ChatTask extends Task {
+public class ChatTask extends TaskRequest {
 	
 	protected int userID;
 	protected String message;

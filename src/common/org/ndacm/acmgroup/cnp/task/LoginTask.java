@@ -1,6 +1,6 @@
 package org.ndacm.acmgroup.cnp.task;
 
-public class LoginTask extends Task {
+public class LoginTask extends TaskRequest {
 	
 	protected String username;
 	protected String password;

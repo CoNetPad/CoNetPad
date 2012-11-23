@@ -1,6 +1,6 @@
 package org.ndacm.acmgroup.cnp.task;
 
-public class DownloadRepoTask extends Task {
+public class DownloadRepoTask extends TaskRequest {
 
 	protected int userID;
 	protected String userAuthToken;

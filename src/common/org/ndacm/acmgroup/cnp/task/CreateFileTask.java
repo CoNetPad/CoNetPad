@@ -2,7 +2,7 @@ package org.ndacm.acmgroup.cnp.task;
 
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
 
-public class CreateFileTask extends Task {
+public class CreateFileTask extends TaskRequest {
 	
 	protected int userID;
 	protected String filename;

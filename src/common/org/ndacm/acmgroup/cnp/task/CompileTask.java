@@ -2,7 +2,7 @@ package org.ndacm.acmgroup.cnp.task;
 
 import java.util.List;
 
-public class CompileTask extends Task {
+public class CompileTask extends TaskRequest {
 
 	protected int userID;
 	protected List<String> sourceFilenames;
