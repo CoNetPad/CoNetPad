@@ -139,13 +139,13 @@ public class CNPServer implements TaskReceivedEventListener {
 		
 		if (task instanceof TaskRequest) {
 			TaskRequest request = (TaskRequest) task;
-			request.setServer(this);
+			request.setServer(this); // for execution
 			
 			
 			if (request instanceof EditorTask) {
 				EditorTask editorTask = (EditorTask) request;
 				ServerSourceFile file = openSessions.get(editorTask.getSessionID()).getFile(editorTask.getFileID());
-				editorTask.setSourceFile(file);
+				editorTask.setFile(file); // for execution
 				file.submitTask(editorTask);
 				
 			} else if (task instanceof CreateAccountTask) {

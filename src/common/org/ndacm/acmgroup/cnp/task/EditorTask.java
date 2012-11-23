@@ -81,7 +81,7 @@ public class EditorTask extends TaskRequest {
 		return username;
 	}
 
-	public void setSourceFile(ServerSourceFile file) {
+	public void setFile(ServerSourceFile file) {
 		this.file = file;
 	}
 
