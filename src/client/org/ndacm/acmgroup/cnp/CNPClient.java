@@ -28,6 +28,7 @@ import org.ndacm.acmgroup.cnp.task.Task;
 import org.ndacm.acmgroup.cnp.task.response.ChatTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.CreateAccountTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.CreateFileTaskResponse;
+import org.ndacm.acmgroup.cnp.task.response.CreateSessionTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.DownloadFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.JoinSessionTaskResponse;
@@ -146,7 +147,7 @@ public class CNPClient implements TaskReceivedEventListener {
 			// do something
 		}
 	}
-
+	
 	public void executeTask(LoginTaskResponse task) {
 		if (task.isSuccess()) {
 			userID = task.getUserID();
@@ -154,12 +155,17 @@ public class CNPClient implements TaskReceivedEventListener {
 			authToken = task.getUserAuthToken();
 		}
 	}
+	
+	public void executeTask(CreateSessionTaskResponse task) {
+		if (task.isSuccess()) {
+			// do something
+		}
+	}
 
 	public void executeTask(JoinSessionTaskResponse task) {
 		if (task.isSuccess()) {
 			// open up main form and source files and stuff
 		}
-
 	}
 
 	public void executeTask(CreateFileTaskResponse task) {
@@ -168,8 +174,9 @@ public class CNPClient implements TaskReceivedEventListener {
 			sourceFiles.put(task.getFileID(),
 					new ClientSourceFile(task.getFileID(), task.getFilename(),
 							task.getType(), "", this));
-			// create new tab; populate file tree for other users (will register
-			// them only if they open)
+			// create and open new tab
+			
+			// populate file tree for other users (will register them only if they open)
 		}
 	}
 

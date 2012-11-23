@@ -1,6 +1,6 @@
 package org.ndacm.acmgroup.cnp.task;
 
-public class DeleteSessionTask extends TaskRequest {
+public class DeleteSessionTask extends ServerTask {
 	
 	protected int userID;
 	protected int sessionID;

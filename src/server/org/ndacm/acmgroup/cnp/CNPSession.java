@@ -16,7 +16,7 @@ import org.ndacm.acmgroup.cnp.git.JGit;
 import org.ndacm.acmgroup.cnp.network.CNPConnection;
 import org.ndacm.acmgroup.cnp.task.ChatTask;
 import org.ndacm.acmgroup.cnp.task.SendResponseTask;
-import org.ndacm.acmgroup.cnp.task.TaskRequest;
+import org.ndacm.acmgroup.cnp.task.SessionTask;
 import org.ndacm.acmgroup.cnp.task.response.ChatTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
@@ -193,7 +193,7 @@ public class CNPSession {
 
 	}
 
-	public void submitTask(TaskRequest task) {
+	public void submitTask(SessionTask task) {
 		sessionTaskQueue.submit(task);
 	}
 

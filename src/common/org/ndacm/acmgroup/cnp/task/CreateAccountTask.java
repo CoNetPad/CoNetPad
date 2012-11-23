@@ -4,7 +4,7 @@ import org.ndacm.acmgroup.cnp.network.CNPConnection;
 
 
 
-public class CreateAccountTask extends TaskRequest {
+public class CreateAccountTask extends ServerTask {
 
 	protected String username;
 	protected String email;

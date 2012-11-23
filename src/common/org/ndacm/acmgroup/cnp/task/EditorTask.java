@@ -1,14 +1,13 @@
 package org.ndacm.acmgroup.cnp.task;
 
 import org.ndacm.acmgroup.cnp.Account.FilePermissionLevel;
-import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
 
 /**
  * A task to edit a source file. An EditorTask is issued by a single person and
  * is represents a key press on a single file in a single session.
  * 
  */
-public class EditorTask extends TaskRequest {
+public class EditorTask extends FileTask {
 
 	/**
 	 * The permission level that is required to execute this task.
@@ -22,19 +21,6 @@ public class EditorTask extends TaskRequest {
 	protected int editIndex;
 	protected int fileID;
 	protected String userAuthToken;
-	private ServerSourceFile file;
-
-	//	public EditorTask(int userID, String username, int sessionID,
-	//			int keyPressed, int editIndex, int fileID,
-	//			String userAuthToken) {
-	//		this.userID = userID;
-	//		this.username = username;
-	//		this.sessionID = sessionID;
-	//		this.keyPressed = keyPressed;
-	//		this.editIndex = editIndex;
-	//		this.fileID = fileID;
-	//		this.userAuthToken = userAuthToken;
-	//	}
 
 	public EditorTask(int userID, int sessionID, int keyPressed, int editIndex,
 			int fileID, String userAuthToken) {
@@ -73,18 +59,6 @@ public class EditorTask extends TaskRequest {
 
 	public String getUsername() {
 		return username;
-	}
-
-	public void setFile(ServerSourceFile file) {
-		this.file = file;
-	}
-
-	public ServerSourceFile getFile() {
-		return file;
-	}
-
-	public String getFilename() {
-		return file.getFilename();
 	}
 
 	public static FilePermissionLevel getPERMISSION() {

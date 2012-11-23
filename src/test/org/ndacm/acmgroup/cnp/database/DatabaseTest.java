@@ -133,9 +133,9 @@ public class DatabaseTest {
 					//CNPSession result = new CNPSession(int sessionID, String sessionName, CNPServer server, int sessionLeader);
 					//assertTrue(result.equals(test));
 				}
-				catch(FailedAccountException e)
+				catch(FailedSessionException e)
 				{
-					fail("Failed Account Exception Thrown:  " + e.toString());
+					fail("Failed Session Exception Thrown:  " + e.toString());
 					e.printStackTrace();
 	
 				}
@@ -143,13 +143,7 @@ public class DatabaseTest {
 				{
 					fail("Accouts did not equal");
 				}
-				catch(SQLException e)
-				{
-					e.printStackTrace();
-					fail("SQL Exception Thrown");
-				
-					
-				}
+
 			}
 			catch(Exception e)
 			{
@@ -213,7 +207,7 @@ public class DatabaseTest {
 					//CNPSession result = new CNPSession(int sessionID, String sessionName, CNPServer server, int sessionLeader);
 					//assertTrue(result.equals(test));
 				}
-				catch(FailedAccountException e)
+				catch(FailedSessionException e)
 				{
 					fail("Failed Account Exception Thrown:  " + e.toString());
 					e.printStackTrace();
@@ -223,13 +217,7 @@ public class DatabaseTest {
 				{
 					fail("Accouts did not equal");
 				}
-				catch(SQLException e)
-				{
-					e.printStackTrace();
-					fail("SQL Exception Thrown");
-				
-					
-				}
+
 			}
 			catch(Exception e)
 			{

@@ -1,6 +1,6 @@
 package org.ndacm.acmgroup.cnp.task;
 
-public class CloseFileTask extends TaskRequest {
+public class CloseFileTask extends SessionTask {
 
 	protected int userID;
 	protected String filename;

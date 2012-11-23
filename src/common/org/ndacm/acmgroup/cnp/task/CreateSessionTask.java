@@ -1,9 +1,12 @@
 package org.ndacm.acmgroup.cnp.task;
 
-public class CreateSessionTask extends TaskRequest {
+import org.ndacm.acmgroup.cnp.network.CNPConnection;
+
+public class CreateSessionTask extends ServerTask {
 	
 	protected int sessionLeader;
 	protected String userAuthToken;
+	private CNPConnection connection;
 	
 	public CreateSessionTask(int sessionLeader, String userAuthToken) {
 		this.sessionLeader = sessionLeader;
@@ -12,7 +15,7 @@ public class CreateSessionTask extends TaskRequest {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+		server.executeTask(this);
 		
 	}
 
@@ -22,6 +25,14 @@ public class CreateSessionTask extends TaskRequest {
 
 	public String getUserAuthToken() {
 		return userAuthToken;
+	}
+
+	public CNPConnection getConnection() {
+		return connection;
+	}
+
+	public void setConnection(CNPConnection connection) {
+		this.connection = connection;
 	}
 
 }

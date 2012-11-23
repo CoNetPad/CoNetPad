@@ -1,20 +1,17 @@
 package org.ndacm.acmgroup.cnp.task;
 
-import org.ndacm.acmgroup.cnp.CNPSession;
 
 /**
  * A task to send a chat message. An ChatTask is a message sent by a connected user to
  * one ore more other session users.
  * 
  */
-public class ChatTask extends TaskRequest {
+public class ChatTask extends SessionTask {
 	
 	protected int userID;
 	private String username;
 	protected String message;
 	protected String userAuthToken;
-	private int sessionID;
-	private CNPSession session;
 	
 	/** 
 	 * Constructor that creates a ChatTask which is sent to all other session
@@ -67,21 +64,6 @@ public class ChatTask extends TaskRequest {
 		return userAuthToken;
 	}
 	
-	public void setSession(CNPSession session) {
-		this.session = session;
-	}
-	
-	public CNPSession getSession() {
-		return session;
-	}
-	
-	public int getSessionID() {
-		return sessionID;
-	}
-	
-	public void setSessionID(int sessionID) {
-		this.sessionID = sessionID;
-	}
 	
 	public String getUsername() {
 		return username;

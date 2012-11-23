@@ -2,7 +2,7 @@ package org.ndacm.acmgroup.cnp.task;
 
 import java.util.List;
 
-public class DownloadFileTask extends TaskRequest {
+public class DownloadFileTask extends SessionTask {
 
 	protected int userID;
 	protected List<String> filenames;

@@ -1,6 +1,6 @@
 package org.ndacm.acmgroup.cnp.task;
 
-public class DeleteFileTask extends TaskRequest {
+public class DeleteFileTask extends SessionTask {
 	
 	protected int userID;
 	protected String filename;

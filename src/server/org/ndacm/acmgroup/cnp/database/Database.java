@@ -196,7 +196,7 @@ public class Database implements IDatabase{
 	}
 
 
-	public CNPSession createSession(int sessionLeader, CNPServer server) throws SQLException, FailedSessionException {
+	public CNPSession createSession(int sessionLeader, CNPServer server) throws FailedSessionException {
 
 		// create session and store in database			
 		CNPSession newSession = null;
@@ -244,14 +244,11 @@ public class Database implements IDatabase{
 		{
 			throw new FailedSessionException("SQL Error.");
 		}
-		catch(FailedSessionException e)
-		{
-			throw e;
-		}
+
 	}
 
 	public CNPPrivateSession createSession(int sessionLeader, CNPServer server, String sessionPassword) 
-			throws SQLException, FailedSessionException {
+			throws FailedSessionException {
 
 		// create session and store in database
 		CNPPrivateSession newSession = null;
@@ -305,17 +302,16 @@ public class Database implements IDatabase{
 
 		} catch (NoSuchAlgorithmException ex) {
 			System.err.println("Invalid Encrpytion Algorithm: " + ENCRYPTION_ALGORITHM);
-			throw new FailedAccountException("Error creating session.");
+			throw new FailedSessionException("Error creating session.");
 		} catch (InvalidKeySpecException e) {
 			System.err.println("Invalid key spec.");
-			throw new FailedAccountException("Error creating session.");
+			throw new FailedSessionException("Error creating session.");
 		} catch (UnsupportedEncodingException e) {
 			System.err.println("Unsupported encoding.");
-			throw new FailedAccountException("Error creating session.");
+			throw new FailedSessionException("Error creating session.");
 		}
-		catch(FailedSessionException e)
-		{
-			throw e;
+		catch(SQLException ex) {
+			throw new FailedSessionException("Error creating session.");
 		}
 
 		return newSession;

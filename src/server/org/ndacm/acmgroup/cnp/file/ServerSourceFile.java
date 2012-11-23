@@ -8,8 +8,8 @@ import org.ndacm.acmgroup.cnp.Account;
 import org.ndacm.acmgroup.cnp.network.CNPConnection;
 import org.ndacm.acmgroup.cnp.task.DownloadFileTask;
 import org.ndacm.acmgroup.cnp.task.EditorTask;
+import org.ndacm.acmgroup.cnp.task.FileTask;
 import org.ndacm.acmgroup.cnp.task.SendResponseTask;
-import org.ndacm.acmgroup.cnp.task.TaskRequest;
 import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
@@ -32,7 +32,7 @@ public class ServerSourceFile extends SourceFile {
 		super(fileID, filename, type, "");
 	}
 	
-	public void submitTask(TaskRequest task) {
+	public void submitTask(FileTask task) {
 		fileTaskQueue.submit(task);
 	}
 

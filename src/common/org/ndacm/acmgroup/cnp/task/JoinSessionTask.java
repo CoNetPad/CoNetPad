@@ -1,7 +1,8 @@
 package org.ndacm.acmgroup.cnp.task;
 
 
-public class JoinSessionTask extends TaskRequest {
+
+public class JoinSessionTask extends ServerTask {
 	
 	protected int userID;
 	protected String sessionName;
@@ -30,5 +31,6 @@ public class JoinSessionTask extends TaskRequest {
 	public String getUserAuthToken() {
 		return userAuthToken;
 	}
+
 
 }
