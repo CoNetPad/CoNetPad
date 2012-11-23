@@ -13,7 +13,9 @@ import javax.swing.text.BadLocationException;
 import org.ndacm.acmgroup.cnp.file.ClientSourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
+import org.ndacm.acmgroup.cnp.gui.LoginDialog;
 import org.ndacm.acmgroup.cnp.gui.MainFrame;
+import org.ndacm.acmgroup.cnp.gui.RegisterDialog;
 import org.ndacm.acmgroup.cnp.network.ClientNetwork;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEventListener;
@@ -51,6 +53,8 @@ public class CNPClient implements TaskReceivedEventListener {
 
 	private ClientNetwork network;
 	private MainFrame sourceFrame;
+	private RegisterDialog regDialog;
+	private LoginDialog logDialog;
 
 	public CNPClient() {
 
@@ -63,13 +67,30 @@ public class CNPClient implements TaskReceivedEventListener {
 		network.addTaskReceivedEventListener(this);
 	}
 
-	public void connectToServer(String serverURL) {
-		network.connect(serverURL);
-		this.serverURL = serverURL;
+	public boolean connectToServer(String serverURL) {
+		if (network.connect(serverURL)) {
+			this.serverURL = serverURL;
+		} else {
+			return false;
+		}
+		return true;
 	}
-	
+
+	public void closeConnection() {
+		network.disconnect();
+	}
+
+	public void setRegDialog(RegisterDialog regDialog) {
+		this.regDialog = regDialog;
+	}
+
+	public void setLogDialog(LoginDialog logDialog) {
+		this.logDialog = logDialog;
+	}
+
 	public void createAccount(String username, String email, String password) {
-		CreateAccountTask task = new CreateAccountTask(username, email, password);
+		CreateAccountTask task = new CreateAccountTask(username, email,
+				password);
 		network.sendTask(task);
 	}
 
@@ -110,7 +131,8 @@ public class CNPClient implements TaskReceivedEventListener {
 	}
 
 	public void sendChatMessage(String message) {
-		Task task = new ChatTask(userID, username, sessionID, message, authToken);
+		Task task = new ChatTask(userID, username, sessionID, message,
+				authToken);
 		network.sendTask(task);
 	}
 
@@ -141,13 +163,13 @@ public class CNPClient implements TaskReceivedEventListener {
 		}
 		return list;
 	}
-	
+
 	public void executeTask(CreateAccountTaskResponse task) {
 		if (task.isSuccess()) {
 			// do something
 		}
 	}
-	
+
 	public void executeTask(LoginTaskResponse task) {
 		if (task.isSuccess()) {
 			userID = task.getUserID();
@@ -155,7 +177,7 @@ public class CNPClient implements TaskReceivedEventListener {
 			authToken = task.getUserAuthToken();
 		}
 	}
-	
+
 	public void executeTask(CreateSessionTaskResponse task) {
 		if (task.isSuccess()) {
 			// do something
@@ -175,8 +197,9 @@ public class CNPClient implements TaskReceivedEventListener {
 					new ClientSourceFile(task.getFileID(), task.getFilename(),
 							task.getType(), "", this));
 			// create and open new tab
-			
-			// populate file tree for other users (will register them only if they open)
+
+			// populate file tree for other users (will register them only if
+			// they open)
 		}
 	}
 
