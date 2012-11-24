@@ -36,9 +36,9 @@ public class LoginDialog extends JDialog {
 
 		JLabel lblSession = new JLabel("Session:");
 
-		JFormattedTextField formattedUsername = new JFormattedTextField();
+		final JFormattedTextField formattedUsername = new JFormattedTextField();
 
-		JFormattedTextField formattedPassword = new JFormattedTextField();
+		final JFormattedTextField formattedPassword = new JFormattedTextField();
 
 		JFormattedTextField formattedSession = new JFormattedTextField();
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
@@ -137,35 +137,64 @@ public class LoginDialog extends JDialog {
 			JButton btnCancel = new JButton("Cancel");
 			btnCancel.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					client.closeConnection();
+					dispose();
 				}
 			});
 			JButton btnLogIn = new JButton("Log In");
 			btnLogIn.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					client.loginToAccount(formattedUsername.getText(),
+							formattedPassword.getText());
 				}
 			});
+
+			JButton btnRegister = new JButton("Register");
+			btnRegister.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+
+					RegisterDialog dialog = new RegisterDialog(client);
+					dialog.setModalityType(ModalityType.APPLICATION_MODAL);
+					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					dialog.setVisible(true);
+					System.out.println("sdfsdf");
+
+				}
+			});
+
 			GroupLayout gl_panel = new GroupLayout(panel);
 			gl_panel.setHorizontalGroup(gl_panel.createParallelGroup(
 					Alignment.LEADING).addGroup(
 					gl_panel.createSequentialGroup()
 							.addContainerGap()
-							.addPreferredGap(ComponentPlacement.RELATED, 181,
+							.addComponent(btnRegister)
+							.addPreferredGap(ComponentPlacement.RELATED, 105,
 									Short.MAX_VALUE).addComponent(btnLogIn)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(btnCancel).addContainerGap()));
 			gl_panel.setVerticalGroup(gl_panel.createParallelGroup(
-					Alignment.LEADING).addGroup(
-					Alignment.TRAILING,
+					Alignment.TRAILING).addGroup(
 					gl_panel.createSequentialGroup()
-							.addContainerGap(27, Short.MAX_VALUE)
+							.addContainerGap(GroupLayout.DEFAULT_SIZE,
+									Short.MAX_VALUE)
 							.addGroup(
 									gl_panel.createParallelGroup(
 											Alignment.BASELINE)
 											.addComponent(btnCancel)
-											.addComponent(btnLogIn))
+											.addComponent(btnLogIn)
+											.addComponent(btnRegister))
 							.addContainerGap()));
 			panel.setLayout(gl_panel);
 			getContentPane().setLayout(groupLayout);
 		}
+	}
+
+	public void openMainFrame() {
+		MainFrame frame = new MainFrame(client);
+		frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		frame.setVisible(true);
+		loginDialog.setVisible(false);
+		loginDialog.dispose();
+
 	}
 }

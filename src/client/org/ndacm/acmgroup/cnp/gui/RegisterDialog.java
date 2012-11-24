@@ -23,22 +23,12 @@ public class RegisterDialog extends JDialog {
 	private RegisterDialog regDialog;
 
 	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			RegisterDialog dialog = new RegisterDialog();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
 	 * Create the dialog.
 	 */
-	public RegisterDialog() {
+	public RegisterDialog(final CNPClient client) {
+		this.client = client;
+		this.regDialog = this;
+		this.client.setRegDialog(regDialog);
 		setBounds(100, 100, 375, 200);
 		JPanel panel = new JPanel();
 		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
@@ -185,7 +175,8 @@ public class RegisterDialog extends JDialog {
 				if (formattedPassword.getText().contentEquals(
 						formattedPasswordAgain.getText())) {
 					client.createAccount(formattedUsername.getText(),
-							formattedPassword.getText(), formattedEmail.getText());
+							formattedPassword.getText(),
+							formattedEmail.getText());
 					formattedUsername.setEnabled(false);
 					formattedEmail.setEnabled(false);
 					formattedPassword.setEnabled(false);

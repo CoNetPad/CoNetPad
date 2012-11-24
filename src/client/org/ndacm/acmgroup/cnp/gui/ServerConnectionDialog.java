@@ -41,7 +41,7 @@ public class ServerConnectionDialog extends JDialog {
 	public ServerConnectionDialog() {
 		client = new CNPClient();
 		setTitle("CoNetPad Client");
-		setBounds(100, 100, 388, 154);
+		setBounds(100, 100, 382, 117);
 		JLabel lblServer = new JLabel("Server:");
 
 		JCheckBox chckbxRemember = new JCheckBox("Remember");
@@ -50,11 +50,15 @@ public class ServerConnectionDialog extends JDialog {
 		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 
 		final JFormattedTextField formattedServer = new JFormattedTextField();
+		formattedServer.setText("localhost");
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
 		groupLayout
 				.setHorizontalGroup(groupLayout
 						.createParallelGroup(Alignment.TRAILING)
+						.addComponent(panel, GroupLayout.DEFAULT_SIZE, 384,
+								Short.MAX_VALUE)
 						.addGroup(
+								Alignment.LEADING,
 								groupLayout
 										.createSequentialGroup()
 										.addContainerGap()
@@ -70,11 +74,9 @@ public class ServerConnectionDialog extends JDialog {
 														.addComponent(
 																formattedServer,
 																GroupLayout.DEFAULT_SIZE,
-																312,
+																297,
 																Short.MAX_VALUE))
-										.addContainerGap())
-						.addComponent(panel, GroupLayout.DEFAULT_SIZE, 372,
-								Short.MAX_VALUE));
+										.addContainerGap()));
 		groupLayout
 				.setVerticalGroup(groupLayout
 						.createParallelGroup(Alignment.LEADING)
@@ -86,17 +88,17 @@ public class ServerConnectionDialog extends JDialog {
 												groupLayout
 														.createParallelGroup(
 																Alignment.BASELINE)
-														.addComponent(lblServer)
 														.addComponent(
 																formattedServer,
 																GroupLayout.PREFERRED_SIZE,
 																GroupLayout.DEFAULT_SIZE,
-																GroupLayout.PREFERRED_SIZE))
+																GroupLayout.PREFERRED_SIZE)
+														.addComponent(lblServer))
 										.addPreferredGap(
-												ComponentPlacement.UNRELATED)
+												ComponentPlacement.RELATED)
 										.addComponent(chckbxRemember)
 										.addPreferredGap(
-												ComponentPlacement.RELATED, 5,
+												ComponentPlacement.RELATED, 47,
 												Short.MAX_VALUE)
 										.addComponent(panel,
 												GroupLayout.PREFERRED_SIZE, 49,
@@ -126,19 +128,17 @@ public class ServerConnectionDialog extends JDialog {
 		});
 		GroupLayout gl_panel = new GroupLayout(panel);
 		gl_panel.setHorizontalGroup(gl_panel.createParallelGroup(
-				Alignment.LEADING).addGroup(
-				Alignment.TRAILING,
+				Alignment.TRAILING).addGroup(
 				gl_panel.createSequentialGroup()
-						.addContainerGap(436, Short.MAX_VALUE)
-						.addComponent(btnConnect)
-						.addPreferredGap(ComponentPlacement.RELATED)
+						.addContainerGap(199, Short.MAX_VALUE)
+						.addComponent(btnConnect).addGap(18)
 						.addComponent(btnExit).addContainerGap()));
 		gl_panel.setVerticalGroup(gl_panel.createParallelGroup(
-				Alignment.LEADING)
+				Alignment.TRAILING)
 				.addGroup(
-						Alignment.TRAILING,
 						gl_panel.createSequentialGroup()
-								.addContainerGap(34, Short.MAX_VALUE)
+								.addContainerGap(GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE)
 								.addGroup(
 										gl_panel.createParallelGroup(
 												Alignment.BASELINE)
