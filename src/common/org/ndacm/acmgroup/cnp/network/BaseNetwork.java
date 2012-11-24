@@ -1,3 +1,8 @@
+/**
+ * Ths is used a parent class for the connections on the client and server side
+ * @author Cesar Ramirez
+ * @version 1.5
+ */
 package org.ndacm.acmgroup.cnp.network;
 
 import javax.swing.event.EventListenerList;
@@ -6,12 +11,6 @@ import org.ndacm.acmgroup.cnp.network.events.TaskEventSource;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEventListener;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
 
-/**
- * @author Cesar
- * 
- *         Network implementation of EventSource.
- * 
- */
 public class BaseNetwork implements TaskEventSource {
 
 	/**
@@ -19,9 +18,7 @@ public class BaseNetwork implements TaskEventSource {
 	 */
 	private EventListenerList listenerList = new EventListenerList();
 
-	/* (non-Javadoc)
-	 * @see org.ndacm.acmgroup.cnp.network.events.TaskEventSource#addTaskReceivedEventListener(org.ndacm.acmgroup.cnp.network.events.TaskReceivedEventListener)
-	 */
+
 	public void addTaskReceivedEventListener(TaskReceivedEventListener listener) {
 		listenerList.add(TaskReceivedEventListener.class, listener);
 	}

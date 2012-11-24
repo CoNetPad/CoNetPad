@@ -1,3 +1,10 @@
+/**
+ *         Event to be fired when a message is received through the network.
+ *         This class is just a wrapper over a CNPTask.
+ *         @author Cesar Ramirez
+ *         @version 1.0
+ * 
+ */
 package org.ndacm.acmgroup.cnp.network.events;
 
 import java.util.EventObject;
@@ -5,13 +12,7 @@ import java.util.EventObject;
 import org.ndacm.acmgroup.cnp.network.CNPConnection;
 import org.ndacm.acmgroup.cnp.task.Task;
 
-/**
- * @author cesar
- * 
- *         Event to be fired when a message is received through the network.
- *         This class is just a wrapper over a CNPTask.
- * 
- */
+
 public class TaskReceivedEvent extends EventObject {
 
 	private static final long serialVersionUID = 1L;

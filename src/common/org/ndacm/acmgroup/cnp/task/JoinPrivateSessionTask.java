@@ -4,16 +4,10 @@ public class JoinPrivateSessionTask extends JoinSessionTask {
 
 	protected String sessionPassword;
 	
-	public JoinPrivateSessionTask(int userID, String sessionName,
+	public JoinPrivateSessionTask(int userID, String username, String sessionName,
 			String sessionPassword, String userAuthToken) {
-		super(userID, sessionName, userAuthToken);
+		super(userID, username, sessionName, userAuthToken);
 		this.sessionPassword =sessionPassword;
-	}
-
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public String getSessionPassword() {

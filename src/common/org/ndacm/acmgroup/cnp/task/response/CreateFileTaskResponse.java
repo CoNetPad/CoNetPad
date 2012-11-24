@@ -5,13 +5,15 @@ import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
 public class CreateFileTaskResponse extends TaskResponse {
 
 	private int fileID;
+	protected int userID;
 	private String filename;
 	private SourceType type;
 	private boolean success;
 
-	public CreateFileTaskResponse(int fileID, String filename, SourceType type,
+	public CreateFileTaskResponse(int fileID, int userID, String filename, SourceType type,
 			boolean success) {
 		this.fileID = fileID;
+		this.userID = userID;
 		this.filename = filename;
 		this.type = type;
 		this.success = success;
@@ -19,7 +21,7 @@ public class CreateFileTaskResponse extends TaskResponse {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+		client.executeTask(this);
 
 	}
 
@@ -38,4 +40,14 @@ public class CreateFileTaskResponse extends TaskResponse {
 	public boolean isSuccess() {
 		return success;
 	}
+
+	public int getUserID() {
+		return userID;
+	}
+
+	public void setUserID(int userID) {
+		this.userID = userID;
+	}
+	
+	
 }

@@ -23,7 +23,7 @@ public class SourceFileTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		file1 = new ServerSourceFile(10, "sourceFile1", SourceType.JAVA, "InitialText_1");
+		file1 = new ServerSourceFile(10, "sourceFile1", SourceType.JAVA, "InitialText_1", null);
 	}
 
 	/**

@@ -19,7 +19,7 @@ public class ClientSourceFileTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		file = new ClientSourceFile(101, "HelloWorld.java",SourceType.JAVA,"Hello World!", null);
-		response = new EditorTaskResponse("jotan", 65, 6, 101);
+		response = new EditorTaskResponse("jotan", 65, 6, 101, true);
 		
 	}
 

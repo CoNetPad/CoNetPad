@@ -40,9 +40,8 @@ public class MainFrame extends JFrame {
 		this.client = client;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, DEFAULT_WIDTH, DEFAULT_HEIGHT);
-		// column width should be updated whenever window resized (some
-		// percentage of the parent window)
-		columnWidth = (int) (DEFAULT_WIDTH * 0.75); //
+		// column width should be updated whenever window resized (some percentage of the parent window)
+		columnWidth = (int) (DEFAULT_WIDTH * 0.75); // 
 		contentPane = new JPanel();
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -156,26 +155,24 @@ public class MainFrame extends JFrame {
 		contentPane.add(tabbedPane, BorderLayout.CENTER);
 
 		JPanel panel_2 = new JPanel();
-		// add to
+		// add to 
 		tabbedPane.addTab("New tab", null, panel_2, null);
 
 		JPanel panel_3 = new JPanel();
 		tabbedPane.addTab("New tab", null, panel_3, null);
 	}
-
+	
 	public void addTab(int fileID, String filename) {
 		JTextField fileTextField = new JTextField(columnWidth);
 		tabbedPane.addTab("filename", null, fileTextField, filename);
 		tabs.put(fileID, fileTextField);
 	}
-
-	public void updateSourceTab(int fileID, int keyPressed, int editIndex)
-			throws BadLocationException {
+	
+	public void updateSourceTab(int fileID, int keyPressed, int editIndex) throws BadLocationException {
 		JTextField text = tabs.get(fileID);
-		text.getDocument().insertString(editIndex,
-				Character.toString((char) keyPressed), null);
+		text.getDocument().insertString(editIndex, Character.toString((char) keyPressed), null);
 	}
-
+	
 	public void updateChat(String username, String message) {
 		// TODO implement
 	}

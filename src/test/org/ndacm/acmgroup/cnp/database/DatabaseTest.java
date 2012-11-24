@@ -175,11 +175,6 @@ public class DatabaseTest {
 				{
 					fail("Sessions did not equal");
 				}
-				catch(SQLException e)
-				{
-					e.printStackTrace();
-					fail("SQL Exception Thrown");
-				}
 				catch(Exception e)
 				{
 					e.printStackTrace();
@@ -238,12 +233,6 @@ public class DatabaseTest {
 					CNPPrivateSession test = db.retrieveSession("cdeef", server, "test"); 
 					//CNPSession result = new CNPSession(int sessionID, String sessionName, CNPServer server, int sessionLeader);
 					//assertTrue(result.equals(test));
-				}
-				catch(FailedAccountException e)
-				{
-					fail("Failed Account Exception Thrown:  " + e.toString());
-					e.printStackTrace();
-	
 				}
 				catch(AssertionError e)
 				{
