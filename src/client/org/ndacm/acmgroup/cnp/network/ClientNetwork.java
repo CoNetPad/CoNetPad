@@ -30,7 +30,7 @@ public class ClientNetwork extends BaseNetwork {
 	 * This creates a new clientNetwork using a server IP Address
 	 * @param ipAddress		The IP address of the server
 	 */
-	public void connect(String ipAddress) {
+	public boolean connect(String ipAddress) {
 		try {
 			serverConnection = new CNPConnection(new Socket(ipAddress, 4444),
 					0, this, false);

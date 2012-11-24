@@ -45,12 +45,7 @@ import org.ndacm.acmgroup.cnp.task.response.OpenFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponseExecutor;
 
-/**
- * This is the class that handles client side end of the network connection
- * @author Cesar Ramirez
- * @version 2.0
- */
-public class CNPClient implements TaskReceivedEventListener, TaskResponseExecutor {
+public class CNPClient implements TaskReceivedEventListener {
 
 	private String serverURL;						//The URL to the server
 	private String sessionName;						//The unique name of the session the user belongs to
@@ -60,7 +55,6 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 	private String authToken; 						// assigned by server after authentication
 
 	private ExecutorService clientExecutor;			//this is for executing varoous tasks
-	
 	private Map<Integer, ClientSourceFile> sourceFiles; //The files the client is reading through.  This is used in the GUI
 
 	private ClientNetwork network;					//The network connection for doing messaging sending and recieving
