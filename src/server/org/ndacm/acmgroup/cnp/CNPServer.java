@@ -1,9 +1,3 @@
-/**
- * Server Class
- * This is the main class that handles the server
- * @author Cesar Ramirez
- * @version 1.5
- */
 package org.ndacm.acmgroup.cnp;
 
 import java.io.File;
