@@ -8,6 +8,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
 
 import org.ndacm.acmgroup.cnp.file.ClientSourceFile;
@@ -16,12 +18,14 @@ import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
 import org.ndacm.acmgroup.cnp.gui.LoginDialog;
 import org.ndacm.acmgroup.cnp.gui.MainFrame;
 import org.ndacm.acmgroup.cnp.gui.RegisterDialog;
+import org.ndacm.acmgroup.cnp.gui.SessionDialog;
 import org.ndacm.acmgroup.cnp.network.ClientNetwork;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEventListener;
 import org.ndacm.acmgroup.cnp.task.ChatTask;
 import org.ndacm.acmgroup.cnp.task.CreateAccountTask;
 import org.ndacm.acmgroup.cnp.task.CreateFileTask;
+import org.ndacm.acmgroup.cnp.task.CreateSessionTask;
 import org.ndacm.acmgroup.cnp.task.EditorTask;
 import org.ndacm.acmgroup.cnp.task.JoinSessionTask;
 import org.ndacm.acmgroup.cnp.task.LoginTask;
@@ -55,7 +59,8 @@ public class CNPClient implements TaskReceivedEventListener {
 	private MainFrame sourceFrame;
 	private RegisterDialog regDialog;
 	private LoginDialog logDialog;
-
+	private SessionDialog sesDialog;
+	
 	public CNPClient() {
 
 		sourceFiles = new ConcurrentHashMap<Integer, ClientSourceFile>();
@@ -84,6 +89,10 @@ public class CNPClient implements TaskReceivedEventListener {
 		this.regDialog = regDialog;
 	}
 
+	public void setSessionDialog(SessionDialog sessionDialog) {
+		this.sesDialog = sessionDialog;
+	}
+	
 	public void setLogDialog(LoginDialog logDialog) {
 		this.logDialog = logDialog;
 	}
@@ -99,6 +108,11 @@ public class CNPClient implements TaskReceivedEventListener {
 		network.sendTask(task);
 	}
 
+	public void createSession(String sessionName) {
+		//Task task = new CreateSessionTask(userID, sessionName, authToken);
+		//network.sendTask(task);
+	}
+	
 	public void joinSession(String sessionName) {
 		Task task = new JoinSessionTask(userID, sessionName, authToken);
 		network.sendTask(task);
@@ -166,15 +180,28 @@ public class CNPClient implements TaskReceivedEventListener {
 
 	public void executeTask(CreateAccountTaskResponse task) {
 		if (task.isSuccess()) {
-			// do something
+			JOptionPane.showMessageDialog(logDialog, "Account created.");
+			Runnable doWorkRunnable = new Runnable() {
+				public void run() {
+					regDialog.dispose();
+				}
+			};
+			SwingUtilities.invokeLater(doWorkRunnable);
+		} else {
+			JOptionPane.showMessageDialog(logDialog,
+					"Error while creating an account.");
 		}
 	}
 
 	public void executeTask(LoginTaskResponse task) {
 		if (task.isSuccess()) {
 			userID = task.getUserID();
-			username = task.getUsername();
-			authToken = task.getUserAuthToken();
+			Runnable doWorkRunnable = new Runnable() {
+				public void run() {
+					logDialog.openSessionDialog();
+				}
+			};
+			SwingUtilities.invokeLater(doWorkRunnable);
 		}
 	}
 
@@ -236,5 +263,7 @@ public class CNPClient implements TaskReceivedEventListener {
 		}
 
 	}
+
+
 
 }
