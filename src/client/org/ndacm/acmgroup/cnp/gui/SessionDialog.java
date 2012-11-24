@@ -17,35 +17,74 @@ import org.ndacm.acmgroup.cnp.CNPClient;
 import javax.swing.JCheckBox;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JPasswordField;
 
-public class LoginDialog extends JDialog {
+public class SessionDialog extends JDialog {
 
-	private LoginDialog loginDialog;
+	private SessionDialog loginDialog;
 	private CNPClient client;
+	private JPasswordField passwordField;
 
 	/**
 	 * Create the dialog.
 	 */
-	public LoginDialog(final CNPClient client) {
+	public SessionDialog(final CNPClient client) {
 		loginDialog = this;
 		this.client = client;
-		this.client.setLogDialog(this);
+		this.client.setSessionDialog(this);
 		setTitle("CoNetPad Client");
-		setBounds(100, 100, 458, 115);
+		setBounds(100, 100, 466, 218);
 		JPanel panel = new JPanel();
 		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		JLabel lblUsername = new JLabel("Username:");
-		JLabel lblPassword = new JLabel("Password:");
 
-		final JFormattedTextField formattedUsername = new JFormattedTextField();
+		JLabel lblSession = new JLabel("Session name:");
 
-		final JFormattedTextField formattedPassword = new JFormattedTextField();
+		final JFormattedTextField formattedSession = new JFormattedTextField();
+
+		JLabel lblInfo = new JLabel(
+				"Enter the name of a session to join or create:");
+
+		JLabel lblUsePassword = new JLabel(
+				"<html>-If you are creating a session, you may use a password to protect it.");
+
+		JLabel lblifYouAre = new JLabel(
+				"<html>-If you are accessing a password-protected session, enter the password here, leave it empty otherwise.");
+
+		JLabel lblPassword_1 = new JLabel("Password (Optional):");
+
+		passwordField = new JPasswordField();
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
 		groupLayout
 				.setHorizontalGroup(groupLayout
-						.createParallelGroup(Alignment.TRAILING)
-						.addComponent(panel, GroupLayout.DEFAULT_SIZE, 454,
+						.createParallelGroup(Alignment.LEADING)
+						.addComponent(panel, GroupLayout.DEFAULT_SIZE, 462,
 								Short.MAX_VALUE)
+						.addGroup(
+								groupLayout.createSequentialGroup()
+										.addContainerGap()
+										.addComponent(lblInfo)
+										.addContainerGap(128, Short.MAX_VALUE))
+						.addGroup(
+								groupLayout
+										.createSequentialGroup()
+										.addContainerGap()
+										.addGroup(
+												groupLayout
+														.createParallelGroup(
+																Alignment.TRAILING)
+														.addComponent(
+																lblifYouAre,
+																Alignment.LEADING,
+																GroupLayout.DEFAULT_SIZE,
+																438,
+																Short.MAX_VALUE)
+														.addComponent(
+																lblUsePassword,
+																Alignment.LEADING,
+																GroupLayout.DEFAULT_SIZE,
+																438,
+																Short.MAX_VALUE))
+										.addContainerGap())
 						.addGroup(
 								groupLayout
 										.createSequentialGroup()
@@ -55,24 +94,24 @@ public class LoginDialog extends JDialog {
 														.createParallelGroup(
 																Alignment.LEADING)
 														.addComponent(
-																lblPassword)
+																lblPassword_1)
 														.addComponent(
-																lblUsername))
+																lblSession))
 										.addPreferredGap(
-												ComponentPlacement.UNRELATED)
+												ComponentPlacement.RELATED)
 										.addGroup(
 												groupLayout
 														.createParallelGroup(
 																Alignment.LEADING)
 														.addComponent(
-																formattedUsername,
+																passwordField,
 																GroupLayout.DEFAULT_SIZE,
-																335,
+																276,
 																Short.MAX_VALUE)
 														.addComponent(
-																formattedPassword,
+																formattedSession,
 																GroupLayout.DEFAULT_SIZE,
-																335,
+																276,
 																Short.MAX_VALUE))
 										.addContainerGap()));
 		groupLayout
@@ -82,32 +121,41 @@ public class LoginDialog extends JDialog {
 								groupLayout
 										.createSequentialGroup()
 										.addContainerGap()
+										.addComponent(lblInfo)
+										.addPreferredGap(
+												ComponentPlacement.RELATED)
 										.addGroup(
 												groupLayout
 														.createParallelGroup(
 																Alignment.BASELINE)
 														.addComponent(
-																lblUsername)
+																lblSession)
 														.addComponent(
-																formattedUsername,
-																GroupLayout.PREFERRED_SIZE,
-																GroupLayout.DEFAULT_SIZE,
-																GroupLayout.PREFERRED_SIZE))
-										.addGap(6)
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.BASELINE)
-														.addComponent(
-																lblPassword)
-														.addComponent(
-																formattedPassword,
+																formattedSession,
 																GroupLayout.PREFERRED_SIZE,
 																GroupLayout.DEFAULT_SIZE,
 																GroupLayout.PREFERRED_SIZE))
 										.addPreferredGap(
-												ComponentPlacement.RELATED,
-												167, Short.MAX_VALUE)
+												ComponentPlacement.RELATED)
+										.addGroup(
+												groupLayout
+														.createParallelGroup(
+																Alignment.BASELINE)
+														.addComponent(
+																lblPassword_1)
+														.addComponent(
+																passwordField,
+																GroupLayout.PREFERRED_SIZE,
+																GroupLayout.DEFAULT_SIZE,
+																GroupLayout.PREFERRED_SIZE))
+										.addGap(10)
+										.addComponent(lblUsePassword)
+										.addPreferredGap(
+												ComponentPlacement.UNRELATED)
+										.addComponent(lblifYouAre)
+										.addPreferredGap(
+												ComponentPlacement.RELATED, 16,
+												Short.MAX_VALUE)
 										.addComponent(panel,
 												GroupLayout.PREFERRED_SIZE, 45,
 												GroupLayout.PREFERRED_SIZE)));
@@ -119,39 +167,23 @@ public class LoginDialog extends JDialog {
 					dispose();
 				}
 			});
-			final JButton btnLogIn = new JButton("Log In");
-			btnLogIn.addActionListener(new ActionListener() {
+			JButton btnAccess = new JButton("Access");
+			btnAccess.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					if (!formattedUsername.getText().isEmpty()
-							&& !formattedPassword.getText().isEmpty()) {
-						client.loginToAccount(formattedUsername.getText(),
-								formattedPassword.getText());
-						formattedPassword.setEnabled(false);
-						formattedUsername.setEnabled(false);
-						btnLogIn.setEnabled(false);
+					if (!formattedSession.getText().isEmpty()
+							&& !passwordField.getText().isEmpty()) {
+						
 					}
-				}
-			});
-
-			JButton btnRegister = new JButton("Register");
-			btnRegister.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-
-					RegisterDialog dialog = new RegisterDialog(client);
-					dialog.setModalityType(ModalityType.APPLICATION_MODAL);
-					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-					dialog.setVisible(true);
 				}
 			});
 
 			GroupLayout gl_panel = new GroupLayout(panel);
 			gl_panel.setHorizontalGroup(gl_panel.createParallelGroup(
 					Alignment.LEADING).addGroup(
+					Alignment.TRAILING,
 					gl_panel.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(btnRegister)
-							.addPreferredGap(ComponentPlacement.RELATED, 105,
-									Short.MAX_VALUE).addComponent(btnLogIn)
+							.addContainerGap(282, Short.MAX_VALUE)
+							.addComponent(btnAccess)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(btnCancel).addContainerGap()));
 			gl_panel.setVerticalGroup(gl_panel.createParallelGroup(
@@ -163,19 +195,19 @@ public class LoginDialog extends JDialog {
 									gl_panel.createParallelGroup(
 											Alignment.BASELINE)
 											.addComponent(btnCancel)
-											.addComponent(btnLogIn)
-											.addComponent(btnRegister))
+											.addComponent(btnAccess))
 							.addContainerGap()));
 			panel.setLayout(gl_panel);
 			getContentPane().setLayout(groupLayout);
 		}
 	}
 
-	public void openSessionDialog() {
-		SessionDialog dialog = new SessionDialog(client);
-		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		dialog.setVisible(true);
+	public void openMainFrame() {
+		MainFrame frame = new MainFrame(client);
+		frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		frame.setVisible(true);
 		loginDialog.setVisible(false);
 		loginDialog.dispose();
+
 	}
 }

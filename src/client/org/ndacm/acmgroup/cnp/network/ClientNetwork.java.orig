@@ -13,7 +13,7 @@ import org.ndacm.acmgroup.cnp.task.Task;
 
 public class ClientNetwork extends BaseNetwork {
 
-	private CNPConnection serverConnection;
+	private CNPConnection serverConnection;		//The connection to the server
 
 	// private SSLSocketFactory sslSocketFactory;
 	// private SSLSocket socket;
@@ -26,11 +26,16 @@ public class ClientNetwork extends BaseNetwork {
 		serverConnection = null;
 
 	}
+<<<<<<< HEAD
+
+	public boolean connect(String ipAddress) {
+=======
 	/**
 	 * This creates a new clientNetwork using a server IP Address
 	 * @param ipAddress		The IP address of the server
 	 */
 	public void connect(String ipAddress) {
+>>>>>>> 5c92565e2668c08cf4cba6fbcb45505a40ccda64
 		try {
 			serverConnection = new CNPConnection(new Socket(ipAddress, 4444),
 					0, this, false);

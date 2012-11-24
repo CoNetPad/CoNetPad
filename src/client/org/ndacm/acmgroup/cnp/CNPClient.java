@@ -1,8 +1,3 @@
-/**
- * This is the class that handles client side end of the network connection
- * @author Cesar Ramirez
- * @version 2.0
- */
 package org.ndacm.acmgroup.cnp;
 
 import java.awt.EventQueue;
@@ -15,18 +10,24 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
 
 import org.ndacm.acmgroup.cnp.file.ClientSourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
+import org.ndacm.acmgroup.cnp.gui.LoginDialog;
 import org.ndacm.acmgroup.cnp.gui.MainFrame;
+import org.ndacm.acmgroup.cnp.gui.RegisterDialog;
+import org.ndacm.acmgroup.cnp.gui.SessionDialog;
 import org.ndacm.acmgroup.cnp.network.ClientNetwork;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEventListener;
 import org.ndacm.acmgroup.cnp.task.ChatTask;
 import org.ndacm.acmgroup.cnp.task.CreateAccountTask;
 import org.ndacm.acmgroup.cnp.task.CreateFileTask;
+import org.ndacm.acmgroup.cnp.task.CreateSessionTask;
 import org.ndacm.acmgroup.cnp.task.EditorTask;
 import org.ndacm.acmgroup.cnp.task.JoinSessionTask;
 import org.ndacm.acmgroup.cnp.task.LoginTask;
@@ -44,6 +45,11 @@ import org.ndacm.acmgroup.cnp.task.response.OpenFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponseExecutor;
 
+/**
+ * This is the class that handles client side end of the network connection
+ * @author Cesar Ramirez
+ * @version 2.0
+ */
 public class CNPClient implements TaskReceivedEventListener, TaskResponseExecutor {
 
 	private String serverURL;						//The URL to the server
@@ -54,11 +60,14 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 	private String authToken; 						// assigned by server after authentication
 
 	private ExecutorService clientExecutor;			//this is for executing varoous tasks
-
+	
 	private Map<Integer, ClientSourceFile> sourceFiles; //The files the client is reading through.  This is used in the GUI
 
 	private ClientNetwork network;					//The network connection for doing messaging sending and recieving
 	private MainFrame clientFrame;					//The frame of the GUI
+	private RegisterDialog regDialog;
+	private LoginDialog logDialog;
+	private SessionDialog sesDialog;
 
 	/**
 	 * Default Constructor
@@ -95,9 +104,29 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 	 * This connects to a server using an URL
 	 * @param serverURL			The URL of the serve to connect to
 	 */
-	public void connectToServer(String serverURL) {
-		network.connect(serverURL);
-		this.serverURL = serverURL;
+	public boolean connectToServer(String serverURL) {
+		if (network.connect(serverURL)) {
+			this.serverURL = serverURL;
+		} else {
+			return false;
+		}
+		return true;
+	}
+
+	public void closeConnection() {
+		network.disconnect();
+	}
+
+	public void setRegDialog(RegisterDialog regDialog) {
+		this.regDialog = regDialog;
+	}
+
+	public void setSessionDialog(SessionDialog sessionDialog) {
+		this.sesDialog = sessionDialog;
+	}
+	
+	public void setLogDialog(LoginDialog logDialog) {
+		this.logDialog = logDialog;
 	}
 
 	/**
@@ -228,10 +257,19 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 	 */
 	public void executeTask(CreateAccountTaskResponse task) {
 		if (task.isSuccess()) {
-			// do something
+			JOptionPane.showMessageDialog(logDialog, "Account created.");
+			Runnable doWorkRunnable = new Runnable() {
+				public void run() {
+					regDialog.dispose();
+				}
+			};
+			SwingUtilities.invokeLater(doWorkRunnable);
+		} else {
+			JOptionPane.showMessageDialog(logDialog,
+					"Error while creating an account.");
 		}
 	}
-
+	
 	/**
 	 * This logs in the user via LogInTaskResponse
 	 * @param task			The loginTaskResponse to use to login the user
@@ -241,9 +279,15 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 			userID = task.getUserID();
 			username = task.getUsername();
 			authToken = task.getUserAuthToken();
+			Runnable doWorkRunnable = new Runnable() {
+				public void run() {
+					logDialog.openSessionDialog();
+				}
+			};
+			SwingUtilities.invokeLater(doWorkRunnable);
 		}
 	}
-
+	
 	/**
 	 * This creates a new session via CreateSessionTAsk
 	 * @param task			The Task to use to create a new session
@@ -343,6 +387,5 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 		}
 
 	}
-
 
 }

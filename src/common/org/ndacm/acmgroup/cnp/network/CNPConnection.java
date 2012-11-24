@@ -72,11 +72,13 @@ public class CNPConnection extends Thread {
 				Task task = null;
 				if (isServer) {
 					task = TaskMessageFactory.fromMessageToTask(message);
+					task.setClientId(id);
 				} else {
 					task = TaskMessageFactory
 							.fromMessageToTaskResponse(message);
 				}
-				taskSource.fireTaskReceivedEvent(new TaskReceivedEvent(task, this));
+				taskSource.fireTaskReceivedEvent(new TaskReceivedEvent(task,
+						this));
 			}
 			System.out.println("Thread for client stopped correctly");
 		} catch (IOException e) {
