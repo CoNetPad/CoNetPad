@@ -1,3 +1,9 @@
+/**
+ * This class will be in charge of handling all the network connections,
+ * listening for new clients and sending/receiving messages.
+ * @author Cesar Ramirez
+ * @version 2.0
+ */
 package org.ndacm.acmgroup.cnp.network;
 
 import java.io.IOException;
@@ -6,25 +12,27 @@ import java.util.ArrayList;
 
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
-/**
- * This class will be in charge of handling all the network connections,
- * listening for new clients and sending/receiving messages.
- */
+
 public class ServerNetwork extends BaseNetwork {
 
-	public static final int SOCKET_NUMBER = 4444;
-	public static int nextClientNum;
+	public static final int SOCKET_NUMBER = 4444;				//The socket number to listen on
+	public static int nextClientNum;							//A constant or getting the next client
+	private ServerSocket serverSocket;							//The server socket for connect handling
+	private ArrayList<CNPConnection> clientList;				//The arrayList of clients
+	private boolean shouldStop; 								// whether the server should be stopped or not
 	
-	private ServerSocket serverSocket;
-	private ArrayList<CNPConnection> clientList;
-	private boolean shouldStop; // whether the server should be stopped or not
-
+	/**
+	 * Default Constructor
+	 * This initiates a new server, but does no listening.
+	 */
 	public ServerNetwork() {
 		shouldStop = false;
 		nextClientNum = 1;
 		clientList = new ArrayList<CNPConnection>();
 	}
-
+	/**
+	 * This listens for new clients and adds them to the client list
+	 */
 	public void startListening() {
 
 		try {
@@ -77,22 +85,34 @@ public class ServerNetwork extends BaseNetwork {
 			}
 		}
 	}
-
+	/**
+	 * This stops the server from listening t clients
+	 */
 	public void stopServer() {
 		System.out.println("Closing network");
 		shouldStop = true;
 
 	}
-
+	/**
+	 * This disconnects or stops a client from sending messages
+	 * @param id			The Unique ID of the client
+	 */
 	public void stopClient(int id) {
 		System.out.println("Closing connection with client " + id);
 		clientList.get(id).close();
 	}
-
+	/**
+	 * This sends a specific task response to a given client
+	 * @param id			The unique ID of the client or user
+	 * @param task			The task response to send them
+	 */
 	public void sendTaskResponseToClient(int id, TaskResponse task) {
 		clientList.get(id).sendTaskResponse(task);
 	}
-	
+	/**
+	 * This sends a response task to all clients
+	 * @param task			The task to send all clients
+	 */
 	public void sendTaskResponseToAllClients(TaskResponse task) {
 		for(CNPConnection client : clientList){
 			client.sendTaskResponse(task);			

@@ -24,8 +24,13 @@ import org.ndacm.acmgroup.cnp.task.response.CreateFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.OpenFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
-
-public class CNPSession  {
+/**
+ * CNP Session Class
+ * This is the class that handles the session specified in the SRS document
+ * @author Josh Tan
+ * @version 2.0
+ */
+public class CNPSession {
 
 	/**
 	 * The allowed characters for the Session name generator
@@ -103,14 +108,16 @@ public class CNPSession  {
 		// TODO implement
 		sessionTaskQueue = Executors.newSingleThreadExecutor();
 	}
+
 	/**
 	 * This returns the database ID of the sesison leader
 	 * @return		Database Id of the session leader
-	 /
+	 */
 	public int getSessionLeader()
 	{
 		return sessionLeader;
 	}
+
 	/**
 	 * This returns the unique session name
 	 * @return		The unique name of the session.
@@ -175,6 +182,7 @@ public class CNPSession  {
 		// TODO implement
 		return false;
 	}
+
 	/**
 	 * This commits changes for the GIt not using a message.  [Not Implemented]
 	 * @return				True if successful, false otherwise.
@@ -182,6 +190,7 @@ public class CNPSession  {
 	public boolean commitAndPush() {
 		return commitAndPush("");
 	}
+
 	/**
 	 * This clones a repository using git.	[Not Implemented]
 	 * @return		The new file?
@@ -191,7 +200,10 @@ public class CNPSession  {
 		return new File("");
 	}
 
-
+	/**
+	 * This executes a given chat class
+	 * @param task			The chat class you wish to execute
+	 */
 	public void executeTask(CreateFileTask task) {
 
 		CreateFileTaskResponse response = null;
@@ -232,6 +244,10 @@ public class CNPSession  {
 
 	}
 
+	/**
+	 * This executes a given chat class
+	 * @param task			The chat class you wish to execute
+	 */
 	public void executeTask(ChatTask task) {
 
 		ChatTaskResponse response = new ChatTaskResponse(task.getUsername(), task.getMessage());
@@ -239,6 +255,10 @@ public class CNPSession  {
 
 	}
 
+	/**
+	 * This submits a sessionTask to the queue for execution
+	 * @param task
+	 */
 	public void submitTask(SessionTask task) {
 		sessionTaskQueue.submit(task);
 	}

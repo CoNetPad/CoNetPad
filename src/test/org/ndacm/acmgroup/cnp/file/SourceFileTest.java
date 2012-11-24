@@ -1,5 +1,7 @@
 /**
- * 
+ * This is the test case for the Source File Class
+ * @author Cesar Ramirez
+ * @version 1.0
  */
 package org.ndacm.acmgroup.cnp.file;
 
