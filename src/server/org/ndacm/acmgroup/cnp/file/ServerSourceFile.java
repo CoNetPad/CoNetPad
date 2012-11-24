@@ -22,10 +22,8 @@ public class ServerSourceFile extends SourceFile {
 
 	private ExecutorService fileTaskCourier;				//This is used to store tasks to be process in queue
 	private ExecutorService fileTaskQueue;					//This is the task queue
-	private Map<Account, CNPConnection> clientConnections; // clients that have this specific file open
-
-	// clients that have this specific file open; maps userID to CNPConneciton
-	private Map<Integer, CNPConnection> clientConnections;
+	private Map<Integer, CNPConnection> clientConnections; // clients that have this specific file open
+	private CNPServer server;
 
 	/**
 	 * This is the default Constructor

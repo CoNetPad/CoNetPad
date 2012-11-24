@@ -51,8 +51,8 @@ public class CNPClient implements TaskReceivedEventListener {
 	private String authToken; 						// assigned by server after authentication
 
 	private ExecutorService clientExecutor;			//this is for executing varoous tasks
-	private Map<Integer, ClientSourceFile> sourceFiles; //The files the client is readig through.  This is used in the GUI
-	// ClientSourceFile
+	
+	private Map<Integer, ClientSourceFile> sourceFiles; //The files the client is reading through.  This is used in the GUI
 
 	private ClientNetwork network;					//The network connection for doing messaging sending and recieving
 	private MainFrame clientFrame;					//The frame of the GUI
@@ -106,7 +106,7 @@ public class CNPClient implements TaskReceivedEventListener {
 	 * @param sessionName			The unique name of the session
 	 */
 	public void joinSession(String sessionName) {
-		Task task = new JoinSessionTask(userID, sessionName, authToken);
+		Task task = new JoinSessionTask(userID, username, sessionName, authToken);
 		network.sendTask(task);
 	}
 

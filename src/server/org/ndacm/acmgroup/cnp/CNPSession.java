@@ -311,10 +311,6 @@ public class CNPSession {
 		return sourceFiles.get(fileID);
 	}
 
-	public int getSessionLeader() {
-		return sessionLeader;
-	}
-
 	/**
 	 * This checks to see if two sessions are equal
 	 * @param session			The session you wish to test is equal
