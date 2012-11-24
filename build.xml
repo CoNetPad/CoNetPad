@@ -1,21 +1,16 @@
 <project name="conetpad" default="dist" basedir=".">
+
   <description>
     Compiles and builds the CoNetPad project
   </description>
-	
-  <!-- set global properties for this build -->
-  <property name="src" location="src"/>
-  <property name="test" location="test"/>
-  <property name="build" location="build"/>
-  <property name="dist"  location="dist"/>
   
+  <!-- set classpaths -->
   <path id="common.classpath">
     <fileset dir="lib">
       <include name="**/*.jar" />
     </fileset>
     <fileset dir="build/common" />
   </path>
-
   
   <path id="server.classpath">
     <fileset dir="lib">
@@ -26,7 +21,7 @@
     <path refid="common.classpath"/>
     <pathelement path="build/common"/>
   </path>
-	
+  
   <path id="client.classpath">
     <fileset dir="lib">
       <include name="**/*.jar" />
@@ -35,10 +30,11 @@
     <path refid="common.classpath"/>
     <pathelement path="build/common"/>
   </path>
-
+  
   <path id="test.classpath">
     <fileset dir="lib">
       <include name="**/*.jar" />
+      <exclude name="**/*-javadoc.jar" />
     </fileset>
     <path refid="common.classpath"/>
     <pathelement path="build/common"/>
@@ -47,111 +43,177 @@
     <path refid="server.classpath"/>
     <pathelement path="build/server"/>
   </path>
-  
-  <target name="init">
-    <!-- Create the time stamp -->
+
+  <!-- initialize -->
+  <target name="init" description="initialize directory structure">
     <tstamp />
-    
-    <!-- Create the build directory structure used by compile -->
     <mkdir dir="build/common" />
     <mkdir dir="build/client" />
     <mkdir dir="build/server" />
     <mkdir dir="build/test" />
-    <mkdir dir="build/data" />
-    <mkdir dir="build/lib" />
-    <mkdir dir="dist" />
+    <mkdir dir="dist/client/lib" />
+    <mkdir dir="dist/server/lib" />
+    <mkdir dir="dist/test/lib" />
+  </target>
+  
+  <!-- compile -->
+  <target name="compile" depends="init" description="compile source">
+    <javac includeantruntime="false" srcdir="src/common" destdir="build/common" classpathref="common.classpath" debug="true" />
+    <javac includeantruntime="false"  srcdir="src/server" destdir="build/server" classpathref="server.classpath" debug="true" />
+    <javac includeantruntime="false" srcdir="src/client" destdir="build/client" classpathref="client.classpath" debug="true" />
+    <javac includeantruntime="false" srcdir="src/test" destdir="build/test" classpathref="test.classpath" debug="true" />
+  </target>
+  
+  <!-- jar class files -->
+  <target name="jar" depends="compile" description="create jar files">
 
-    <copy todir="build/data">
-      <fileset dir="data">
-	<exclude name="**/*.exe"/>
-      </fileset>
-    </copy>
+
     
-    <copy todir="build/lib">
+    <!-- jar common class files to temp directory-->
+    <mkdir dir="dist/temp" />
+    <jar jarfile="dist/temp/${ant.project.name}-common.jar" basedir="build/common" />
+    
+    <!-- copy common and lib jars to dist/client/lib directory -->
+    <copy todir="dist/client/lib">
       <fileset dir="lib">
 	<include name="**/*.jar" />
 	<exclude name="**/*-javadoc.jar"/>
       </fileset>
     </copy>
-
-  </target>
-  
-  <target name="compile" depends="init" description="compile source">
-    <javac srcdir="src/common" destdir="build/common" classpathref="common.classpath" debug="true" />
-    <javac srcdir="src/server" destdir="build/server" classpathref="server.classpath" debug="true" />
-    <javac srcdir="src/client" destdir="build/client" classpathref="client.classpath" debug="true" />
-    <javac srcdir="src/test" destdir="build/test" classpathref="test.classpath" debug="true" />
-  </target>
-
-  <path id="build.classpath">
-    <fileset dir="build">
-      <include name="*.jar"/>
-    </fileset>
-    <fileset dir="build/lib">
-      <include name="**/*.jar"/>
-    </fileset>
-  </path>
-
-  <target name="jar" depends="compile" description="create jar files">
-    <jar jarfile="build/${ant.project.name}-common.jar" basedir="build/common" />
-
-    <manifestclasspath property="server.lib" jarfile="build/${ant.project.name}-server.jar">
-      <classpath refid="build.classpath"/>
-    </manifestclasspath>  
+    <copy tofile="dist/client/lib/${ant.project.name}-common.jar" 
+	  file="dist/temp/${ant.project.name}-common.jar" />
     
-    <manifestclasspath property="client.lib" jarfile="build/${ant.project.name}-common.jar">
-      <classpath refid="build.classpath"/>
+    <!-- copy common and lib jars to dist/server/lib directory -->
+    <copy todir="dist/server/lib">
+      <fileset dir="lib">
+	<include name="**/*.jar" />
+	<exclude name="**/*-javadoc.jar"/>
+      </fileset>
+    </copy>
+    <copy tofile="dist/server/lib/${ant.project.name}-common.jar" 
+	  file="dist/temp/${ant.project.name}-common.jar" />
+    
+    <!-- copy common and lib jars to dist/test/lib directory -->
+    <copy todir="dist/test/lib">
+      <fileset dir="lib">
+	<include name="**/*.jar" />
+	<exclude name="**/*-javadoc.jar"/>
+      </fileset>
+    </copy>
+    <copy tofile="dist/test/lib/${ant.project.name}-common.jar" 
+	  file="dist/temp/${ant.project.name}-common.jar" />
+    
+    <!-- remove temp directory -->
+    <delete dir="dist/temp" />
+
+    <!-- define client and server jar classpaths -->
+    <path id="server.build.classpath">
+      <fileset dir="dist/server/lib">
+	<include name="**/*.jar"/>
+      </fileset>
+    </path>
+    
+    <path id="client.build.classpath">
+      <fileset dir="dist/client/lib">
+	<include name="**/*.jar"/>
+      </fileset>
+    </path>
+    
+    <!-- jar server class files -->
+    <manifestclasspath property="server.lib" jarfile="dist/server/${ant.project.name}-server.jar">
+      <classpath refid="server.build.classpath"/>
     </manifestclasspath>  
 
-    <jar jarfile="build/${ant.project.name}-server.jar" basedir="build/server" >
+    <jar jarfile="dist/server/${ant.project.name}-server.jar" basedir="build/server" >
       <manifest>
         <attribute name="Main-Class" value="org.ndacm.acmgroup.cnp.CNPServer" />
 	<attribute name="Class-Path" value="${server.lib}"/>
       </manifest>
     </jar>
-    <jar jarfile="build/${ant.project.name}-client.jar" basedir="build/client" >
+    
+    <!-- jar client class files -->
+    <manifestclasspath property="client.lib" jarfile="dist/client/${ant.project.name}-client.jar">
+      <classpath refid="client.build.classpath"/>
+    </manifestclasspath>  
+    
+    <jar jarfile="dist/client/${ant.project.name}-client.jar" basedir="build/client" >
       <manifest>
         <attribute name="Main-Class" value="org.ndacm.acmgroup.cnp.CNPClient" />
 	<attribute name="Class-Path" value="${client.lib}"/>
       </manifest>
     </jar>
-    <jar jarfile="build/${ant.project.name}-test.jar" basedir="build/test" />
+    
+    <!-- define client and server jar classpaths -->
+    <path id="test.build.classpath">
+      <fileset dir="dist/test/lib">
+	<include name="**/*.jar"/>
+      </fileset>
+    </path>
+    
+    <!-- copy server and client jars to dist/test/lib directory -->
+    <copy tofile="dist/test/lib/${ant.project.name}-server.jar" 
+	  file="dist/server/${ant.project.name}-server.jar" />
+    <copy tofile="dist/test/lib/${ant.project.name}-client.jar"
+	  file="dist/client/${ant.project.name}-client.jar" />
+    
+    <!-- jar test class files -->
+    <manifestclasspath property="test.lib" jarfile="dist/test/${ant.project.name}-test.jar">
+      <classpath refid="test.build.classpath"/>
+    </manifestclasspath>  
+    
+    <jar jarfile="dist/test/${ant.project.name}-test.jar" basedir="build/test" >
+      <manifest>
+        <attribute name="Main-Class" value="org.ndacm.acmgroup.cnp.CNPTestRunner" />
+	<attribute name="Class-Path" value="${test.lib}"/>
+      </manifest>
+    </jar>
   </target>
-  
+
+  <!-- copy resources into client, server, and test dist directories -->
   <target name="dist" depends="jar" description="generate the distribution">
-    <!-- Create the distribution directory -->
-    <copy todir="dist/server">
+
+    <!-- copy database to server and test dist directories-->
+    <copy todir="dist/server/data">
       <fileset dir="data">
 	<exclude name="**/*.exe"/>
       </fileset>
     </copy>
-    <copy tofile="dist/server/lib/${ant.project.name}-server.jar" 
-	  file="build/${ant.project.name}-server.jar" />
-    <copy tofile="dist/server/lib/${ant.project.name}-common.jar" 
-	  file="build/${ant.project.name}-common.jar" />
-    <copy tofile="dist/common/lib/${ant.project.name}-common.jar" 
-	  file="build/${ant.project.name}-common.jar" />
-    <copy tofile="dist/client/lib/${ant.project.name}-client.jar"
-	  file="build/${ant.project.name}-client.jar" />
-    <copy tofile="dist/client/lib/${ant.project.name}-common.jar" 
-	  file="build/${ant.project.name}-common.jar" />
-    <copy tofile="dist/test/lib/${ant.project.name}-test.jar" 
-	  file="build/${ant.project.name}-test.jar" />
     
+    <copy todir="dist/test/data">
+      <fileset dir="data">
+	<exclude name="**/*.exe"/>
+      </fileset>
+    </copy>
+
+    <!-- zip all of dist -->
     <zip basedir="dist" destfile="dist/${ant.project.name}-${DSTAMP}.zip" excludes="${ant.project.name}-*.zip" />
   </target>
   
-  <target name="test" depends="compile">
-    <junit>
-      <classpath refid="test.classpath" />
+  <!-- run junit tests -->
+  <target name="test" depends="dist">
+
+    <!-- define the junit testing classpath -->
+    <path id="junit.classpath">
+      <pathelement location="lib/junit-4.10.jar" />
+      <pathelement location="lib/forms-1.3.0.jar" />
+      <pathelement location="lib/jgit-2.1.0.201209190230-r/org.eclipse.jgit-2.1.0.201209190230-r.jar" />
+      <pathelement location="lib/ropes-1.2.5/ropes.jar" />
+      <pathelement location="lib/sqlite-jdbc-3.7.2/sqlite-jdbc-3.7.2.jar" />
+      <pathelement location="build/test" />
+    </path>
+
+    <!-- run tests and print results -->
+    <junit printsummary="on" fork="true" haltonfailure="no">
+      <classpath refid="junit.classpath" />
       <formatter type="brief" usefile="false" />
-      <test name="CNPTestSuite" />
+      <test name="org.ndacm.acmgroup.cnp.CNPTestSuite" />
     </junit>
   </target>
 
-  <target name="clean" description="clean up">
-    <!-- Delete the ${build} and ${dist} directory trees -->
+  <!-- clean up -->
+  <target name="clean" description="delete ${build} and ${dist} directories -->">
     <delete dir="build"/>
     <delete dir="dist" />
   </target>
+
 </project>

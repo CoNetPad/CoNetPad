@@ -1,7 +1,0 @@
-Progress Report - October 10, 2012
-
-Our group has successfully completed the software requirements analysis and definition stage of our project. The majority of the software design has also been decided upon. This includes detailed class diagrams that specify much of the lower-level software design. These two stages took longer than we initially expected, so the project plan has been modified to reflect this.
-
-Although the software design has been mostly completed, it will likely be changed as the project progresses. This is particular true of the design for the source file classes. Currently, each file is represented as a string and this string is periodically written to a file (which is periodically pushed to a Git repository). Our group is considering using some form of a random-access file instead of the string design, in order to improve efficiency.
-
-The next step will be to clearly define the interface between the server and client components. With this in place, we will be able to work on these components separately and in a modular way. After this is done, the actual implementation phase can begin.
