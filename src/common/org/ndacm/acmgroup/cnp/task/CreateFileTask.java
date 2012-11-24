@@ -1,6 +1,7 @@
 package org.ndacm.acmgroup.cnp.task;
 
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
+import org.ndacm.acmgroup.cnp.network.CNPConnection;
 
 public class CreateFileTask extends SessionTask {
 	
@@ -8,6 +9,7 @@ public class CreateFileTask extends SessionTask {
 	protected String filename;
 	protected SourceType type;
 	protected String userAuthToken;
+	protected CNPConnection connection;
 
 	public CreateFileTask(int userID, String filename, SourceType type, String userAuthToken) {
 		this.userID = userID;
@@ -18,8 +20,7 @@ public class CreateFileTask extends SessionTask {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		// make sure userID = sessionLeaderID
+		session.executeTask(this);
 		
 	}
 
@@ -38,5 +39,19 @@ public class CreateFileTask extends SessionTask {
 	public String getUserAuthToken() {
 		return userAuthToken;
 	}
+
+	public CNPConnection getConnection() {
+		return connection;
+	}
+
+	public void setConnection(CNPConnection connection) {
+		this.connection = connection;
+	}
+
+	public void setUserID(int userID) {
+		this.userID = userID;
+	}
+	
+	
 
 }

@@ -50,14 +50,14 @@ public class CNPClient implements TaskReceivedEventListener {
 	// ClientSourceFile
 
 	private ClientNetwork network;
-	private MainFrame sourceFrame;
+	private MainFrame clientFrame;
 
 	public CNPClient() {
 
 		sourceFiles = new ConcurrentHashMap<Integer, ClientSourceFile>();
 		clientExecutor = Executors.newCachedThreadPool();
 		network = new ClientNetwork();
-		// sourceFrame = new MainFrame();
+		clientFrame = new MainFrame();
 
 		// register as task event listener with network
 		network.addTaskReceivedEventListener(this);
@@ -67,7 +67,7 @@ public class CNPClient implements TaskReceivedEventListener {
 		network.connect(serverURL);
 		this.serverURL = serverURL;
 	}
-	
+
 	public void createAccount(String username, String email, String password) {
 		CreateAccountTask task = new CreateAccountTask(username, email, password);
 		network.sendTask(task);
@@ -79,7 +79,7 @@ public class CNPClient implements TaskReceivedEventListener {
 	}
 
 	public void joinSession(String sessionName) {
-		Task task = new JoinSessionTask(userID, sessionName, authToken);
+		Task task = new JoinSessionTask(userID, username, sessionName, authToken);
 		network.sendTask(task);
 	}
 
@@ -141,21 +141,23 @@ public class CNPClient implements TaskReceivedEventListener {
 		}
 		return list;
 	}
-	
+
 	public void executeTask(CreateAccountTaskResponse task) {
 		if (task.isSuccess()) {
 			// do something
 		}
 	}
-	
+
 	public void executeTask(LoginTaskResponse task) {
 		if (task.isSuccess()) {
+
 			userID = task.getUserID();
 			username = task.getUsername();
 			authToken = task.getUserAuthToken();
+
 		}
 	}
-	
+
 	public void executeTask(CreateSessionTaskResponse task) {
 		if (task.isSuccess()) {
 			// do something
@@ -164,36 +166,53 @@ public class CNPClient implements TaskReceivedEventListener {
 
 	public void executeTask(JoinSessionTaskResponse task) {
 		if (task.isSuccess()) {
-			// open up main form and source files and stuff
+
+			if (task.getUserID() == userID){
+				// update client frame with list of files
+				clientFrame.addToFileList(task.getSessionFiles());
+			} else {
+				// another client sent the task - update user list
+				clientFrame.addUser(task.getUsername());
+			}
 		}
 	}
 
 	public void executeTask(CreateFileTaskResponse task) {
-		if (task.isSuccess()) { // client is a session leader
+		if (task.isSuccess()) { 
 
 			sourceFiles.put(task.getFileID(),
 					new ClientSourceFile(task.getFileID(), task.getFilename(),
 							task.getType(), "", this));
-			// create and open new tab
-			
-			// populate file tree for other users (will register them only if they open)
+
+			// if client is a session leader, then open file up in tab
+			if (task.getUserID() == userID) { 
+
+				// create and open new tab
+				clientFrame.addTab(task.getFileID(), task.getFilename(), "");
+
+			}
+
+			// populate file tree for all users
+			clientFrame.addToFileList(task.getFilename());
 		}
 	}
 
 	public void executeTask(OpenFileTaskResponse task) {
-		// open up tab for file (may need to also include code to synchronize it
-		// initially..)
+		clientFrame.addTab(task.getFileID(), task.getFilename(), task.getFileContent());
 	}
 
 	public void executeTask(EditorTaskResponse task)
 			throws BadLocationException {
-		sourceFiles.get(task.getFileID()).editSource(task);
-		sourceFrame.updateSourceTab(task.getFileID(), task.getKeyPressed(),
-				task.getEditIndex());
+
+		if (task.isSuccess()) {
+			sourceFiles.get(task.getFileID()).editSource(task);
+			clientFrame.updateSourceTab(task.getFileID(), task.getKeyPressed(),
+					task.getEditIndex());
+		}
 	}
 
 	public void executeTask(ChatTaskResponse task) {
-		sourceFrame.updateChat(task.getUsername(), task.getMessage());
+		clientFrame.updateChat(task.getUsername(), task.getMessage());
 	}
 
 	public boolean executeTask(DownloadFileTaskResponse task) {

@@ -15,13 +15,17 @@ import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
 import org.ndacm.acmgroup.cnp.git.JGit;
 import org.ndacm.acmgroup.cnp.network.CNPConnection;
 import org.ndacm.acmgroup.cnp.task.ChatTask;
+import org.ndacm.acmgroup.cnp.task.CreateFileTask;
+import org.ndacm.acmgroup.cnp.task.OpenFileTask;
 import org.ndacm.acmgroup.cnp.task.SendResponseTask;
 import org.ndacm.acmgroup.cnp.task.SessionTask;
 import org.ndacm.acmgroup.cnp.task.response.ChatTaskResponse;
+import org.ndacm.acmgroup.cnp.task.response.CreateFileTaskResponse;
+import org.ndacm.acmgroup.cnp.task.response.OpenFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
 
-public class CNPSession {
+public class CNPSession  {
 
 	/**
 	 * The allowed characters for the Session name generator
@@ -60,7 +64,7 @@ public class CNPSession {
 	//	private SessionType type;
 	private int sessionLeader;
 	private String encryptedPassword;
-	private Map<Account, CNPConnection> clientConnections; // implement with ConcurrentHashMap
+	private Map<Integer, CNPConnection> clientConnections; // maps userID to CNPConnection
 	private Map<Account, Account.FilePermissionLevel> filePermissions; // implement with CHM ^
 	private Map<Account, Account.ChatPermissionLevel> chatPermissions;
 
@@ -89,7 +93,7 @@ public class CNPSession {
 		this.sessionID = sessionID;
 		this.sessionLeader = sessionLeader;
 		this.sessionName = sessionName;
-		clientConnections = new ConcurrentHashMap<Account, CNPConnection>();
+		clientConnections = new ConcurrentHashMap<Integer, CNPConnection>();
 		filePermissions = new ConcurrentHashMap<Account, FilePermissionLevel>();
 		chatPermissions = new ConcurrentHashMap<Account, ChatPermissionLevel>();
 
@@ -102,7 +106,7 @@ public class CNPSession {
 	/**
 	 * This returns the database ID of the sesison leader
 	 * @return		Database Id of the session leader
-	 */
+	 /
 	public int getSessionLeader()
 	{
 		return sessionLeader;
@@ -130,8 +134,8 @@ public class CNPSession {
 	 * @param userAccount			The account in which you wish to add
 	 * @param connection			The connection of the user
 	 */
-	public void addUser(Account userAccount, CNPConnection connection) {
-		clientConnections.put(userAccount, connection);
+	public void addUser(int userID, CNPConnection connection) {
+		clientConnections.put(userID, connection);
 	}
 
 	/**
@@ -147,10 +151,11 @@ public class CNPSession {
 	 * @param filename				The name of the file.  No path
 	 * @param type					The file type.  Include period.
 	 */
-	public synchronized void createFile(String filename, SourceType type) {
+	public synchronized ServerSourceFile createFile(String filename, SourceType type) {
 		ServerSourceFile file = new ServerSourceFile(NEXT_FILEID, filename, type);
 		sourceFiles.put(NEXT_FILEID, file);
 		NEXT_FILEID++;
+		return file;
 	}
 
 	/**
@@ -184,6 +189,47 @@ public class CNPSession {
 	public File cloneRepo() {
 		// TODO implement
 		return new File("");
+	}
+
+
+	public void executeTask(CreateFileTask task) {
+
+		CreateFileTaskResponse response = null;
+		if (task.getUserID() == sessionLeader && server.userIsAuth(task.getUserID(), task.getUserAuthToken())){
+			ServerSourceFile sourceFile = createFile(task.getFilename(), task.getType());
+			response = new CreateFileTaskResponse(sourceFile.getFileID(), task.getUserID(), 
+					sourceFile.getFilename(), sourceFile.getType(), true);
+
+			// register sessionLeader as a file listener, since sessionLeader will automatically have file opened
+			sourceFile.addFileTaskEventListener(task.getUserID(), task.getConnection());
+		} else {
+			// session leader authentication failed
+			response  = new CreateFileTaskResponse(-1, -1, "", null, false);
+		}
+
+		distributeTask(response);
+
+	}
+
+	public void executeTask(OpenFileTask task) {
+		OpenFileTaskResponse response = null;
+
+		if (server.userIsAuth(task.getUserID(), task.getUserAuthToken())){
+			ServerSourceFile sourceFile = sourceFiles.get(task.getFileID());
+
+			// create response that includes file contents
+			response = new OpenFileTaskResponse(sourceFile.getFileID(), sourceFile.getFilename(),
+					sourceFile.toString(), true);
+
+			// register user as a file listener
+			sourceFile.addFileTaskEventListener(task.getUserID(), task.getConnection());
+		} else {
+			// user authentication fails
+			response = new OpenFileTaskResponse(-1, "",	"", false);
+		}
+
+		distributeTask(response);
+
 	}
 
 	public void executeTask(ChatTask task) {
@@ -243,6 +289,10 @@ public class CNPSession {
 	 */
 	public ServerSourceFile getFile(int fileID) {
 		return sourceFiles.get(fileID);
+	}
+
+	public int getSessionLeader() {
+		return sessionLeader;
 	}
 
 	/**

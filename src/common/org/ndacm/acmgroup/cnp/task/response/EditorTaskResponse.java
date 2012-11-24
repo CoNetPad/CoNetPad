@@ -8,13 +8,15 @@ public class EditorTaskResponse extends TaskResponse {
 	private int keyPressed;
 	private int editIndex;
 	private int fileID;
+	private boolean isSuccess;
 
 	public EditorTaskResponse(String username, int keyPressed, int editIndex,
-			int fileID) {
+			int fileID, boolean isSuccess) {
 		this.username = username;
 		this.keyPressed = keyPressed;
 		this.editIndex = editIndex;
 		this.fileID = fileID;
+		this.isSuccess = isSuccess;
 	}
 
 	public int getKeyPressed() {
@@ -33,6 +35,13 @@ public class EditorTaskResponse extends TaskResponse {
 		return fileID;
 	}
 
+	public boolean isSuccess() {
+		return isSuccess;
+	}
+
+	public void setSuccess(boolean isSuccess) {
+		this.isSuccess = isSuccess;
+	}
 
 	@Override
 	public void run() {

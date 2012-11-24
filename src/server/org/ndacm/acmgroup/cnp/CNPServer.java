@@ -19,14 +19,15 @@ import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
 import org.ndacm.acmgroup.cnp.network.ServerNetwork;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEventListener;
-import org.ndacm.acmgroup.cnp.task.ChatTask;
 import org.ndacm.acmgroup.cnp.task.CreateAccountTask;
+import org.ndacm.acmgroup.cnp.task.CreateFileTask;
 import org.ndacm.acmgroup.cnp.task.CreatePrivateSessionTask;
 import org.ndacm.acmgroup.cnp.task.CreateSessionTask;
-import org.ndacm.acmgroup.cnp.task.EditorTask;
 import org.ndacm.acmgroup.cnp.task.FileTask;
+import org.ndacm.acmgroup.cnp.task.JoinPrivateSessionTask;
 import org.ndacm.acmgroup.cnp.task.JoinSessionTask;
 import org.ndacm.acmgroup.cnp.task.LoginTask;
+import org.ndacm.acmgroup.cnp.task.OpenFileTask;
 import org.ndacm.acmgroup.cnp.task.SendResponseTask;
 import org.ndacm.acmgroup.cnp.task.ServerTask;
 import org.ndacm.acmgroup.cnp.task.SessionTask;
@@ -34,6 +35,7 @@ import org.ndacm.acmgroup.cnp.task.Task;
 import org.ndacm.acmgroup.cnp.task.message.TaskMessageFactory;
 import org.ndacm.acmgroup.cnp.task.response.CreateAccountTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.CreateSessionTaskResponse;
+import org.ndacm.acmgroup.cnp.task.response.JoinSessionTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.LoginTaskResponse;
 
 public class CNPServer implements TaskReceivedEventListener {
@@ -45,8 +47,7 @@ public class CNPServer implements TaskReceivedEventListener {
 	private Database database;
 	private Compiler compiler;
 	private String baseDirectory;
-	private Map<Integer, CNPSession> openSessions; // maps sessionID to //
-	// CNPSession
+	private Map<Integer, CNPSession> openSessions; // maps sessionID to CNPSession
 	private TaskMessageFactory messageFactory;
 	private ExecutorService serverExecutor; // for server-wide tasks (e.g. account creation)
 	private Map<Integer, String> userAuthTokens; // userID to userAuthToken
@@ -89,24 +90,6 @@ public class CNPServer implements TaskReceivedEventListener {
 		network.startListening();
 	}
 
-	public void connectToSession(JoinSessionTask task) throws SQLException {
-
-		// CNPSession session = null;
-		// Account userAccount = database.retrieveAccount(task.getUserID(),
-		// task.getPassword());
-		//
-		// if (!openSessions.containsKey(task.getSessionName())) {
-		// // retrieve session from database and add to openSessions
-		//
-		// } else {
-		// // retrieve from openSessions
-		// session = openSessions.get(task.getSessionName());
-		// }
-		//
-		// // associate account with session
-		// session.addUser(userAccount, task.getConnection());
-	}
-
 	public CNPSession createCNPSession(CreateSessionTask task)
 			throws FailedSessionException, SQLException {
 
@@ -127,6 +110,11 @@ public class CNPServer implements TaskReceivedEventListener {
 	public File compile(List<String> fileNames, CNPSession session) {
 		// TODO implement
 		return new File(""); // return tar or something
+	}
+
+	public List<String> retrieveSessionFileList(int sessionID) {
+		// TODO implement
+		return null;
 	}
 
 	public void executeTask(CreateAccountTask task) {
@@ -182,25 +170,71 @@ public class CNPServer implements TaskReceivedEventListener {
 		CNPSession newSession = null;
 		CreateSessionTaskResponse response = null;
 
-		// try to create a new public or private session, depending on the type of the task
-		try {
+		if (userIsAuth(task.getSessionLeader(), task.getUserAuthToken())) {
+			// try to create a new public or private session, depending on the type of the task
+			try {
 
-			if (task instanceof CreatePrivateSessionTask) {
-				newSession = database.createSession(task.getSessionLeader(), this, ((CreatePrivateSessionTask) task).getSessionPassword());
-			} else {
-				newSession = database.createSession(task.getSessionLeader(), this);
+				if (task instanceof CreatePrivateSessionTask) {
+					newSession = database.createSession(task.getSessionLeader(), this, ((CreatePrivateSessionTask) task).getSessionPassword());
+				} else {
+					newSession = database.createSession(task.getSessionLeader(), this);
+				}
+
+				response = new CreateSessionTaskResponse(newSession.getSessionID(), true);
+
+			} catch (FailedSessionException ex){
+				// if creating the session fails, create a response signifying this
+				response = new CreateSessionTaskResponse(-1, false);
 			}
-
-			response = new CreateSessionTaskResponse(newSession.getSessionID(), true);
-
-		} catch (FailedSessionException ex){
-			// if creating the session fails, create a response signifying this
+		} else {
+			// user authentication failed
 			response = new CreateSessionTaskResponse(-1, false);
 		}
 
 		// send back response
 		SendResponseTask sessionResponseTask = new SendResponseTask(response, task.getConnection());
 		serverExecutor.submit(sessionResponseTask);
+	}
+
+	public void executeTask(JoinSessionTask task) {
+
+		CNPSession joinedSession = null;
+		JoinSessionTaskResponse response = null;
+
+		if (userIsAuth(task.getUserID(), task.getUserAuthToken())) {
+			// try to join an existing public or private session, depending on the type of the task
+			try {
+				if (task instanceof JoinPrivateSessionTask) {
+					joinedSession = database.retrieveSession(task.getSessionName(), this, ((JoinPrivateSessionTask) task).getSessionPassword());
+				} else {
+					joinedSession = database.retrieveSession(task.getSessionName(), this);
+				}
+
+				// add connection to session list
+				joinedSession.addUser(task.getUserID(), task.getConnection());
+
+				// construct response
+				List<String> sessionFiles = retrieveSessionFileList(joinedSession.getSessionID());
+				response = new JoinSessionTaskResponse(task.getUserID(), task.getUsername(), joinedSession.getSessionName(), joinedSession.getSessionID(), true, sessionFiles);
+
+			} catch (FailedSessionException ex) {
+				// if joining the session fails, create a response signifying this
+				response = new JoinSessionTaskResponse(-1, "", "", -1, false, null);
+			}
+		} else {
+			// tokens don't match, join session task fails
+			response = new JoinSessionTaskResponse(-1, "", "", -1, false, null);
+		}
+
+		// send back response to client if fails, otherwise send it to all session members so their user list is updated
+		if (response.isSuccess()) {
+			joinedSession.distributeTask(response);
+
+		} else {
+			SendResponseTask sessionResponseTask = new SendResponseTask(response, task.getConnection());
+			serverExecutor.submit(sessionResponseTask);
+		}
+
 	}
 
 	@Override
@@ -211,32 +245,39 @@ public class CNPServer implements TaskReceivedEventListener {
 		// based on specific  task type, will need to set different variable references (for execution)
 		// and forward on to a specific ExecutorService (server, session, or file)
 		if (task instanceof ServerTask) {
-			
+
 			ServerTask serverTask = (ServerTask) task;
 			// set server and connection references
 			serverTask.setServer(this);
 			serverTask.setConnection(evt.getConnection());
 			// submit to server task executor
 			serverExecutor.submit(task);
-			
+
 		} else if (task instanceof SessionTask) {
-			
+
 			SessionTask sessionTask = (SessionTask) task;
 			CNPSession session = openSessions.get(sessionTask.getSessionID());
 			// set session reference
 			sessionTask.setSession(session);
+
+			if (sessionTask instanceof CreateFileTask) {
+				((CreateFileTask) task).setConnection(evt.getConnection());
+			} else if (task instanceof OpenFileTask) {
+				((OpenFileTask) task).setConnection(evt.getConnection());
+			}
 			// submit to session task executor
 			session.submitTask(sessionTask);
-			
+
 		} else if (task instanceof FileTask) {
-			
+
 			FileTask fileTask = (FileTask) task;
 			ServerSourceFile file = openSessions.get(fileTask.getSessionID()).getFile(fileTask.getFileID());
 			// set file reference
 			fileTask.setFile(file);
+
 			// submit to server source file task executor
 			file.submitTask(fileTask);
-			
+
 		} else {
 			System.err.println("Received task has an unknown type.");
 		}

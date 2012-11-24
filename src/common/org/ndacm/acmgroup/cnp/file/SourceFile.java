@@ -50,6 +50,14 @@ public abstract class SourceFile {
 		return filename;
 	}
 	
+	public SourceType getType() {
+		return type;
+	}
+
+	public void setType(SourceType type) {
+		this.type = type;
+	}
+	
 	@Override
 	public String toString() {
 		return sourceRope.toString();

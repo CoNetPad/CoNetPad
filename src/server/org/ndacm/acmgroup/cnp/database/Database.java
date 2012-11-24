@@ -158,14 +158,14 @@ public class Database implements IDatabase{
 				if(hashRetrieved.equals(hashPass))
 				{
 					return new Account(nameRetrieved, emailRetrieved, idRetrieved);
-					
+
 				}
 				else
 				{
 					throw new FailedAccountException("Passwords did not match");
 				}
 				//clean up database classes
-			
+
 			}
 			else
 			{
@@ -188,7 +188,7 @@ public class Database implements IDatabase{
 		}
 		catch(NullPointerException e)
 		{
-				System.err.println("Some other Error was caught");
+			System.err.println("Some other Error was caught");
 			throw new FailedAccountException("Error  " + e.getStackTrace() );
 		}
 
@@ -202,10 +202,10 @@ public class Database implements IDatabase{
 		CNPSession newSession = null;
 
 		// TODO test if session already exists
-		
+
 		// insert session into DB
 		PreparedStatement createSession = null, retrieveSession = null;
-	
+
 		String query = "SELECT * "
 				+ "FROM UserAccount "
 				+ "WHERE UserID = ?";
@@ -215,21 +215,21 @@ public class Database implements IDatabase{
 			ResultSet rset = retrieveSession.executeQuery();
 			if(rset.next())
 			{
-				
+
 				String sessionName = CNPSession.generateString();
 				String insertion = "INSERT INTO Session (SessionLeader, SessionName, IsPublic) "
 						+ "VALUES (? , ?, ?)";
-		
+
 				createSession = dbConnection.prepareStatement(insertion);
 				createSession.setInt(1, sessionLeader);
 				createSession.setString(2, sessionName);
 				createSession.setBoolean(3, true);
-		
+
 				createSession.executeUpdate();
-		
+
 				// return the session that was just inserted
 				newSession = retrieveSession(sessionName, server);
-		
+
 				createSession.close();
 				return newSession;
 			}
@@ -238,7 +238,7 @@ public class Database implements IDatabase{
 				System.err.println("The SessionLeader was not found.");
 				throw new FailedAccountException("Could not find Session Leader.");
 			}
-	
+
 		}
 		catch(SQLException e)
 		{
@@ -276,7 +276,7 @@ public class Database implements IDatabase{
 			createSession.setString(2, sessionName);
 			createSession.setBoolean(3, false);
 			createSession.executeUpdate();
-			
+
 			String query = "Select last_insert_rowid()";
 			PreparedStatement retrieveSession  = dbConnection.prepareStatement(query);
 			ResultSet rset = retrieveSession.executeQuery();
@@ -317,44 +317,49 @@ public class Database implements IDatabase{
 		return newSession;
 	}
 
-	public CNPSession retrieveSession(String sessionName, CNPServer server) throws SQLException, FailedSessionException {
+	public CNPSession retrieveSession(String sessionName, CNPServer server) throws FailedSessionException {
 
 		PreparedStatement retrieveSession = null;
 		ResultSet rset = null;
 		CNPSession sessionRetrieved = null;
-		
+
 		String query = "SELECT * "
 				+ "FROM Session "
 				+ "WHERE SessionName = ?";
 
 
-		// retrieve user with given username
-		retrieveSession = dbConnection.prepareStatement(query);
-		retrieveSession.setString(1, sessionName);
+		try {
+			// retrieve user with given username
+			retrieveSession = dbConnection.prepareStatement(query);
+			retrieveSession.setString(1, sessionName);
 
-		//run the query, return a result set        
-		rset = retrieveSession.executeQuery();
-		if(rset.next())
-		{
-			int idRetrieved = rset.getInt("SessionID");
-			String nameRetrieved = rset.getString("SessionName");
-			int sessionLeader = rset.getInt("SessionLeader");
-			sessionRetrieved = new CNPSession(idRetrieved, nameRetrieved, server, sessionLeader);
-	
-			//clean up database classes
-			retrieveSession.close();
-			rset.close();
-	
-			return sessionRetrieved;
+			//run the query, return a result set        
+			rset = retrieveSession.executeQuery();
+			if(rset.next())
+			{
+				int idRetrieved = rset.getInt("SessionID");
+				String nameRetrieved = rset.getString("SessionName");
+				int sessionLeader = rset.getInt("SessionLeader");
+				sessionRetrieved = new CNPSession(idRetrieved, nameRetrieved, server, sessionLeader);
+
+				//clean up database classes
+				retrieveSession.close();
+				rset.close();
+
+				return sessionRetrieved;
+			}
+			else
+			{
+				throw new FailedSessionException("No Session was found");
+			}
+
+		} catch (SQLException ex) {
+			throw new FailedSessionException("Failed due to SQLException.");
 		}
-		else
-		{
-			throw new FailedSessionException("No Sesison was found");
-		}
-		
+
 	}
 
-	public CNPPrivateSession retrieveSession(String sessionName, CNPServer server, String sessionPassword) throws FailedSessionException, FailedAccountException 
+	public CNPPrivateSession retrieveSession(String sessionName, CNPServer server, String sessionPassword) throws FailedSessionException 
 	{
 		PreparedStatement retrieveSession = null;
 		ResultSet rset = null;
@@ -367,7 +372,7 @@ public class Database implements IDatabase{
 			// retrieve user with given username
 			retrieveSession = dbConnection.prepareStatement(query);
 			retrieveSession.setString(1, sessionName);
-	
+
 			//run the query, return a result set        
 			rset = retrieveSession.executeQuery();
 			if(rset.next())
@@ -385,7 +390,7 @@ public class Database implements IDatabase{
 				rset = retrieveSession.executeQuery();
 				if(rset.next())
 				{
-			
+
 					String salt = rset.getString("SessionSalt");
 					String sessionPassword2 = rset.getString("SessionPassword");
 					String sessionPasswordHash = this.encrypt(sessionPassword, salt);
@@ -400,7 +405,7 @@ public class Database implements IDatabase{
 						System.err.println("Passwords Did not Match.");
 						throw new FailedSessionException("Passwords did not match");
 					}
-					
+
 				}
 				else
 				{
@@ -417,12 +422,12 @@ public class Database implements IDatabase{
 		catch (NoSuchAlgorithmException ex) 
 		{
 			System.err.println("Invalid Encrpytion Algorithm: " + ENCRYPTION_ALGORITHM);
-			throw new FailedAccountException("Error creating session.");
+			throw new FailedSessionException("Error creating session.");
 		} 
 		catch (InvalidKeySpecException e) 
 		{
 			System.err.println("Invalid key spec.");
-			throw new FailedAccountException("Error creating session.");
+			throw new FailedSessionException("Error creating session.");
 		} 
 		catch(SQLException e)
 		{
@@ -433,24 +438,24 @@ public class Database implements IDatabase{
 			System.err.println("Password Encoding error");
 			throw new FailedSessionException("Encoding error");
 		}
-		
+
 
 	}
 
-	
-	
+
+
 	public boolean sessionIsPrivate(String sessionName) throws SQLException {
 		// TODO implement
-		
+
 		String query = "SELECT Session.SessionID, Session.SessionName, SessionPassword.SessionPassword, SessionPassword.SessionSalt"
-					+ " FROM Session, SessionPassword"
-					+ " WHERE Session.SessionID = SessionPassword.SessionID AND Session.SessionName = ?";
+				+ " FROM Session, SessionPassword"
+				+ " WHERE Session.SessionID = SessionPassword.SessionID AND Session.SessionName = ?";
 		try
 		{
 			PreparedStatement retrieveSession = dbConnection.prepareStatement(query);
 			retrieveSession.setString(1, sessionName);
 			ResultSet rs = retrieveSession.executeQuery();
-			
+
 			if(rs.next())
 			{
 				return true;
@@ -464,7 +469,7 @@ public class Database implements IDatabase{
 		{
 			throw e;
 		}
-		
+
 	}
 
 	public boolean createSessionAccount(CNPSession session, Account account,Account.FilePermissionLevel filePermission, Account.ChatPermissionLevel chatPermission) throws SQLException 
@@ -488,16 +493,16 @@ public class Database implements IDatabase{
 			{
 				return false;
 			}
-			
+
 		}
 		catch(SQLException e)
 		{
 			throw e;
 		}
-		
+
 	}
-	
-	
+
+
 	private String encrypt(String input, String salt) throws NoSuchAlgorithmException, InvalidKeySpecException, UnsupportedEncodingException
 	{
 		byte[] salt2 = salt.getBytes("ISO-8859-1");
@@ -505,9 +510,9 @@ public class Database implements IDatabase{
 		SecretKeyFactory f = SecretKeyFactory.getInstance(ENCRYPTION_ALGORITHM);
 		return new String(f.generateSecret(spec).getEncoded());
 	}
-	
-	
-	
+
+
+
 	@Override
 	public boolean deleteSession(CNPSession session) throws SQLException {
 		// TODO Auto-generated method stub
@@ -517,7 +522,7 @@ public class Database implements IDatabase{
 		try{
 			deleteSA = dbConnection.prepareStatement(query);
 			deleteSA.setInt(1, session.getSessionID() );
-			
+
 			int rows1 = deleteSA.executeUpdate();
 			deleteSA = dbConnection.prepareStatement(query2);
 			deleteSA.setInt(1, session.getSessionID() );
@@ -536,9 +541,9 @@ public class Database implements IDatabase{
 		{
 			throw e;
 		}
-		
+
 	}
-	
+
 	@Override
 	public boolean deleteAccount(Account account) throws SQLException, FailedAccountException {
 		String query = "DELETE FROM UserAccount WHERE UserID = ?";
@@ -551,7 +556,7 @@ public class Database implements IDatabase{
 			deleteUser = dbConnection.prepareStatement(query1);
 			deleteUser.setInt(1, account.getUserID() );
 			int rows2 = deleteUser.executeUpdate();
-			
+
 			int rows = rows1 + rows2;
 			if(rows > 0)
 			{
@@ -566,13 +571,13 @@ public class Database implements IDatabase{
 		{
 			throw e;
 		}
-		
+
 	}
 	@Override
 	public boolean createSessionAccount(CNPSession session, Account account,
 			String password, FilePermissionLevel filePermission,
 			ChatPermissionLevel chatPermission) throws SQLException {
-		
+
 		PreparedStatement createSA= null, retrieveSession=null;
 		String insertion = "INSERT INTO SessionUser (SessionID, UserID, FilePermissionLevel, ChatPermissionLevel) "
 				+ "VALUES (? , ?, ?, ?)";
@@ -608,7 +613,7 @@ public class Database implements IDatabase{
 					return false;
 				}
 			}
-			
+
 		}
 		catch(SQLException e)
 		{
@@ -619,15 +624,15 @@ public class Database implements IDatabase{
 			return false;
 		}
 		return false;
-		
+
 		// TODO Auto-generated method stub
 	}
-	
+
 	public static boolean sessionExists(String sessionName) {
 		// TODO implement
 		return false;
 	}
-	
+
 
 }
 

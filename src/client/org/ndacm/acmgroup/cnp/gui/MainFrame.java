@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.GroupLayout;
@@ -155,9 +156,9 @@ public class MainFrame extends JFrame {
 		tabbedPane.addTab("New tab", null, panel_3, null);
 	}
 	
-	public void addTab(int fileID, String filename) {
-		JTextField fileTextField = new JTextField(columnWidth);
-		tabbedPane.addTab("filename", null, fileTextField, filename);
+	public void addTab(int fileID, String filename, String fileContent) {
+		JTextField fileTextField = new JTextField(fileContent, columnWidth);
+		tabbedPane.addTab(filename, null, fileTextField, filename);
 		tabs.put(fileID, fileTextField);
 	}
 	
@@ -167,6 +168,19 @@ public class MainFrame extends JFrame {
 	}
 	
 	public void updateChat(String username, String message) {
+		// TODO implement
+	}
+	
+	public void addToFileList(List<String> fileList) {
+		// TODO implement
+	}
+	
+	public void addToFileList(String filename) {
+		// TODO implement
+	}
+	
+	// add user to the list of logged-in session users
+	public void addUser(String username) {
 		// TODO implement
 	}
 }

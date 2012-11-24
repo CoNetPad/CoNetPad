@@ -4,7 +4,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.ndacm.acmgroup.cnp.Account;
+import org.ndacm.acmgroup.cnp.CNPServer;
 import org.ndacm.acmgroup.cnp.network.CNPConnection;
 import org.ndacm.acmgroup.cnp.task.DownloadFileTask;
 import org.ndacm.acmgroup.cnp.task.EditorTask;
@@ -15,36 +15,46 @@ import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
 public class ServerSourceFile extends SourceFile {
 
+	private CNPServer server;
 	private ExecutorService fileTaskCourier;
 	private ExecutorService fileTaskQueue;
-	private Map<Account, CNPConnection> clientConnections; // clients that have this specific file open
+
+	// clients that have this specific file open; maps userID to CNPConneciton
+	private Map<Integer, CNPConnection> clientConnections;
 
 
-	public ServerSourceFile(int fileID, String filename, SourceType type, String initialText) {
+	public ServerSourceFile(int fileID, String filename, SourceType type, String initialText, CNPServer server) {
 		super(fileID, filename, type, initialText);
 
 		fileTaskCourier = Executors.newCachedThreadPool();
 		fileTaskQueue = Executors.newSingleThreadExecutor();
-		clientConnections = new ConcurrentHashMap<Account, CNPConnection>();
+		clientConnections = new ConcurrentHashMap<Integer, CNPConnection>();
+		this.server = server;
 	}
 
 	public ServerSourceFile(int fileID, String filename, SourceType type) {
 		super(fileID, filename, type, "");
 	}
-	
+
 	public void submitTask(FileTask task) {
 		fileTaskQueue.submit(task);
 	}
 
 	public void executeTask(EditorTask task) {
-		
-		editSource(task);
 
-		// notify clients of edit
-		TaskResponse response = new EditorTaskResponse(task.getUsername(), task.getKeyPressed(),
-				task.getEditIndex(), task.getFileID());
+		TaskResponse response = null;
+		if (server.userIsAuth(task.getUserID(), task.getUserAuthToken())){
+			editSource(task);
+
+			// notify clients of edit
+			response = new EditorTaskResponse(task.getUsername(), task.getKeyPressed(),
+					task.getEditIndex(), task.getFileID(), true);
+		} else {
+			// user authentication failed
+			response = new EditorTaskResponse("", -1, -1, -1, false);
+		}
 		distributeTask(response);
-		
+
 	}
 
 	public boolean executeTask(DownloadFileTask task) {
@@ -62,6 +72,15 @@ public class ServerSourceFile extends SourceFile {
 			fileTaskCourier.submit(fileTask);
 		}
 	}
+
+	public void addFileTaskEventListener(int userID, CNPConnection connection) {
+		clientConnections.put(userID, connection);
+	}
+
+	public void removeFileTaskEventListener(int userID) {
+		clientConnections.remove(userID);
+	}
+
 
 
 
