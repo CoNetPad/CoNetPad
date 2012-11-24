@@ -70,27 +70,9 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 		sourceFiles = new ConcurrentHashMap<Integer, ClientSourceFile>();
 		clientExecutor = Executors.newCachedThreadPool();
 		network = new ClientNetwork();
-		clientFrame = new MainFrame(this);
 
 		// register as task event listener with network
 		network.addTaskReceivedEventListener(this);
-	}
-
-	/**
-	 * Start the client GUI.
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args) {
-
-		EventQueue.invokeLater(new Runnable(){
-			@Override
-			public void run(){
-				CNPClient clientGUI = new CNPClient();
-				clientGUI.clientFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				clientGUI.clientFrame.setVisible(true);   
-			}             
-		});
 	}
 
 	/**
