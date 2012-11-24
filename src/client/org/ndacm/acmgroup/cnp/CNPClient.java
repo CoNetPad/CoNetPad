@@ -5,6 +5,7 @@
  */
 package org.ndacm.acmgroup.cnp;
 
+import java.awt.EventQueue;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.swing.JFrame;
 import javax.swing.text.BadLocationException;
 
 import org.ndacm.acmgroup.cnp.file.ClientSourceFile;
@@ -40,8 +42,9 @@ import org.ndacm.acmgroup.cnp.task.response.JoinSessionTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.LoginTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.OpenFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
+import org.ndacm.acmgroup.cnp.task.response.TaskResponseExecutor;
 
-public class CNPClient implements TaskReceivedEventListener {
+public class CNPClient implements TaskReceivedEventListener, TaskResponseExecutor {
 
 	private String serverURL;						//The URL to the server
 	private String sessionName;						//The unique name of the session the user belongs to
@@ -51,7 +54,7 @@ public class CNPClient implements TaskReceivedEventListener {
 	private String authToken; 						// assigned by server after authentication
 
 	private ExecutorService clientExecutor;			//this is for executing varoous tasks
-	
+
 	private Map<Integer, ClientSourceFile> sourceFiles; //The files the client is reading through.  This is used in the GUI
 
 	private ClientNetwork network;					//The network connection for doing messaging sending and recieving
@@ -69,6 +72,23 @@ public class CNPClient implements TaskReceivedEventListener {
 
 		// register as task event listener with network
 		network.addTaskReceivedEventListener(this);
+	}
+
+	/**
+	 * Start the client GUI.
+	 * 
+	 * @param args
+	 */
+	public static void main(String[] args) {
+
+		EventQueue.invokeLater(new Runnable(){
+			@Override
+			public void run(){
+				CNPClient clientGUI = new CNPClient();
+				clientGUI.clientFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				clientGUI.clientFrame.setVisible(true);   
+			}             
+		});
 	}
 
 	/**
@@ -196,6 +216,12 @@ public class CNPClient implements TaskReceivedEventListener {
 		return list;
 	}
 	
+	@Override
+	public void executeTask(TaskResponse task) {
+		executeTask(task);
+		
+	}
+
 	/**
 	 * This executes a a createAccount Tasks I.e creates a new account via task.		[Not Implemented]
 	 * @param task					The createUserTask to create the new account
@@ -205,7 +231,7 @@ public class CNPClient implements TaskReceivedEventListener {
 			// do something
 		}
 	}
-	
+
 	/**
 	 * This logs in the user via LogInTaskResponse
 	 * @param task			The loginTaskResponse to use to login the user
@@ -217,7 +243,7 @@ public class CNPClient implements TaskReceivedEventListener {
 			authToken = task.getUserAuthToken();
 		}
 	}
-	
+
 	/**
 	 * This creates a new session via CreateSessionTAsk
 	 * @param task			The Task to use to create a new session
@@ -317,5 +343,6 @@ public class CNPClient implements TaskReceivedEventListener {
 		}
 
 	}
+
 
 }

@@ -1,6 +1,5 @@
 package org.ndacm.acmgroup.cnp.task;
 
-import org.ndacm.acmgroup.cnp.CNPServer;
 import org.ndacm.acmgroup.cnp.network.CNPConnection;
 
 /**
@@ -17,14 +16,14 @@ import org.ndacm.acmgroup.cnp.network.CNPConnection;
  */
 public abstract class ServerTask extends Task {
 	
-	protected CNPServer server;
+	protected ServerTaskExecutor server;
 	private CNPConnection connection;
 	
-	public void setServer(CNPServer server) {
+	public void setServer(ServerTaskExecutor server) {
 		this.server = server;
 	}
 	
-	public CNPServer getServer() {
+	public ServerTaskExecutor getServer() {
 		return server;
 	}
 

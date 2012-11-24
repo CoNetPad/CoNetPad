@@ -1,6 +1,5 @@
 package org.ndacm.acmgroup.cnp.task.response;
 
-import javax.swing.text.BadLocationException;
 
 public class EditorTaskResponse extends TaskResponse {
 
@@ -45,12 +44,7 @@ public class EditorTaskResponse extends TaskResponse {
 
 	@Override
 	public void run() {
-		try {
-			client.executeTask(this);
-		} catch (BadLocationException e) {
-			// do something
-		}
-
+		client.executeTask(this);
 	}
 
 }

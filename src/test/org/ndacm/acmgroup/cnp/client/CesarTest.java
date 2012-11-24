@@ -1,11 +1,13 @@
 package org.ndacm.acmgroup.cnp.client;
 
+import junit.framework.TestCase;
+
 import org.ndacm.acmgroup.cnp.client.Cesar.ClientTestRunnable;
 import org.ndacm.acmgroup.cnp.client.Cesar.ClientTestRunnableMute;
 import org.ndacm.acmgroup.cnp.client.Cesar.ServerTestRunnable;
 
 
-public class CesarTest {
+public class CesarTest extends TestCase {
 	public static void main(String[] args) {
 
 		new Thread( new ServerTestRunnable()).start();

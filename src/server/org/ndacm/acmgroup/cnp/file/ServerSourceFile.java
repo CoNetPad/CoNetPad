@@ -9,6 +9,7 @@ import org.ndacm.acmgroup.cnp.network.CNPConnection;
 import org.ndacm.acmgroup.cnp.task.DownloadFileTask;
 import org.ndacm.acmgroup.cnp.task.EditorTask;
 import org.ndacm.acmgroup.cnp.task.FileTask;
+import org.ndacm.acmgroup.cnp.task.FileTaskExecutor;
 import org.ndacm.acmgroup.cnp.task.SendResponseTask;
 import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
@@ -18,7 +19,7 @@ import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
  * @author Cesar Ramirez, Josh Tan
  * @version 1.5
  */
-public class ServerSourceFile extends SourceFile {
+public class ServerSourceFile extends SourceFile implements FileTaskExecutor {
 
 	private ExecutorService fileTaskCourier;				//This is used to store tasks to be process in queue
 	private ExecutorService fileTaskQueue;					//This is the task queue
@@ -58,6 +59,12 @@ public class ServerSourceFile extends SourceFile {
 	public void submitTask(FileTask task) {
 		fileTaskQueue.submit(task);
 	}
+	
+	@Override
+	public void executeTask(FileTask task) {
+		executeTask(task);
+		
+	}	
 
 	/**
 	 * This executes an editorTask
@@ -117,6 +124,8 @@ public class ServerSourceFile extends SourceFile {
 	public void removeFileTaskEventListener(int userID) {
 		clientConnections.remove(userID);
 	}
+
+
 
 
 

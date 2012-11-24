@@ -1,6 +1,5 @@
 package org.ndacm.acmgroup.cnp.task;
 
-import org.ndacm.acmgroup.cnp.Account.FilePermissionLevel;
 
 /**
  * A task to edit a source file. An EditorTask is issued by a single person and
@@ -8,11 +7,6 @@ import org.ndacm.acmgroup.cnp.Account.FilePermissionLevel;
  * 
  */
 public class EditorTask extends FileTask {
-
-	/**
-	 * The permission level that is required to execute this task.
-	 */
-	public static FilePermissionLevel PERMISSION = FilePermissionLevel.READ_WRITE;
 
 	protected int userID;
 	private String username;
@@ -59,10 +53,6 @@ public class EditorTask extends FileTask {
 
 	public String getUsername() {
 		return username;
-	}
-
-	public static FilePermissionLevel getPERMISSION() {
-		return PERMISSION;
 	}
 
 	public String getUserAuthToken() {

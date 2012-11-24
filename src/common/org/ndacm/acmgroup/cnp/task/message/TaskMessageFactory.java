@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.ndacm.acmgroup.cnp.CNPServer;
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
 import org.ndacm.acmgroup.cnp.task.ChatTask;
 import org.ndacm.acmgroup.cnp.task.CloseFileTask;
@@ -52,12 +51,6 @@ public class TaskMessageFactory {
 	public enum TaskType {
 		Chat, CloseFile, Commit, Compile, CreateAccount, CreateFile, CreatePrivateSession, CreateSessionTask, DeleteSession, DeleteFile, Disconnect, DownloadRepo, Editor, JoinPrivateSession, JoinSession, Login, OpenFile, EditorResponse
 	};
-
-	private static CNPServer server;
-
-	public static void initalizeMessageFactory(CNPServer server) {
-		TaskMessageFactory.server = server;
-	}
 
 	/**
 	 * @param message
@@ -508,7 +501,7 @@ public class TaskMessageFactory {
 				task.getUsername(), Integer.toString(task.getSessionID()),
 				Integer.toString(task.getKeyPressed()),
 				Integer.toString(task.getEditIndex()),
-				Integer.toString(task.getFile().getFileID()),
+				Integer.toString(task.getFileID()),
 				task.getUserAuthToken() };
 		return new TaskMessage(TaskType.Editor, data);
 	}

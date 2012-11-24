@@ -35,7 +35,7 @@ public class Database implements IDatabase{
 
 	private static final String DRIVER_CLASS = "org.sqlite.JDBC";
 	private static final String ENCRYPTION_ALGORITHM = "PBKDF2WithHmacSHA1";
-	private static final String DB_FILE = "jdbc:sqlite:src//sqllite//CoNetPad.db3";
+	private static final String DB_FILE = "jdbc:sqlite:data//CoNetPad.db3";
 
 	private Connection dbConnection;
 	private Random random;

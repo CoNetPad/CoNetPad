@@ -1,6 +1,5 @@
 package org.ndacm.acmgroup.cnp.task;
 
-import org.ndacm.acmgroup.cnp.CNPSession;
 
 
 /**
@@ -10,7 +9,7 @@ import org.ndacm.acmgroup.cnp.CNPSession;
  */
 public abstract class SessionTask extends Task {
 	
-	protected CNPSession session;
+	protected SessionTaskExecutor session;
 	protected int sessionID;
 
 	public int getSessionID() {
@@ -21,11 +20,11 @@ public abstract class SessionTask extends Task {
 		this.sessionID = sessionID;
 	}
 
-	public CNPSession getSession() {
+	public SessionTaskExecutor getSession() {
 		return session;
 	}
 
-	public void setSession(CNPSession session) {
+	public void setSession(SessionTaskExecutor session) {
 		this.session = session;
 	}
 	

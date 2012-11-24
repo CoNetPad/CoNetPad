@@ -1,6 +1,6 @@
 package org.ndacm.acmgroup.cnp.client;
 
-import static org.junit.Assert.fail;
+import junit.framework.TestCase;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -14,7 +14,7 @@ import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
  * JUnit test class for testing CNPClient.
  *
  */
-public class CNPClientTest {
+public class CNPClientTest extends TestCase {
 	
 	private static CNPClient client1;
 

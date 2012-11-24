@@ -1,6 +1,5 @@
 package org.ndacm.acmgroup.cnp.task;
 
-import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
 
 /**
  * A task that should be executed by a server source file. Contains a reference to a server
@@ -12,13 +11,13 @@ public abstract class FileTask extends Task {
 	
 	protected int sessionID;
 	protected int fileID;
-	protected ServerSourceFile file;
+	protected FileTaskExecutor file;
 
-	public ServerSourceFile getFile() {
+	public FileTaskExecutor getFile() {
 		return file;
 	}
 
-	public void setFile(ServerSourceFile file) {
+	public void setFile(FileTaskExecutor file) {
 		this.file = file;
 	}
 

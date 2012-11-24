@@ -19,6 +19,7 @@ import org.ndacm.acmgroup.cnp.task.CreateFileTask;
 import org.ndacm.acmgroup.cnp.task.OpenFileTask;
 import org.ndacm.acmgroup.cnp.task.SendResponseTask;
 import org.ndacm.acmgroup.cnp.task.SessionTask;
+import org.ndacm.acmgroup.cnp.task.SessionTaskExecutor;
 import org.ndacm.acmgroup.cnp.task.response.ChatTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.CreateFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.OpenFileTaskResponse;
@@ -30,7 +31,7 @@ import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
  * @author Josh Tan
  * @version 2.0
  */
-public class CNPSession {
+public class CNPSession implements SessionTaskExecutor {
 
 	/**
 	 * The allowed characters for the Session name generator
@@ -199,6 +200,12 @@ public class CNPSession {
 		// TODO implement
 		return new File("");
 	}
+	
+	@Override
+	public void executeTask(SessionTask task) {
+		executeTask(task);
+		
+	}
 
 	/**
 	 * This executes a given chat class
@@ -325,4 +332,6 @@ public class CNPSession {
 		}
 		return false;
 	}
+
+
 }

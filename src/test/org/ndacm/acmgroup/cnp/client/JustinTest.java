@@ -1,8 +1,10 @@
 package org.ndacm.acmgroup.cnp.client;
 
+import junit.framework.TestCase;
+
 import org.ndacm.acmgroup.cnp.database.Database;
 
-public class JustinTest {
+public class JustinTest extends TestCase {
 
 	
 	public static void main(String[] args)

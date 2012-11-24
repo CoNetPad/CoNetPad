@@ -30,6 +30,7 @@ import org.ndacm.acmgroup.cnp.task.LoginTask;
 import org.ndacm.acmgroup.cnp.task.OpenFileTask;
 import org.ndacm.acmgroup.cnp.task.SendResponseTask;
 import org.ndacm.acmgroup.cnp.task.ServerTask;
+import org.ndacm.acmgroup.cnp.task.ServerTaskExecutor;
 import org.ndacm.acmgroup.cnp.task.SessionTask;
 import org.ndacm.acmgroup.cnp.task.Task;
 import org.ndacm.acmgroup.cnp.task.message.TaskMessageFactory;
@@ -44,7 +45,7 @@ import org.ndacm.acmgroup.cnp.task.response.LoginTaskResponse;
  * @author Cesar Ramirez
  * @version 1.5
  */
-public class CNPServer implements TaskReceivedEventListener {
+public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor {
 
 	private static final int USER_TOKEN_LENGTH = 10;			//The length of a user token		
 	private static final String 
@@ -75,7 +76,6 @@ public class CNPServer implements TaskReceivedEventListener {
 		compiler = new Compiler();
 		openSessions = new ConcurrentHashMap<Integer, CNPSession>();
 		userAuthTokens = new ConcurrentHashMap<Integer, String>();
-		TaskMessageFactory.initalizeMessageFactory(this);
 		serverExecutor = Executors.newCachedThreadPool();
 		rand = new Random();
 
@@ -83,6 +83,7 @@ public class CNPServer implements TaskReceivedEventListener {
 			database = new Database();
 		} catch (Exception ex) {
 			System.err.println("Error setting up databse.");
+			System.err.println(ex.getMessage());
 			System.exit(1);
 		}
 
@@ -143,6 +144,12 @@ public class CNPServer implements TaskReceivedEventListener {
 	public List<String> retrieveSessionFileList(int sessionID) {
 		// TODO implement
 		return null;
+	}
+	
+	@Override
+	public void executeTask(ServerTask task) {
+		executeTask(task);
+		
 	}
 
 	/**
@@ -368,4 +375,5 @@ public class CNPServer implements TaskReceivedEventListener {
 
 		return new String(text);
 	}
+
 }
