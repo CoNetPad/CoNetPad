@@ -14,9 +14,6 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.EtchedBorder;
 
 import org.ndacm.acmgroup.cnp.CNPClient;
-import javax.swing.JCheckBox;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 
 public class LoginDialog extends JDialog {
 

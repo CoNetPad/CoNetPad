@@ -27,7 +27,6 @@ import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEventListener;
 import org.ndacm.acmgroup.cnp.task.ChatTask;
 import org.ndacm.acmgroup.cnp.task.CreateAccountTask;
 import org.ndacm.acmgroup.cnp.task.CreateFileTask;
-import org.ndacm.acmgroup.cnp.task.CreateSessionTask;
 import org.ndacm.acmgroup.cnp.task.EditorTask;
 import org.ndacm.acmgroup.cnp.task.JoinSessionTask;
 import org.ndacm.acmgroup.cnp.task.LoginTask;
@@ -45,7 +44,7 @@ import org.ndacm.acmgroup.cnp.task.response.OpenFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponseExecutor;
 
-public class CNPClient implements TaskReceivedEventListener {
+public class CNPClient implements TaskReceivedEventListener, TaskResponseExecutor {
 
 	private String serverURL;						//The URL to the server
 	private String sessionName;						//The unique name of the session the user belongs to
@@ -71,7 +70,7 @@ public class CNPClient implements TaskReceivedEventListener {
 		sourceFiles = new ConcurrentHashMap<Integer, ClientSourceFile>();
 		clientExecutor = Executors.newCachedThreadPool();
 		network = new ClientNetwork();
-		clientFrame = new MainFrame();
+		clientFrame = new MainFrame(this);
 
 		// register as task event listener with network
 		network.addTaskReceivedEventListener(this);
