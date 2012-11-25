@@ -21,7 +21,6 @@ import org.ndacm.acmgroup.cnp.task.message.TaskMessage;
 import org.ndacm.acmgroup.cnp.task.message.TaskMessageFactory;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
-
 public class CNPConnection extends Thread {
 	private Socket socket = null;
 	private int id;
@@ -74,7 +73,8 @@ public class CNPConnection extends Thread {
 					task = TaskMessageFactory.fromMessageToTask(message);
 					task.setClientId(id);
 				} else {
-					System.out.println("total elements" + message.getData().length);
+					System.out.println("total elements"
+							+ message.getData().length);
 					task = TaskMessageFactory
 							.fromMessageToTaskResponse(message);
 				}

@@ -16,15 +16,16 @@ import javax.swing.border.EtchedBorder;
 
 import org.ndacm.acmgroup.cnp.CNPClient;
 import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 
 public class CreateSessionDialog extends JDialog {
 
 	private CNPClient client;
 	private SessionDialog sessionDialog;
 	private CreateSessionDialog createDialog;
-	private JPasswordField passwordField;
-	private JPasswordField passwordAgainField;
 	private JButton btnCreate;
+	private JTextField textFieldPassword;
+	private JTextField textFieldPasswordAgain;
 
 	/**
 	 * Create the dialog.
@@ -33,50 +34,65 @@ public class CreateSessionDialog extends JDialog {
 		this.client = client;
 		this.createDialog = this;
 		this.client.setCreateSessionDialog(createDialog);
-		setBounds(100, 100, 376, 227);
+		setBounds(100, 100, 389, 255);
 		JPanel panel = new JPanel();
 		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 
 		final JLabel lblPasswordAgain = new JLabel("Password again:");
 
 		JLabel lblInstructions = new JLabel(
-				"<html>Sessions have names created randomly, you can share this name with other prople to give them access to your session. The name of your session will appear after you click the Create button.\r\n<p>\r\nIf you want you can also place a password to protect your session. This is completely optional.");
+				"<html>Sessions have names created randomly, you can share this name with other prople to give them access to your session. The name of your session will appear after you click the Create button.\r\n<p><p>\r\nIf you want you can also place a password to protect your session. This is completely optional.");
 
 		JLabel lblPassword = new JLabel("Password:");
 
-		passwordField = new JPasswordField();
+		textFieldPassword = new JTextField();
+		textFieldPassword.setColumns(10);
 
-		passwordAgainField = new JPasswordField();
+		textFieldPasswordAgain = new JTextField();
+		textFieldPasswordAgain.setColumns(10);
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
-		groupLayout.setHorizontalGroup(groupLayout
-				.createParallelGroup(Alignment.LEADING)
-				.addComponent(panel, Alignment.TRAILING,
-						GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
-				.addGroup(
-						groupLayout
-								.createSequentialGroup()
-								.addContainerGap()
-								.addComponent(lblInstructions)
-								.addContainerGap(GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE))
-				.addGroup(
-						groupLayout
-								.createSequentialGroup()
-								.addContainerGap()
-								.addComponent(lblPassword)
-								.addGap(33)
-								.addComponent(passwordField,
-										GroupLayout.DEFAULT_SIZE, 257,
-										Short.MAX_VALUE).addContainerGap())
-				.addGroup(
-						groupLayout
-								.createSequentialGroup()
-								.addContainerGap()
-								.addComponent(lblPasswordAgain)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(passwordAgainField,
-										GroupLayout.DEFAULT_SIZE, 257,
-										Short.MAX_VALUE).addContainerGap()));
+		groupLayout
+				.setHorizontalGroup(groupLayout
+						.createParallelGroup(Alignment.LEADING)
+						.addGroup(
+								groupLayout
+										.createSequentialGroup()
+										.addContainerGap()
+										.addGroup(
+												groupLayout
+														.createParallelGroup(
+																Alignment.LEADING)
+														.addComponent(
+																lblPasswordAgain)
+														.addComponent(
+																lblPassword))
+										.addPreferredGap(
+												ComponentPlacement.RELATED)
+										.addGroup(
+												groupLayout
+														.createParallelGroup(
+																Alignment.LEADING)
+														.addComponent(
+																textFieldPassword,
+																GroupLayout.DEFAULT_SIZE,
+																270,
+																Short.MAX_VALUE)
+														.addComponent(
+																textFieldPasswordAgain,
+																GroupLayout.DEFAULT_SIZE,
+																270,
+																Short.MAX_VALUE))
+										.addContainerGap())
+						.addGroup(
+								groupLayout
+										.createSequentialGroup()
+										.addContainerGap()
+										.addComponent(lblInstructions)
+										.addContainerGap(
+												GroupLayout.DEFAULT_SIZE,
+												Short.MAX_VALUE))
+						.addComponent(panel, Alignment.TRAILING,
+								GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE));
 		groupLayout
 				.setVerticalGroup(groupLayout
 						.createParallelGroup(Alignment.LEADING)
@@ -92,12 +108,12 @@ public class CreateSessionDialog extends JDialog {
 														.createParallelGroup(
 																Alignment.BASELINE)
 														.addComponent(
-																passwordField,
+																lblPassword)
+														.addComponent(
+																textFieldPassword,
 																GroupLayout.PREFERRED_SIZE,
 																GroupLayout.DEFAULT_SIZE,
-																GroupLayout.PREFERRED_SIZE)
-														.addComponent(
-																lblPassword))
+																GroupLayout.PREFERRED_SIZE))
 										.addPreferredGap(
 												ComponentPlacement.RELATED)
 										.addGroup(
@@ -107,12 +123,12 @@ public class CreateSessionDialog extends JDialog {
 														.addComponent(
 																lblPasswordAgain)
 														.addComponent(
-																passwordAgainField,
+																textFieldPasswordAgain,
 																GroupLayout.PREFERRED_SIZE,
 																GroupLayout.DEFAULT_SIZE,
 																GroupLayout.PREFERRED_SIZE))
 										.addPreferredGap(
-												ComponentPlacement.RELATED, 9,
+												ComponentPlacement.RELATED, 23,
 												Short.MAX_VALUE)
 										.addComponent(panel,
 												GroupLayout.PREFERRED_SIZE, 46,
@@ -126,13 +142,12 @@ public class CreateSessionDialog extends JDialog {
 		btnCreate = new JButton("Create");
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
-				if (passwordField.getPassword().toString()
-						.compareTo(passwordAgainField.getPassword().toString()) == 0) {
-
-					client.createSession(passwordField.getPassword().toString());
-					passwordField.setEnabled(false);
-					passwordAgainField.setEnabled(false);
+				String pass1 = textFieldPassword.getText();
+				String pass2 = textFieldPasswordAgain.getText();
+				if (pass1.compareTo(pass2) == 0) {
+					client.createSession(pass1);
+					textFieldPassword.setEnabled(false);
+					textFieldPasswordAgain.setEnabled(false);
 					btnCreate.setEnabled(false);
 				} else {
 					JOptionPane.showMessageDialog(createDialog,
@@ -166,8 +181,8 @@ public class CreateSessionDialog extends JDialog {
 	}
 
 	public void resetDialog() {
-		passwordField.setEnabled(true);
-		passwordAgainField.setEnabled(true);
+		textFieldPassword.setEnabled(true);
+		textFieldPasswordAgain.setEnabled(true);
 		btnCreate.setEnabled(true);
 	}
 }

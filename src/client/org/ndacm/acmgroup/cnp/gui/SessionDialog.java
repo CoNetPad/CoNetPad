@@ -1,5 +1,6 @@
 package org.ndacm.acmgroup.cnp.gui;
 
+import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -167,6 +168,10 @@ public class SessionDialog extends JDialog {
 			btnCreate = new JButton("Create Session");
 			btnCreate.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
+					CreateSessionDialog dialog = new CreateSessionDialog(client);
+					dialog.setModalityType(ModalityType.APPLICATION_MODAL);
+					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					dialog.setVisible(true);
 				}
 			});
 
