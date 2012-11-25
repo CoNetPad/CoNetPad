@@ -214,6 +214,7 @@
 
   <!-- generate javadoc -->
   <target name="doc" depends="init" description="generate documentation">
+
     <!-- delete prev javadoc -->
     <delete includeemptydirs="true">
       <fileset dir="docs/javadoc" includes="**/*"/>
@@ -221,11 +222,19 @@
 
     <!-- create temp directory for all source -->
     <mkdir dir="docs/javadoc_temp" />
+    <copy todir="docs/javadoc_temp">
+      <fileset dir="src/test" includes="**/*.java"/>
+      <fileset dir="src/client" includes="**/*.java"/>
+      <fileset dir="src/server" includes="**/*.java"/>
+      <fileset dir="src/common" includes="**/*.java"/>
+    </copy>
 
-    <javadoc sourcepath="src/test" destdir="docs/javadoc"/>
-    <javadoc sourcepath="src/client" destdir="docs/javadoc"/>
-    <javadoc sourcepath="src/common" destdir="docs/javadoc"/>
-    <javadoc sourcepath="src/server" destdir="docs/javadoc"/>
+    <!-- create javadoc -->
+    <javadoc packagenames="org.ndacm.acmgroup.cnp*" sourcepath="docs/javadoc_temp" destdir="docs/javadoc"/>
+    
+    <!-- delete temp directory -->
+    <delete dir="docs/javadoc_temp"/>
+
   </target>
 
   <!-- clean up -->
