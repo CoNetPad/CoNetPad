@@ -16,7 +16,7 @@ public class CompileTask extends SessionTask {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+		session.executeTask(this);
 		
 	}
 

@@ -19,7 +19,7 @@ public class DownloadFileTaskResponse extends TaskResponse {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+		client.executeTask(this);
 		
 	}
 

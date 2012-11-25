@@ -41,7 +41,7 @@ import org.ndacm.acmgroup.cnp.task.response.CreateFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.CreateSessionTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.DeleteFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.DeleteSessionTaskResponse;
-import org.ndacm.acmgroup.cnp.task.response.DisconnectTaskResponse;
+import org.ndacm.acmgroup.cnp.task.response.LeaveSessionTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.DownloadFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.DownloadRepoTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
@@ -96,11 +96,11 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 				CNPClient clientGUI = new CNPClient();
 				clientGUI.clientFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				clientGUI.clientFrame.setVisible(true);
-//				
-//				ServerConnectionDialog dialog = new ServerConnectionDialog();
-//				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-//				dialog.setVisible(true);
-				 
+				//				
+				//				ServerConnectionDialog dialog = new ServerConnectionDialog();
+				//				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				//				dialog.setVisible(true);
+
 			}             
 		});
 	}
@@ -129,7 +129,7 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 	public void setSessionDialog(SessionDialog sessionDialog) {
 		this.sesDialog = sessionDialog;
 	}
-	
+
 	public void setLogDialog(LoginDialog logDialog) {
 		this.logDialog = logDialog;
 	}
@@ -249,7 +249,7 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 		}
 		return list;
 	}
-	
+
 	/**
 	 * This executes a a createAccount Tasks I.e creates a new account via task.		[Not Implemented]
 	 * @param task					The createUserTask to create the new account
@@ -268,7 +268,7 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 					"Error while creating an account.");
 		}
 	}
-	
+
 	/**
 	 * This logs in the user via LogInTaskResponse
 	 * @param task			The loginTaskResponse to use to login the user
@@ -286,7 +286,7 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 			SwingUtilities.invokeLater(doWorkRunnable);
 		}
 	}
-	
+
 	/**
 	 * This creates a new session via CreateSessionTAsk
 	 * @param task			The Task to use to create a new session
@@ -374,49 +374,68 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 	 */
 	public void executeTask(DownloadFileTaskResponse task) {
 		// TODO implement
-		
+
 	}
-	
+
+	/**
+	 * If task was executed successfully, close the tab for task file.
+	 */
 	@Override
 	public void executeTask(CloseFileTaskResponse task) {
-		// TODO Auto-generated method stub
-		
+		if (task.isSuccess()) {
+			clientFrame.removeTab(task.getTabIndex());
+		}
+
 	}
 
 	@Override
 	public void executeTask(CommitTaskResponse task) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void executeTask(CompileTaskResponse task) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void executeTask(DeleteFileTaskResponse task) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void executeTask(DeleteSessionTaskResponse task) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
+	/**
+	 * Execute the task for leaving a session. If this client was
+	 * the one that requested the session to be left, then update the
+	 * client GUI to reflect this. Otherwise, remove the username
+	 * in the task from the session user list.
+	 */
 	@Override
-	public void executeTask(DisconnectTaskResponse task) {
-		// TODO Auto-generated method stub
-		
+	public void executeTask(LeaveSessionTaskResponse task) {
+		if (task.isSuccess()) {
+			// if this client sent the initial task
+			if (task.getUserID() == userID) {
+				// then leave session in GUI
+			} else {
+				clientFrame.removeUser(task.getUsername());
+			}
+			
+		}
+
 	}
 
 	@Override
 	public void executeTask(DownloadRepoTaskResponse task) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

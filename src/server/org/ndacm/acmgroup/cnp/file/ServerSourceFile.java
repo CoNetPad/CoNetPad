@@ -118,6 +118,21 @@ public class ServerSourceFile extends SourceFile implements FileTaskExecutor {
 	public void removeFileTaskEventListener(int userID) {
 		clientConnections.remove(userID);
 	}
+	
+	/**
+	 * Check if a user is a registered listener for this file.
+	 * @param userID the ID of the user to check
+	 * @return true if user is currently listening for changes
+	 */
+	public boolean userIsListening(int userID) {
+		if (clientConnections.containsKey(userID)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	
 
 
 

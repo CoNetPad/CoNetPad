@@ -2,7 +2,6 @@ package org.ndacm.acmgroup.cnp;
 
 import java.io.File;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -10,7 +9,6 @@ import java.util.concurrent.Executors;
 import org.ndacm.acmgroup.cnp.Account.ChatPermissionLevel;
 import org.ndacm.acmgroup.cnp.Account.FilePermissionLevel;
 import org.ndacm.acmgroup.cnp.database.Database;
-import org.ndacm.acmgroup.cnp.exceptions.FailedSessionException;
 import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
 import org.ndacm.acmgroup.cnp.git.JGit;
@@ -18,9 +16,9 @@ import org.ndacm.acmgroup.cnp.network.CNPConnection;
 import org.ndacm.acmgroup.cnp.task.ChatTask;
 import org.ndacm.acmgroup.cnp.task.CloseFileTask;
 import org.ndacm.acmgroup.cnp.task.CommitTask;
+import org.ndacm.acmgroup.cnp.task.CompileTask;
 import org.ndacm.acmgroup.cnp.task.CreateFileTask;
 import org.ndacm.acmgroup.cnp.task.DeleteFileTask;
-import org.ndacm.acmgroup.cnp.task.DisconnectTask;
 import org.ndacm.acmgroup.cnp.task.DownloadFileTask;
 import org.ndacm.acmgroup.cnp.task.DownloadRepoTask;
 import org.ndacm.acmgroup.cnp.task.OpenFileTask;
@@ -28,6 +26,7 @@ import org.ndacm.acmgroup.cnp.task.SendResponseTask;
 import org.ndacm.acmgroup.cnp.task.SessionTask;
 import org.ndacm.acmgroup.cnp.task.SessionTaskExecutor;
 import org.ndacm.acmgroup.cnp.task.response.ChatTaskResponse;
+import org.ndacm.acmgroup.cnp.task.response.CloseFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.CreateFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.OpenFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
@@ -75,7 +74,7 @@ public class CNPSession implements SessionTaskExecutor {
 	private int sessionLeader;
 	private String encryptedPassword;
 	private Map<Integer, CNPConnection> clientConnections; // maps userID to CNPConnection
-	private Map<Account, Account.FilePermissionLevel> filePermissions; // implement with CHM ^
+	private Map<Account, Account.FilePermissionLevel> filePermissions;
 	private Map<Account, Account.ChatPermissionLevel> chatPermissions;
 
 
@@ -152,10 +151,10 @@ public class CNPSession implements SessionTaskExecutor {
 
 	/**
 	 * This removes an user from the session
-	 * @param userAccount		The account you wish to remove
+	 * @param userID		The account you wish to remove
 	 */
-	public void removeUser (Account userAccount) {
-		clientConnections.remove(userAccount);
+	public void removeUser(int userID) {
+		clientConnections.remove(userID);
 	}
 
 	/**
@@ -262,7 +261,22 @@ public class CNPSession implements SessionTaskExecutor {
 	
 	@Override
 	public void executeTask(CloseFileTask task) {
-		// TODO Auto-generated method stub
+		CloseFileTaskResponse response = null;
+
+		if (server.userIsAuth(task.getUserID(), task.getUserAuthToken())){
+			ServerSourceFile sourceFile = sourceFiles.get(task.getFileID());
+
+			// create response that includes tab index to close
+			response = new CloseFileTaskResponse(sourceFile.getFileID(), task.getTabIndex(), true);
+
+			// unregister user as a file listener
+			sourceFile.addFileTaskEventListener(task.getUserID(), task.getConnection());
+		} else {
+			// user authentication fails
+			response = new CloseFileTaskResponse(-1, -1,false);
+		}
+
+		distributeTask(response);
 		
 	}
 
@@ -279,12 +293,6 @@ public class CNPSession implements SessionTaskExecutor {
 	}
 
 	@Override
-	public void executeTask(DisconnectTask task) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void executeTask(DownloadFileTask task) {
 		// TODO Auto-generated method stub
 		
@@ -292,6 +300,12 @@ public class CNPSession implements SessionTaskExecutor {
 
 	@Override
 	public void executeTask(DownloadRepoTask task) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void executeTask(CompileTask task) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -343,6 +357,16 @@ public class CNPSession implements SessionTaskExecutor {
 		}
 		return false;
 	}
+
+	public Map<Integer, ServerSourceFile> getSourceFiles() {
+		return sourceFiles;
+	}
+
+	public void setSourceFiles(Map<Integer, ServerSourceFile> sourceFiles) {
+		this.sourceFiles = sourceFiles;
+	}
+	
+	
 
 
 

@@ -15,7 +15,7 @@ import org.ndacm.acmgroup.cnp.task.CreatePrivateSessionTask;
 import org.ndacm.acmgroup.cnp.task.CreateSessionTask;
 import org.ndacm.acmgroup.cnp.task.DeleteFileTask;
 import org.ndacm.acmgroup.cnp.task.DeleteSessionTask;
-import org.ndacm.acmgroup.cnp.task.DisconnectTask;
+import org.ndacm.acmgroup.cnp.task.LeaveSessionTask;
 import org.ndacm.acmgroup.cnp.task.DownloadRepoTask;
 import org.ndacm.acmgroup.cnp.task.EditorTask;
 import org.ndacm.acmgroup.cnp.task.JoinPrivateSessionTask;
@@ -32,7 +32,7 @@ import org.ndacm.acmgroup.cnp.task.response.CreateFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.CreateSessionTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.DeleteFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.DeleteSessionTaskResponse;
-import org.ndacm.acmgroup.cnp.task.response.DisconnectTaskResponse;
+import org.ndacm.acmgroup.cnp.task.response.LeaveSessionTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.DownloadRepoTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.JoinSessionTaskResponse;
@@ -49,7 +49,7 @@ import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 public class TaskMessageFactory {
 
 	public enum TaskType {
-		Chat, CloseFile, Commit, Compile, CreateAccount, CreateFile, CreatePrivateSession, CreateSessionTask, DeleteSession, DeleteFile, Disconnect, DownloadRepo, Editor, JoinPrivateSession, JoinSession, Login, OpenFile, EditorResponse
+		Chat, CloseFile, Commit, Compile, CreateAccount, CreateFile, CreatePrivateSession, CreateSessionTask, DeleteSession, DeleteFile, LeaveSession, DownloadRepo, Editor, JoinPrivateSession, JoinSession, Login, OpenFile, EditorResponse
 	};
 
 	/**
@@ -68,7 +68,9 @@ public class TaskMessageFactory {
 					message.getData()[4]);
 		case CloseFile:
 			return new CloseFileTask(Integer.parseInt(message.getData()[0]),
-					message.getData()[1], message.getData()[2]);
+					Integer.parseInt(message.getData()[1]),
+					Integer.parseInt(message.getData()[2]),
+					message.getData()[3]);
 		case Commit:
 			return new CommitTask(Integer.parseInt(message.getData()[0]),
 					message.getData()[1]);
@@ -125,9 +127,11 @@ public class TaskMessageFactory {
 					Integer.parseInt(message.getData()[0]),
 					Integer.parseInt(message.getData()[1]),
 					message.getData()[2]);
-		case Disconnect:
-			return new DisconnectTask(Integer.parseInt(message.getData()[0]),
-					message.getData()[1]);
+		case LeaveSession:
+			return new LeaveSessionTask(Integer.parseInt(message.getData()[0]),
+					message.getData()[1],
+					Integer.parseInt(message.getData()[2]),
+					message.getData()[3]);
 		case DownloadRepo:
 			return new DownloadRepoTask(Integer.parseInt(message.getData()[0]),
 					message.getData()[1]);
@@ -183,7 +187,8 @@ public class TaskMessageFactory {
 		} else if (task instanceof CloseFileTask) {
 			CloseFileTask close = (CloseFileTask) task;
 			String[] data = { Integer.toString(close.getUserID()),
-					close.getFilename(), close.getUserAuthToken() };
+					Integer.toString(close.getFileID()), Integer.toString(close.getTabIndex()), 
+					close.getUserAuthToken() };
 			message = new TaskMessage(TaskType.CloseFile, data);
 		} else if (task instanceof CommitTask) {
 			CommitTask commit = (CommitTask) task;
@@ -250,11 +255,13 @@ public class TaskMessageFactory {
 					Integer.toString(deleteSession.getSessionID()),
 					deleteSession.getUserAuthToken() };
 			message = new TaskMessage(TaskType.DeleteSession, data);
-		} else if (task instanceof DisconnectTask) {
-			DisconnectTask disconnect = (DisconnectTask) task;
+		} else if (task instanceof LeaveSessionTask) {
+			LeaveSessionTask disconnect = (LeaveSessionTask) task;
 			String[] data = { Integer.toString(disconnect.getUserID()),
+					disconnect.getUsername(),
+					Integer.toString(disconnect.getSessionID()),
 					disconnect.getUserAuthToken() };
-			message = new TaskMessage(TaskType.Disconnect, data);
+			message = new TaskMessage(TaskType.LeaveSession, data);
 		} else if (task instanceof DownloadRepoTask) {
 			DownloadRepoTask download = (DownloadRepoTask) task;
 			String[] data = { Integer.toString(download.getUserID()),
@@ -310,8 +317,10 @@ public class TaskMessageFactory {
 			return new ChatTaskResponse(message.getData()[0],
 					message.getData()[1]);
 		case CloseFile:
-			return new CloseFileTaskResponse(message.getData()[0],
-					Boolean.parseBoolean(message.getData()[1]));
+			return new CloseFileTaskResponse(
+					Integer.parseInt(message.getData()[0]),
+					Integer.parseInt(message.getData()[1]),
+					Boolean.parseBoolean(message.getData()[2]));
 		case Commit:
 			return new CommitTaskResponse(Boolean.parseBoolean(message
 					.getData()[0]));
@@ -339,9 +348,11 @@ public class TaskMessageFactory {
 		case DeleteSession:
 			return new DeleteSessionTaskResponse(message.getData()[0],
 					Boolean.parseBoolean(message.getData()[1]));
-		case Disconnect:
-			return new DisconnectTaskResponse(Boolean.parseBoolean(message
-					.getData()[0]));
+		case LeaveSession:
+			return new LeaveSessionTaskResponse(
+					Integer.parseInt(message.getData()[0]),
+					message.getData()[1],
+					Boolean.parseBoolean(message.getData()[2]));
 
 		case DownloadRepo:
 			File tmp = null;
@@ -402,7 +413,8 @@ public class TaskMessageFactory {
 			message = new TaskMessage(TaskType.Chat, data);
 		} else if (task instanceof CloseFileTaskResponse) {
 			CloseFileTaskResponse close = (CloseFileTaskResponse) task;
-			String[] data = { close.getFilename(),
+			String[] data = { Integer.toString(close.getFileID()),
+					Integer.toString(close.getTabIndex()),
 					Boolean.toString(close.isSuccess()) };
 			message = new TaskMessage(TaskType.CloseFile, data);
 		} else if (task instanceof CommitTaskResponse) {
@@ -444,10 +456,13 @@ public class TaskMessageFactory {
 			String[] data = { deleteSession.getSessionName(),
 					Boolean.toString(deleteSession.isSuccess()) };
 			message = new TaskMessage(TaskType.DeleteSession, data);
-		} else if (task instanceof DisconnectTaskResponse) {
-			DisconnectTaskResponse disconnect = (DisconnectTaskResponse) task;
-			String[] data = { Boolean.toString(disconnect.isSuccess()) };
-			message = new TaskMessage(TaskType.Disconnect, data);
+		} else if (task instanceof LeaveSessionTaskResponse) {
+			LeaveSessionTaskResponse disconnect = (LeaveSessionTaskResponse) task;
+			String[] data = { 
+					Integer.toString(disconnect.getUserID()),
+					disconnect.getUsername(),
+					Boolean.toString(disconnect.isSuccess()) };
+			message = new TaskMessage(TaskType.LeaveSession, data);
 		} else if (task instanceof DownloadRepoTaskResponse) {
 			DownloadRepoTaskResponse download = (DownloadRepoTaskResponse) task;
 			String[] data = { download.getEncodedRepo(),

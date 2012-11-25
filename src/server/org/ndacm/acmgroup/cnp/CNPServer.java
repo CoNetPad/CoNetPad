@@ -1,7 +1,6 @@
 package org.ndacm.acmgroup.cnp;
 
 import java.io.File;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -19,6 +18,7 @@ import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
 import org.ndacm.acmgroup.cnp.network.ServerNetwork;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEventListener;
+import org.ndacm.acmgroup.cnp.task.CloseFileTask;
 import org.ndacm.acmgroup.cnp.task.CreateAccountTask;
 import org.ndacm.acmgroup.cnp.task.CreateFileTask;
 import org.ndacm.acmgroup.cnp.task.CreatePrivateSessionTask;
@@ -27,6 +27,7 @@ import org.ndacm.acmgroup.cnp.task.DeleteSessionTask;
 import org.ndacm.acmgroup.cnp.task.FileTask;
 import org.ndacm.acmgroup.cnp.task.JoinPrivateSessionTask;
 import org.ndacm.acmgroup.cnp.task.JoinSessionTask;
+import org.ndacm.acmgroup.cnp.task.LeaveSessionTask;
 import org.ndacm.acmgroup.cnp.task.LoginTask;
 import org.ndacm.acmgroup.cnp.task.OpenFileTask;
 import org.ndacm.acmgroup.cnp.task.SendResponseTask;
@@ -38,6 +39,7 @@ import org.ndacm.acmgroup.cnp.task.message.TaskMessageFactory;
 import org.ndacm.acmgroup.cnp.task.response.CreateAccountTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.CreateSessionTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.JoinSessionTaskResponse;
+import org.ndacm.acmgroup.cnp.task.response.LeaveSessionTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.LoginTaskResponse;
 
 /**
@@ -111,37 +113,6 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 		network.startListening();
 	}
 
-	/**
-	 * This creates a new public session	[Not Implemented]
-	 * @param task						The CreateSessionTask that will be used to create the session
-	 * @return							The Session Object of the newly created session
-	 * @throws FailedSessionException
-	 * @throws SQLException
-	 */
-	public CNPSession createCNPSession(CreateSessionTask task)
-			throws FailedSessionException, SQLException {
-
-		// return database.createSession(task.getSessionLeader(),
-		// CNPSession.generateString(), this);
-		return null;
-
-	}
-	/**
-	 * This creates a new private session 	[Not Implemented]
-	 * @param task						The CreatePrivateSessionTask for creating the new private session
-	 * @return							The Private session task of the newly created session
-	 * @throws FailedSessionException
-	 * @throws SQLException
-	 */
-	public CNPSession createCNPSession(CreatePrivateSessionTask task)
-			throws FailedSessionException, SQLException {
-
-		// return database.createSession(task.getSessionLeader(),
-		// CNPSession.generateString(), this, task.getSessionPassword());
-		return null;
-	}
-
-	
 	/**
 	 * This compiles a list of files	 [Not Implemented]
 	 * @param fileNames			The List of files that need to be compiled
@@ -285,6 +256,46 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 
 	}
 	
+	/**
+	 * Execute the task for leaving a session.
+	 */
+	@Override
+	public void executeTask(LeaveSessionTask task) {
+		
+		CNPSession sessionToLeave = openSessions.get(task.getSessionID());
+		LeaveSessionTaskResponse response = null;
+
+		if (userIsAuth(task.getUserID(), task.getUserAuthToken())) {
+			
+			int userID = task.getUserID();
+			
+			// unregister as listener from any files currently listening to
+			for (ServerSourceFile file : sessionToLeave.getSourceFiles().values()) {
+				if (file.userIsListening(userID)) {
+					file.removeFileTaskEventListener(userID);
+				}
+			}
+			
+			// remove connection from session list
+			sessionToLeave.removeUser(userID);
+			response = new LeaveSessionTaskResponse(userID, task.getUsername(), true);
+
+		} else {
+			// tokens don't match, join session task fails
+			response = new LeaveSessionTaskResponse(-1, "n/a", false);
+		}
+
+		// send back response to client if fails, otherwise send it to all session members so their user list is updated
+		if (response.isSuccess()) {
+			sessionToLeave.distributeTask(response);
+
+		} else {
+			SendResponseTask sessionResponseTask = new SendResponseTask(response, task.getConnection());
+			serverExecutor.submit(sessionResponseTask);
+		}
+		
+	}
+	
 	@Override
 	public void executeTask(DeleteSessionTask task) {
 		// TODO Auto-generated method stub
@@ -318,6 +329,8 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 				((CreateFileTask) task).setConnection(evt.getConnection());
 			} else if (task instanceof OpenFileTask) {
 				((OpenFileTask) task).setConnection(evt.getConnection());
+			} else if (task instanceof CloseFileTask) {
+				((CloseFileTask) task).setConnection(evt.getConnection());
 			}
 			// submit to session task executor
 			session.submitTask(sessionTask);
@@ -335,6 +348,7 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 			System.err.println("Received task has an unknown type.");
 		}
 	}
+		
 	/**
 	 * This returns the string that represents the base directory of file
 	 * @return			The directory where the files are being stored and worked on
@@ -409,6 +423,8 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 
 		return new String(text);
 	}
+
+
 
 
 

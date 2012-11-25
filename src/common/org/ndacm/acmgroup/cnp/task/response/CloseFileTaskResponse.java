@@ -2,26 +2,38 @@ package org.ndacm.acmgroup.cnp.task.response;
 
 public class CloseFileTaskResponse extends TaskResponse {
 	
-	private String filename;
+	private int fileID;
+	private int tabIndex;
 	private boolean success;
 	
-	public CloseFileTaskResponse(String filename, boolean success) {
-		this.filename = filename;
+	public CloseFileTaskResponse(int fileID, int tabIndex, boolean success) {
+		this.fileID = fileID;
+		this.tabIndex = tabIndex;
 		this.success = success;
 	}
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+		client.executeTask(this);
 		
 	}
 
-	public String getFilename() {
-		return filename;
+	public int getFileID() {
+		return fileID;
 	}
 
 	public boolean isSuccess() {
 		return success;
 	}
+
+	public int getTabIndex() {
+		return tabIndex;
+	}
+
+	public void setTabIndex(int tabIndex) {
+		this.tabIndex = tabIndex;
+	}
+	
+	 
 
 }

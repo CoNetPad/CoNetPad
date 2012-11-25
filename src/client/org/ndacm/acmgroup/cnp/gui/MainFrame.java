@@ -185,6 +185,10 @@ public class MainFrame extends JFrame {
 		tabbedPane.addTab(filename, null, fileTextField, filename);
 		tabs.put(fileID, fileTextField);
 	}
+	
+	public void removeTab(int tabIndex) {
+		tabbedPane.removeTabAt(tabIndex);
+	}
 
 	public void addToFileList(List<String> fileList) {
 		// TODO implement
@@ -194,8 +198,26 @@ public class MainFrame extends JFrame {
 		// TODO implement
 	}
 
-	// add user to the list of logged-in session users
+	/**
+	 * Add the given user to the list of connected users.
+	 * @param username the user to add
+	 */
 	public void addUser(String username) {
 		// TODO implement
+	}
+	
+	/**
+	 * Remove the given user from the list of connected users.
+	 * @param username the user to remove
+	 */
+	public void removeUser(String username) {
+		// TODO implement
+	}
+	
+	/**
+	 * Leave the session the client is currently connected to.
+	 */
+	public void leaveSession() {
+		// leave the current session
 	}
 }

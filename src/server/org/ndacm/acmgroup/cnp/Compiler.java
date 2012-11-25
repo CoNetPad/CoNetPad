@@ -19,10 +19,4 @@ public class Compiler {
 		return new ArrayList<File>();
 	}
 
-	
-	private void compileJava(ServerSourceFile sf)
-	{
-		// TODO implement
-		
-	}
 }

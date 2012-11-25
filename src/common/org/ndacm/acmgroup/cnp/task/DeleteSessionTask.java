@@ -13,8 +13,7 @@ public class DeleteSessionTask extends ServerTask {
 	}
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		// make sure userID = sessionLeaderID
+		server.executeTask(this);
 		
 	}
 	public int getUserID() {
