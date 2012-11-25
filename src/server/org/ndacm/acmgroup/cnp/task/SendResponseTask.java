@@ -30,7 +30,6 @@ public class SendResponseTask extends Task {
 	@Override
 	public void run() {
 		client.sendTaskResponse(response);
-		
 	}
 
 }

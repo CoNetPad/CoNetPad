@@ -77,6 +77,7 @@ public class CNPConnection extends Thread {
 					task = TaskMessageFactory
 							.fromMessageToTaskResponse(message);
 				}
+				System.out.println("Message recieved");
 				taskSource.fireTaskReceivedEvent(new TaskReceivedEvent(task,
 						this));
 			}
@@ -89,11 +90,13 @@ public class CNPConnection extends Thread {
 	public void sendTask(Task task) {
 		out.println(TaskMessageFactory.fromTaskToMessage(task)
 				.getMessageString());
+		System.out.println("Task sent");
 	}
 
 	public void sendTaskResponse(TaskResponse task) {
 		out.println(TaskMessageFactory.fromTaskResponseToMessage(task)
 				.getMessageString());
+		System.out.println("TaskResponse sent");
 	}
 
 	/**
