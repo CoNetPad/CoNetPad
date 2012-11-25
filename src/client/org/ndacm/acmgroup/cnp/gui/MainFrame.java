@@ -22,6 +22,11 @@ import javax.swing.border.LineBorder;
 import javax.swing.text.BadLocationException;
 
 import org.ndacm.acmgroup.cnp.CNPClient;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class MainFrame extends JFrame {
 
@@ -31,13 +36,16 @@ public class MainFrame extends JFrame {
 	private int columnWidth;
 	private static final int DEFAULT_WIDTH = 891;
 	private static final int DEFAULT_HEIGHT = 664;
-	private CNPClient client;
+	private CNPClient cnpClient;
+
+	private JTextArea textAreaChatInput;
+	private JTextArea textAreaChat;
 
 	/**
 	 * Create the frame.
 	 */
 	public MainFrame(CNPClient client) {
-		this.client = client;
+		this.cnpClient = client;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 		// column width should be updated whenever window resized (some
@@ -57,20 +65,30 @@ public class MainFrame extends JFrame {
 
 		JLabel lblChat = new JLabel("Chat");
 
-		JTextArea textArea = new JTextArea();
-		textArea.setLineWrap(true);
-		textArea.setBorder(new LineBorder(new Color(0, 0, 0)));
-		JScrollPane scrollPane = new JScrollPane(textArea);
-		setPreferredSize(new Dimension(textArea.getWidth(),
-				textArea.getHeight()));
+		textAreaChat = new JTextArea();
+		textAreaChat.setLineWrap(true);
+		textAreaChat.setBorder(new LineBorder(new Color(0, 0, 0)));
+		JScrollPane scrollPane = new JScrollPane(textAreaChat);
+		setPreferredSize(new Dimension(textAreaChat.getWidth(),
+				textAreaChat.getHeight()));
 
-		JTextArea textArea_1 = new JTextArea();
-		textArea_1.setLineWrap(true);
-		textArea_1.setBorder(new LineBorder(new Color(0, 0, 0)));
+		textAreaChatInput = new JTextArea();
+		textAreaChatInput.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
+					if (textAreaChatInput.getText().length() > 0) {
+						cnpClient.sendChatMessage(textAreaChatInput.getText());
+					}
+				}
+			}
+		});
+		textAreaChatInput.setLineWrap(true);
+		textAreaChatInput.setBorder(new LineBorder(new Color(0, 0, 0)));
 
-		JScrollPane scrollPane_1 = new JScrollPane(textArea_1);
-		setPreferredSize(new Dimension(textArea_1.getWidth(),
-				textArea_1.getHeight()));
+		JScrollPane scrollPane_1 = new JScrollPane(textAreaChatInput);
+		setPreferredSize(new Dimension(textAreaChatInput.getWidth(),
+				textAreaChatInput.getHeight()));
 
 		GroupLayout gl_panel = new GroupLayout(panel);
 		gl_panel.setHorizontalGroup(gl_panel
@@ -127,29 +145,70 @@ public class MainFrame extends JFrame {
 		JTree tree = new JTree();
 		tree.setBorder(new LineBorder(new Color(0, 0, 0)));
 		JLabel lblWorkspace = new JLabel("Workspace");
+
+		JButton btnSave = new JButton("Save");
+		btnSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO
+			}
+		});
+
+		JButton btnExit = new JButton("Exit");
+		btnExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cnpClient.closeConnection();
+			}
+		});
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
-		gl_panel_1.setHorizontalGroup(gl_panel_1.createParallelGroup(
-				Alignment.LEADING).addGroup(
-				gl_panel_1
-						.createSequentialGroup()
-						.addContainerGap()
+		gl_panel_1
+				.setHorizontalGroup(gl_panel_1
+						.createParallelGroup(Alignment.LEADING)
 						.addGroup(
 								gl_panel_1
-										.createParallelGroup(Alignment.LEADING)
-										.addComponent(tree,
-												GroupLayout.DEFAULT_SIZE, 200,
-												Short.MAX_VALUE)
-										.addComponent(lblWorkspace))
-						.addContainerGap()));
+										.createSequentialGroup()
+										.addContainerGap()
+										.addGroup(
+												gl_panel_1
+														.createParallelGroup(
+																Alignment.LEADING)
+														.addComponent(
+																tree,
+																GroupLayout.DEFAULT_SIZE,
+																200,
+																Short.MAX_VALUE)
+														.addComponent(
+																lblWorkspace)
+														.addGroup(
+																Alignment.TRAILING,
+																gl_panel_1
+																		.createSequentialGroup()
+																		.addComponent(
+																				btnExit)
+																		.addPreferredGap(
+																				ComponentPlacement.RELATED,
+																				54,
+																				Short.MAX_VALUE)
+																		.addComponent(
+																				btnSave)))
+										.addContainerGap()));
 		gl_panel_1.setVerticalGroup(gl_panel_1.createParallelGroup(
-				Alignment.LEADING).addGroup(
-				gl_panel_1
-						.createSequentialGroup()
-						.addContainerGap()
-						.addComponent(lblWorkspace)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(tree, GroupLayout.DEFAULT_SIZE, 569,
-								Short.MAX_VALUE).addContainerGap()));
+				Alignment.LEADING)
+				.addGroup(
+						gl_panel_1
+								.createSequentialGroup()
+								.addContainerGap()
+								.addComponent(lblWorkspace)
+								.addPreferredGap(ComponentPlacement.RELATED)
+								.addComponent(tree, GroupLayout.DEFAULT_SIZE,
+										554, Short.MAX_VALUE)
+								.addPreferredGap(ComponentPlacement.RELATED)
+								.addGroup(
+										gl_panel_1
+												.createParallelGroup(
+														Alignment.BASELINE)
+												.addComponent(btnSave)
+												.addComponent(btnExit))
+								.addContainerGap()));
 		panel_1.setLayout(gl_panel_1);
 
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -177,7 +236,7 @@ public class MainFrame extends JFrame {
 	}
 
 	public void updateChat(String username, String message) {
-		// TODO implement
+		textAreaChat.append(username + ": " + message + "\n");
 	}
 
 	public void addTab(int fileID, String filename, String fileContent) {
@@ -185,7 +244,7 @@ public class MainFrame extends JFrame {
 		tabbedPane.addTab(filename, null, fileTextField, filename);
 		tabs.put(fileID, fileTextField);
 	}
-	
+
 	public void removeTab(int tabIndex) {
 		tabbedPane.removeTabAt(tabIndex);
 	}
@@ -200,20 +259,24 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Add the given user to the list of connected users.
-	 * @param username the user to add
+	 * 
+	 * @param username
+	 *            the user to add
 	 */
 	public void addUser(String username) {
 		// TODO implement
 	}
-	
+
 	/**
 	 * Remove the given user from the list of connected users.
-	 * @param username the user to remove
+	 * 
+	 * @param username
+	 *            the user to remove
 	 */
 	public void removeUser(String username) {
 		// TODO implement
 	}
-	
+
 	/**
 	 * Leave the session the client is currently connected to.
 	 */
