@@ -22,6 +22,10 @@ public class SessionDialog extends JDialog {
 	private CNPClient client;
 	private JPasswordField passwordField;
 
+	private JButton btnAccess;
+	private JFormattedTextField formattedSession;
+	private JButton btnCreate;
+
 	/**
 	 * Create the dialog.
 	 */
@@ -30,19 +34,15 @@ public class SessionDialog extends JDialog {
 		this.client = client;
 		this.client.setSessionDialog(this);
 		setTitle("CoNetPad Client");
-		setBounds(100, 100, 466, 218);
+		setBounds(100, 100, 394, 218);
 		JPanel panel = new JPanel();
 		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 
 		JLabel lblSession = new JLabel("Session name:");
 
-		final JFormattedTextField formattedSession = new JFormattedTextField();
+		formattedSession = new JFormattedTextField();
 
-		JLabel lblInfo = new JLabel(
-				"Enter the name of a session to join or create:");
-
-		JLabel lblUsePassword = new JLabel(
-				"<html>-If you are creating a session, you may use a password to protect it.");
+		JLabel lblInfo = new JLabel("Enter the name of a session to join:");
 
 		JLabel lblifYouAre = new JLabel(
 				"<html>-If you are accessing a password-protected session, enter the password here, leave it empty otherwise.");
@@ -54,34 +54,13 @@ public class SessionDialog extends JDialog {
 		groupLayout
 				.setHorizontalGroup(groupLayout
 						.createParallelGroup(Alignment.LEADING)
-						.addComponent(panel, GroupLayout.DEFAULT_SIZE, 462,
+						.addComponent(panel, GroupLayout.DEFAULT_SIZE, 378,
 								Short.MAX_VALUE)
 						.addGroup(
 								groupLayout.createSequentialGroup()
 										.addContainerGap()
 										.addComponent(lblInfo)
-										.addContainerGap(128, Short.MAX_VALUE))
-						.addGroup(
-								groupLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.TRAILING)
-														.addComponent(
-																lblifYouAre,
-																Alignment.LEADING,
-																GroupLayout.DEFAULT_SIZE,
-																438,
-																Short.MAX_VALUE)
-														.addComponent(
-																lblUsePassword,
-																Alignment.LEADING,
-																GroupLayout.DEFAULT_SIZE,
-																438,
-																Short.MAX_VALUE))
-										.addContainerGap())
+										.addContainerGap(150, Short.MAX_VALUE))
 						.addGroup(
 								groupLayout
 										.createSequentialGroup()
@@ -103,13 +82,21 @@ public class SessionDialog extends JDialog {
 														.addComponent(
 																passwordField,
 																GroupLayout.DEFAULT_SIZE,
-																276,
+																253,
 																Short.MAX_VALUE)
 														.addComponent(
 																formattedSession,
 																GroupLayout.DEFAULT_SIZE,
-																276,
+																253,
 																Short.MAX_VALUE))
+										.addContainerGap())
+						.addGroup(
+								groupLayout
+										.createSequentialGroup()
+										.addContainerGap()
+										.addComponent(lblifYouAre,
+												GroupLayout.DEFAULT_SIZE, 358,
+												Short.MAX_VALUE)
 										.addContainerGap()));
 		groupLayout
 				.setVerticalGroup(groupLayout
@@ -145,13 +132,11 @@ public class SessionDialog extends JDialog {
 																GroupLayout.PREFERRED_SIZE,
 																GroupLayout.DEFAULT_SIZE,
 																GroupLayout.PREFERRED_SIZE))
-										.addGap(10)
-										.addComponent(lblUsePassword)
 										.addPreferredGap(
-												ComponentPlacement.UNRELATED)
+												ComponentPlacement.RELATED)
 										.addComponent(lblifYouAre)
 										.addPreferredGap(
-												ComponentPlacement.RELATED, 16,
+												ComponentPlacement.RELATED, 44,
 												Short.MAX_VALUE)
 										.addComponent(panel,
 												GroupLayout.PREFERRED_SIZE, 45,
@@ -164,23 +149,35 @@ public class SessionDialog extends JDialog {
 					dispose();
 				}
 			});
-			JButton btnAccess = new JButton("Access");
+			btnAccess = new JButton("Access");
 			btnAccess.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					if (!formattedSession.getText().isEmpty()
-							&& !passwordField.getText().isEmpty()) {
-						
+							&& passwordField.getPassword().length != 0) {
+						client.joinSession(formattedSession.getText(),
+								new String(passwordField.getPassword()));
+						formattedSession.setEnabled(false);
+						passwordField.setEnabled(false);
+						btnAccess.setEnabled(false);
+						btnCreate.setEnabled(false);
 					}
+				}
+			});
+
+			btnCreate = new JButton("Create Session");
+			btnCreate.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
 				}
 			});
 
 			GroupLayout gl_panel = new GroupLayout(panel);
 			gl_panel.setHorizontalGroup(gl_panel.createParallelGroup(
-					Alignment.LEADING).addGroup(
-					Alignment.TRAILING,
+					Alignment.TRAILING).addGroup(
 					gl_panel.createSequentialGroup()
-							.addContainerGap(282, Short.MAX_VALUE)
-							.addComponent(btnAccess)
+							.addContainerGap()
+							.addComponent(btnCreate)
+							.addPreferredGap(ComponentPlacement.RELATED, 129,
+									Short.MAX_VALUE).addComponent(btnAccess)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(btnCancel).addContainerGap()));
 			gl_panel.setVerticalGroup(gl_panel.createParallelGroup(
@@ -192,7 +189,8 @@ public class SessionDialog extends JDialog {
 									gl_panel.createParallelGroup(
 											Alignment.BASELINE)
 											.addComponent(btnCancel)
-											.addComponent(btnAccess))
+											.addComponent(btnAccess)
+											.addComponent(btnCreate))
 							.addContainerGap()));
 			panel.setLayout(gl_panel);
 			getContentPane().setLayout(groupLayout);
@@ -206,5 +204,16 @@ public class SessionDialog extends JDialog {
 		loginDialog.setVisible(false);
 		loginDialog.dispose();
 
+	}
+
+	public void resetDialog() {
+		formattedSession.setEnabled(true);
+		passwordField.setEnabled(true);
+		btnAccess.setEnabled(true);
+		btnCreate.setEnabled(true);
+	}
+
+	public void setSessionName(String sessionName) {
+		formattedSession.setText(sessionName);
 	}
 }

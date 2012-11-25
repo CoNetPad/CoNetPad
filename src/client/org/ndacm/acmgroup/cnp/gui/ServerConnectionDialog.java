@@ -23,25 +23,12 @@ public class ServerConnectionDialog extends JDialog {
 	private JDialog serverConnectionDialog = this;
 
 	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			ServerConnectionDialog dialog = new ServerConnectionDialog();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
 	 * Create the dialog.
 	 */
 	public ServerConnectionDialog() {
 		client = new CNPClient();
 		setTitle("CoNetPad Client");
-		setBounds(100, 100, 382, 117);
+		setBounds(100, 100, 388, 148);
 		JLabel lblServer = new JLabel("Server:");
 
 		JCheckBox chckbxRemember = new JCheckBox("Remember");

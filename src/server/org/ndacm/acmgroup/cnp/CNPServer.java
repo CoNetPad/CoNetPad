@@ -181,7 +181,6 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 	@Override
 	public void executeTask(ServerTask task) {
 		executeTask(task);
-		
 	}
 
 	/**

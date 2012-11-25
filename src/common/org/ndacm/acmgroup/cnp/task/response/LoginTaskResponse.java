@@ -7,7 +7,8 @@ public class LoginTaskResponse extends TaskResponse {
 	private boolean success;
 	private String userAuthToken;
 
-	public LoginTaskResponse(int userID, String username, boolean success, String userAuthToken) {
+	public LoginTaskResponse(int userID, String username, boolean success,
+			String userAuthToken) {
 		this.userID = userID;
 		this.username = username;
 		this.success = success;
@@ -39,11 +40,11 @@ public class LoginTaskResponse extends TaskResponse {
 	public String getUserAuthToken() {
 		return userAuthToken;
 	}
-	
+
 	public String getUsername() {
 		return username;
 	}
-	
+
 	public void setUsername(String username) {
 		this.username = username;
 	}
