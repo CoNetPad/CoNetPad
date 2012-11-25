@@ -2,6 +2,7 @@ package org.ndacm.acmgroup.cnp;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -158,6 +159,20 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 		return null;
 	}
 
+	public List<String> retrieveSessionFileList(String sessionName) {
+		File repo = jGit.retrieveRepo(sessionName);
+		if (repo.isDirectory()) {
+			ArrayList<String> list = new ArrayList<String>();
+			File[] files = repo.listFiles();
+			for (int i = 0; i < files.length; i++) {
+				list.add(files[i].getName());
+			}
+			return list;
+		} else {
+			return null;
+		}
+	}
+
 	/**
 	 * This executes a createAccount Task, creating a new account
 	 * 
@@ -291,7 +306,8 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 
 				// construct response
 				List<String> sessionFiles = retrieveSessionFileList(joinedSession
-						.getSessionID());
+						.getSessionName());
+
 				response = new JoinSessionTaskResponse(task.getUserID(),
 						task.getUsername(), joinedSession.getSessionName(),
 						joinedSession.getSessionID(), true, sessionFiles);
@@ -508,6 +524,10 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 		}
 
 		return new String(text);
+	}
+
+	public JGit getjGit() {
+		return jGit;
 	}
 
 }

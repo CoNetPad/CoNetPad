@@ -2,6 +2,7 @@ package org.ndacm.acmgroup.cnp.git;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Hashtable;
 
 /**
@@ -60,6 +61,12 @@ public class JGit {
 				+ name);
 		if (!repo.exists()) {
 			repo.mkdirs();
+			try {
+				new File(repo.getAbsolutePath() + File.separator
+						+ "HelloWorld.txt").createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 		try {
