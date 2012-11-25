@@ -157,6 +157,7 @@ public class MainFrame extends JFrame {
 		btnExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cnpClient.closeConnection();
+				dispose();
 			}
 		});
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);

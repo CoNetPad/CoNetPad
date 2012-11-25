@@ -20,11 +20,10 @@ public class JGit {
 	private Hashtable<String, JRepository> repos;
 
 	public File storage;
-	
+
 	public JGit() {
 		// create File based on session name
 	}
-	
 
 	public JGit(File storage) throws NotDirectoryException {
 		if (!storage.isDirectory()) {
@@ -57,18 +56,18 @@ public class JGit {
 	}
 
 	public void createRepo(String name) {
-		File tempRepo = new File(storage.getAbsolutePath() + File.separatorChar
+		File repo = new File(storage.getAbsolutePath() + File.separatorChar
 				+ name);
-		if (!tempRepo.exists()) {
-			try {
-				JRepository repoToLoad = new JRepository(tempRepo, name);
-				repoToLoad.gitInit();
-				repos.put(name, repoToLoad);
-			} catch (NotDirectoryException e) {
-				e.printStackTrace();
-			}
-		} else {
+		if (!repo.exists()) {
+			repo.mkdirs();
+		}
 
+		try {
+			JRepository repoToLoad = new JRepository(repo, name);
+			repoToLoad.gitInit();
+			repos.put(name, repoToLoad);
+		} catch (NotDirectoryException e) {
+			e.printStackTrace();
 		}
 	}
 

@@ -153,8 +153,7 @@ public class SessionDialog extends JDialog {
 			btnAccess = new JButton("Access");
 			btnAccess.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					if (!formattedSession.getText().isEmpty()
-							&& passwordField.getPassword().length != 0) {
+					if (!formattedSession.getText().isEmpty()) {
 						client.joinSession(formattedSession.getText(),
 								new String(passwordField.getPassword()));
 						formattedSession.setEnabled(false);

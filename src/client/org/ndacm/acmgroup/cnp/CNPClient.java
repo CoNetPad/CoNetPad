@@ -362,8 +362,6 @@ public class CNPClient implements TaskReceivedEventListener,
 	public void executeTask(final CreateSessionTaskResponse task) {
 		if (task.isSuccess()) {
 
-			JOptionPane.showMessageDialog(createSessionDialog,
-					"Session created.");
 			Runnable doWorkRunnable = new Runnable() {
 				public void run() {
 					createSessionDialog.dispose();
