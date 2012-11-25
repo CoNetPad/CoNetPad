@@ -19,6 +19,11 @@ public class LoginDialog extends JDialog {
 
 	private LoginDialog loginDialog;
 	private CNPClient client;
+	private JFormattedTextField formattedUsername;
+	private JFormattedTextField formattedPassword;
+	private JButton btnRegister;
+	private JButton btnLogIn;
+	private JButton btnCancel;
 
 	/**
 	 * Create the dialog.
@@ -28,15 +33,15 @@ public class LoginDialog extends JDialog {
 		this.client = client;
 		this.client.setLogDialog(this);
 		setTitle("CoNetPad Client");
-		setBounds(100, 100, 458, 115);
+		setBounds(100, 100, 486, 151);
 		JPanel panel = new JPanel();
 		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		JLabel lblUsername = new JLabel("Username:");
 		JLabel lblPassword = new JLabel("Password:");
 
-		final JFormattedTextField formattedUsername = new JFormattedTextField();
+		formattedUsername = new JFormattedTextField();
 
-		final JFormattedTextField formattedPassword = new JFormattedTextField();
+		formattedPassword = new JFormattedTextField();
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
 		groupLayout
 				.setHorizontalGroup(groupLayout
@@ -109,14 +114,26 @@ public class LoginDialog extends JDialog {
 												GroupLayout.PREFERRED_SIZE, 45,
 												GroupLayout.PREFERRED_SIZE)));
 		{
-			JButton btnCancel = new JButton("Cancel");
+			btnCancel = new JButton("Cancel");
 			btnCancel.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					client.closeConnection();
 					dispose();
 				}
 			});
-			final JButton btnLogIn = new JButton("Log In");
+
+			btnRegister = new JButton("Register");
+			btnRegister.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+
+					RegisterDialog dialog = new RegisterDialog(client);
+					dialog.setModalityType(ModalityType.APPLICATION_MODAL);
+					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					dialog.setVisible(true);
+				}
+			});
+
+			btnLogIn = new JButton("Log In");
 			btnLogIn.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					if (!formattedUsername.getText().isEmpty()
@@ -125,19 +142,9 @@ public class LoginDialog extends JDialog {
 								formattedPassword.getText());
 						formattedPassword.setEnabled(false);
 						formattedUsername.setEnabled(false);
+						btnRegister.setEnabled(false);
 						btnLogIn.setEnabled(false);
 					}
-				}
-			});
-
-			JButton btnRegister = new JButton("Register");
-			btnRegister.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-
-					RegisterDialog dialog = new RegisterDialog(client);
-					dialog.setModalityType(ModalityType.APPLICATION_MODAL);
-					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-					dialog.setVisible(true);
 				}
 			});
 
@@ -174,5 +181,12 @@ public class LoginDialog extends JDialog {
 		dialog.setVisible(true);
 		loginDialog.setVisible(false);
 		loginDialog.dispose();
+	}
+
+	public void resetDialog() {
+		formattedPassword.setEnabled(true);
+		formattedUsername.setEnabled(true);
+		btnRegister.setEnabled(true);
+		btnLogIn.setEnabled(true);
 	}
 }

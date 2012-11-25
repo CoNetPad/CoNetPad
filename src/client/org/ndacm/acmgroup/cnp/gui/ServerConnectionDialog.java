@@ -23,6 +23,7 @@ public class ServerConnectionDialog extends JDialog {
 	private JDialog serverConnectionDialog = this;
 
 	/**
+<<<<<<< HEAD
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
@@ -37,12 +38,14 @@ public class ServerConnectionDialog extends JDialog {
 	}
 
 	/**
+=======
+>>>>>>> cesar-gui
 	 * Create the dialog.
 	 */
 	public ServerConnectionDialog() {
 		client = new CNPClient();
 		setTitle("CoNetPad Client");
-		setBounds(100, 100, 382, 117);
+		setBounds(100, 100, 388, 148);
 		JLabel lblServer = new JLabel("Server:");
 
 		JCheckBox chckbxRemember = new JCheckBox("Remember");

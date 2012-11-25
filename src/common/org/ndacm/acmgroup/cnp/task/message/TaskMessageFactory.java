@@ -49,7 +49,7 @@ import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 public class TaskMessageFactory {
 
 	public enum TaskType {
-		Chat, CloseFile, Commit, Compile, CreateAccount, CreateFile, CreatePrivateSession, CreateSessionTask, DeleteSession, DeleteFile, LeaveSession, DownloadRepo, Editor, JoinPrivateSession, JoinSession, Login, OpenFile, EditorResponse
+		Chat, CloseFile, Commit, Compile, CreateAccount, CreateFile, CreatePrivateSession, CreateSessionTask, DeleteSession, DeleteFile, LeaveSession, DownloadRepo, Editor, JoinPrivateSession, JoinSession, Login, OpenFile, EditorResponse, SessionExists
 	};
 
 	/**
@@ -60,12 +60,10 @@ public class TaskMessageFactory {
 	public static Task fromMessageToTask(TaskMessage message) {
 		switch (message.getTaskType()) {
 		case Chat:
-			return new ChatTask(
-					Integer.parseInt(message.getData()[0]),
+			return new ChatTask(Integer.parseInt(message.getData()[0]),
 					message.getData()[1],
 					Integer.parseInt(message.getData()[2]),
-					message.getData()[3],
-					message.getData()[4]);
+					message.getData()[3], message.getData()[4]);
 		case CloseFile:
 			return new CloseFileTask(Integer.parseInt(message.getData()[0]),
 					Integer.parseInt(message.getData()[1]),
@@ -136,25 +134,19 @@ public class TaskMessageFactory {
 			return new DownloadRepoTask(Integer.parseInt(message.getData()[0]),
 					message.getData()[1]);
 		case Editor:
-			return new EditorTask(
-					Integer.parseInt(message.getData()[0]),
+			return new EditorTask(Integer.parseInt(message.getData()[0]),
 					Integer.parseInt(message.getData()[1]),
 					Integer.parseInt(message.getData()[2]),
 					Integer.parseInt(message.getData()[3]),
 					Integer.parseInt(message.getData()[4]),
 					message.getData()[5]);
 		case JoinPrivateSession:
-			return new JoinPrivateSessionTask(
-					Integer.parseInt(message.getData()[0]),
-					message.getData()[1], 
-					message.getData()[2],
-					message.getData()[3],
-					message.getData()[4]);
+			return new JoinPrivateSessionTask(Integer.parseInt(message
+					.getData()[0]), message.getData()[1], message.getData()[2],
+					message.getData()[3], message.getData()[4]);
 		case JoinSession:
-			return new JoinSessionTask(
-					Integer.parseInt(message.getData()[0]),
-					message.getData()[1],
-					message.getData()[2],
+			return new JoinSessionTask(Integer.parseInt(message.getData()[0]),
+					message.getData()[1], message.getData()[2],
 					message.getData()[3]);
 
 		case Login:
@@ -180,14 +172,14 @@ public class TaskMessageFactory {
 		if (task instanceof ChatTask) {
 			ChatTask chat = (ChatTask) task;
 			String[] data = { Integer.toString(chat.getUserID()),
-					chat.getUsername(),
-					Integer.toString(chat.getSessionID()),
+					chat.getUsername(), Integer.toString(chat.getSessionID()),
 					chat.getMessage(), chat.getUserAuthToken() };
 			message = new TaskMessage(TaskType.Chat, data);
 		} else if (task instanceof CloseFileTask) {
 			CloseFileTask close = (CloseFileTask) task;
 			String[] data = { Integer.toString(close.getUserID()),
-					Integer.toString(close.getFileID()), Integer.toString(close.getTabIndex()), 
+					Integer.toString(close.getFileID()),
+					Integer.toString(close.getTabIndex()),
 					close.getUserAuthToken() };
 			message = new TaskMessage(TaskType.CloseFile, data);
 		} else if (task instanceof CommitTask) {
@@ -277,16 +269,14 @@ public class TaskMessageFactory {
 		} else if (task instanceof JoinPrivateSessionTask) {
 			JoinPrivateSessionTask joinPrivate = (JoinPrivateSessionTask) task;
 			String[] data = { Integer.toString(joinPrivate.getUserID()),
-					joinPrivate.getUsername(),
-					joinPrivate.getSessionName(),
+					joinPrivate.getUsername(), joinPrivate.getSessionName(),
 					joinPrivate.getSessionPassword(),
 					joinPrivate.getUserAuthToken() };
 			message = new TaskMessage(TaskType.JoinPrivateSession, data);
 		} else if (task instanceof JoinSessionTask) {
 			JoinSessionTask joinSession = (JoinSessionTask) task;
 			String[] data = { Integer.toString(joinSession.getUserID()),
-					joinSession.getUsername(),
-					joinSession.getSessionName(),
+					joinSession.getUsername(), joinSession.getSessionName(),
 					joinSession.getUserAuthToken() };
 			message = new TaskMessage(TaskType.JoinSession, data);
 		} else if (task instanceof LoginTask) {
@@ -332,16 +322,15 @@ public class TaskMessageFactory {
 					.getData()[0]), Boolean.parseBoolean(message.getData()[1]));
 		case CreateFile:
 			int sourceTypeInt = Integer.parseInt(message.getData()[3]);
-			return new CreateFileTaskResponse(
-					Integer.parseInt(message.getData()[0]),
-					Integer.parseInt(message.getData()[1]),
-					message.getData()[2],
-					getSourceTypeFromInt(sourceTypeInt),
+			return new CreateFileTaskResponse(Integer.parseInt(message
+					.getData()[0]), Integer.parseInt(message.getData()[1]),
+					message.getData()[2], getSourceTypeFromInt(sourceTypeInt),
 					Boolean.parseBoolean(message.getData()[4]));
 		case CreatePrivateSession:
 		case CreateSessionTask:
 			return new CreateSessionTaskResponse(Integer.parseInt(message
-					.getData()[0]), message.getData()[1], Boolean.parseBoolean(message.getData()[2]));
+					.getData()[0]), message.getData()[1],
+					Boolean.parseBoolean(message.getData()[2]));
 		case DeleteFile:
 			return new DeleteFileTaskResponse(message.getData()[0],
 					Boolean.parseBoolean(message.getData()[1]));
@@ -349,9 +338,8 @@ public class TaskMessageFactory {
 			return new DeleteSessionTaskResponse(message.getData()[0],
 					Boolean.parseBoolean(message.getData()[1]));
 		case LeaveSession:
-			return new LeaveSessionTaskResponse(
-					Integer.parseInt(message.getData()[0]),
-					message.getData()[1],
+			return new LeaveSessionTaskResponse(Integer.parseInt(message
+					.getData()[0]), message.getData()[1],
 					Boolean.parseBoolean(message.getData()[2]));
 
 		case DownloadRepo:
@@ -372,25 +360,19 @@ public class TaskMessageFactory {
 			for (int i = 0; i < numFiles; i++) {
 				fileNames.add(message.getData()[6 + i]);
 			}
-			return new JoinSessionTaskResponse(
-					Integer.parseInt(message.getData()[0]),
-					message.getData()[1],
-					message.getData()[2],
+			return new JoinSessionTaskResponse(Integer.parseInt(message
+					.getData()[0]), message.getData()[1], message.getData()[2],
 					Integer.parseInt(message.getData()[3]),
-					Boolean.parseBoolean(message.getData()[4]),
-					fileNames);
-			
+					Boolean.parseBoolean(message.getData()[4]), fileNames);
 		case Login:
 			return new LoginTaskResponse(
 					Integer.parseInt(message.getData()[0]),
-					message.getData()[1],
-					Boolean.parseBoolean(message.getData()[2]),
-					message.getData()[3]);
+					message.getData()[1], Boolean.parseBoolean(message
+							.getData()[2]), message.getData()[3]);
 		case OpenFile:
 			return new OpenFileTaskResponse(
 					Integer.parseInt(message.getData()[0]),
-					message.getData()[1],
-					message.getData()[2],
+					message.getData()[1], message.getData()[2],
 					Boolean.parseBoolean(message.getData()[3]));
 		default:
 			return null;
@@ -433,8 +415,7 @@ public class TaskMessageFactory {
 		} else if (task instanceof CreateFileTaskResponse) {
 			CreateFileTaskResponse createFile = (CreateFileTaskResponse) task;
 
-			String[] data = {
-					Integer.toString(createFile.getFileID()),
+			String[] data = { Integer.toString(createFile.getFileID()),
 					Integer.toString(createFile.getUserID()),
 					createFile.getFilename(),
 					Integer.toString((createFile.getType().ordinal())),
@@ -458,8 +439,7 @@ public class TaskMessageFactory {
 			message = new TaskMessage(TaskType.DeleteSession, data);
 		} else if (task instanceof LeaveSessionTaskResponse) {
 			LeaveSessionTaskResponse disconnect = (LeaveSessionTaskResponse) task;
-			String[] data = { 
-					Integer.toString(disconnect.getUserID()),
+			String[] data = { Integer.toString(disconnect.getUserID()),
 					disconnect.getUsername(),
 					Boolean.toString(disconnect.isSuccess()) };
 			message = new TaskMessage(TaskType.LeaveSession, data);
@@ -474,7 +454,7 @@ public class TaskMessageFactory {
 					Integer.toString(editor.getKeyPressed()),
 					Integer.toString(editor.getEditIndex()),
 					Integer.toString(editor.getFileID()),
-					Boolean.toString(editor.isSuccess())};
+					Boolean.toString(editor.isSuccess()) };
 			message = new TaskMessage(TaskType.Editor, data);
 		} else if (task instanceof JoinSessionTaskResponse) {
 			JoinSessionTaskResponse joinSession = (JoinSessionTaskResponse) task;
@@ -484,7 +464,14 @@ public class TaskMessageFactory {
 			data.add(joinSession.getSessionName());
 			data.add(Integer.toString(joinSession.getSessionID()));
 			data.add(Boolean.toString(joinSession.isSuccess()));
-			data.add(Integer.toString(joinSession.getSessionFiles().size())); // number of files - needed to parse message
+			data.add(Integer.toString(joinSession.getSessionFiles().size())); // number
+																				// of
+																				// files
+																				// -
+																				// needed
+																				// to
+																				// parse
+																				// message
 			for (String filename : joinSession.getSessionFiles()) {
 				data.add(filename);
 			}
@@ -493,16 +480,13 @@ public class TaskMessageFactory {
 		} else if (task instanceof LoginTaskResponse) {
 			LoginTaskResponse login = (LoginTaskResponse) task;
 			String[] data = { Integer.toString(login.getUserID()),
-					login.getUsername(),
-					Boolean.toString(login.isSuccess()),
+					login.getUsername(), Boolean.toString(login.isSuccess()),
 					login.getUserAuthToken() };
 			message = new TaskMessage(TaskType.Login, data);
 		} else if (task instanceof OpenFileTaskResponse) {
 			OpenFileTaskResponse openFile = (OpenFileTaskResponse) task;
-			String[] data = { 
-					Integer.toString(openFile.getFileID()),
-					openFile.getFilename(),
-					openFile.getFileContent(),
+			String[] data = { Integer.toString(openFile.getFileID()),
+					openFile.getFilename(), openFile.getFileContent(),
 					Boolean.toString(openFile.isSuccess()) };
 			message = new TaskMessage(TaskType.OpenFile, data);
 		}
@@ -519,8 +503,7 @@ public class TaskMessageFactory {
 				task.getUsername(), Integer.toString(task.getSessionID()),
 				Integer.toString(task.getKeyPressed()),
 				Integer.toString(task.getEditIndex()),
-				Integer.toString(task.getFileID()),
-				task.getUserAuthToken() };
+				Integer.toString(task.getFileID()), task.getUserAuthToken() };
 		return new TaskMessage(TaskType.Editor, data);
 	}
 
@@ -536,12 +519,15 @@ public class TaskMessageFactory {
 		SourceType type = null;
 		switch (typeInt) {
 
-		case 0: type = SourceType.JAVA;
-		break;
-		case 1: type = SourceType.CPP;
-		break;
-		case 2: type = SourceType.GENERAL;
-		break;
+		case 0:
+			type = SourceType.JAVA;
+			break;
+		case 1:
+			type = SourceType.CPP;
+			break;
+		case 2:
+			type = SourceType.GENERAL;
+			break;
 
 		}
 		return type;

@@ -1,6 +1,5 @@
 package org.ndacm.acmgroup.cnp;
 
-import java.awt.EventQueue;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
@@ -9,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
@@ -17,9 +16,11 @@ import javax.swing.text.BadLocationException;
 import org.ndacm.acmgroup.cnp.file.ClientSourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
+import org.ndacm.acmgroup.cnp.gui.CreateSessionDialog;
 import org.ndacm.acmgroup.cnp.gui.LoginDialog;
 import org.ndacm.acmgroup.cnp.gui.MainFrame;
 import org.ndacm.acmgroup.cnp.gui.RegisterDialog;
+import org.ndacm.acmgroup.cnp.gui.ServerConnectionDialog;
 import org.ndacm.acmgroup.cnp.gui.SessionDialog;
 import org.ndacm.acmgroup.cnp.network.ClientNetwork;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
@@ -27,7 +28,10 @@ import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEventListener;
 import org.ndacm.acmgroup.cnp.task.ChatTask;
 import org.ndacm.acmgroup.cnp.task.CreateAccountTask;
 import org.ndacm.acmgroup.cnp.task.CreateFileTask;
+import org.ndacm.acmgroup.cnp.task.CreatePrivateSessionTask;
+import org.ndacm.acmgroup.cnp.task.CreateSessionTask;
 import org.ndacm.acmgroup.cnp.task.EditorTask;
+import org.ndacm.acmgroup.cnp.task.JoinPrivateSessionTask;
 import org.ndacm.acmgroup.cnp.task.JoinSessionTask;
 import org.ndacm.acmgroup.cnp.task.LoginTask;
 import org.ndacm.acmgroup.cnp.task.OpenFileTask;
@@ -51,23 +55,44 @@ import org.ndacm.acmgroup.cnp.task.response.OpenFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponseExecutor;
 
-public class CNPClient implements TaskReceivedEventListener, TaskResponseExecutor {
+public class CNPClient implements TaskReceivedEventListener,
+		TaskResponseExecutor {
 
-	private String serverURL;						//The URL to the server
-	private String sessionName;						//The unique name of the session the user belongs to
-	private int sessionID;							//The unique ID of the session the user belongs
-	private int userID; 							// ID of account logged in as	
-	private String username;						//The Username of the user
-	private String authToken; 						// assigned by server after authentication
+	private String serverURL; // The URL to the server
+	private String sessionName; // The unique name of the session the user
+								// belongs to
+	private int sessionID; // The unique ID of the session the user belongs
+	private int userID; // ID of account logged in as
+	private String username; // The Username of the user
+	private String authToken; // assigned by server after authentication
 
-	private ExecutorService clientExecutor;			//this is for executing varoous tasks
-	private Map<Integer, ClientSourceFile> sourceFiles; //The files the client is reading through.  This is used in the GUI
+	private ExecutorService clientExecutor; // this is for executing varoous
+											// tasks
+	private Map<Integer, ClientSourceFile> sourceFiles; // The files the client
+														// is reading through.
+														// This is used in the
+														// GUI
 
-	private ClientNetwork network;					//The network connection for doing messaging sending and recieving
-	private MainFrame clientFrame;					//The frame of the GUI
+	private ClientNetwork network; // The network connection for doing messaging
+									// sending and recieving
+	private MainFrame clientFrame; // The frame of the GUI
 	private RegisterDialog regDialog;
 	private LoginDialog logDialog;
 	private SessionDialog sesDialog;
+	private CreateSessionDialog createSessionDialog;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		try {
+			ServerConnectionDialog dialog = new ServerConnectionDialog();
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * Default Constructor
@@ -77,37 +102,16 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 		sourceFiles = new ConcurrentHashMap<Integer, ClientSourceFile>();
 		clientExecutor = Executors.newCachedThreadPool();
 		network = new ClientNetwork();
-		clientFrame = new MainFrame(this);
 
 		// register as task event listener with network
 		network.addTaskReceivedEventListener(this);
 	}
 
 	/**
-	 * Start the client GUI.
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args) {
-
-		EventQueue.invokeLater(new Runnable(){
-			@Override
-			public void run(){
-				CNPClient clientGUI = new CNPClient();
-				clientGUI.clientFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				clientGUI.clientFrame.setVisible(true);
-				//				
-				//				ServerConnectionDialog dialog = new ServerConnectionDialog();
-				//				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-				//				dialog.setVisible(true);
-
-			}             
-		});
-	}
-
-	/**
 	 * This connects to a server using an URL
-	 * @param serverURL			The URL of the serve to connect to
+	 * 
+	 * @param serverURL
+	 *            The URL of the serve to connect to
 	 */
 	public boolean connectToServer(String serverURL) {
 		if (network.connect(serverURL)) {
@@ -134,21 +138,43 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 		this.logDialog = logDialog;
 	}
 
+	public void setCreateSessionDialog(CreateSessionDialog createDialog) {
+		this.createSessionDialog = createDialog;
+	}
+
+	public void createSession(String password) {
+		CreateSessionTask task;
+		if (password.isEmpty()) {
+			task = new CreateSessionTask(userID, authToken);
+		} else {
+			task = new CreatePrivateSessionTask(userID, password, authToken);
+		}
+		network.sendTask(task);
+	}
+
 	/**
 	 * This creates an account for the user or client
-	 * @param username			The username the client wishes to use
-	 * @param email				The email of the client to use
-	 * @param password			The password the client to use - Un-encrypted
+	 * 
+	 * @param username
+	 *            The username the client wishes to use
+	 * @param email
+	 *            The email of the client to use
+	 * @param password
+	 *            The password the client to use - Un-encrypted
 	 */
 	public void createAccount(String username, String email, String password) {
-		CreateAccountTask task = new CreateAccountTask(username, email, password);
+		CreateAccountTask task = new CreateAccountTask(username, email,
+				password);
 		network.sendTask(task);
 	}
 
 	/**
 	 * This log the user in if he/she has an account
-	 * @param username				The username of their account
-	 * @param password				The password of their account - Un-encrypted
+	 * 
+	 * @param username
+	 *            The username of their account
+	 * @param password
+	 *            The password of their account - Un-encrypted
 	 */
 	public void loginToAccount(String username, String password) {
 		Task task = new LoginTask(username, password);
@@ -157,21 +183,36 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 
 	/**
 	 * This joins the user to a given session using the uniqu ename
-	 * @param sessionName			The unique name of the session
+	 * 
+	 * @param sessionName
+	 *            The unique name of the session
 	 */
-	public void joinSession(String sessionName) {
-		Task task = new JoinSessionTask(userID, username, sessionName, authToken);
+	public void joinSession(String sessionName, String password) {
+		Task task;
+		if (password.isEmpty()) {
+			task = new JoinSessionTask(userID, username, sessionName, authToken);
+		} else {
+			task = new JoinPrivateSessionTask(userID, username, sessionName,
+					password, authToken);
+		}
 		network.sendTask(task);
 	}
 
 	/**
 	 * This edits the file the user is viewing or working on
-	 * @param userID				The user ID of which the edit came from
-	 * @param sessionID				the session Id of which the file belongs to
-	 * @param keyPressed			The key that is pressed when the edit is being made
-	 * @param editIndex				The index of the character or white space being edited
-	 * @param fileID				The unique file ID of the ile being edited
-	 * @param userAuthToken			The authentication cooki prevent hackers from editing
+	 * 
+	 * @param userID
+	 *            The user ID of which the edit came from
+	 * @param sessionID
+	 *            the session Id of which the file belongs to
+	 * @param keyPressed
+	 *            The key that is pressed when the edit is being made
+	 * @param editIndex
+	 *            The index of the character or white space being edited
+	 * @param fileID
+	 *            The unique file ID of the ile being edited
+	 * @param userAuthToken
+	 *            The authentication cooki prevent hackers from editing
 	 */
 	public void editFile(int userID, int sessionID, int keyPressed,
 			int editIndex, int fileID, String userAuthToken) {
@@ -183,9 +224,11 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 	}
 
 	/**
-	 * This compiles a list of files		[Not Implemented]
-	 * @param fileNames				The list of files that are being compiled
-	 * @return						True if the files compiled successful, false otherwise
+	 * This compiles a list of files [Not Implemented]
+	 * 
+	 * @param fileNames
+	 *            The list of files that are being compiled
+	 * @return True if the files compiled successful, false otherwise
 	 */
 	public boolean compile(List<String> fileNames) {
 		// TODO implement
@@ -194,9 +237,13 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 
 	/**
 	 * This creates a new file to be worked on or edited.
-	 * @param fileID			The unique File ID to assign to the new file
-	 * @param filename			The unique file name to assign to the file
-	 * @param type				The type of the newly created file
+	 * 
+	 * @param fileID
+	 *            The unique File ID to assign to the new file
+	 * @param filename
+	 *            The unique file name to assign to the file
+	 * @param type
+	 *            The type of the newly created file
 	 */
 	public void createSourceFile(int fileID, String filename, SourceType type) {
 		Task task = new CreateFileTask(userID, filename, type, authToken);
@@ -206,7 +253,9 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 
 	/**
 	 * This opens up an existing file given a unique file ID
-	 * @param fileID			The unique file ID of the file to open
+	 * 
+	 * @param fileID
+	 *            The unique file ID of the file to open
 	 */
 	public void openSourceFile(int fileID) {
 		Task task = new OpenFileTask(userID, fileID, authToken);
@@ -216,10 +265,13 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 
 	/**
 	 * This sends a chat message to the server.
-	 * @param message			The message to send
+	 * 
+	 * @param message
+	 *            The message to send
 	 */
 	public void sendChatMessage(String message) {
-		Task task = new ChatTask(userID, username, sessionID, message, authToken);
+		Task task = new ChatTask(userID, username, sessionID, message,
+				authToken);
 		network.sendTask(task);
 	}
 
@@ -227,8 +279,9 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 	 * Convert the SourceFile with the given filename to a File and return this
 	 * file.
 	 * 
-	 * @param fileName		The filename of the SourceFile to return.
-	 * @return 				The specified SourceFile converted to a File.
+	 * @param fileName
+	 *            The filename of the SourceFile to return.
+	 * @return The specified SourceFile converted to a File.
 	 */
 	public File getSourceFile(String fileName) {
 		File file = sourceFiles.get(fileName).toFile();
@@ -251,8 +304,11 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 	}
 
 	/**
-	 * This executes a a createAccount Tasks I.e creates a new account via task.		[Not Implemented]
-	 * @param task					The createUserTask to create the new account
+	 * This executes a a createAccount Tasks I.e creates a new account via task.
+	 * [Not Implemented]
+	 * 
+	 * @param task
+	 *            The createUserTask to create the new account
 	 */
 	public void executeTask(CreateAccountTaskResponse task) {
 		if (task.isSuccess()) {
@@ -271,7 +327,9 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 
 	/**
 	 * This logs in the user via LogInTaskResponse
-	 * @param task			The loginTaskResponse to use to login the user
+	 * 
+	 * @param task
+	 *            The loginTaskResponse to use to login the user
 	 */
 	public void executeTask(LoginTaskResponse task) {
 		if (task.isSuccess()) {
@@ -284,37 +342,85 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 				}
 			};
 			SwingUtilities.invokeLater(doWorkRunnable);
+		} else {
+			JOptionPane.showMessageDialog(logDialog, "Error logging in");
+			Runnable doWorkRunnable = new Runnable() {
+				public void run() {
+					logDialog.resetDialog();
+				}
+			};
+			SwingUtilities.invokeLater(doWorkRunnable);
 		}
 	}
 
 	/**
 	 * This creates a new session via CreateSessionTAsk
-	 * @param task			The Task to use to create a new session
+	 * 
+	 * @param task
+	 *            The Task to use to create a new session
 	 */
-	public void executeTask(CreateSessionTaskResponse task) {
+	public void executeTask(final CreateSessionTaskResponse task) {
 		if (task.isSuccess()) {
-			// do something - 
+
+			JOptionPane.showMessageDialog(createSessionDialog,
+					"Session created.");
+			Runnable doWorkRunnable = new Runnable() {
+				public void run() {
+					createSessionDialog.dispose();
+					sesDialog.setSessionName(task.getSessionName());
+				}
+			};
+			SwingUtilities.invokeLater(doWorkRunnable);
+		} else {
+			JOptionPane.showMessageDialog(createSessionDialog,
+					"Error creating session");
+			Runnable doWorkRunnable = new Runnable() {
+				public void run() {
+					createSessionDialog.resetDialog();
+				}
+			};
+			SwingUtilities.invokeLater(doWorkRunnable);
+
 		}
 	}
+
 	/**
 	 * This lets the user join a session via JoinSessionTask
-	 * @param task			The JoinSession Task used to let the user join a session
+	 * 
+	 * @param task
+	 *            The JoinSession Task used to let the user join a session
 	 */
 	public void executeTask(JoinSessionTaskResponse task) {
 		if (task.isSuccess()) {
-
-			if (task.getUserID() == userID){
+			Runnable doWorkRunnable = new Runnable() {
+				public void run() {
+					sesDialog.openMainFrame();
+				}
+			};
+			SwingUtilities.invokeLater(doWorkRunnable);
+			if (task.getUserID() == userID) {
 				// update client frame with list of files
 				clientFrame.addToFileList(task.getSessionFiles());
 			} else {
 				// another client sent the task - update user list
 				clientFrame.addUser(task.getUsername());
 			}
+		} else {
+			JOptionPane.showMessageDialog(sesDialog, "Error accessing session");
+			Runnable doWorkRunnable = new Runnable() {
+				public void run() {
+					sesDialog.resetDialog();
+				}
+			};
+			SwingUtilities.invokeLater(doWorkRunnable);
 		}
 	}
+
 	/**
 	 * This creates a new file via CreateFileTAsk
-	 * @param task		The createfileTask to use to create the new file
+	 * 
+	 * @param task
+	 *            The createfileTask to use to create the new file
 	 */
 	public void executeTask(CreateFileTaskResponse task) {
 		if (task.isSuccess()) { // client is a session leader
@@ -324,7 +430,7 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 							task.getType(), "", this));
 
 			// if client is a session leader, then open file up in tab
-			if (task.getUserID() == userID) { 
+			if (task.getUserID() == userID) {
 
 				// create and open new tab
 				clientFrame.addTab(task.getFileID(), task.getFilename(), "");
@@ -335,42 +441,55 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 			clientFrame.addToFileList(task.getFilename());
 		}
 	}
+
 	/**
-	 * This will open a new file via OpenFileTask 
-	 * @param task			The openFileTaskResponse used to open a file
+	 * This will open a new file via OpenFileTask
+	 * 
+	 * @param task
+	 *            The openFileTaskResponse used to open a file
 	 */
 	public void executeTask(OpenFileTaskResponse task) {
-		clientFrame.addTab(task.getFileID(), task.getFilename(), task.getFileContent());
+		clientFrame.addTab(task.getFileID(), task.getFilename(),
+				task.getFileContent());
 	}
 
 	/**
 	 * This executes a file edit via EditorTaskRepsonse
-	 * @param task							The EditorTaske used to edit the file
-	 * @throws BadLocationException			If the file doesn't exist, this exception is thrown
+	 * 
+	 * @param task
+	 *            The EditorTaske used to edit the file
+	 * @throws BadLocationException
+	 *             If the file doesn't exist, this exception is thrown
 	 */
 	public void executeTask(EditorTaskResponse task) {
 
 		if (task.isSuccess()) {
 			sourceFiles.get(task.getFileID()).editSource(task);
 			try {
-				clientFrame.updateSourceTab(task.getFileID(), task.getKeyPressed(),
-						task.getEditIndex());
+				clientFrame.updateSourceTab(task.getFileID(),
+						task.getKeyPressed(), task.getEditIndex());
 			} catch (BadLocationException e) {
 				// do something
 			}
 		}
 	}
+
 	/**
 	 * This sends a chat message via ChatTaskResponse
-	 * @param task		The ChatTasResponse used to send the chat message
+	 * 
+	 * @param task
+	 *            The ChatTasResponse used to send the chat message
 	 */
 	public void executeTask(ChatTaskResponse task) {
 		clientFrame.updateChat(task.getUsername(), task.getMessage());
 	}
+
 	/**
-	 * This downloads a file via DownloadFileTAsk response 		[Not Implemented]
-	 * @param task			the DownloadFileTAsk to use to download the file
-	 * @return				True if successful, false otherwise
+	 * This downloads a file via DownloadFileTAsk response [Not Implemented]
+	 * 
+	 * @param task
+	 *            the DownloadFileTAsk to use to download the file
+	 * @return True if successful, false otherwise
 	 */
 	public void executeTask(DownloadFileTaskResponse task) {
 		// TODO implement
@@ -413,10 +532,10 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 	}
 
 	/**
-	 * Execute the task for leaving a session. If this client was
-	 * the one that requested the session to be left, then update the
-	 * client GUI to reflect this. Otherwise, remove the username
-	 * in the task from the session user list.
+	 * Execute the task for leaving a session. If this client was the one that
+	 * requested the session to be left, then update the client GUI to reflect
+	 * this. Otherwise, remove the username in the task from the session user
+	 * list.
 	 */
 	@Override
 	public void executeTask(LeaveSessionTaskResponse task) {
@@ -427,7 +546,7 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 			} else {
 				clientFrame.removeUser(task.getUsername());
 			}
-			
+
 		}
 
 	}
@@ -450,7 +569,5 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 		}
 
 	}
-
-
 
 }
