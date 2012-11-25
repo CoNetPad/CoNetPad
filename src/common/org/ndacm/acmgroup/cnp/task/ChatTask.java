@@ -1,40 +1,43 @@
 package org.ndacm.acmgroup.cnp.task;
 
-
 /**
- * A task to send a chat message. An ChatTask is a message sent by a connected user to
- * one ore more other session users.
+ * A task to send a chat message. An ChatTask is a message sent by a connected
+ * user to one ore more other session users.
  * 
  */
 public class ChatTask extends SessionTask {
-	
+
 	protected int userID;
 	private String username;
 	protected String message;
 	protected String userAuthToken;
-	
-	/** 
+
+	/**
 	 * Constructor that creates a ChatTask which is sent to all other session
 	 * users.
 	 * 
-	 * @param userID The userID of user that sent the chat message.
-	 * @param message The chat message being sent.
-	 * @param userAuthToken The authentication token for the user attempting to chat.
+	 * @param userID
+	 *            The userID of user that sent the chat message.
+	 * @param message
+	 *            The chat message being sent.
+	 * @param userAuthToken
+	 *            The authentication token for the user attempting to chat.
 	 */
-	public ChatTask(int userID, String username, int sessionID, String message, String userAuthToken) {
-
+	public ChatTask(int userID, String username, int sessionID, String message,
+			String userAuthToken) {
 		this.userID = userID;
 		this.sessionID = sessionID;
+		this.username = username;
 		this.message = message;
 		this.userAuthToken = userAuthToken;
 	}
-	
+
 	@Override
 	public void run() {
 		session.executeTask(this);
-		
+
 	}
-	
+
 	public void setUserID(int userID) {
 		this.userID = userID;
 	}
@@ -47,8 +50,7 @@ public class ChatTask extends SessionTask {
 		this.userAuthToken = userAuthToken;
 	}
 
-	public String toString()
-	{
+	public String toString() {
 		return this.userID + " " + this.message;
 	}
 
@@ -63,8 +65,7 @@ public class ChatTask extends SessionTask {
 	public String getUserAuthToken() {
 		return userAuthToken;
 	}
-	
-	
+
 	public String getUsername() {
 		return username;
 	}

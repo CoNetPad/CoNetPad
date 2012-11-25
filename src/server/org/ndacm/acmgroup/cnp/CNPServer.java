@@ -22,6 +22,7 @@ import org.ndacm.acmgroup.cnp.git.NotDirectoryException;
 import org.ndacm.acmgroup.cnp.network.ServerNetwork;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEventListener;
+import org.ndacm.acmgroup.cnp.task.ChatTask;
 import org.ndacm.acmgroup.cnp.task.CloseFileTask;
 import org.ndacm.acmgroup.cnp.task.CreateAccountTask;
 import org.ndacm.acmgroup.cnp.task.CreateFileTask;
@@ -40,6 +41,7 @@ import org.ndacm.acmgroup.cnp.task.ServerTaskExecutor;
 import org.ndacm.acmgroup.cnp.task.SessionTask;
 import org.ndacm.acmgroup.cnp.task.Task;
 import org.ndacm.acmgroup.cnp.task.message.TaskMessageFactory;
+import org.ndacm.acmgroup.cnp.task.response.ChatTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.CreateAccountTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.CreateSessionTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.JoinSessionTaskResponse;
@@ -165,6 +167,9 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 			ArrayList<String> list = new ArrayList<String>();
 			File[] files = repo.listFiles();
 			for (int i = 0; i < files.length; i++) {
+				if (files[i].getName().compareTo(".git") == 0) {
+					continue;
+				}
 				list.add(files[i].getName());
 			}
 			return list;
@@ -261,7 +266,7 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 				}
 
 				jGit.createRepo(newSession.getSessionName());
-
+				openSessions.put(newSession.getSessionID(), newSession);
 				response = new CreateSessionTaskResponse(
 						newSession.getSessionID(), newSession.getSessionName(),
 						true);
@@ -410,7 +415,9 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 			CNPSession session = openSessions.get(sessionTask.getSessionID());
 			// set session reference
 			sessionTask.setSession(session);
-
+			if (session == null) {
+				return;
+			}
 			if (sessionTask instanceof CreateFileTask) {
 				((CreateFileTask) task).setConnection(evt.getConnection());
 			} else if (task instanceof OpenFileTask) {

@@ -388,17 +388,20 @@ public class CNPClient implements TaskReceivedEventListener,
 	 * @param task
 	 *            The JoinSession Task used to let the user join a session
 	 */
-	public void executeTask(JoinSessionTaskResponse task) {
+	public void executeTask(final JoinSessionTaskResponse task) {
 		if (task.isSuccess()) {
-			Runnable doWorkRunnable = new Runnable() {
-				public void run() {
-					sesDialog.openMainFrame();
-				}
-			};
-			SwingUtilities.invokeLater(doWorkRunnable);
 			if (task.getUserID() == userID) {
 				// update client frame with list of files
-				clientFrame.addToFileList(task.getSessionFiles());
+
+				Runnable doWorkRunnable = new Runnable() {
+					public void run() {
+						sesDialog.openMainFrame(task.getSessionFiles());
+						sessionID = task.getSessionID();
+
+					}
+				};
+				SwingUtilities.invokeLater(doWorkRunnable);
+
 			} else {
 				// another client sent the task - update user list
 				clientFrame.addUser(task.getUsername());
@@ -578,4 +581,7 @@ public class CNPClient implements TaskReceivedEventListener,
 
 	}
 
+	public String getSessionName() {
+		return sessionName;
+	}
 }

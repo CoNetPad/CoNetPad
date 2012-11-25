@@ -13,7 +13,6 @@ public class ChatTaskResponse extends TaskResponse {
 	@Override
 	public void run() {
 		client.executeTask(this);
-		
 	}
 
 	public String getUsername() {

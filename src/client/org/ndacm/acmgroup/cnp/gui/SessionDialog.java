@@ -3,6 +3,7 @@ package org.ndacm.acmgroup.cnp.gui;
 import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -201,8 +202,8 @@ public class SessionDialog extends JDialog {
 		}
 	}
 
-	public void openMainFrame() {
-		MainFrame frame = new MainFrame(client);
+	public void openMainFrame(List<String> sessionFiles) {
+		MainFrame frame = new MainFrame(client, sessionFiles);
 		frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		frame.setVisible(true);
 		loginDialog.setVisible(false);

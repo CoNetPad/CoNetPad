@@ -95,9 +95,8 @@ public class CNPConnection extends Thread {
 	}
 
 	public void sendTaskResponse(TaskResponse task) {
-		String message = TaskMessageFactory.fromTaskResponseToMessage(task)
-				.getMessageString();
-		out.println(message);
+		out.println(TaskMessageFactory.fromTaskResponseToMessage(task)
+				.getMessageString());
 		System.out.println("TaskResponse sent");
 	}
 
