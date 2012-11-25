@@ -81,7 +81,7 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 		rand = new Random();
 
 		try {
-			database = new Database();
+			database = new Database(this);
 		} catch (Exception ex) {
 			System.err.println("Error setting up databse.");
 			System.err.println(ex.getMessage());
@@ -110,28 +110,7 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 	public void startNetwork() {
 		network.startListening();
 	}
-	/**
-	 * This adds a specific user to a specific Session
-	 * @param task				The JoinSessionTask that joins a user to a task
-	 * @throws SQLException		
-	 */
-	public void connectToSession(JoinSessionTask task) throws SQLException {
 
-		// CNPSession session = null;
-		// Account userAccount = database.retrieveAccount(task.getUserID(),
-		// task.getPassword());
-		//
-		// if (!openSessions.containsKey(task.getSessionName())) {
-		// // retrieve session from database and add to openSessions
-		//
-		// } else {
-		// // retrieve from openSessions
-		// session = openSessions.get(task.getSessionName());
-		// }
-		//
-		// // associate account with session
-		// session.addUser(userAccount, task.getConnection());
-	}
 	/**
 	 * This creates a new public session	[Not Implemented]
 	 * @param task						The CreateSessionTask that will be used to create the session
@@ -221,7 +200,7 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 					true, userAuthToken);
 		} catch (FailedAccountException e) {
 			// negative response
-			response = new LoginTaskResponse(-1, "", false, "");
+			response = new LoginTaskResponse(-1, "n/a", false, "n/a");
 		}
 
 		// send back response
@@ -249,15 +228,15 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 					newSession = database.createSession(task.getSessionLeader(), this);
 				}
 
-				response = new CreateSessionTaskResponse(newSession.getSessionID(), true);
+				response = new CreateSessionTaskResponse(newSession.getSessionID(), newSession.getSessionName(), true);
 
 			} catch (FailedSessionException ex){
 				// if creating the session fails, create a response signifying this
-				response = new CreateSessionTaskResponse(-1, false);
+				response = new CreateSessionTaskResponse(-1, "n/a", false);
 			}
 		} else {
 			// user authentication failed
-			response = new CreateSessionTaskResponse(-1, false);
+			response = new CreateSessionTaskResponse(-1, "n/a", false);
 		}
 
 		// send back response
@@ -385,10 +364,38 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 	 * This checks if a session exists or not
 	 * @param sessionName			The unique name of the session
 	 * @return						True if the session exists, false otherwise
+	 * @throws FailedSessionException 
 	 */
-	public static boolean sessionExists(String sessionName) {
-		return Database.sessionExists(sessionName);
+	public boolean sessionExists(String sessionName) throws FailedSessionException {
+		return database.sessionExists(sessionName);
 	}
+	
+	/**
+	 * This is a string generator for unique session names
+	 * @return			A unique string name.
+	 * Source:  http://stackoverflow.com/questions/2863852/how-to-generate-a-random-string-in-java
+	 * @throws FailedSessionException 
+	 */
+	public String generateString() throws FailedSessionException {
+
+		boolean isUnique = false;
+
+		char[] text = null;
+		String sessionName = null;
+		while (!isUnique) {
+			text = new char[CNPSession.NAME_LENGTH];
+			for (int i = 0; i < CNPSession.NAME_LENGTH; i++) {
+				text[i] = CNPSession.SESSION_NAME_CHARS.charAt(rand.nextInt(CNPSession.SESSION_NAME_CHARS.length()));
+			}
+			sessionName = new String(text);
+
+			if (sessionExists(sessionName)) {
+				isUnique = true;
+			}
+		}
+		return sessionName;
+	}
+	
 	/**
 	 * This generates a random token for user authentication
 	 * @return			The string token

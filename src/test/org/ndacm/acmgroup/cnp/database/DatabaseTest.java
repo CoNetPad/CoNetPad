@@ -26,7 +26,7 @@ public class DatabaseTest {
 	@Test
 	public void testDatabase() {
 		try{
-		Database db = new Database();
+		Database db = new Database(new CNPServer(null));
 		}
 		catch(Exception e)
 		{
@@ -59,7 +59,7 @@ public class DatabaseTest {
 	public void testCreateAccount() {
 
 			try{
-			Database db = new Database();
+			Database db = new Database(null);
 				try
 				{
 					Account test = db.createAccount("John", "Jdoe@gmail.com", "test");
@@ -89,7 +89,7 @@ public class DatabaseTest {
 	public void testRetrieveAccount()
 	{
 		try{
-			Database db = new Database();
+			Database db = new Database(null);
 				try
 				{
 					Account test = db.retrieveAccount("John", "test");
@@ -125,7 +125,7 @@ public class DatabaseTest {
 	public void testCreateSession() {
 
 			try{
-			Database db = new Database();
+			Database db = new Database(null);
 				try
 				{
 					CNPServer server = new CNPServer(""); 
@@ -157,7 +157,7 @@ public class DatabaseTest {
 	public void testRetrieveSession() {
 
 			try{
-			Database db = new Database();
+			Database db = new Database(null);
 				try
 				{
 					CNPServer server = new CNPServer(""); 
@@ -194,7 +194,7 @@ public class DatabaseTest {
 	public void testCreatePrivateSession() {
 
 			try{
-			Database db = new Database();
+			Database db = new Database(null);
 				try
 				{
 					CNPServer server = new CNPServer(""); 
@@ -226,7 +226,7 @@ public class DatabaseTest {
 	public void testRetrievePrivateSession() {
 
 			try{
-			Database db = new Database();
+			Database db = new Database(null);
 				try
 				{
 					CNPServer server = new CNPServer(""); 
@@ -252,7 +252,7 @@ public class DatabaseTest {
 	public void testSessionIsPrivate() {
 
 			try{
-			Database db = new Database();
+			Database db = new Database(null);
 				try
 				{
 					CNPServer server = new CNPServer(""); 
@@ -287,7 +287,7 @@ public class DatabaseTest {
 	public void testCreateSessionAccount() {
 
 			try{
-			Database db = new Database();
+			Database db = new Database(null);
 				try
 				{
 					CNPServer server = new CNPServer(""); 

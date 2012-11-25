@@ -303,6 +303,7 @@ public class TaskMessageFactory {
 	 * @return a TaskResponse based on the information received in the message
 	 */
 	public static TaskResponse fromMessageToTaskResponse(TaskMessage message) {
+		System.out.print("task type: " + message.getTaskType().toString());
 
 		switch (message.getTaskType()) {
 		case Chat:
@@ -331,7 +332,7 @@ public class TaskMessageFactory {
 		case CreatePrivateSession:
 		case CreateSessionTask:
 			return new CreateSessionTaskResponse(Integer.parseInt(message
-					.getData()[0]), Boolean.parseBoolean(message.getData()[1]));
+					.getData()[0]), message.getData()[1], Boolean.parseBoolean(message.getData()[2]));
 		case DeleteFile:
 			return new DeleteFileTaskResponse(message.getData()[0],
 					Boolean.parseBoolean(message.getData()[1]));
@@ -367,6 +368,7 @@ public class TaskMessageFactory {
 					Integer.parseInt(message.getData()[3]),
 					Boolean.parseBoolean(message.getData()[4]),
 					fileNames);
+			
 		case Login:
 			return new LoginTaskResponse(
 					Integer.parseInt(message.getData()[0]),
@@ -429,6 +431,7 @@ public class TaskMessageFactory {
 		} else if (task instanceof CreateSessionTaskResponse) {
 			CreateSessionTaskResponse createSession = (CreateSessionTaskResponse) task;
 			String[] data = { Integer.toString(createSession.getSessionID()),
+					createSession.getSessionName(),
 					Boolean.toString(createSession.isSuccess()) };
 			message = new TaskMessage(TaskType.CreateSessionTask, data);
 		} else if (task instanceof DeleteFileTaskResponse) {

@@ -293,7 +293,7 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 	 */
 	public void executeTask(CreateSessionTaskResponse task) {
 		if (task.isSuccess()) {
-			// do something
+			// do something - 
 		}
 	}
 	/**

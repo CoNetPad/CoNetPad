@@ -28,7 +28,7 @@ public class CNPConnection extends Thread {
 	private PrintWriter out = null;
 	private BufferedReader in = null;
 	private TaskEventSource taskSource;
-	private boolean isServer = false;
+	private boolean isServer;
 	private boolean stop = false;
 
 	/**
@@ -74,6 +74,7 @@ public class CNPConnection extends Thread {
 					task = TaskMessageFactory.fromMessageToTask(message);
 					task.setClientId(id);
 				} else {
+					System.out.println("total elements" + message.getData().length);
 					task = TaskMessageFactory
 							.fromMessageToTaskResponse(message);
 				}

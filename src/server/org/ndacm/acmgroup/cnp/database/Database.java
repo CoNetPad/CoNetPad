@@ -39,17 +39,19 @@ public class Database implements IDatabase{
 
 	private Connection dbConnection;
 	private Random random;
+	private CNPServer server;
 
 	/**
 	 * Default Constructor
 	 * @throws SQLException 
 	 * @throws Exception
 	 */
-	public Database() throws ClassNotFoundException, SQLException
+	public Database(CNPServer server) throws ClassNotFoundException, SQLException
 	{
 		Class.forName(DRIVER_CLASS);
 		dbConnection = DriverManager.getConnection(DB_FILE);
 		random = new Random();
+		this.server = server;
 
 	}
 	/**
@@ -216,7 +218,7 @@ public class Database implements IDatabase{
 			if(rset.next())
 			{
 
-				String sessionName = CNPSession.generateString();
+				String sessionName = server.generateString();
 				String insertion = "INSERT INTO Session (SessionLeader, SessionName, IsPublic) "
 						+ "VALUES (? , ?, ?)";
 
@@ -267,7 +269,7 @@ public class Database implements IDatabase{
 			hashString = this.encrypt(sessionPassword, saltString);
 			// insert session into DB
 			PreparedStatement createSession = null;
-			String sessionName = CNPSession.generateString();
+			String sessionName = server.generateString();
 			String insertion = "INSERT INTO Session (SessionLeader, SessionName, IsPublic) "
 					+ "VALUES (? , ?, ?)";
 
@@ -625,12 +627,38 @@ public class Database implements IDatabase{
 		}
 		return false;
 
-		// TODO Auto-generated method stub
 	}
 
-	public static boolean sessionExists(String sessionName) {
-		// TODO implement
-		return false;
+	/**
+	 * Returns true if a session with the given session name exists.
+	 * @param sessionName the session name to look for
+	 * @return true if a session with the given name exists
+	 * @throws FailedSessionException
+	 */
+	public boolean sessionExists(String sessionName) throws FailedSessionException {
+		PreparedStatement retrieveSession = null;
+		ResultSet rset = null;
+
+		// search for all database entries with a matching session name
+		String query = "SELECT * "
+				+ "FROM Session "
+				+ "WHERE SessionName = ?";
+
+		try {
+			retrieveSession = dbConnection.prepareStatement(query);
+			retrieveSession.setString(1, sessionName);
+
+			// test if the resultset is empty    
+			rset = retrieveSession.executeQuery();
+			if(rset.isBeforeFirst() ) {
+				return true;
+			} else {
+				return false;
+			}
+
+		} catch (SQLException ex) {
+			throw new FailedSessionException("Failed due to SQLException.");
+		}
 	}
 
 

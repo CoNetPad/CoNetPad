@@ -10,6 +10,7 @@ import java.util.concurrent.Executors;
 import org.ndacm.acmgroup.cnp.Account.ChatPermissionLevel;
 import org.ndacm.acmgroup.cnp.Account.FilePermissionLevel;
 import org.ndacm.acmgroup.cnp.database.Database;
+import org.ndacm.acmgroup.cnp.exceptions.FailedSessionException;
 import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
 import org.ndacm.acmgroup.cnp.git.JGit;
@@ -42,7 +43,7 @@ public class CNPSession implements SessionTaskExecutor {
 	/**
 	 * The allowed characters for the Session name generator
 	 */
-	private static final String SESSION_NAME_CHARS = "abcdefghijklmnopqrstuvwxyz";
+	public static final String SESSION_NAME_CHARS = "abcdefghijklmnopqrstuvwxyz";
 	/**
 	 * A unique INTEGER for getting next file ID.
 	 */
@@ -50,15 +51,12 @@ public class CNPSession implements SessionTaskExecutor {
 	/**
 	 * Max length of session names
 	 */
-	private static int NAME_LENGTH = 5;
+	public static final int NAME_LENGTH = 5;
 	/**
 	 * The base directories of the files stored
 	 */
 	private static String baseDirectory;
-	/**
-	 * The Random generator
-	 */
-	private static Random rnd = new Random();
+
 	/**
 	 * The database object to run queries
 	 */
@@ -319,30 +317,7 @@ public class CNPSession implements SessionTaskExecutor {
 
 	}
 
-	/**
-	 * This is a string generator for unique session names
-	 * @return			A unique string name.
-	 * Source:  http://stackoverflow.com/questions/2863852/how-to-generate-a-random-string-in-java
-	 */
-	public static String generateString() {
 
-		boolean isUnique = false;
-
-		char[] text = null;
-		String sessionName = null;
-		while (!isUnique) {
-			text = new char[NAME_LENGTH];
-			for (int i = 0; i < NAME_LENGTH; i++) {
-				text[i] = SESSION_NAME_CHARS.charAt(rnd.nextInt(SESSION_NAME_CHARS.length()));
-			}
-			sessionName = new String(text);
-
-			if (CNPServer.sessionExists(sessionName)) {
-				isUnique = true;
-			}
-		}
-		return sessionName;
-	}
 
 
 	/**
