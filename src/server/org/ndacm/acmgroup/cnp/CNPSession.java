@@ -15,7 +15,13 @@ import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
 import org.ndacm.acmgroup.cnp.git.JGit;
 import org.ndacm.acmgroup.cnp.network.CNPConnection;
 import org.ndacm.acmgroup.cnp.task.ChatTask;
+import org.ndacm.acmgroup.cnp.task.CloseFileTask;
+import org.ndacm.acmgroup.cnp.task.CommitTask;
 import org.ndacm.acmgroup.cnp.task.CreateFileTask;
+import org.ndacm.acmgroup.cnp.task.DeleteFileTask;
+import org.ndacm.acmgroup.cnp.task.DisconnectTask;
+import org.ndacm.acmgroup.cnp.task.DownloadFileTask;
+import org.ndacm.acmgroup.cnp.task.DownloadRepoTask;
 import org.ndacm.acmgroup.cnp.task.OpenFileTask;
 import org.ndacm.acmgroup.cnp.task.SendResponseTask;
 import org.ndacm.acmgroup.cnp.task.SessionTask;
@@ -201,12 +207,6 @@ public class CNPSession implements SessionTaskExecutor {
 		return new File("");
 	}
 	
-	@Override
-	public void executeTask(SessionTask task) {
-		executeTask(task);
-		
-	}
-
 	/**
 	 * This executes a given chat class
 	 * @param task			The chat class you wish to execute
@@ -260,6 +260,42 @@ public class CNPSession implements SessionTaskExecutor {
 		ChatTaskResponse response = new ChatTaskResponse(task.getUsername(), task.getMessage());
 		distributeTask(response);
 
+	}
+	
+	@Override
+	public void executeTask(CloseFileTask task) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void executeTask(CommitTask task) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void executeTask(DeleteFileTask task) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void executeTask(DisconnectTask task) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void executeTask(DownloadFileTask task) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void executeTask(DownloadRepoTask task) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	/**
@@ -332,6 +368,8 @@ public class CNPSession implements SessionTaskExecutor {
 		}
 		return false;
 	}
+
+
 
 
 }

@@ -60,12 +60,6 @@ public class ServerSourceFile extends SourceFile implements FileTaskExecutor {
 		fileTaskQueue.submit(task);
 	}
 	
-	@Override
-	public void executeTask(FileTask task) {
-		executeTask(task);
-		
-	}	
-
 	/**
 	 * This executes an editorTask
 	 * @param task		The editor task to execute

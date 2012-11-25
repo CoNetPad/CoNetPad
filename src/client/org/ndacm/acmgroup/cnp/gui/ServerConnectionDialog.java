@@ -26,6 +26,7 @@ public class ServerConnectionDialog extends JDialog {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		
 		try {
 			ServerConnectionDialog dialog = new ServerConnectionDialog();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

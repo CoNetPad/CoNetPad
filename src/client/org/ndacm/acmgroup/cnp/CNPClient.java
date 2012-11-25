@@ -33,10 +33,17 @@ import org.ndacm.acmgroup.cnp.task.LoginTask;
 import org.ndacm.acmgroup.cnp.task.OpenFileTask;
 import org.ndacm.acmgroup.cnp.task.Task;
 import org.ndacm.acmgroup.cnp.task.response.ChatTaskResponse;
+import org.ndacm.acmgroup.cnp.task.response.CloseFileTaskResponse;
+import org.ndacm.acmgroup.cnp.task.response.CommitTaskResponse;
+import org.ndacm.acmgroup.cnp.task.response.CompileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.CreateAccountTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.CreateFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.CreateSessionTaskResponse;
+import org.ndacm.acmgroup.cnp.task.response.DeleteFileTaskResponse;
+import org.ndacm.acmgroup.cnp.task.response.DeleteSessionTaskResponse;
+import org.ndacm.acmgroup.cnp.task.response.DisconnectTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.DownloadFileTaskResponse;
+import org.ndacm.acmgroup.cnp.task.response.DownloadRepoTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.JoinSessionTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.LoginTaskResponse;
@@ -88,7 +95,12 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 			public void run(){
 				CNPClient clientGUI = new CNPClient();
 				clientGUI.clientFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				clientGUI.clientFrame.setVisible(true);   
+				clientGUI.clientFrame.setVisible(true);
+//				
+//				ServerConnectionDialog dialog = new ServerConnectionDialog();
+//				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+//				dialog.setVisible(true);
+				 
 			}             
 		});
 	}
@@ -238,12 +250,6 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 		return list;
 	}
 	
-	@Override
-	public void executeTask(TaskResponse task) {
-		executeTask(task);
-		
-	}
-
 	/**
 	 * This executes a a createAccount Tasks I.e creates a new account via task.		[Not Implemented]
 	 * @param task					The createUserTask to create the new account
@@ -342,13 +348,16 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 	 * @param task							The EditorTaske used to edit the file
 	 * @throws BadLocationException			If the file doesn't exist, this exception is thrown
 	 */
-	public void executeTask(EditorTaskResponse task)
-			throws BadLocationException {
+	public void executeTask(EditorTaskResponse task) {
 
 		if (task.isSuccess()) {
 			sourceFiles.get(task.getFileID()).editSource(task);
-			clientFrame.updateSourceTab(task.getFileID(), task.getKeyPressed(),
-					task.getEditIndex());
+			try {
+				clientFrame.updateSourceTab(task.getFileID(), task.getKeyPressed(),
+						task.getEditIndex());
+			} catch (BadLocationException e) {
+				// do something
+			}
 		}
 	}
 	/**
@@ -363,9 +372,51 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 	 * @param task			the DownloadFileTAsk to use to download the file
 	 * @return				True if successful, false otherwise
 	 */
-	public boolean executeTask(DownloadFileTaskResponse task) {
+	public void executeTask(DownloadFileTaskResponse task) {
 		// TODO implement
-		return false;
+		
+	}
+	
+	@Override
+	public void executeTask(CloseFileTaskResponse task) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void executeTask(CommitTaskResponse task) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void executeTask(CompileTaskResponse task) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void executeTask(DeleteFileTaskResponse task) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void executeTask(DeleteSessionTaskResponse task) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void executeTask(DisconnectTaskResponse task) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void executeTask(DownloadRepoTaskResponse task) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
@@ -380,5 +431,7 @@ public class CNPClient implements TaskReceivedEventListener, TaskResponseExecuto
 		}
 
 	}
+
+
 
 }

@@ -23,6 +23,7 @@ import org.ndacm.acmgroup.cnp.task.CreateAccountTask;
 import org.ndacm.acmgroup.cnp.task.CreateFileTask;
 import org.ndacm.acmgroup.cnp.task.CreatePrivateSessionTask;
 import org.ndacm.acmgroup.cnp.task.CreateSessionTask;
+import org.ndacm.acmgroup.cnp.task.DeleteSessionTask;
 import org.ndacm.acmgroup.cnp.task.FileTask;
 import org.ndacm.acmgroup.cnp.task.JoinPrivateSessionTask;
 import org.ndacm.acmgroup.cnp.task.JoinSessionTask;
@@ -177,12 +178,6 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 		// TODO implement
 		return null;
 	}
-	
-	@Override
-	public void executeTask(ServerTask task) {
-		executeTask(task);
-		
-	}
 
 	/**
 	 * This executes a createAccount Task, creating a new account
@@ -310,6 +305,12 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 		}
 
 	}
+	
+	@Override
+	public void executeTask(DeleteSessionTask task) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	@Override
 	public void TaskReceivedEventOccurred(TaskReceivedEvent evt) {
@@ -401,5 +402,8 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 
 		return new String(text);
 	}
+
+
+
 
 }
