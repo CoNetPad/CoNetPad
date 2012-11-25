@@ -480,8 +480,13 @@ public class CNPClient implements TaskReceivedEventListener,
 	 * @param task
 	 *            The ChatTasResponse used to send the chat message
 	 */
-	public void executeTask(ChatTaskResponse task) {
-		clientFrame.updateChat(task.getUsername(), task.getMessage());
+	public void executeTask(final ChatTaskResponse task) {
+		Runnable doWorkRunnable = new Runnable() {
+			public void run() {
+				clientFrame.updateChat(task.getUsername(), task.getMessage());
+			}
+		};
+		SwingUtilities.invokeLater(doWorkRunnable);
 	}
 
 	/**
@@ -500,11 +505,16 @@ public class CNPClient implements TaskReceivedEventListener,
 	 * If task was executed successfully, close the tab for task file.
 	 */
 	@Override
-	public void executeTask(CloseFileTaskResponse task) {
+	public void executeTask(final CloseFileTaskResponse task) {
 		if (task.isSuccess()) {
-			clientFrame.removeTab(task.getTabIndex());
-		}
+			Runnable doWorkRunnable = new Runnable() {
+				public void run() {
+					clientFrame.removeTab(task.getTabIndex());
+				}
 
+			};
+			SwingUtilities.invokeLater(doWorkRunnable);
+		}
 	}
 
 	@Override
