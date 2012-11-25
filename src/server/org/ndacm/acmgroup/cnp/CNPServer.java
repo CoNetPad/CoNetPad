@@ -403,7 +403,7 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 			}
 			sessionName = new String(text);
 
-			if (sessionExists(sessionName)) {
+			if (!sessionExists(sessionName)) {
 				isUnique = true;
 			}
 		}

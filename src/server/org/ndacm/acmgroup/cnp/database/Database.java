@@ -260,19 +260,22 @@ public class Database implements IDatabase{
 
 			// insert session into DB
 			createSession = dbConnection.prepareStatement(sessionInsertion);
+			
 			createSession.setInt(1, sessionLeader);
 			createSession.setString(2, sessionName);
 			createSession.setBoolean(3, false);
 			createSession.executeUpdate();
-
+			int newSessionID = retrieveSession(sessionName, server).getSessionID();
+			System.out.println("gets here");
+			
 			// insert session-password mapping into DB
 			createSessionPassword = dbConnection.prepareStatement(sessionPasswordInsertion);
-			createSessionPassword.setInt(1, sessionLeader);
+			createSessionPassword.setInt(1, newSessionID);
 			createSessionPassword.setString(2, hashString);
 			createSessionPassword.setString(3, saltString);
 			createSessionPassword.executeUpdate();
-
 			newSession = retrieveSession(sessionName, server, sessionPassword);
+			
 			createSession.close();
 			createSessionPassword.close();
 			return newSession;
