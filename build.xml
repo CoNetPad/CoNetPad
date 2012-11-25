@@ -54,6 +54,7 @@
     <mkdir dir="dist/client/lib" />
     <mkdir dir="dist/server/lib" />
     <mkdir dir="dist/test/lib" />
+    <mkdir dir="docs/javadoc" />
   </target>
   
   <!-- compile -->
@@ -101,8 +102,8 @@
     <copy tofile="dist/test/lib/${ant.project.name}-common.jar" 
 	  file="dist/temp/${ant.project.name}-common.jar" />
     
-    <!-- remove temp directory -->
-    <delete dir="dist/temp" />
+    <!-- remove temp directory --> 
+   <delete dir="dist/temp" />
 
     <!-- define client and server jar classpaths -->
     <path id="server.build.classpath">
@@ -198,6 +199,9 @@
       <pathelement location="lib/ropes-1.2.5/ropes.jar" />
       <pathelement location="lib/sqlite-jdbc-3.7.2/sqlite-jdbc-3.7.2.jar" />
       <pathelement location="build/test" />
+      <pathelement location="build/client" />
+      <pathelement location="build/common" />
+      <pathelement location="build/server" />
     </path>
 
     <!-- run tests and print results -->
@@ -206,6 +210,22 @@
       <formatter type="brief" usefile="false" />
       <test name="org.ndacm.acmgroup.cnp.CNPTestSuite" />
     </junit>
+  </target>
+
+  <!-- generate javadoc -->
+  <target name="doc" depends="init" description="generate documentation">
+    <!-- delete prev javadoc -->
+    <delete includeemptydirs="true">
+      <fileset dir="docs/javadoc" includes="**/*"/>
+    </delete>
+
+    <!-- create temp directory for all source -->
+    <mkdir dir="docs/javadoc_temp" />
+
+    <javadoc sourcepath="src/test" destdir="docs/javadoc"/>
+    <javadoc sourcepath="src/client" destdir="docs/javadoc"/>
+    <javadoc sourcepath="src/common" destdir="docs/javadoc"/>
+    <javadoc sourcepath="src/server" destdir="docs/javadoc"/>
   </target>
 
   <!-- clean up -->

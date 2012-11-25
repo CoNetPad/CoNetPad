@@ -1,7 +1,8 @@
 package org.ndacm.acmgroup.cnp.file;
 
-import static org.junit.Assert.fail;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import junit.framework.TestCase;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -11,15 +12,13 @@ import org.junit.Test;
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
 import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
 
-public class ClientSourceFileTest {
+public class ClientSourceFileTest extends TestCase {
 	
-	public static ClientSourceFile file;
-	public static EditorTaskResponse response;
+	public ClientSourceFile file;
+	public EditorTaskResponse response;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		file = new ClientSourceFile(101, "HelloWorld.java",SourceType.JAVA,"Hello World!", null);
-		response = new EditorTaskResponse("jotan", 65, 6, 101, true);
 		
 	}
 
@@ -29,6 +28,8 @@ public class ClientSourceFileTest {
 
 	@Before
 	public void setUp() throws Exception {
+		file = new ClientSourceFile(101, "HelloWorld.java",SourceType.JAVA,"Hello World!", null);
+		response = new EditorTaskResponse("jotan", 65, 6, 101, true);
 	}
 
 	@After
@@ -44,7 +45,7 @@ public class ClientSourceFileTest {
 	@Test
 	public void testEditSourceIntInt() {
 		file.editSource(66, 6);
-		assertEquals("Hello BAWorld!", file.toString());
+		assertEquals("Hello BWorld!", file.toString());
 	}
 
 	@Test
