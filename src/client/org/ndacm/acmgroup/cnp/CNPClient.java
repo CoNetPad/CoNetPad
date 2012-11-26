@@ -397,7 +397,6 @@ public class CNPClient implements TaskReceivedEventListener,
 						clientFrame = sesDialog.openMainFrame(task
 								.getSessionFiles());
 						sessionID = task.getSessionID();
-
 					}
 				};
 				SwingUtilities.invokeLater(doWorkRunnable);

@@ -303,8 +303,14 @@ public class MainFrame extends JFrame {
 	 * @param username
 	 *            the user to add
 	 */
-	public void addUser(String username) {
+	public void addToUser(String username) {
 		modelUsers.addElement(username);
+	}
+
+	public void addToUserList(List<String> userList) {
+		for (int i = 0; i < userList.size(); i++) {
+			modelFiles.addElement(userList.get(i));
+		}
 	}
 
 	/**
