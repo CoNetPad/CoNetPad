@@ -189,4 +189,8 @@ public class LoginDialog extends JDialog {
 		btnRegister.setEnabled(true);
 		btnLogIn.setEnabled(true);
 	}
+
+	public void setUsername(String text) {
+		formattedUsername.setText(text);
+	}
 }

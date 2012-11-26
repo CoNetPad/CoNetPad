@@ -96,7 +96,7 @@ public class MainFrame extends JFrame {
 			@Override
 			public void keyTyped(KeyEvent arg0) {
 				if (arg0.getKeyChar() == '\n') {
-					if (textAreaChatInput.getText().length() > 0) {
+					if (textAreaChatInput.getText().trim().length() > 0) {
 						String message = textAreaChatInput.getText().trim();
 						cnpClient.sendChatMessage(message);
 						textAreaChatInput.setText("");
