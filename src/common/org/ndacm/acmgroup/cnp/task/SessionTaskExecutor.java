@@ -6,8 +6,6 @@ public interface SessionTaskExecutor {
 
 	public void executeTask(CloseFileTask task);
 
-	public void executeTask(CommitTask task);
-
 	public void executeTask(CreateFileTask task);
 
 	public void executeTask(DeleteFileTask task);

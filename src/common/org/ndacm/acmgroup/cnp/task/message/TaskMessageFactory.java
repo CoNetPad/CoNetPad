@@ -71,7 +71,11 @@ public class TaskMessageFactory {
 					message.getData()[3]);
 		case Commit:
 			return new CommitTask(Integer.parseInt(message.getData()[0]),
-					message.getData()[1]);
+					message.getData()[1],
+					Integer.parseInt(message.getData()[2]),
+					message.getData()[3],
+					message.getData()[4]
+					);
 		case Compile:
 			List<String> sourceFilenames = new ArrayList<String>(
 					message.getData().length - 2);
@@ -185,7 +189,10 @@ public class TaskMessageFactory {
 		} else if (task instanceof CommitTask) {
 			CommitTask commit = (CommitTask) task;
 			String[] data = { Integer.toString(commit.getUserID()),
-					commit.getUserAuthToken() };
+					commit.getUserAuthToken(),
+					Integer.toString(commit.getSessionID()),
+					commit.getSessionName(),
+					commit.getMessage()};
 			message = new TaskMessage(TaskType.Commit, data);
 		} else if (task instanceof CompileTask) {
 			CompileTask compile = (CompileTask) task;
@@ -300,7 +307,7 @@ public class TaskMessageFactory {
 	 * @return a TaskResponse based on the information received in the message
 	 */
 	public static TaskResponse fromMessageToTaskResponse(TaskMessage message) {
-		System.out.print("task type: " + message.getTaskType().toString());
+		System.out.print(": " + message.getTaskType().toString());
 
 		switch (message.getTaskType()) {
 		case Chat:

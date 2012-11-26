@@ -24,6 +24,7 @@ import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEventListener;
 import org.ndacm.acmgroup.cnp.task.ChatTask;
 import org.ndacm.acmgroup.cnp.task.CloseFileTask;
+import org.ndacm.acmgroup.cnp.task.CommitTask;
 import org.ndacm.acmgroup.cnp.task.CreateAccountTask;
 import org.ndacm.acmgroup.cnp.task.CreateFileTask;
 import org.ndacm.acmgroup.cnp.task.CreatePrivateSessionTask;
@@ -387,8 +388,19 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 
 	@Override
 	public void executeTask(DeleteSessionTask task) {
-		// TODO Auto-generated method stub
+		if (userIsAuth(task.getUserID(), task.getUserAuthToken())) {
+			// if others are connected, kick them off first
+			
+			// then delete session and any associated data
+		}
 
+	}
+	
+	@Override
+	public void executeTask(CommitTask task) {
+		if (userIsAuth(task.getUserID(), task.getUserAuthToken())) {
+			jGit.commitToRepo(task.getSessionName(), task.getMessage());
+		}
 	}
 
 	@Override
@@ -536,5 +548,7 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 	public JGit getjGit() {
 		return jGit;
 	}
+
+
 
 }

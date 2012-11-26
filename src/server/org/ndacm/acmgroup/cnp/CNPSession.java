@@ -316,12 +316,6 @@ public class CNPSession implements SessionTaskExecutor {
 	}
 
 	@Override
-	public void executeTask(CommitTask task) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void executeTask(DeleteFileTask task) {
 		// TODO Auto-generated method stub
 
