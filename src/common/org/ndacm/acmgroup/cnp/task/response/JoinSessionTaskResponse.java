@@ -3,7 +3,10 @@ package org.ndacm.acmgroup.cnp.task.response;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-
+/**
+ * A class.
+ *
+ */
 public class JoinSessionTaskResponse extends TaskResponse {
 
 	private int userID;

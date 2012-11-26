@@ -15,6 +15,9 @@ public class DatabaseTest extends TestCase {
 	public static Account account1;
 	
 	protected static void setUpBeforeClass() throws Exception {
+		// clear database
+		
+		
 		server = new CNPServer("");
 		database = new Database(server);
 		account1 = database.createAccount("account1", "acc1@test.com", "testme");
