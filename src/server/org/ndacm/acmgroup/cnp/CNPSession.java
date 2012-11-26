@@ -108,10 +108,6 @@ public class CNPSession implements SessionTaskExecutor {
 
 	}
 
-	public CNPSession() {
-		// TODO implement
-		sessionTaskQueue = Executors.newSingleThreadExecutor();
-	}
 
 	/**
 	 * This returns the database ID of the sesison leader
