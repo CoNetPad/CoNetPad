@@ -530,7 +530,9 @@ public class CNPClient implements TaskReceivedEventListener,
 
 	@Override
 	public void executeTask(CommitTaskResponse task) {
-		// TODO Auto-generated method stub
+		if (task.isSuccess()) {
+			// show a dialog box?
+		}
 
 	}
 

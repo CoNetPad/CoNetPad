@@ -8,4 +8,5 @@ public interface ServerTaskExecutor {
 	public void executeTask (JoinSessionTask task);
 	public void executeTask (LeaveSessionTask task);
 	public void executeTask (LoginTask task);
+	public void executeTask (CommitTask task);
 }
