@@ -3,11 +3,17 @@ package org.ndacm.acmgroup.cnp.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -16,20 +22,20 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.JTree;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.ListSelectionModel;
+import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.text.BadLocationException;
 
 import org.ndacm.acmgroup.cnp.CNPClient;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 public class MainFrame extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTabbedPane tabbedPane;
 	private Map<Integer, JTextField> tabs; // fileID to tab component
@@ -40,11 +46,16 @@ public class MainFrame extends JFrame {
 
 	private JTextArea textAreaChatInput;
 	private JTextArea textAreaChat;
+	private JList listUsers;
+	private JList listFiles;
+
+	private DefaultListModel modelFiles;
+	private DefaultListModel modelUsers;
 
 	/**
 	 * Create the frame.
 	 */
-	public MainFrame(CNPClient client) {
+	public MainFrame(CNPClient client, List<String> sessionFiles) {
 		this.cnpClient = client;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -60,12 +71,20 @@ public class MainFrame extends JFrame {
 
 		JLabel lblCurrentUsers = new JLabel("Current Users");
 
-		JList list = new JList();
-		list.setBorder(new LineBorder(new Color(0, 0, 0)));
+		modelFiles = new DefaultListModel();
+		modelUsers = new DefaultListModel();
+
+		listUsers = new JList(modelUsers);
+		listUsers.setBorder(new LineBorder(new Color(0, 0, 0)));
+		listUsers
+				.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		listUsers.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+		listUsers.setVisibleRowCount(-1);
 
 		JLabel lblChat = new JLabel("Chat");
 
 		textAreaChat = new JTextArea();
+		textAreaChat.setEditable(false);
 		textAreaChat.setLineWrap(true);
 		textAreaChat.setBorder(new LineBorder(new Color(0, 0, 0)));
 		JScrollPane scrollPane = new JScrollPane(textAreaChat);
@@ -76,9 +95,11 @@ public class MainFrame extends JFrame {
 		textAreaChatInput.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent arg0) {
-				if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
+				if (arg0.getKeyChar() == '\n') {
 					if (textAreaChatInput.getText().length() > 0) {
-						cnpClient.sendChatMessage(textAreaChatInput.getText());
+						String message = textAreaChatInput.getText().trim();
+						cnpClient.sendChatMessage(message);
+						textAreaChatInput.setText("");
 					}
 				}
 			}
@@ -100,7 +121,7 @@ public class MainFrame extends JFrame {
 										gl_panel.createParallelGroup(
 												Alignment.TRAILING)
 												.addComponent(
-														list,
+														listUsers,
 														GroupLayout.DEFAULT_SIZE,
 														191, Short.MAX_VALUE)
 												.addComponent(scrollPane,
@@ -126,8 +147,8 @@ public class MainFrame extends JFrame {
 						.addContainerGap()
 						.addComponent(lblCurrentUsers)
 						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(list, GroupLayout.PREFERRED_SIZE, 121,
-								GroupLayout.PREFERRED_SIZE)
+						.addComponent(listUsers, GroupLayout.PREFERRED_SIZE,
+								121, GroupLayout.PREFERRED_SIZE)
 						.addGap(18)
 						.addComponent(lblChat)
 						.addPreferredGap(ComponentPlacement.RELATED)
@@ -141,9 +162,6 @@ public class MainFrame extends JFrame {
 
 		JPanel panel_1 = new JPanel();
 		contentPane.add(panel_1, BorderLayout.WEST);
-
-		JTree tree = new JTree();
-		tree.setBorder(new LineBorder(new Color(0, 0, 0)));
 		JLabel lblWorkspace = new JLabel("Workspace");
 
 		JButton btnSave = new JButton("Save");
@@ -157,8 +175,22 @@ public class MainFrame extends JFrame {
 		btnExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cnpClient.closeConnection();
+				dispose();
 			}
 		});
+
+		for (int i = 0; i < sessionFiles.size(); i++) {
+			modelFiles.addElement(sessionFiles.get(i));
+		}
+
+		listFiles = new JList(modelFiles);
+		listFiles.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		listFiles
+				.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		listFiles.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+		listFiles.setVisibleRowCount(-1);
+
+		JButton btnNewFile = new JButton("New File");
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
 		gl_panel_1
 				.setHorizontalGroup(gl_panel_1
@@ -172,12 +204,10 @@ public class MainFrame extends JFrame {
 														.createParallelGroup(
 																Alignment.LEADING)
 														.addComponent(
-																tree,
+																listFiles,
 																GroupLayout.DEFAULT_SIZE,
 																200,
 																Short.MAX_VALUE)
-														.addComponent(
-																lblWorkspace)
 														.addGroup(
 																Alignment.TRAILING,
 																gl_panel_1
@@ -186,22 +216,30 @@ public class MainFrame extends JFrame {
 																				btnExit)
 																		.addPreferredGap(
 																				ComponentPlacement.RELATED,
-																				54,
+																				92,
 																				Short.MAX_VALUE)
 																		.addComponent(
-																				btnSave)))
+																				btnSave))
+														.addComponent(
+																lblWorkspace)
+														.addComponent(
+																btnNewFile))
 										.addContainerGap()));
 		gl_panel_1.setVerticalGroup(gl_panel_1.createParallelGroup(
 				Alignment.LEADING)
 				.addGroup(
 						gl_panel_1
 								.createSequentialGroup()
-								.addContainerGap()
+								.addGap(10)
 								.addComponent(lblWorkspace)
 								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(tree, GroupLayout.DEFAULT_SIZE,
-										554, Short.MAX_VALUE)
+								.addComponent(listFiles,
+										GroupLayout.PREFERRED_SIZE, 481,
+										GroupLayout.PREFERRED_SIZE)
 								.addPreferredGap(ComponentPlacement.RELATED)
+								.addComponent(btnNewFile)
+								.addPreferredGap(ComponentPlacement.RELATED,
+										51, Short.MAX_VALUE)
 								.addGroup(
 										gl_panel_1
 												.createParallelGroup(
@@ -250,11 +288,13 @@ public class MainFrame extends JFrame {
 	}
 
 	public void addToFileList(List<String> fileList) {
-		// TODO implement
+		for (int i = 0; i < fileList.size(); i++) {
+			modelFiles.addElement(fileList.get(i));
+		}
 	}
 
 	public void addToFileList(String filename) {
-		// TODO implement
+		modelUsers.addElement(filename);
 	}
 
 	/**

@@ -475,7 +475,12 @@ public class TaskMessageFactory {
 			for (String filename : joinSession.getSessionFiles()) {
 				data.add(filename);
 			}
-			String[] dataArray = (String[]) data.toArray();
+
+			String[] dataArray = new String[data.size()];
+			for (int i = 0; i < data.size(); i++) {
+				dataArray[i] = data.get(i);
+			}
+
 			message = new TaskMessage(TaskType.JoinSession, dataArray);
 		} else if (task instanceof LoginTaskResponse) {
 			LoginTaskResponse login = (LoginTaskResponse) task;

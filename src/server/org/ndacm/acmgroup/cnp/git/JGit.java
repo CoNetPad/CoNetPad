@@ -2,6 +2,7 @@ package org.ndacm.acmgroup.cnp.git;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Hashtable;
 
 /**
@@ -20,11 +21,10 @@ public class JGit {
 	private Hashtable<String, JRepository> repos;
 
 	public File storage;
-	
+
 	public JGit() {
 		// create File based on session name
 	}
-	
 
 	public JGit(File storage) throws NotDirectoryException {
 		if (!storage.isDirectory()) {
@@ -57,18 +57,24 @@ public class JGit {
 	}
 
 	public void createRepo(String name) {
-		File tempRepo = new File(storage.getAbsolutePath() + File.separatorChar
+		File repo = new File(storage.getAbsolutePath() + File.separatorChar
 				+ name);
-		if (!tempRepo.exists()) {
+		if (!repo.exists()) {
+			repo.mkdirs();
 			try {
-				JRepository repoToLoad = new JRepository(tempRepo, name);
-				repoToLoad.gitInit();
-				repos.put(name, repoToLoad);
-			} catch (NotDirectoryException e) {
+				new File(repo.getAbsolutePath() + File.separator
+						+ "HelloWorld.txt").createNewFile();
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		} else {
+		}
 
+		try {
+			JRepository repoToLoad = new JRepository(repo, name);
+			repoToLoad.gitInit();
+			repos.put(name, repoToLoad);
+		} catch (NotDirectoryException e) {
+			e.printStackTrace();
 		}
 	}
 
