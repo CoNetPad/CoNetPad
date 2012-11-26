@@ -1,6 +1,7 @@
 package org.ndacm.acmgroup.cnp;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -306,6 +307,12 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 							task.getSessionName(), this);
 				}
 
+				if (!openSessions.containsKey(joinedSession.getSessionName())) {
+					openSessions.put(joinedSession.getSessionID(),
+							joinedSession);
+					jGit.activateRepo(joinedSession.getSessionName());
+				}
+
 				// add connection to session list
 				joinedSession.addUser(task.getUserID(), task.getConnection());
 
@@ -320,6 +327,9 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 			} catch (FailedSessionException ex) {
 				// if joining the session fails, create a response signifying
 				// this
+				response = new JoinSessionTaskResponse(-1, "", "", -1, false,
+						null);
+			} catch (FileNotFoundException e) {
 				response = new JoinSessionTaskResponse(-1, "", "", -1, false,
 						null);
 			}
