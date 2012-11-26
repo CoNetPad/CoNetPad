@@ -11,6 +11,7 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.EtchedBorder;
 
@@ -182,6 +183,12 @@ public class RegisterDialog extends JDialog {
 					formattedPassword.setEnabled(false);
 					formattedPasswordAgain.setEnabled(false);
 					btnCreate.setEnabled(false);
+					Runnable doWorkRunnable = new Runnable() {
+						public void run() {
+							logDialog.setUsername(formattedUsername.getText());
+						}
+					};
+					SwingUtilities.invokeLater(doWorkRunnable);
 				} else {
 					JOptionPane.showMessageDialog(regDialog,
 							"Passwords do not match");
