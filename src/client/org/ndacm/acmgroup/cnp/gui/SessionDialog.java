@@ -1,6 +1,5 @@
 package org.ndacm.acmgroup.cnp.gui;
 
-import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;

@@ -260,14 +260,14 @@ public class Database implements IDatabase{
 
 			// insert session into DB
 			createSession = dbConnection.prepareStatement(sessionInsertion);
-			
+
 			createSession.setInt(1, sessionLeader);
 			createSession.setString(2, sessionName);
 			createSession.setBoolean(3, false);
 			createSession.executeUpdate();
 			int newSessionID = retrieveSession(sessionName, server).getSessionID();
 			System.out.println("gets here");
-			
+
 			// insert session-password mapping into DB
 			createSessionPassword = dbConnection.prepareStatement(sessionPasswordInsertion);
 			createSessionPassword.setInt(1, newSessionID);
@@ -275,7 +275,7 @@ public class Database implements IDatabase{
 			createSessionPassword.setString(3, saltString);
 			createSessionPassword.executeUpdate();
 			newSession = retrieveSession(sessionName, server, sessionPassword);
-			
+
 			createSession.close();
 			createSessionPassword.close();
 			return newSession;
@@ -486,7 +486,7 @@ public class Database implements IDatabase{
 	}
 
 
-//check
+	//check
 	@Override
 	public boolean deleteSession(CNPSession session) throws SQLException {
 		// TODO Auto-generated method stub
@@ -547,7 +547,7 @@ public class Database implements IDatabase{
 		}
 
 	}
-	
+
 	@Override
 	public boolean createSessionAccount(CNPSession session, Account account,
 			String password, FilePermissionLevel filePermission,
@@ -632,6 +632,35 @@ public class Database implements IDatabase{
 		} catch (SQLException ex) {
 			throw new FailedSessionException("Failed due to SQLException.");
 		}
+	}
+
+	public int getSessionID(String sessionName) throws FailedSessionException {
+		PreparedStatement retrieveSession = null;
+		ResultSet rset = null;
+		int sessionID = -1;
+
+		// search for all database entries with a matching session name
+		String query = "SELECT * "
+				+ "FROM Session "
+				+ "WHERE SessionName = ?";
+
+		try {
+			retrieveSession = dbConnection.prepareStatement(query);
+			retrieveSession.setString(1, sessionName);
+
+			// test if the resultset is empty    
+			rset = retrieveSession.executeQuery();
+
+			if(rset.next() ) {
+				sessionID = rset.getInt("SessionID");
+			} else {
+				throw new FailedSessionException("Session does not exist.");
+			}
+		} catch (SQLException ex) {
+			throw new FailedSessionException("SQL Exception.");
+		}
+		return sessionID;
+
 	}
 
 

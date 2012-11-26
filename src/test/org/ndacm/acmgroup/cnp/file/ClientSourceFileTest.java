@@ -1,7 +1,5 @@
 package org.ndacm.acmgroup.cnp.file;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 import junit.framework.TestCase;
 
 import org.junit.After;

@@ -58,6 +58,7 @@ public class TaskMessageFactory {
 	 * @return a Task based on the information received in the message
 	 */
 	public static Task fromMessageToTask(TaskMessage message) {
+		System.out.print(": " + message.getTaskType().toString());
 		switch (message.getTaskType()) {
 		case Chat:
 			return new ChatTask(Integer.parseInt(message.getData()[0]),

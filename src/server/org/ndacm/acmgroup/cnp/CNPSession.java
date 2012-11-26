@@ -16,7 +16,6 @@ import org.ndacm.acmgroup.cnp.git.JGit;
 import org.ndacm.acmgroup.cnp.network.CNPConnection;
 import org.ndacm.acmgroup.cnp.task.ChatTask;
 import org.ndacm.acmgroup.cnp.task.CloseFileTask;
-import org.ndacm.acmgroup.cnp.task.CommitTask;
 import org.ndacm.acmgroup.cnp.task.CompileTask;
 import org.ndacm.acmgroup.cnp.task.CreateFileTask;
 import org.ndacm.acmgroup.cnp.task.DeleteFileTask;
@@ -196,27 +195,6 @@ public class CNPSession implements SessionTaskExecutor {
 	}
 
 	/**
-	 * This commits changes for the GIT using a message. [Not Implemented]
-	 * 
-	 * @param message
-	 *            The commit message
-	 * @return True if it was successful, false otherwise
-	 */
-	public boolean commitAndPush(String message) {
-		// TODO implement
-		return false;
-	}
-
-	/**
-	 * This commits changes for the GIt not using a message. [Not Implemented]
-	 * 
-	 * @return True if successful, false otherwise.
-	 */
-	public boolean commitAndPush() {
-		return commitAndPush("");
-	}
-
-	/**
 	 * This clones a repository using git. [Not Implemented]
 	 * 
 	 * @return The new file?
@@ -249,7 +227,7 @@ public class CNPSession implements SessionTaskExecutor {
 					task.getConnection());
 		} else {
 			// session leader authentication failed
-			response = new CreateFileTaskResponse(-1, -1, "", null, false);
+			response = new CreateFileTaskResponse(-1, -1, "n/a", null, false);
 		}
 
 		distributeTask(response);
@@ -271,7 +249,7 @@ public class CNPSession implements SessionTaskExecutor {
 					task.getConnection());
 		} else {
 			// user authentication fails
-			response = new OpenFileTaskResponse(-1, "", "", false);
+			response = new OpenFileTaskResponse(-1, "n/a", "n/a", false);
 		}
 
 		distributeTask(response);
@@ -383,8 +361,7 @@ public class CNPSession implements SessionTaskExecutor {
 	 * @return True if the two sessions are equal, false otherwise
 	 */
 	public boolean equals(CNPSession session) {
-		// int sessionID, String sessionName, CNPServer server, int
-		// sessionLeader
+
 		if ((this.sessionID == session.getSessionID())
 				&& (this.sessionName.equals(session.getSessionName()))
 				&& (this.sessionLeader == session.getSessionLeader())) {
