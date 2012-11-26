@@ -23,7 +23,6 @@ import org.ndacm.acmgroup.cnp.git.NotDirectoryException;
 import org.ndacm.acmgroup.cnp.network.ServerNetwork;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEventListener;
-import org.ndacm.acmgroup.cnp.task.ChatTask;
 import org.ndacm.acmgroup.cnp.task.CloseFileTask;
 import org.ndacm.acmgroup.cnp.task.CommitTask;
 import org.ndacm.acmgroup.cnp.task.CreateAccountTask;
@@ -43,7 +42,6 @@ import org.ndacm.acmgroup.cnp.task.ServerTaskExecutor;
 import org.ndacm.acmgroup.cnp.task.SessionTask;
 import org.ndacm.acmgroup.cnp.task.Task;
 import org.ndacm.acmgroup.cnp.task.message.TaskMessageFactory;
-import org.ndacm.acmgroup.cnp.task.response.ChatTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.CreateAccountTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.CreateSessionTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.JoinSessionTaskResponse;
@@ -325,7 +323,7 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 				}
 
 				// add connection to session list
-				joinedSession.addUser(task.getUserID(), task.getConnection());
+				joinedSession.addUser(task.getUserID(), task.getUsername(), task.getConnection());
 
 				// construct response
 				List<String> sessionFiles = retrieveSessionFileList(joinedSession
@@ -333,20 +331,21 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 
 				response = new JoinSessionTaskResponse(task.getUserID(),
 						task.getUsername(), joinedSession.getSessionName(),
-						joinedSession.getSessionID(), true, sessionFiles);
+						joinedSession.getSessionID(), true, sessionFiles, joinedSession.getSourceFiles().keySet(),
+						joinedSession.getClientIdToName().values());
 
 			} catch (FailedSessionException ex) {
 				// if joining the session fails, create a response signifying
 				// this
 				response = new JoinSessionTaskResponse(-1, "n/a", "n/a", -1, false,
-						null);
+						null, null, null);
 			} catch (FileNotFoundException e) {
 				response = new JoinSessionTaskResponse(-1, "", "", -1, false,
-						null);
+						null, null, null);
 			}
 		} else {
 			// tokens don't match, join session task fails
-			response = new JoinSessionTaskResponse(-1, "n/a", "n/a", -1, false, null);
+			response = new JoinSessionTaskResponse(-1, "n/a", "n/a", -1, false, null, null, null);
 		}
 
 		// send back response to client if fails, otherwise send it to all

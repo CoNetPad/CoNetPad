@@ -56,25 +56,25 @@ import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponseExecutor;
 
 public class CNPClient implements TaskReceivedEventListener,
-		TaskResponseExecutor {
+TaskResponseExecutor {
 
 	private String serverURL; // The URL to the server
 	private String sessionName; // The unique name of the session the user
-								// belongs to
+	// belongs to
 	private int sessionID; // The unique ID of the session the user belongs
 	private int userID; // ID of account logged in as
 	private String username; // The Username of the user
 	private String authToken; // assigned by server after authentication
 
 	private ExecutorService clientExecutor; // this is for executing varoous
-											// tasks
+	// tasks
 	private Map<Integer, ClientSourceFile> sourceFiles; // The files the client
-														// is reading through.
-														// This is used in the
-														// GUI
+	// is reading through.
+	// This is used in the
+	// GUI
 
 	private ClientNetwork network; // The network connection for doing messaging
-									// sending and recieving
+	// sending and recieving
 	private MainFrame clientFrame; // The frame of the GUI
 	private RegisterDialog regDialog;
 	private LoginDialog logDialog;
@@ -397,6 +397,12 @@ public class CNPClient implements TaskReceivedEventListener,
 						clientFrame = sesDialog.openMainFrame(task
 								.getSessionFiles());
 						sessionID = task.getSessionID();
+						sessionName = task.getSessionName();
+
+						// populate user list with usernames of those already connected 
+						for (String otherUser : task.getConnectedUsers()) {
+							clientFrame.addUser(otherUser);
+						}
 
 					}
 				};
