@@ -201,13 +201,13 @@ public class SessionDialog extends JDialog {
 		}
 	}
 
-	public void openMainFrame(List<String> sessionFiles) {
+	public MainFrame openMainFrame(List<String> sessionFiles) {
 		MainFrame frame = new MainFrame(client, sessionFiles);
 		frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		frame.setVisible(true);
 		loginDialog.setVisible(false);
 		loginDialog.dispose();
-
+		return frame;
 	}
 
 	public void resetDialog() {

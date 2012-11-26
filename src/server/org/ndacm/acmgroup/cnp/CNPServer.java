@@ -1,6 +1,7 @@
 package org.ndacm.acmgroup.cnp;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.ndacm.acmgroup.cnp.git.NotDirectoryException;
 import org.ndacm.acmgroup.cnp.network.ServerNetwork;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEventListener;
+import org.ndacm.acmgroup.cnp.task.ChatTask;
 import org.ndacm.acmgroup.cnp.task.CloseFileTask;
 import org.ndacm.acmgroup.cnp.task.CommitTask;
 import org.ndacm.acmgroup.cnp.task.CreateAccountTask;
@@ -41,6 +43,7 @@ import org.ndacm.acmgroup.cnp.task.ServerTaskExecutor;
 import org.ndacm.acmgroup.cnp.task.SessionTask;
 import org.ndacm.acmgroup.cnp.task.Task;
 import org.ndacm.acmgroup.cnp.task.message.TaskMessageFactory;
+import org.ndacm.acmgroup.cnp.task.response.ChatTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.CreateAccountTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.CreateSessionTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.JoinSessionTaskResponse;
@@ -56,17 +59,17 @@ import org.ndacm.acmgroup.cnp.task.response.LoginTaskResponse;
 public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor {
 
 	private static final int USER_TOKEN_LENGTH = 10; // The length of a user
-	// token
+														// token
 	private static final String TOKEN_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; // The
-	// available
-	// characters
-	// used
-	// in
-	// a
-	// token
+																												// available
+																												// characters
+																												// used
+																												// in
+																												// a
+																												// token
 
 	private ServerNetwork network; // The network class for handing soccket
-	// connection
+									// connection
 	private Database database; // The database object for SQL query handling
 	private JGit jGit;
 	private Compiler compiler; // The compiler class for compiling files
@@ -74,9 +77,9 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 	private Map<Integer, CNPSession> openSessions; // maps sessionID to //
 	// CNPSession
 	private TaskMessageFactory messageFactory; // This generates strings for
-	// network messages
+												// network messages
 	private ExecutorService serverExecutor; // for server-wide tasks (e.g.
-	// account creation)
+											// account creation)
 	private Map<Integer, String> userAuthTokens; // userID to userAuthToken
 
 	private SecretKey key; // TODO implement
@@ -258,7 +261,7 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 					newSession = database.createSession(
 							task.getSessionLeader(), this,
 							((CreatePrivateSessionTask) task)
-							.getSessionPassword());
+									.getSessionPassword());
 				} else {
 					newSession = database.createSession(
 							task.getSessionLeader(), this);
@@ -315,12 +318,15 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 						joinedSession = database.retrieveSession(
 								task.getSessionName(), this);
 					}
+
+					openSessions.put(joinedSession.getSessionID(), joinedSession);
+					jGit.activateRepo(joinedSession.getSessionName());
 					
 				}
-				
+
 				// add connection to session list
 				joinedSession.addUser(task.getUserID(), task.getConnection());
-				
+
 				// construct response
 				List<String> sessionFiles = retrieveSessionFileList(joinedSession
 						.getSessionName());
@@ -333,6 +339,9 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 				// if joining the session fails, create a response signifying
 				// this
 				response = new JoinSessionTaskResponse(-1, "n/a", "n/a", -1, false,
+						null);
+			} catch (FileNotFoundException e) {
+				response = new JoinSessionTaskResponse(-1, "", "", -1, false,
 						null);
 			}
 		} else {
@@ -401,12 +410,12 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 	public void executeTask(DeleteSessionTask task) {
 		if (userIsAuth(task.getUserID(), task.getUserAuthToken())) {
 			// if others are connected, kick them off first
-
+			
 			// then delete session and any associated data
 		}
 
 	}
-
+	
 	@Override
 	public void executeTask(CommitTask task) {
 		if (userIsAuth(task.getUserID(), task.getUserAuthToken())) {

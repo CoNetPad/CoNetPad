@@ -294,7 +294,7 @@ public class MainFrame extends JFrame {
 	}
 
 	public void addToFileList(String filename) {
-		modelUsers.addElement(filename);
+		modelFiles.addElement(filename);
 	}
 
 	/**
@@ -304,7 +304,7 @@ public class MainFrame extends JFrame {
 	 *            the user to add
 	 */
 	public void addUser(String username) {
-		// TODO implement
+		modelUsers.addElement(username);
 	}
 
 	/**

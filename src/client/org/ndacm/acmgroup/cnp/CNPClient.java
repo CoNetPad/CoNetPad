@@ -392,10 +392,10 @@ public class CNPClient implements TaskReceivedEventListener,
 		if (task.isSuccess()) {
 			if (task.getUserID() == userID) {
 				// update client frame with list of files
-
 				Runnable doWorkRunnable = new Runnable() {
 					public void run() {
-						sesDialog.openMainFrame(task.getSessionFiles());
+						clientFrame = sesDialog.openMainFrame(task
+								.getSessionFiles());
 						sessionID = task.getSessionID();
 
 					}
@@ -484,7 +484,17 @@ public class CNPClient implements TaskReceivedEventListener,
 	public void executeTask(final ChatTaskResponse task) {
 		Runnable doWorkRunnable = new Runnable() {
 			public void run() {
-				clientFrame.updateChat(task.getUsername(), task.getMessage());
+				String use = task.getUsername();
+				String mes = task.getMessage();
+				if (clientFrame == null) {
+					String sdf = "sddfdfg";
+					sdf = sdf + "dsf";
+				} else {
+					String sdf = "sddfdfg";
+					sdf = sdf + "dsf";
+				}
+
+				clientFrame.updateChat(use, mes);
 			}
 		};
 		SwingUtilities.invokeLater(doWorkRunnable);
