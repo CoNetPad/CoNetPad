@@ -2,6 +2,7 @@ package org.ndacm.acmgroup.cnp.task.message;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
@@ -15,11 +16,11 @@ import org.ndacm.acmgroup.cnp.task.CreatePrivateSessionTask;
 import org.ndacm.acmgroup.cnp.task.CreateSessionTask;
 import org.ndacm.acmgroup.cnp.task.DeleteFileTask;
 import org.ndacm.acmgroup.cnp.task.DeleteSessionTask;
-import org.ndacm.acmgroup.cnp.task.LeaveSessionTask;
 import org.ndacm.acmgroup.cnp.task.DownloadRepoTask;
 import org.ndacm.acmgroup.cnp.task.EditorTask;
 import org.ndacm.acmgroup.cnp.task.JoinPrivateSessionTask;
 import org.ndacm.acmgroup.cnp.task.JoinSessionTask;
+import org.ndacm.acmgroup.cnp.task.LeaveSessionTask;
 import org.ndacm.acmgroup.cnp.task.LoginTask;
 import org.ndacm.acmgroup.cnp.task.OpenFileTask;
 import org.ndacm.acmgroup.cnp.task.Task;
@@ -32,10 +33,10 @@ import org.ndacm.acmgroup.cnp.task.response.CreateFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.CreateSessionTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.DeleteFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.DeleteSessionTaskResponse;
-import org.ndacm.acmgroup.cnp.task.response.LeaveSessionTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.DownloadRepoTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.JoinSessionTaskResponse;
+import org.ndacm.acmgroup.cnp.task.response.LeaveSessionTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.LoginTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.OpenFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
@@ -363,15 +364,28 @@ public class TaskMessageFactory {
 					Boolean.parseBoolean(message.getData()[4]));
 		case JoinPrivateSession:
 		case JoinSession:
-			List<String> fileNames = new ArrayList<String>();
+			List<String> filenames = new ArrayList<String>();
+			List<Integer> fileIDs = new ArrayList<Integer>();
+			List<String> userIDs = new ArrayList<String>();
+			
 			int numFiles = Integer.parseInt(message.getData()[5]);
-			for (int i = 0; i < numFiles; i++) {
-				fileNames.add(message.getData()[6 + i]);
+			int numUsers = Integer.parseInt(message.getData()[6]);
+			// parse filenames from array
+			for (int i = 7; i < 7 + numFiles; i++) {
+				filenames.add(message.getData()[7 + i]);
+			}
+			// parse fileIDs from array
+			for (int i = 7 + numFiles; i < (2 * numFiles); i++ ) {
+				fileIDs.add(Integer.parseInt(message.getData()[7 + numFiles + i]));
+			}
+			// parse userIDs from array
+			for (int i = 7 + (2 * numFiles); i < 7 + (2 * numFiles) + numUsers; i++) {
+				userIDs.add(message.getData()[7 + (2 * numFiles) + i]);
 			}
 			return new JoinSessionTaskResponse(Integer.parseInt(message
 					.getData()[0]), message.getData()[1], message.getData()[2],
 					Integer.parseInt(message.getData()[3]),
-					Boolean.parseBoolean(message.getData()[4]), fileNames);
+					Boolean.parseBoolean(message.getData()[4]), filenames, new HashSet<Integer>(fileIDs), userIDs);
 		case Login:
 			return new LoginTaskResponse(
 					Integer.parseInt(message.getData()[0]),
@@ -472,16 +486,16 @@ public class TaskMessageFactory {
 			data.add(joinSession.getSessionName());
 			data.add(Integer.toString(joinSession.getSessionID()));
 			data.add(Boolean.toString(joinSession.isSuccess()));
-			data.add(Integer.toString(joinSession.getSessionFiles().size())); // number
-																				// of
-																				// files
-																				// -
-																				// needed
-																				// to
-																				// parse
-																				// message
+			data.add(Integer.toString(joinSession.getSessionFiles().size()));
+			data.add(Integer.toString(joinSession.getConnectedUsers().size()));
 			for (String filename : joinSession.getSessionFiles()) {
 				data.add(filename);
+			}
+			for (int fileID : joinSession.getFileIDs()) {
+				data.add(Integer.toString(fileID));
+			}
+			for (String username : joinSession.getConnectedUsers()) {
+				data.add(username);
 			}
 
 			String[] dataArray = new String[data.size()];

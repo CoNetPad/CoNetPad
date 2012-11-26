@@ -1,6 +1,7 @@
 package org.ndacm.acmgroup.cnp;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -45,11 +46,11 @@ import org.ndacm.acmgroup.cnp.task.response.CreateFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.CreateSessionTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.DeleteFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.DeleteSessionTaskResponse;
-import org.ndacm.acmgroup.cnp.task.response.LeaveSessionTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.DownloadFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.DownloadRepoTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.JoinSessionTaskResponse;
+import org.ndacm.acmgroup.cnp.task.response.LeaveSessionTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.LoginTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.OpenFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
@@ -60,21 +61,21 @@ public class CNPClient implements TaskReceivedEventListener,
 
 	private String serverURL; // The URL to the server
 	private String sessionName; // The unique name of the session the user
-								// belongs to
+	// belongs to
 	private int sessionID; // The unique ID of the session the user belongs
 	private int userID; // ID of account logged in as
 	private String username; // The Username of the user
 	private String authToken; // assigned by server after authentication
 
 	private ExecutorService clientExecutor; // this is for executing varoous
-											// tasks
+	// tasks
 	private Map<Integer, ClientSourceFile> sourceFiles; // The files the client
-														// is reading through.
-														// This is used in the
-														// GUI
+	// is reading through.
+	// This is used in the
+	// GUI
 
 	private ClientNetwork network; // The network connection for doing messaging
-									// sending and recieving
+	// sending and recieving
 	private MainFrame clientFrame; // The frame of the GUI
 	private RegisterDialog regDialog;
 	private LoginDialog logDialog;
@@ -397,13 +398,18 @@ public class CNPClient implements TaskReceivedEventListener,
 						clientFrame = sesDialog.openMainFrame(task
 								.getSessionFiles());
 						sessionID = task.getSessionID();
+						sessionName = task.getSessionName();
+						// populate user list with usernames of those already
+						// connected
+						clientFrame.addToUserList(new ArrayList<String>(task.getConnectedUsers()));
+						//Map  task.getFileIDs();
 					}
 				};
 				SwingUtilities.invokeLater(doWorkRunnable);
 
 			} else {
 				// another client sent the task - update user list
-				clientFrame.addUser(task.getUsername());
+				clientFrame.addToUserList(task.getUsername());
 			}
 		} else {
 			JOptionPane.showMessageDialog(sesDialog, "Error accessing session");

@@ -303,7 +303,7 @@ public class MainFrame extends JFrame {
 	 * @param username
 	 *            the user to add
 	 */
-	public void addToUser(String username) {
+	public void addToUserList(String username) {
 		modelUsers.addElement(username);
 	}
 

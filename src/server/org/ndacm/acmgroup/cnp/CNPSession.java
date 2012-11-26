@@ -77,6 +77,7 @@ public class CNPSession implements SessionTaskExecutor {
 	private String encryptedPassword;
 	private Map<Integer, CNPConnection> clientConnections; // maps userID to
 															// CNPConnection
+	private Map<Integer, String> clientIdToName;
 	private Map<Account, Account.FilePermissionLevel> filePermissions;
 	private Map<Account, Account.ChatPermissionLevel> chatPermissions;
 
@@ -111,6 +112,7 @@ public class CNPSession implements SessionTaskExecutor {
 		this.sessionLeader = sessionLeader;
 		this.sessionName = sessionName;
 		clientConnections = new ConcurrentHashMap<Integer, CNPConnection>();
+		clientIdToName = new ConcurrentHashMap<Integer, String>();
 		filePermissions = new ConcurrentHashMap<Account, FilePermissionLevel>();
 		chatPermissions = new ConcurrentHashMap<Account, ChatPermissionLevel>();
 
@@ -152,8 +154,9 @@ public class CNPSession implements SessionTaskExecutor {
 	 * @param connection
 	 *            The connection of the user
 	 */
-	public void addUser(int userID, CNPConnection connection) {
+	public void addUser(int userID, String username, CNPConnection connection) {
 		clientConnections.put(userID, connection);
+		clientIdToName.put(userID, username);
 	}
 
 	/**
@@ -164,6 +167,7 @@ public class CNPSession implements SessionTaskExecutor {
 	 */
 	public void removeUser(int userID) {
 		clientConnections.remove(userID);
+		clientIdToName.remove(userID);
 	}
 
 	/**
@@ -377,4 +381,27 @@ public class CNPSession implements SessionTaskExecutor {
 	public void setSourceFiles(Map<Integer, ServerSourceFile> sourceFiles) {
 		this.sourceFiles = sourceFiles;
 	}
+
+
+	public Map<Integer, CNPConnection> getClientConnections() {
+		return clientConnections;
+	}
+
+
+	public void setClientConnections(Map<Integer, CNPConnection> clientConnections) {
+		this.clientConnections = clientConnections;
+	}
+
+
+	public Map<Integer, String> getClientIdToName() {
+		return clientIdToName;
+	}
+
+
+	public void setClientIdToName(Map<Integer, String> clientIdToName) {
+		this.clientIdToName = clientIdToName;
+	}
+	
+	
+	
 }
