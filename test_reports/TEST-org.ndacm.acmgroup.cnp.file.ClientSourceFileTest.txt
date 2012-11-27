@@ -1,0 +1,11 @@
+Testsuite: org.ndacm.acmgroup.cnp.file.ClientSourceFileTest
+Tests run: 3, Failures: 1, Errors: 0, Time elapsed: 0.013 sec
+
+Testcase: testEditSourceEditorTaskResponse took 0.008 sec
+Testcase: testEditSourceIntInt took 0 sec
+Testcase: testToFile took 0 sec
+	FAILED
+Not yet implemented
+junit.framework.AssertionFailedError: Not yet implemented
+	at org.ndacm.acmgroup.cnp.file.ClientSourceFileTest.testToFile(ClientSourceFileTest.java:51)
+
