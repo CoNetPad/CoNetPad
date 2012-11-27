@@ -1,8 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
 <project name="conetpad" default="dist" basedir=".">
 
   <description>
     Compiles and builds the CoNetPad project
   </description>
+
+  <!-- define properties -->
+  <property name="build.test" value="build/test"/>
+  <property name="build.client" value="build/client"/>
+  <property name="build.server" value="build/server"/>
+  <property name="build.common" value="build/common"/>
   
   <!-- set classpaths -->
   <path id="common.classpath">
@@ -53,7 +60,6 @@
     <mkdir dir="build/test" />
     <mkdir dir="dist/client/lib" />
     <mkdir dir="dist/server/lib" />
-    <mkdir dir="dist/test/lib" />
     <mkdir dir="docs/javadoc" />
   </target>
   
@@ -90,16 +96,6 @@
       </fileset>
     </copy>
     <copy tofile="dist/server/lib/${ant.project.name}-common.jar" 
-	  file="dist/temp/${ant.project.name}-common.jar" />
-    
-    <!-- copy common and lib jars to dist/test/lib directory -->
-    <copy todir="dist/test/lib">
-      <fileset dir="lib">
-	<include name="**/*.jar" />
-	<exclude name="**/*-javadoc.jar"/>
-      </fileset>
-    </copy>
-    <copy tofile="dist/test/lib/${ant.project.name}-common.jar" 
 	  file="dist/temp/${ant.project.name}-common.jar" />
     
     <!-- remove temp directory --> 
@@ -141,31 +137,7 @@
 	<attribute name="Class-Path" value="${client.lib}"/>
       </manifest>
     </jar>
-    
-    <!-- define client and server jar classpaths -->
-    <path id="test.build.classpath">
-      <fileset dir="dist/test/lib">
-	<include name="**/*.jar"/>
-      </fileset>
-    </path>
-    
-    <!-- copy server and client jars to dist/test/lib directory -->
-    <copy tofile="dist/test/lib/${ant.project.name}-server.jar" 
-	  file="dist/server/${ant.project.name}-server.jar" />
-    <copy tofile="dist/test/lib/${ant.project.name}-client.jar"
-	  file="dist/client/${ant.project.name}-client.jar" />
-    
-    <!-- jar test class files -->
-    <manifestclasspath property="test.lib" jarfile="dist/test/${ant.project.name}-test.jar">
-      <classpath refid="test.build.classpath"/>
-    </manifestclasspath>  
-    
-    <jar jarfile="dist/test/${ant.project.name}-test.jar" basedir="build/test" >
-      <manifest>
-        <attribute name="Main-Class" value="org.ndacm.acmgroup.cnp.CNPTestRunner" />
-	<attribute name="Class-Path" value="${test.lib}"/>
-      </manifest>
-    </jar>
+
   </target>
 
   <!-- copy resources into client, server, and test dist directories -->
@@ -178,38 +150,41 @@
       </fileset>
     </copy>
     
-    <copy todir="dist/test/data">
-      <fileset dir="data">
-	<exclude name="**/*.exe"/>
-      </fileset>
-    </copy>
-
     <!-- zip all of dist -->
     <zip basedir="dist" destfile="dist/${ant.project.name}-${DSTAMP}.zip" excludes="${ant.project.name}-*.zip" />
   </target>
   
   <!-- run junit tests -->
-  <target name="test" depends="dist">
+  <target name="test" depends="compile">
 
-    <!-- define the junit testing classpath -->
-    <path id="junit.classpath">
-      <pathelement location="lib/junit-4.10.jar" />
-      <pathelement location="lib/forms-1.3.0.jar" />
-      <pathelement location="lib/jgit-2.1.0.201209190230-r/org.eclipse.jgit-2.1.0.201209190230-r.jar" />
-      <pathelement location="lib/ropes-1.2.5/ropes.jar" />
-      <pathelement location="lib/sqlite-jdbc-3.7.2/sqlite-jdbc-3.7.2.jar" />
-      <pathelement location="build/test" />
-      <pathelement location="build/client" />
-      <pathelement location="build/common" />
-      <pathelement location="build/server" />
-    </path>
+    <!-- delete prev tests -->
+    <delete includeemptydirs="true">
+      <fileset dir="test_reports" includes="**/*"/>
+    </delete>
 
     <!-- run tests and print results -->
-    <junit printsummary="on" fork="true" haltonfailure="no">
-      <classpath refid="junit.classpath" />
-      <formatter type="brief" usefile="false" />
-      <test name="org.ndacm.acmgroup.cnp.CNPTestSuite" />
+    
+    <junit printsummary="yes" haltonfailure="no">
+      <classpath>
+	<pathelement location="build/test"/>
+	<pathelement location="build/client"/>
+	<pathelement location="build/server"/>
+	<pathelement location="build/common"/>
+	<fileset dir="lib">
+          <include name="**/*.jar"/>
+	</fileset>
+      </classpath>
+      
+      <formatter type="plain"/>
+      
+      <batchtest fork="yes" todir="test_reports">
+	<fileset dir="build/test">
+	  <include name="**/*Test*.class"/>
+	  <exclude name="**/Cesar/*"/>
+	</fileset>
+      </batchtest>
     </junit>
+
   </target>
 
   <!-- generate javadoc -->
@@ -230,11 +205,20 @@
     </copy>
 
     <!-- create javadoc -->
-    <javadoc packagenames="org.ndacm.acmgroup.cnp*" sourcepath="docs/javadoc_temp" destdir="docs/javadoc"/>
-    
+    <javadoc packagenames="org.ndacm.*" 
+	     excludepackagenames="com.sun.*"
+	     sourcepath="docs/javadoc_temp" 
+	     destdir="docs/javadoc"
+	     access="private"
+	     windowtitle="CoNetPad">
+      
+      <fileset dir="docs/javadoc_temp" defaultexcludes="yes">
+	<include name="org/ndacm/**"/>
+	<exclude name="com/sun/**"/>
+      </fileset>
+    </javadoc>
     <!-- delete temp directory -->
     <delete dir="docs/javadoc_temp"/>
-
   </target>
 
   <!-- clean up -->

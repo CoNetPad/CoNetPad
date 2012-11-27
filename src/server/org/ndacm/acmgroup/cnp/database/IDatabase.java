@@ -92,9 +92,8 @@ public interface IDatabase {
 	 * @param account			The account object
 	 * @param filePermission	The file permission of the user
 	 * @param chatPermission	The chat permission of the user
-	 * @return					True if it was successful or false it i failed
 	 */
-	boolean createSessionAccount(CNPSession session, Account account,
+	void createSessionAccount(CNPSession session, Account account,
 			Account.FilePermissionLevel filePermission, Account.ChatPermissionLevel chatPermission) throws SQLException;
 	
 	/**
@@ -104,18 +103,18 @@ public interface IDatabase {
 	 * @param password				The password of the session.  Un-Encrypted	
 	 * @param filePermission		The file permission of the user
 	 * @param chatPermission		The chat permission ofthe user
-	 * @return						True if successful, false otherwise
 	 * @throws SQLException
+	 * @throws FailedSessionException 
 	 */
-	boolean createSessionAccount(CNPSession session, Account account, String password,
-			Account.FilePermissionLevel filePermission, Account.ChatPermissionLevel chatPermission) throws SQLException;
+	void createSessionAccount(CNPSession session, Account account, String password,
+			Account.FilePermissionLevel filePermission, Account.ChatPermissionLevel chatPermission) throws SQLException, FailedSessionException;
 	/**
 	 * this deletes a public session
 	 * @param session		The public session
 	 * @return				Either the deletion was successful or not
 	 * @throws SQLException
 	 */
-	boolean deleteSession(CNPSession session)throws SQLException;
+	void deleteSession(CNPSession session)throws SQLException;
 	
 	
 
@@ -126,7 +125,7 @@ public interface IDatabase {
 	 * @throws SQLException
 	 * @throws FailedAccountException
 	 */
-	boolean deleteAccount(Account account) throws SQLException, FailedAccountException;
+	void deleteAccount(Account account) throws SQLException, FailedAccountException;
 	
 	
 	

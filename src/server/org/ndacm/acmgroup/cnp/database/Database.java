@@ -12,6 +12,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Random;
 
 import javax.crypto.SecretKeyFactory;
@@ -266,7 +267,6 @@ public class Database implements IDatabase{
 			createSession.setBoolean(3, false);
 			createSession.executeUpdate();
 			int newSessionID = retrieveSession(sessionName, server).getSessionID();
-			System.out.println("gets here");
 
 			// insert session-password mapping into DB
 			createSessionPassword = dbConnection.prepareStatement(sessionPasswordInsertion);
@@ -446,33 +446,22 @@ public class Database implements IDatabase{
 
 	}
 
-	public boolean createSessionAccount(CNPSession session, Account account,Account.FilePermissionLevel filePermission, Account.ChatPermissionLevel chatPermission) throws SQLException 
+	public void createSessionAccount(CNPSession session, Account account,Account.FilePermissionLevel filePermission, Account.ChatPermissionLevel chatPermission) throws SQLException 
 	{
-		// TODO implement
 		PreparedStatement createSA= null;
 		String insertion = "INSERT INTO SessionUser (SessionID, UserID, FilePermissionLevel, ChatPermissionLevel) "
 				+ "VALUES (? , ?, ?, ?)";
-		try{
+
 			createSA = dbConnection.prepareStatement(insertion);
 			createSA.setInt(1, session.getSessionID() );
 			createSA.setInt(2, account.getUserID());
 			createSA.setInt(3, filePermission.toInt());
 			createSA.setInt(4, chatPermission.toInt());
 			int rows = createSA.executeUpdate();
-			if(rows > 0)
+			if(rows <= 0)
 			{
-				return true;
+				throw new SQLException("Unable to insert session-account mapping.");
 			}
-			else
-			{
-				return false;
-			}
-
-		}
-		catch(SQLException e)
-		{
-			throw e;
-		}
 
 	}
 
@@ -486,9 +475,9 @@ public class Database implements IDatabase{
 	}
 
 
-	//check
+
 	@Override
-	public boolean deleteSession(CNPSession session) throws SQLException {
+	public void deleteSession(CNPSession session) throws SQLException {
 		// TODO Auto-generated method stub
 		String query = "DELETE FROM Session WHERE SessionID = ?";
 		String query2 = "DELETE FROM SessionPassword WHERE SessionID = ?";
@@ -502,14 +491,11 @@ public class Database implements IDatabase{
 			deleteSA.setInt(1, session.getSessionID() );
 			int rows2 = deleteSA.executeUpdate();
 			int rows = rows1 + rows2;
-			if(rows > 0)
+			if(rows <= 0)
 			{
-				return true;
+				throw new SQLException("Delete unsuccessful.");
 			}
-			else
-			{
-				return false;
-			}
+
 		}
 		catch(SQLException e)
 		{
@@ -519,7 +505,7 @@ public class Database implements IDatabase{
 	}
 
 	@Override
-	public boolean deleteAccount(Account account) throws SQLException, FailedAccountException {
+	public void deleteAccount(Account account) throws SQLException, FailedAccountException {
 		String query = "DELETE FROM UserAccount WHERE UserID = ?";
 		String query1 = "DELETE FROM SessionUser WHERE UserId = ?";
 		PreparedStatement deleteUser= null;
@@ -532,13 +518,9 @@ public class Database implements IDatabase{
 			int rows2 = deleteUser.executeUpdate();
 
 			int rows = rows1 + rows2;
-			if(rows > 0)
+			if(rows <= 0)
 			{
-				return true;
-			}
-			else
-			{
-				return false;
+				throw new FailedAccountException("Delete unsuccessful.");
 			}
 		}
 		catch(SQLException e)
@@ -549,9 +531,9 @@ public class Database implements IDatabase{
 	}
 
 	@Override
-	public boolean createSessionAccount(CNPSession session, Account account,
+	public void createSessionAccount(CNPSession session, Account account,
 			String password, FilePermissionLevel filePermission,
-			ChatPermissionLevel chatPermission) throws SQLException {
+			ChatPermissionLevel chatPermission) throws SQLException, FailedSessionException {
 
 		PreparedStatement createSA= null, retrieveSession=null;
 		String insertion = "INSERT INTO SessionUser (SessionID, UserID, FilePermissionLevel, ChatPermissionLevel) "
@@ -564,7 +546,7 @@ public class Database implements IDatabase{
 			if(rs.next() )
 			{
 				String password1 = rs.getString("SessionPassword");
-				String salt = rs.getString("SessionSal");
+				String salt = rs.getString("SessionSalt");
 				String password2 = this.encrypt(password, salt);
 				if(password1.equals(password2))
 				{
@@ -574,18 +556,15 @@ public class Database implements IDatabase{
 					createSA.setInt(3, filePermission.toInt());
 					createSA.setInt(4, chatPermission.toInt());
 					int rows = createSA.executeUpdate();
-					if(rows > 0)
+					if(rows <= 0)
 					{
-						return true;
+						throw new FailedSessionException("Failed to create session-account mapping.");
 					}
-					else
-					{
-						return false;
-					}
+			
 				}
 				else
 				{
-					return false;
+					throw new FailedSessionException("Password incorrect.");
 				}
 			}
 
@@ -593,12 +572,14 @@ public class Database implements IDatabase{
 		catch(SQLException e)
 		{
 			throw e;
+		} catch (NoSuchAlgorithmException e ) {
+			throw new FailedSessionException("Security-related issue.");
+		} catch (InvalidKeySpecException e) {
+			throw new FailedSessionException("Security-related issue.");
+		} catch (UnsupportedEncodingException e) {
+			throw new FailedSessionException("Security-related issue.");
 		}
-		catch(Exception e)
-		{
-			return false;
-		}
-		return false;
+
 
 	}
 
@@ -660,6 +641,17 @@ public class Database implements IDatabase{
 			throw new FailedSessionException("SQL Exception.");
 		}
 		return sessionID;
+
+	}
+
+	public void clearTables() throws SQLException {
+
+		Statement dropAll = dbConnection.createStatement();
+		
+		dropAll.executeUpdate("DELETE FROM Session");
+		dropAll.executeUpdate("DELETE FROM SessionPassword");
+		dropAll.executeUpdate("DELETE FROM SessionUser");
+		dropAll.executeUpdate("DELETE FROM UserAccount");
 
 	}
 
