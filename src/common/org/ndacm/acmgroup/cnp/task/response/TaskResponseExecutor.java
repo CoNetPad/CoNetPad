@@ -12,7 +12,6 @@ public interface TaskResponseExecutor {
 	public void executeTask(DeleteFileTaskResponse task);
 	public void executeTask(DeleteSessionTaskResponse task);
 	public void executeTask(LeaveSessionTaskResponse task);
-	public void executeTask(DownloadFileTaskResponse task);
 	public void executeTask(DownloadRepoTaskResponse task);
 	public void executeTask(EditorTaskResponse task);
 	public void executeTask(JoinSessionTaskResponse task);

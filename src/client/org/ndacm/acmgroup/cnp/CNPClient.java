@@ -47,7 +47,6 @@ import org.ndacm.acmgroup.cnp.task.response.CreateFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.CreateSessionTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.DeleteFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.DeleteSessionTaskResponse;
-import org.ndacm.acmgroup.cnp.task.response.DownloadFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.DownloadRepoTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.JoinSessionTaskResponse;
@@ -546,17 +545,6 @@ public class CNPClient implements TaskReceivedEventListener,
 		SwingUtilities.invokeLater(doWorkRunnable);
 	}
 
-	/**
-	 * This downloads a file via DownloadFileTAsk response [Not Implemented]
-	 * 
-	 * @param task
-	 *            the DownloadFileTAsk to use to download the file
-	 * @return True if successful, false otherwise
-	 */
-	public void executeTask(DownloadFileTaskResponse task) {
-		// TODO implement
-
-	}
 
 	/**
 	 * If task was executed successfully, close the tab for task file.

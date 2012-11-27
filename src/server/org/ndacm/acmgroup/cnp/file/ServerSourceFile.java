@@ -6,7 +6,6 @@ import java.util.concurrent.Executors;
 
 import org.ndacm.acmgroup.cnp.CNPServer;
 import org.ndacm.acmgroup.cnp.network.CNPConnection;
-import org.ndacm.acmgroup.cnp.task.DownloadFileTask;
 import org.ndacm.acmgroup.cnp.task.EditorTask;
 import org.ndacm.acmgroup.cnp.task.FileTask;
 import org.ndacm.acmgroup.cnp.task.FileTaskExecutor;
@@ -83,16 +82,6 @@ public class ServerSourceFile extends SourceFile implements FileTaskExecutor {
 		}
 		distributeTask(response);
 		
-	}
-
-	/**
-	 * This executes a DownloadFileTask		[Not Implemented]
-	 * @param task		The DownloadFile Task to execute
-	 * @return			True if successful, false otherwise
-	 */
-	public boolean executeTask(DownloadFileTask task) {
-		// TODO implement
-		return false;
 	}
 
 	

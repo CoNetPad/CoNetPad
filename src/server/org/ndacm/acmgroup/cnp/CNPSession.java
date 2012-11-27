@@ -22,7 +22,6 @@ import org.ndacm.acmgroup.cnp.task.CloseFileTask;
 import org.ndacm.acmgroup.cnp.task.CompileTask;
 import org.ndacm.acmgroup.cnp.task.CreateFileTask;
 import org.ndacm.acmgroup.cnp.task.DeleteFileTask;
-import org.ndacm.acmgroup.cnp.task.DownloadFileTask;
 import org.ndacm.acmgroup.cnp.task.DownloadRepoTask;
 import org.ndacm.acmgroup.cnp.task.OpenFileTask;
 import org.ndacm.acmgroup.cnp.task.SendResponseTask;
@@ -306,12 +305,6 @@ public class CNPSession implements SessionTaskExecutor {
 
 	@Override
 	public void executeTask(DeleteFileTask task) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void executeTask(DownloadFileTask task) {
 		// TODO Auto-generated method stub
 
 	}

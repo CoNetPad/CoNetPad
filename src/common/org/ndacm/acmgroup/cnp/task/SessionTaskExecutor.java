@@ -12,7 +12,6 @@ public interface SessionTaskExecutor {
 
 	public void executeTask(CompileTask task);
 
-	public void executeTask(DownloadFileTask task);
 
 	public void executeTask(DownloadRepoTask task);
 
