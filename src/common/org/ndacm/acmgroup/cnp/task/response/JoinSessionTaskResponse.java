@@ -2,7 +2,6 @@ package org.ndacm.acmgroup.cnp.task.response;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 /**
  * A class.
  *
@@ -15,11 +14,11 @@ public class JoinSessionTaskResponse extends TaskResponse {
 	private int sessionID;
 	private boolean success;
 	private List<String> sessionFiles;
-	private Set<Integer> fileIDs;
+	private List<Integer> fileIDs;
 	private Collection<String> connectedUsers;
 
 	public JoinSessionTaskResponse(int userID, String username, String sessionName, 
-			int sessionID, boolean success, List<String> sessionFiles, Set<Integer> fileIDs,
+			int sessionID, boolean success, List<String> sessionFiles, List<Integer> fileIDs,
 			Collection<String> connectedUsers) {
 		this.userID = userID;
 		this.username = username;
@@ -85,11 +84,11 @@ public class JoinSessionTaskResponse extends TaskResponse {
 		this.username = username;
 	}
 
-	public Set<Integer> getFileIDs() {
+	public List<Integer> getFileIDs() {
 		return fileIDs;
 	}
 
-	public void setFileIDs(Set<Integer> fileIDs) {
+	public void setFileIDs(List<Integer> fileIDs) {
 		this.fileIDs = fileIDs;
 	}
 

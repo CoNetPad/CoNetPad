@@ -1,6 +1,8 @@
 package org.ndacm.acmgroup.cnp;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,6 +13,7 @@ import org.ndacm.acmgroup.cnp.Account.ChatPermissionLevel;
 import org.ndacm.acmgroup.cnp.Account.FilePermissionLevel;
 import org.ndacm.acmgroup.cnp.database.Database;
 import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
+import org.ndacm.acmgroup.cnp.file.SourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
 import org.ndacm.acmgroup.cnp.git.JGit;
 import org.ndacm.acmgroup.cnp.network.CNPConnection;
@@ -118,7 +121,6 @@ public class CNPSession implements SessionTaskExecutor {
 
 	}
 
-
 	/**
 	 * This returns the database ID of the sesison leader
 	 * 
@@ -181,8 +183,8 @@ public class CNPSession implements SessionTaskExecutor {
 	 */
 	public synchronized ServerSourceFile createFile(String filename,
 			SourceType type) {
-		ServerSourceFile file = new ServerSourceFile(NEXT_FILEID, filename,
-				type);
+		ServerSourceFile file = new ServerSourceFile(NEXT_FILEID, sessionName
+				+ File.separator + filename, type);
 		sourceFiles.put(NEXT_FILEID, file);
 		NEXT_FILEID++;
 		return file;
@@ -229,12 +231,14 @@ public class CNPSession implements SessionTaskExecutor {
 			// will automatically have file opened
 			sourceFile.addFileTaskEventListener(task.getUserID(),
 					task.getConnection());
+			distributeTask(response);
+
 		} else {
 			// session leader authentication failed
-			response = new CreateFileTaskResponse(-1, -1, "n/a", null, false);
+			response = new CreateFileTaskResponse(-1, -1, "n/a",
+					SourceType.GENERAL, false);
+			distributeTask(response, task.getUserID());
 		}
-
-		distributeTask(response);
 
 	}
 
@@ -346,6 +350,12 @@ public class CNPSession implements SessionTaskExecutor {
 		}
 	}
 
+	public void distributeTask(TaskResponse task, int userId) { // have throw
+		// TaskExecutionException
+			SendResponseTask responseTask = new SendResponseTask(task,clientConnections.get(userId));
+			sessionTaskCourier.submit(responseTask);
+	}
+
 	/**
 	 * This gets a file given a file ID
 	 * 
@@ -378,30 +388,32 @@ public class CNPSession implements SessionTaskExecutor {
 		return sourceFiles;
 	}
 
+	public List<SourceFile> getSourceFilesList() {
+		ArrayList<SourceFile> list = new ArrayList<SourceFile>();
+		for (Integer key : sourceFiles.keySet()) {
+			list.add(sourceFiles.get(key));
+		}
+		return list;
+	}
+
 	public void setSourceFiles(Map<Integer, ServerSourceFile> sourceFiles) {
 		this.sourceFiles = sourceFiles;
 	}
-
 
 	public Map<Integer, CNPConnection> getClientConnections() {
 		return clientConnections;
 	}
 
-
-	public void setClientConnections(Map<Integer, CNPConnection> clientConnections) {
+	public void setClientConnections(
+			Map<Integer, CNPConnection> clientConnections) {
 		this.clientConnections = clientConnections;
 	}
-
 
 	public Map<Integer, String> getClientIdToName() {
 		return clientIdToName;
 	}
 
-
 	public void setClientIdToName(Map<Integer, String> clientIdToName) {
 		this.clientIdToName = clientIdToName;
 	}
-	
-	
-	
 }

@@ -75,9 +75,7 @@ public class TaskMessageFactory {
 			return new CommitTask(Integer.parseInt(message.getData()[0]),
 					message.getData()[1],
 					Integer.parseInt(message.getData()[2]),
-					message.getData()[3],
-					message.getData()[4]
-					);
+					message.getData()[3], message.getData()[4]);
 		case Compile:
 			List<String> sourceFilenames = new ArrayList<String>(
 					message.getData().length - 2);
@@ -91,25 +89,28 @@ public class TaskMessageFactory {
 					message.getData()[1], message.getData()[2]);
 		case CreateFile:
 			CreateFileTask create = null;
-			int type = Integer.parseInt(message.getData()[2]);
+			int type = Integer.parseInt(message.getData()[3]);
 			switch (type) {
 			case 0:
 				create = new CreateFileTask(
 						Integer.parseInt(message.getData()[0]),
-						message.getData()[1], SourceType.JAVA,
-						message.getData()[2]);
+						Integer.parseInt(message.getData()[1]),
+						message.getData()[2], SourceType.JAVA,
+						message.getData()[4]);
 				break;
 			case 1:
 				create = new CreateFileTask(
 						Integer.parseInt(message.getData()[0]),
-						message.getData()[1], SourceType.CPP,
-						message.getData()[2]);
+						Integer.parseInt(message.getData()[1]),
+						message.getData()[2], SourceType.CPP,
+						message.getData()[4]);
 				break;
 			case 2:
 				create = new CreateFileTask(
 						Integer.parseInt(message.getData()[0]),
-						message.getData()[1], SourceType.GENERAL,
-						message.getData()[2]);
+						Integer.parseInt(message.getData()[1]),
+						message.getData()[2], SourceType.GENERAL,
+						message.getData()[4]);
 				break;
 			default:
 				break;
@@ -193,8 +194,7 @@ public class TaskMessageFactory {
 			String[] data = { Integer.toString(commit.getUserID()),
 					commit.getUserAuthToken(),
 					Integer.toString(commit.getSessionID()),
-					commit.getSessionName(),
-					commit.getMessage()};
+					commit.getSessionName(), commit.getMessage() };
 			message = new TaskMessage(TaskType.Commit, data);
 		} else if (task instanceof CompileTask) {
 			CompileTask compile = (CompileTask) task;
@@ -213,19 +213,19 @@ public class TaskMessageFactory {
 			message = new TaskMessage(TaskType.CreateAccount, data);
 		} else if (task instanceof CreateFileTask) {
 			CreateFileTask createFile = (CreateFileTask) task;
-			String[] data = { Integer.toString(createFile.getUserID()),
+			String[] data = { Integer.toString(createFile.getUserID()),Integer.toString(createFile.getSessionID()),
 					createFile.getFilename(), null,
 					createFile.getUserAuthToken() };
 
 			switch (createFile.getType()) {
 			case JAVA:
-				data[2] = "0";
+				data[3] = "0";
 				break;
 			case CPP:
-				data[2] = "1";
+				data[3] = "1";
 				break;
 			case GENERAL:
-				data[2] = "2";
+				data[3] = "2";
 				break;
 			default:
 				break;
@@ -367,25 +367,29 @@ public class TaskMessageFactory {
 			List<String> filenames = new ArrayList<String>();
 			List<Integer> fileIDs = new ArrayList<Integer>();
 			List<String> userIDs = new ArrayList<String>();
-			
+
 			int numFiles = Integer.parseInt(message.getData()[5]);
 			int numUsers = Integer.parseInt(message.getData()[6]);
+
 			// parse filenames from array
-			for (int i = 7; i < 7 + numFiles; i++) {
+			for (int i = 0; i < numFiles; i++) {
 				filenames.add(message.getData()[7 + i]);
 			}
+
 			// parse fileIDs from array
-			for (int i = 7 + numFiles; i < (2 * numFiles); i++ ) {
+			for (int i = 0; i < numFiles; i++) {
 				fileIDs.add(Integer.parseInt(message.getData()[7 + numFiles + i]));
 			}
+
 			// parse userIDs from array
-			for (int i = 7 + (2 * numFiles); i < 7 + (2 * numFiles) + numUsers; i++) {
+			for (int i = 0; i < numUsers; i++) {
 				userIDs.add(message.getData()[7 + (2 * numFiles) + i]);
 			}
 			return new JoinSessionTaskResponse(Integer.parseInt(message
 					.getData()[0]), message.getData()[1], message.getData()[2],
 					Integer.parseInt(message.getData()[3]),
-					Boolean.parseBoolean(message.getData()[4]), filenames, new HashSet<Integer>(fileIDs), userIDs);
+					Boolean.parseBoolean(message.getData()[4]), filenames,
+					fileIDs, userIDs);
 		case Login:
 			return new LoginTaskResponse(
 					Integer.parseInt(message.getData()[0]),

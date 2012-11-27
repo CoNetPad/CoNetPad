@@ -220,4 +220,8 @@ public class RegisterDialog extends JDialog {
 		panel.setLayout(gl_panel);
 		getContentPane().setLayout(groupLayout);
 	}
+
+	public void setLoginDialog(LoginDialog dialog) {
+		this.logDialog = dialog;
+	}
 }

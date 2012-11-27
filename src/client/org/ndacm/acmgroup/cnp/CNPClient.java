@@ -20,6 +20,7 @@ import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
 import org.ndacm.acmgroup.cnp.gui.CreateSessionDialog;
 import org.ndacm.acmgroup.cnp.gui.LoginDialog;
 import org.ndacm.acmgroup.cnp.gui.MainFrame;
+import org.ndacm.acmgroup.cnp.gui.NewFileDialog;
 import org.ndacm.acmgroup.cnp.gui.RegisterDialog;
 import org.ndacm.acmgroup.cnp.gui.ServerConnectionDialog;
 import org.ndacm.acmgroup.cnp.gui.SessionDialog;
@@ -81,6 +82,8 @@ public class CNPClient implements TaskReceivedEventListener,
 	private LoginDialog logDialog;
 	private SessionDialog sesDialog;
 	private CreateSessionDialog createSessionDialog;
+	private NewFileDialog newFileDialog;
+	private CNPClient client = this;
 
 	/**
 	 * Launch the application.
@@ -125,6 +128,7 @@ public class CNPClient implements TaskReceivedEventListener,
 
 	public void closeConnection() {
 		network.disconnect();
+		clientExecutor.shutdown();
 	}
 
 	public void setRegDialog(RegisterDialog regDialog) {
@@ -141,6 +145,10 @@ public class CNPClient implements TaskReceivedEventListener,
 
 	public void setCreateSessionDialog(CreateSessionDialog createDialog) {
 		this.createSessionDialog = createDialog;
+	}
+
+	public void setNewFileDialog(NewFileDialog dialog) {
+		this.newFileDialog = dialog;
 	}
 
 	public void createSession(String password) {
@@ -239,15 +247,14 @@ public class CNPClient implements TaskReceivedEventListener,
 	/**
 	 * This creates a new file to be worked on or edited.
 	 * 
-	 * @param fileID
-	 *            The unique File ID to assign to the new file
 	 * @param filename
 	 *            The unique file name to assign to the file
 	 * @param type
 	 *            The type of the newly created file
 	 */
-	public void createSourceFile(int fileID, String filename, SourceType type) {
-		Task task = new CreateFileTask(userID, filename, type, authToken);
+	public void createSourceFile(String filename, SourceType type) {
+		Task task = new CreateFileTask(userID, sessionID, filename, type,
+				authToken);
 		network.sendTask(task);
 
 	}
@@ -314,16 +321,16 @@ public class CNPClient implements TaskReceivedEventListener,
 	public void executeTask(CreateAccountTaskResponse task) {
 		if (task.isSuccess()) {
 			JOptionPane.showMessageDialog(logDialog, "Account created.");
-			Runnable doWorkRunnable = new Runnable() {
-				public void run() {
-					regDialog.dispose();
-				}
-			};
-			SwingUtilities.invokeLater(doWorkRunnable);
 		} else {
 			JOptionPane.showMessageDialog(logDialog,
 					"Error while creating an account.");
 		}
+		Runnable doWorkRunnable = new Runnable() {
+			public void run() {
+				regDialog.dispose();
+			}
+		};
+		SwingUtilities.invokeLater(doWorkRunnable);
 	}
 
 	/**
@@ -395,14 +402,24 @@ public class CNPClient implements TaskReceivedEventListener,
 				// update client frame with list of files
 				Runnable doWorkRunnable = new Runnable() {
 					public void run() {
-						clientFrame = sesDialog.openMainFrame(task
-								.getSessionFiles());
+						clientFrame = sesDialog.openMainFrame();
 						sessionID = task.getSessionID();
 						sessionName = task.getSessionName();
 						// populate user list with usernames of those already
 						// connected
-						clientFrame.addToUserList(new ArrayList<String>(task.getConnectedUsers()));
-						//Map  task.getFileIDs();
+						clientFrame.setTitle(sessionName);
+						clientFrame.addToUserList(new ArrayList<String>(task
+								.getConnectedUsers()));
+
+						clientFrame.addToFileList(task.getSessionFiles());
+
+						for (int i = 0; i < task.getSessionFiles().size(); i++) {
+							sourceFiles.put(
+									task.getFileIDs().get(i),
+									new ClientSourceFile(task.getFileIDs().get(
+											i), task.getSessionFiles().get(i),
+											SourceType.GENERAL, "", client));
+						}
 					}
 				};
 				SwingUtilities.invokeLater(doWorkRunnable);
@@ -435,17 +452,18 @@ public class CNPClient implements TaskReceivedEventListener,
 					new ClientSourceFile(task.getFileID(), task.getFilename(),
 							task.getType(), "", this));
 
-			// if client is a session leader, then open file up in tab
-			if (task.getUserID() == userID) {
-
-				// create and open new tab
-				clientFrame.addTab(task.getFileID(), task.getFilename(), "");
-
-			}
-
 			// populate file tree for all users
 			clientFrame.addToFileList(task.getFilename());
+		} else {
+			JOptionPane.showMessageDialog(clientFrame,
+					"Error while creating the file.");
 		}
+		Runnable doWorkRunnable = new Runnable() {
+			public void run() {
+				newFileDialog.dispose();
+			}
+		};
+		SwingUtilities.invokeLater(doWorkRunnable);
 	}
 
 	/**

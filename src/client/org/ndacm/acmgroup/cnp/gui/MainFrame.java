@@ -3,6 +3,7 @@ package org.ndacm.acmgroup.cnp.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -14,6 +15,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -55,7 +57,7 @@ public class MainFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public MainFrame(CNPClient client, List<String> sessionFiles) {
+	public MainFrame(CNPClient client) {
 		this.cnpClient = client;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -78,7 +80,6 @@ public class MainFrame extends JFrame {
 		listUsers.setBorder(new LineBorder(new Color(0, 0, 0)));
 		listUsers
 				.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-		listUsers.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 		listUsers.setVisibleRowCount(-1);
 
 		JLabel lblChat = new JLabel("Chat");
@@ -112,152 +113,132 @@ public class MainFrame extends JFrame {
 				textAreaChatInput.getHeight()));
 
 		GroupLayout gl_panel = new GroupLayout(panel);
-		gl_panel.setHorizontalGroup(gl_panel
-				.createParallelGroup(Alignment.TRAILING)
-				.addGroup(
-						gl_panel.createSequentialGroup()
-								.addContainerGap()
-								.addGroup(
-										gl_panel.createParallelGroup(
-												Alignment.TRAILING)
-												.addComponent(
-														listUsers,
-														GroupLayout.DEFAULT_SIZE,
-														191, Short.MAX_VALUE)
-												.addComponent(scrollPane,
-														Alignment.LEADING)
-												.addComponent(
-														scrollPane_1,
-														Alignment.LEADING,
-														GroupLayout.PREFERRED_SIZE,
-														GroupLayout.DEFAULT_SIZE,
-														Short.MAX_VALUE)
-												.addComponent(
-														lblCurrentUsers,
-														Alignment.LEADING,
-														GroupLayout.PREFERRED_SIZE,
-														67,
-														GroupLayout.PREFERRED_SIZE)
-												.addComponent(lblChat,
-														Alignment.LEADING))
-								.addContainerGap()));
-		gl_panel.setVerticalGroup(gl_panel.createParallelGroup(
-				Alignment.LEADING).addGroup(
-				gl_panel.createSequentialGroup()
-						.addContainerGap()
-						.addComponent(lblCurrentUsers)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(listUsers, GroupLayout.PREFERRED_SIZE,
-								121, GroupLayout.PREFERRED_SIZE)
-						.addGap(18)
-						.addComponent(lblChat)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE,
-								249, Short.MAX_VALUE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE,
-								42, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap()));
+		gl_panel.setHorizontalGroup(
+			gl_panel.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_panel.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
+						.addComponent(listUsers, GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
+						.addComponent(scrollPane, Alignment.LEADING)
+						.addComponent(scrollPane_1, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(lblCurrentUsers, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
+						.addComponent(lblChat, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE))
+					.addContainerGap())
+		);
+		gl_panel.setVerticalGroup(
+			gl_panel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(lblCurrentUsers)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(listUsers, GroupLayout.PREFERRED_SIZE, 121, GroupLayout.PREFERRED_SIZE)
+					.addGap(18)
+					.addComponent(lblChat)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 42, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap())
+		);
 		panel.setLayout(gl_panel);
 
 		JPanel panel_1 = new JPanel();
 		contentPane.add(panel_1, BorderLayout.WEST);
 		JLabel lblWorkspace = new JLabel("Workspace");
 
-		JButton btnSave = new JButton("Save");
-		btnSave.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				// TODO
-			}
-		});
-
-		JButton btnExit = new JButton("Exit");
-		btnExit.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				cnpClient.closeConnection();
-				dispose();
-			}
-		});
-
-		for (int i = 0; i < sessionFiles.size(); i++) {
-			modelFiles.addElement(sessionFiles.get(i));
-		}
-
 		listFiles = new JList(modelFiles);
 		listFiles.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		listFiles
 				.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-		listFiles.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 		listFiles.setVisibleRowCount(-1);
 
 		JButton btnNewFile = new JButton("New File");
+		btnNewFile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				NewFileDialog dialog = new NewFileDialog(cnpClient);
+				dialog.setModalityType(ModalityType.APPLICATION_MODAL);
+				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.setVisible(true);
+			}
+		});
+		
+		JPanel panel_2 = new JPanel();
+		panel_2.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		
+		JButton btnDeleteFile = new JButton("Delete File");
+		btnDeleteFile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
-		gl_panel_1
-				.setHorizontalGroup(gl_panel_1
-						.createParallelGroup(Alignment.LEADING)
-						.addGroup(
-								gl_panel_1
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												gl_panel_1
-														.createParallelGroup(
-																Alignment.LEADING)
-														.addComponent(
-																listFiles,
-																GroupLayout.DEFAULT_SIZE,
-																200,
-																Short.MAX_VALUE)
-														.addGroup(
-																Alignment.TRAILING,
-																gl_panel_1
-																		.createSequentialGroup()
-																		.addComponent(
-																				btnExit)
-																		.addPreferredGap(
-																				ComponentPlacement.RELATED,
-																				92,
-																				Short.MAX_VALUE)
-																		.addComponent(
-																				btnSave))
-														.addComponent(
-																lblWorkspace)
-														.addComponent(
-																btnNewFile))
-										.addContainerGap()));
-		gl_panel_1.setVerticalGroup(gl_panel_1.createParallelGroup(
-				Alignment.LEADING)
-				.addGroup(
-						gl_panel_1
-								.createSequentialGroup()
-								.addGap(10)
-								.addComponent(lblWorkspace)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(listFiles,
-										GroupLayout.PREFERRED_SIZE, 481,
-										GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(btnNewFile)
-								.addPreferredGap(ComponentPlacement.RELATED,
-										51, Short.MAX_VALUE)
-								.addGroup(
-										gl_panel_1
-												.createParallelGroup(
-														Alignment.BASELINE)
-												.addComponent(btnSave)
-												.addComponent(btnExit))
-								.addContainerGap()));
+		gl_panel_1.setHorizontalGroup(
+			gl_panel_1.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_1.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+						.addComponent(listFiles, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+						.addComponent(lblWorkspace, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE)
+						.addComponent(panel_2, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+						.addGroup(gl_panel_1.createSequentialGroup()
+							.addComponent(btnDeleteFile)
+							.addPreferredGap(ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+							.addComponent(btnNewFile, GroupLayout.PREFERRED_SIZE, 94, GroupLayout.PREFERRED_SIZE)))
+					.addContainerGap())
+		);
+		gl_panel_1.setVerticalGroup(
+			gl_panel_1.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_1.createSequentialGroup()
+					.addGap(10)
+					.addComponent(lblWorkspace)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(listFiles, GroupLayout.DEFAULT_SIZE, 507, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
+						.addComponent(btnNewFile)
+						.addComponent(btnDeleteFile))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, 43, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap())
+		);
+						
+								JButton btnExit = new JButton("Exit");
+								btnExit.addActionListener(new ActionListener() {
+									public void actionPerformed(ActionEvent e) {
+										cnpClient.closeConnection();
+										dispose();
+									}
+								});
+						
+								JButton btnSave = new JButton("Save");
+								btnSave.addActionListener(new ActionListener() {
+									public void actionPerformed(ActionEvent arg0) {
+										// TODO
+									}
+								});
+						GroupLayout gl_panel_2 = new GroupLayout(panel_2);
+						gl_panel_2.setHorizontalGroup(
+							gl_panel_2.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_panel_2.createSequentialGroup()
+									.addContainerGap()
+									.addComponent(btnExit)
+									.addPreferredGap(ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
+									.addComponent(btnSave, GroupLayout.PREFERRED_SIZE, 81, GroupLayout.PREFERRED_SIZE)
+									.addContainerGap())
+						);
+						gl_panel_2.setVerticalGroup(
+							gl_panel_2.createParallelGroup(Alignment.LEADING)
+								.addGroup(Alignment.TRAILING, gl_panel_2.createSequentialGroup()
+									.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+									.addGroup(gl_panel_2.createParallelGroup(Alignment.BASELINE)
+										.addComponent(btnExit)
+										.addComponent(btnSave))
+									.addContainerGap())
+						);
+						panel_2.setLayout(gl_panel_2);
 		panel_1.setLayout(gl_panel_1);
 
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		contentPane.add(tabbedPane, BorderLayout.CENTER);
-
-		JPanel panel_2 = new JPanel();
-		// add to
-		tabbedPane.addTab("New tab", null, panel_2, null);
-
-		JPanel panel_3 = new JPanel();
-		tabbedPane.addTab("New tab", null, panel_3, null);
 	}
 
 	public void addTab(int fileID, String filename) {
@@ -309,7 +290,7 @@ public class MainFrame extends JFrame {
 
 	public void addToUserList(List<String> userList) {
 		for (int i = 0; i < userList.size(); i++) {
-			modelFiles.addElement(userList.get(i));
+			modelUsers.addElement(userList.get(i));
 		}
 	}
 
