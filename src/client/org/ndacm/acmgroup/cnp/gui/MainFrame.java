@@ -45,7 +45,7 @@ public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTabbedPane tabbedPane;
-	private Map<Integer, JTextField> tabs; // fileID to tab component
+	private Map<Integer, JTextArea> tabs; // fileID to tab component
 	private int columnWidth;
 	private static final int DEFAULT_WIDTH = 891;
 	private static final int DEFAULT_HEIGHT = 664;
@@ -317,24 +317,17 @@ public class MainFrame extends JFrame {
 
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		contentPane.add(tabbedPane, BorderLayout.CENTER);
-
-		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-			public void run() {
-				cnpClient.closeConnection();
-			}
-		}));
-
 	}
 
 	public void addTab(int fileID, String filename) {
-		JTextField fileTextField = new JTextField(columnWidth);
-		tabbedPane.addTab("filename", null, fileTextField, filename);
-		tabs.put(fileID, fileTextField);
+		JTextArea fileTextArea = new JTextArea();
+		tabbedPane.addTab("filename", null, fileTextArea, filename);
+		tabs.put(fileID, fileTextArea);
 	}
 
 	public void updateSourceTab(int fileID, int keyPressed, int editIndex)
 			throws BadLocationException {
-		JTextField text = tabs.get(fileID);
+		JTextArea text = tabs.get(fileID);
 		text.getDocument().insertString(editIndex,
 				Character.toString((char) keyPressed), null);
 	}
@@ -344,9 +337,9 @@ public class MainFrame extends JFrame {
 	}
 
 	public void addTab(int fileID, String filename, String fileContent) {
-		JTextField fileTextField = new JTextField(fileContent, columnWidth);
-		tabbedPane.addTab(filename, null, fileTextField, filename);
-		tabs.put(fileID, fileTextField);
+		JTextArea fileTextArea = new JTextArea(fileContent);
+		tabbedPane.addTab(filename, null, fileTextArea, filename);
+		tabs.put(fileID, fileTextArea);
 	}
 
 	public void removeTab(int tabIndex) {
