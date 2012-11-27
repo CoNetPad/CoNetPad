@@ -265,7 +265,7 @@ public class CNPSession implements SessionTaskExecutor {
 			response = new OpenFileTaskResponse(-1, "n/a", "n/a", false);
 		}
 
-		distributeTask(response);
+		distributeTask(response, task.getUserID());
 
 	}
 
