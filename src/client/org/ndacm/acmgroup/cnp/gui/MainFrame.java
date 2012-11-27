@@ -317,8 +317,16 @@ public class MainFrame extends JFrame {
 		contentPane.add(tabbedPane, BorderLayout.CENTER);
 	}
 
-	public void addTab(int fileID, String filename) {
-		JTextArea fileTextArea = new JTextArea();
+	public void addTab(final int fileID, String filename) {
+		final JTextArea fileTextArea = new JTextArea();
+		fileTextArea.setEditable(false);
+		fileTextArea.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				cnpClient.editFile(arg0.getKeyChar(), fileTextArea.getCaretPosition(), fileID);
+			}
+		});
+
 		tabbedPane.addTab("filename", null, fileTextArea, filename);
 		tabs.put(fileID, fileTextArea);
 	}
@@ -385,9 +393,5 @@ public class MainFrame extends JFrame {
 	 */
 	public void leaveSession() {
 		// leave the current session
-	}
-
-	public void windowClosing(WindowEvent e) {
-		cnpClient.closeConnection();
 	}
 }

@@ -223,11 +223,11 @@ public class CNPClient implements TaskReceivedEventListener,
 	 * @param userAuthToken
 	 *            The authentication cooki prevent hackers from editing
 	 */
-	public void editFile(int userID, int sessionID, int keyPressed,
-			int editIndex, int fileID, String userAuthToken) {
+	public void editFile(int keyPressed,
+			int editIndex, int fileID) {
 
 		Task task = new EditorTask(userID, sessionID, keyPressed, editIndex,
-				fileID, userAuthToken);
+				fileID, authToken);
 		network.sendTask(task);
 
 	}
@@ -502,16 +502,22 @@ public class CNPClient implements TaskReceivedEventListener,
 	 * @throws BadLocationException
 	 *             If the file doesn't exist, this exception is thrown
 	 */
-	public void executeTask(EditorTaskResponse task) {
+	public void executeTask(final EditorTaskResponse task) {
 
 		if (task.isSuccess()) {
 			sourceFiles.get(task.getFileID()).editSource(task);
-			try {
-				clientFrame.updateSourceTab(task.getFileID(),
-						task.getKeyPressed(), task.getEditIndex());
-			} catch (BadLocationException e) {
-				// do something
-			}
+			
+			Runnable doWorkRunnable = new Runnable() {
+				public void run() {
+					try {
+						clientFrame.updateSourceTab(task.getFileID(),
+								task.getKeyPressed(), task.getEditIndex());
+					} catch (BadLocationException e) {
+						// do something
+					}
+				}
+			};
+			SwingUtilities.invokeLater(doWorkRunnable);
 		}
 	}
 
