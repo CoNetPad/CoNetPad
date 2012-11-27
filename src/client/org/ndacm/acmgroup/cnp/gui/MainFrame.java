@@ -24,6 +24,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EtchedBorder;
@@ -176,10 +177,8 @@ public class MainFrame extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				if (arg0.getClickCount() == 2) {
-
-					cnpClient.openSourceFile(listFiles.getModel().getElementAt(
-							listFiles.locationToIndex(arg0
-									.getLocationOnScreen())));
+					int index = listFiles.locationToIndex(arg0.getPoint());
+					cnpClient.openSourceFile(listFiles.getModel().getElementAt(index));
 				}
 			}
 		});
@@ -318,6 +317,13 @@ public class MainFrame extends JFrame {
 
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		contentPane.add(tabbedPane, BorderLayout.CENTER);
+
+		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+			public void run() {
+				cnpClient.closeConnection();
+			}
+		}));
+
 	}
 
 	public void addTab(int fileID, String filename) {
