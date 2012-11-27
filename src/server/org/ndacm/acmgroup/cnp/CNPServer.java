@@ -398,9 +398,9 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 			}
 
 			// remove connection from session list
-			sessionToLeave.removeUser(userID);
 			response = new LeaveSessionTaskResponse(userID, sessionToLeave
 					.getClientIdToName().get(userID), true);
+			sessionToLeave.removeUser(userID);
 
 		} else {
 			// tokens don't match, join session task fails
