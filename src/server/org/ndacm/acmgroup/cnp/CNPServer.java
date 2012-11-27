@@ -18,6 +18,8 @@ import org.ndacm.acmgroup.cnp.database.Database;
 import org.ndacm.acmgroup.cnp.exceptions.FailedAccountException;
 import org.ndacm.acmgroup.cnp.exceptions.FailedSessionException;
 import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
+import org.ndacm.acmgroup.cnp.file.SourceFile;
+import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
 import org.ndacm.acmgroup.cnp.git.JGit;
 import org.ndacm.acmgroup.cnp.git.NotDirectoryException;
 import org.ndacm.acmgroup.cnp.network.ServerNetwork;
@@ -266,6 +268,7 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 				}
 
 				jGit.createRepo(newSession.getSessionName());
+				newSession.createFile("HelloWorld.txt", SourceType.GENERAL);
 				openSessions.put(newSession.getSessionID(), newSession);
 				response = new CreateSessionTaskResponse(
 						newSession.getSessionID(), newSession.getSessionName(),
@@ -297,7 +300,8 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 			// the type of the task
 			try {
 
-				// get sessionID from sessionName - will throw exception if doesn't exist
+				// get sessionID from sessionName - will throw exception if
+				// doesn't exist
 				int sessionID = database.getSessionID(task.getSessionName());
 
 				// check if already open - if so, load that session
@@ -305,47 +309,56 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 					joinedSession = openSessions.get(sessionID);
 
 				} else {
-					// otherwise load a new session object from the database information
+					// otherwise load a new session object from the database
+					// information
 
 					if (task instanceof JoinPrivateSessionTask) {
 						joinedSession = database.retrieveSession(task
 								.getSessionName(), this,
 								((JoinPrivateSessionTask) task)
-								.getSessionPassword());
+										.getSessionPassword());
 					} else {
 						joinedSession = database.retrieveSession(
 								task.getSessionName(), this);
 					}
 
-					openSessions.put(joinedSession.getSessionID(), joinedSession);
+					openSessions.put(joinedSession.getSessionID(),
+							joinedSession);
 					jGit.activateRepo(joinedSession.getSessionName());
-					
+
 				}
 
 				// add connection to session list
-				joinedSession.addUser(task.getUserID(), task.getUsername(), task.getConnection());
+				joinedSession.addUser(task.getUserID(), task.getUsername(),
+						task.getConnection());
 
 				// construct response
-				List<String> sessionFiles = retrieveSessionFileList(joinedSession
-						.getSessionName());
+				List<String> sessionFiles = new ArrayList<String>();
+				List<Integer> sessionFileID  = new ArrayList<Integer>();
+				for (SourceFile file : joinedSession.getSourceFilesList()) {
+					sessionFiles.add(file.getFilename());
+					sessionFileID.add(file.getFileID());
+				}
 
 				response = new JoinSessionTaskResponse(task.getUserID(),
 						task.getUsername(), joinedSession.getSessionName(),
-						joinedSession.getSessionID(), true, sessionFiles, joinedSession.getSourceFiles().keySet(),
-						joinedSession.getClientIdToName().values());
+						joinedSession.getSessionID(), true, sessionFiles,
+						sessionFileID, joinedSession.getClientIdToName()
+								.values());
 
 			} catch (FailedSessionException ex) {
 				// if joining the session fails, create a response signifying
 				// this
-				response = new JoinSessionTaskResponse(-1, "n/a", "n/a", -1, false,
-						null, null, null);
+				response = new JoinSessionTaskResponse(-1, "n/a", "n/a", -1,
+						false, null, null, null);
 			} catch (FileNotFoundException e) {
 				response = new JoinSessionTaskResponse(-1, "", "", -1, false,
 						null, null, null);
 			}
 		} else {
 			// tokens don't match, join session task fails
-			response = new JoinSessionTaskResponse(-1, "n/a", "n/a", -1, false, null, null, null);
+			response = new JoinSessionTaskResponse(-1, "n/a", "n/a", -1, false,
+					null, null, null);
 		}
 
 		// send back response to client if fails, otherwise send it to all
@@ -409,12 +422,12 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 	public void executeTask(DeleteSessionTask task) {
 		if (userIsAuth(task.getUserID(), task.getUserAuthToken())) {
 			// if others are connected, kick them off first
-			
+
 			// then delete session and any associated data
 		}
 
 	}
-	
+
 	@Override
 	public void executeTask(CommitTask task) {
 		if (userIsAuth(task.getUserID(), task.getUserAuthToken())) {
@@ -567,7 +580,5 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 	public JGit getjGit() {
 		return jGit;
 	}
-
-
 
 }

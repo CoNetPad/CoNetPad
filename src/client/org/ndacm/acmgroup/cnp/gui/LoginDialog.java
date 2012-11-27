@@ -127,6 +127,7 @@ public class LoginDialog extends JDialog {
 				public void actionPerformed(ActionEvent e) {
 
 					RegisterDialog dialog = new RegisterDialog(client);
+					dialog.setLoginDialog(loginDialog);
 					dialog.setModalityType(ModalityType.APPLICATION_MODAL);
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setVisible(true);

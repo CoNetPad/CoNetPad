@@ -16,7 +16,8 @@ public abstract class SourceFile {
 	protected String filename;			//the unique file name
 	protected Rope sourceRope;			//The Rope class for handing edits
 	protected SourceType type;			//The file type of the file
-
+	protected File file;
+	
 	/**
 	 * This is an enumeration for file types.
 	 * @author Josh Tan

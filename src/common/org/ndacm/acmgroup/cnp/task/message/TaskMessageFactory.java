@@ -75,9 +75,7 @@ public class TaskMessageFactory {
 			return new CommitTask(Integer.parseInt(message.getData()[0]),
 					message.getData()[1],
 					Integer.parseInt(message.getData()[2]),
-					message.getData()[3],
-					message.getData()[4]
-					);
+					message.getData()[3], message.getData()[4]);
 		case Compile:
 			List<String> sourceFilenames = new ArrayList<String>(
 					message.getData().length - 2);
@@ -193,8 +191,7 @@ public class TaskMessageFactory {
 			String[] data = { Integer.toString(commit.getUserID()),
 					commit.getUserAuthToken(),
 					Integer.toString(commit.getSessionID()),
-					commit.getSessionName(),
-					commit.getMessage()};
+					commit.getSessionName(), commit.getMessage() };
 			message = new TaskMessage(TaskType.Commit, data);
 		} else if (task instanceof CompileTask) {
 			CompileTask compile = (CompileTask) task;
@@ -367,25 +364,29 @@ public class TaskMessageFactory {
 			List<String> filenames = new ArrayList<String>();
 			List<Integer> fileIDs = new ArrayList<Integer>();
 			List<String> userIDs = new ArrayList<String>();
-			
+
 			int numFiles = Integer.parseInt(message.getData()[5]);
 			int numUsers = Integer.parseInt(message.getData()[6]);
+
 			// parse filenames from array
-			for (int i = 7; i < 7 + numFiles; i++) {
+			for (int i = 0; i < numFiles; i++) {
 				filenames.add(message.getData()[7 + i]);
 			}
+
 			// parse fileIDs from array
-			for (int i = 7 + numFiles; i < (2 * numFiles); i++ ) {
+			for (int i = 0; i < numFiles; i++) {
 				fileIDs.add(Integer.parseInt(message.getData()[7 + numFiles + i]));
 			}
+
 			// parse userIDs from array
-			for (int i = 7 + (2 * numFiles); i < 7 + (2 * numFiles) + numUsers; i++) {
+			for (int i = 0; i < numUsers; i++) {
 				userIDs.add(message.getData()[7 + (2 * numFiles) + i]);
 			}
 			return new JoinSessionTaskResponse(Integer.parseInt(message
 					.getData()[0]), message.getData()[1], message.getData()[2],
 					Integer.parseInt(message.getData()[3]),
-					Boolean.parseBoolean(message.getData()[4]), filenames, new HashSet<Integer>(fileIDs), userIDs);
+					Boolean.parseBoolean(message.getData()[4]), filenames,
+					fileIDs, userIDs);
 		case Login:
 			return new LoginTaskResponse(
 					Integer.parseInt(message.getData()[0]),

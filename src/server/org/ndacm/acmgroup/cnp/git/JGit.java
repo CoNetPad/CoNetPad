@@ -61,12 +61,6 @@ public class JGit {
 				+ name);
 		if (!repo.exists()) {
 			repo.mkdirs();
-			try {
-				new File(repo.getAbsolutePath() + File.separator
-						+ "HelloWorld.txt").createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 		}
 
 		try {
