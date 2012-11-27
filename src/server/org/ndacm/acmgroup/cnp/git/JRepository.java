@@ -1,8 +1,3 @@
-/**
- * This is the class that deals with the GIT handling for sessions
- * @author Cesar Ramirez, Josh Tan
- * @version 2.0
- */
 package org.ndacm.acmgroup.cnp.git;
 
 import java.io.File;
@@ -27,6 +22,11 @@ import org.eclipse.jgit.api.errors.WrongRepositoryStateException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepository;
 
+/**
+ * This is the class that deals with the GIT handling for sessions
+ * @author Cesar Ramirez, Josh Tan
+ * @version 2.0
+ */
 public class JRepository {
 	private static final String GIT_DIR = ".git";			//The Git director file type
 	private String name;									//The name of the repository	

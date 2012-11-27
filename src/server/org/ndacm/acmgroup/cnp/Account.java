@@ -1,11 +1,11 @@
+package org.ndacm.acmgroup.cnp;
+
 /**
  * Account class
  * This is for handling each of the user accounts
  * @version 2.0
  * @author Justin Andres, Josh Tan
  */
-package org.ndacm.acmgroup.cnp;
-
 public class Account {
 	
 	private String username;		//Username of account

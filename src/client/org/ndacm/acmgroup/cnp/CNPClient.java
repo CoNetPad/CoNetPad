@@ -56,7 +56,11 @@ import org.ndacm.acmgroup.cnp.task.response.LoginTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.OpenFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponseExecutor;
-
+/**
+ * This class is the main client-side class.  It handles the communication and the various client functionalities.
+ * @author Cesar Ramirez
+ *
+ */
 public class CNPClient implements TaskReceivedEventListener,
 		TaskResponseExecutor {
 
@@ -125,24 +129,41 @@ public class CNPClient implements TaskReceivedEventListener,
 		}
 		return true;
 	}
-
+	/**
+	 * This disconnectst he user from the server
+	 */
 	public void closeConnection() {
 		network.disconnect();
 		clientExecutor.shutdown();
 	}
-
+	/**
+	 * This shows the dialog box for registering a new user
+	 * @param regDialog		The Dialogbox for registering the user
+	 */
 	public void setRegDialog(RegisterDialog regDialog) {
 		this.regDialog = regDialog;
 	}
-
+	
+	/**
+	 * This shows the dialog box for setting a user session
+	 * @param sessionDialog			The SessionDialog for setting the session for the user
+	 */
 	public void setSessionDialog(SessionDialog sessionDialog) {
 		this.sesDialog = sessionDialog;
 	}
 
+	/**
+	 * This shows the dialog box for logging the user in
+	 * @param logDialog		The LoginDialog for logging the user in
+	 */
 	public void setLogDialog(LoginDialog logDialog) {
 		this.logDialog = logDialog;
 	}
-
+	
+	/**
+	 * 
+	 * @param createDialog
+	 */
 	public void setCreateSessionDialog(CreateSessionDialog createDialog) {
 		this.createSessionDialog = createDialog;
 	}
