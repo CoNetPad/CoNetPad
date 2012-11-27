@@ -11,6 +11,7 @@ import java.io.IOException;
 import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.CanceledException;
+import org.eclipse.jgit.api.errors.ConcurrentRefUpdateException;
 import org.eclipse.jgit.api.errors.DetachedHeadException;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidConfigurationException;
@@ -19,6 +20,7 @@ import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.api.errors.NoFilepatternException;
 import org.eclipse.jgit.api.errors.NoHeadException;
+import org.eclipse.jgit.api.errors.NoMessageException;
 import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
 import org.eclipse.jgit.api.errors.RefNotFoundException;
 import org.eclipse.jgit.api.errors.TransportException;
@@ -115,17 +117,17 @@ public class JRepository {
 
 	/**	This commits all the files to the repo
 	 * @param message		The message for the commit.
+	 * @throws GitAPIException 
+	 * @throws WrongRepositoryStateException 
+	 * @throws ConcurrentRefUpdateException 
+	 * @throws UnmergedPathsException 
+	 * @throws NoMessageException 
+	 * @throws NoHeadException 
 	 */
-	public void gitCommit(String message) {
-		try {
-			git.commit().setMessage("Added myfile").call();
-		} catch (UnmergedPathsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (GitAPIException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public void gitCommit(String message) throws NoHeadException, NoMessageException, UnmergedPathsException, ConcurrentRefUpdateException, WrongRepositoryStateException, GitAPIException {
+
+		git.commit().setMessage("Added myfile").call();
+
 	}
 
 	/**	This pushes the changes to the git repo
@@ -156,8 +158,8 @@ public class JRepository {
 	public void gitTrackMaster() {
 		try {
 			git.branchCreate().setName("master")
-					.setUpstreamMode(SetupUpstreamMode.SET_UPSTREAM)
-					.setStartPoint("origin/master").setForce(true).call();
+			.setUpstreamMode(SetupUpstreamMode.SET_UPSTREAM)
+			.setStartPoint("origin/master").setForce(true).call();
 		} catch (GitAPIException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -221,5 +223,5 @@ public class JRepository {
 		return localDirectory.listFiles();
 	}
 
-	
+
 }

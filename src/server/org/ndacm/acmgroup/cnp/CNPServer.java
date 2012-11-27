@@ -14,6 +14,7 @@ import java.util.concurrent.Executors;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.ndacm.acmgroup.cnp.database.Database;
 import org.ndacm.acmgroup.cnp.exceptions.FailedAccountException;
 import org.ndacm.acmgroup.cnp.exceptions.FailedSessionException;
@@ -44,6 +45,7 @@ import org.ndacm.acmgroup.cnp.task.ServerTaskExecutor;
 import org.ndacm.acmgroup.cnp.task.SessionTask;
 import org.ndacm.acmgroup.cnp.task.Task;
 import org.ndacm.acmgroup.cnp.task.message.TaskMessageFactory;
+import org.ndacm.acmgroup.cnp.task.response.CommitTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.CreateAccountTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.CreateSessionTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.JoinSessionTaskResponse;
@@ -60,13 +62,9 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 
 	private static final int USER_TOKEN_LENGTH = 10; // The length of a user
 														// token
-	private static final String TOKEN_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; // The
-																												// available
-																												// characters
-																												// used
-																												// in
-																												// a
-																												// token
+	
+	// The available characters used in a token
+	private static final String TOKEN_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; 
 
 	private ServerNetwork network; // The network class for handing soccket
 									// connection
@@ -432,8 +430,22 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 
 	@Override
 	public void executeTask(CommitTask task) {
+		CommitTaskResponse response = null;
+		
+		// make sure user requesting task has authenticated
 		if (userIsAuth(task.getUserID(), task.getUserAuthToken())) {
-			jGit.commitToRepo(task.getSessionName(), task.getMessage());
+			
+			try {
+				// commit the task and return a response
+				jGit.commitToRepo(task.getSessionID(), task.getMessage());
+				response = new CommitTaskResponse(true);
+				
+			} catch (GitAPIException e) {
+				response = new CommitTaskResponse(false);
+			}
+			
+			SendResponseTask commitResponseTask = new SendResponseTask(response, task.getConnection());
+			serverExecutor.submit(commitResponseTask);
 		}
 	}
 
@@ -443,9 +455,8 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 		Task task = evt.getTask();
 
 		// based on specific task type, will need to set different variable
-		// references (for execution)
-		// and forward on to a specific ExecutorService (server, session, or
-		// file)
+		// references (for execution) and forward on to a specific ExecutorService 
+		// (server, session, or file)
 		if (task instanceof ServerTask) {
 
 			ServerTask serverTask = (ServerTask) task;
@@ -470,6 +481,8 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 				((OpenFileTask) task).setConnection(evt.getConnection());
 			} else if (task instanceof CloseFileTask) {
 				((CloseFileTask) task).setConnection(evt.getConnection());
+			} else if (task instanceof CommitTask) {
+				((CommitTask) task).setConnection(evt.getConnection());
 			}
 			// submit to session task executor
 			session.submitTask(sessionTask);

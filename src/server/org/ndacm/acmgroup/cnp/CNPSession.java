@@ -1,7 +1,6 @@
 package org.ndacm.acmgroup.cnp;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +15,6 @@ import org.ndacm.acmgroup.cnp.database.Database;
 import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
-import org.ndacm.acmgroup.cnp.git.JGit;
 import org.ndacm.acmgroup.cnp.git.JRepository;
 import org.ndacm.acmgroup.cnp.network.CNPConnection;
 import org.ndacm.acmgroup.cnp.task.ChatTask;
