@@ -11,8 +11,9 @@ public class CreateFileTask extends SessionTask {
 	protected String userAuthToken;
 	protected CNPConnection connection;
 
-	public CreateFileTask(int userID, String filename, SourceType type, String userAuthToken) {
+	public CreateFileTask(int userID, int sessionID, String filename, SourceType type, String userAuthToken) {
 		this.userID = userID;
+		this.sessionID = sessionID;
 		this.filename = filename;
 		this.type = type;
 		this.userAuthToken = userAuthToken;

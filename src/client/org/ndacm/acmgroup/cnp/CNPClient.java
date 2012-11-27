@@ -150,7 +150,7 @@ public class CNPClient implements TaskReceivedEventListener,
 	public void setNewFileDialog(NewFileDialog dialog) {
 		this.newFileDialog = dialog;
 	}
-	
+
 	public void createSession(String password) {
 		CreateSessionTask task;
 		if (password.isEmpty()) {
@@ -247,15 +247,14 @@ public class CNPClient implements TaskReceivedEventListener,
 	/**
 	 * This creates a new file to be worked on or edited.
 	 * 
-	 * @param fileID
-	 *            The unique File ID to assign to the new file
 	 * @param filename
 	 *            The unique file name to assign to the file
 	 * @param type
 	 *            The type of the newly created file
 	 */
-	public void createSourceFile(int fileID, String filename, SourceType type) {
-		Task task = new CreateFileTask(userID, filename, type, authToken);
+	public void createSourceFile(String filename, SourceType type) {
+		Task task = new CreateFileTask(userID, sessionID, filename, type,
+				authToken);
 		network.sendTask(task);
 
 	}
@@ -453,22 +452,18 @@ public class CNPClient implements TaskReceivedEventListener,
 					new ClientSourceFile(task.getFileID(), task.getFilename(),
 							task.getType(), "", this));
 
-			// if client is a session leader, then open file up in tab
-			if (task.getUserID() == userID) {
-
-				// create and open new tab
-				clientFrame.addTab(task.getFileID(), task.getFilename(), "");
-
-			}
-
 			// populate file tree for all users
 			clientFrame.addToFileList(task.getFilename());
-		}else{
+		} else {
 			JOptionPane.showMessageDialog(clientFrame,
 					"Error while creating the file.");
 		}
-		newFileDialog.dispose();
-		
+		Runnable doWorkRunnable = new Runnable() {
+			public void run() {
+				newFileDialog.dispose();
+			}
+		};
+		SwingUtilities.invokeLater(doWorkRunnable);
 	}
 
 	/**

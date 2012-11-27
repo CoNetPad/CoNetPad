@@ -183,8 +183,8 @@ public class CNPSession implements SessionTaskExecutor {
 	 */
 	public synchronized ServerSourceFile createFile(String filename,
 			SourceType type) {
-		ServerSourceFile file = new ServerSourceFile(NEXT_FILEID, filename,
-				type);
+		ServerSourceFile file = new ServerSourceFile(NEXT_FILEID, sessionName
+				+ File.separator + filename, type);
 		sourceFiles.put(NEXT_FILEID, file);
 		NEXT_FILEID++;
 		return file;
@@ -231,12 +231,14 @@ public class CNPSession implements SessionTaskExecutor {
 			// will automatically have file opened
 			sourceFile.addFileTaskEventListener(task.getUserID(),
 					task.getConnection());
+			distributeTask(response);
+
 		} else {
 			// session leader authentication failed
-			response = new CreateFileTaskResponse(-1, -1, "n/a", null, false);
+			response = new CreateFileTaskResponse(-1, -1, "n/a",
+					SourceType.GENERAL, false);
+			distributeTask(response, task.getUserID());
 		}
-
-		distributeTask(response);
 
 	}
 
@@ -346,6 +348,12 @@ public class CNPSession implements SessionTaskExecutor {
 					clientEntry.getValue());
 			sessionTaskCourier.submit(responseTask);
 		}
+	}
+
+	public void distributeTask(TaskResponse task, int userId) { // have throw
+		// TaskExecutionException
+			SendResponseTask responseTask = new SendResponseTask(task,clientConnections.get(userId));
+			sessionTaskCourier.submit(responseTask);
 	}
 
 	/**

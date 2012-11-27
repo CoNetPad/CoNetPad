@@ -89,25 +89,28 @@ public class TaskMessageFactory {
 					message.getData()[1], message.getData()[2]);
 		case CreateFile:
 			CreateFileTask create = null;
-			int type = Integer.parseInt(message.getData()[2]);
+			int type = Integer.parseInt(message.getData()[3]);
 			switch (type) {
 			case 0:
 				create = new CreateFileTask(
 						Integer.parseInt(message.getData()[0]),
-						message.getData()[1], SourceType.JAVA,
-						message.getData()[2]);
+						Integer.parseInt(message.getData()[1]),
+						message.getData()[2], SourceType.JAVA,
+						message.getData()[4]);
 				break;
 			case 1:
 				create = new CreateFileTask(
 						Integer.parseInt(message.getData()[0]),
-						message.getData()[1], SourceType.CPP,
-						message.getData()[2]);
+						Integer.parseInt(message.getData()[1]),
+						message.getData()[2], SourceType.CPP,
+						message.getData()[4]);
 				break;
 			case 2:
 				create = new CreateFileTask(
 						Integer.parseInt(message.getData()[0]),
-						message.getData()[1], SourceType.GENERAL,
-						message.getData()[2]);
+						Integer.parseInt(message.getData()[1]),
+						message.getData()[2], SourceType.GENERAL,
+						message.getData()[4]);
 				break;
 			default:
 				break;
@@ -210,19 +213,19 @@ public class TaskMessageFactory {
 			message = new TaskMessage(TaskType.CreateAccount, data);
 		} else if (task instanceof CreateFileTask) {
 			CreateFileTask createFile = (CreateFileTask) task;
-			String[] data = { Integer.toString(createFile.getUserID()),
+			String[] data = { Integer.toString(createFile.getUserID()),Integer.toString(createFile.getSessionID()),
 					createFile.getFilename(), null,
 					createFile.getUserAuthToken() };
 
 			switch (createFile.getType()) {
 			case JAVA:
-				data[2] = "0";
+				data[3] = "0";
 				break;
 			case CPP:
-				data[2] = "1";
+				data[3] = "1";
 				break;
 			case GENERAL:
-				data[2] = "2";
+				data[3] = "2";
 				break;
 			default:
 				break;

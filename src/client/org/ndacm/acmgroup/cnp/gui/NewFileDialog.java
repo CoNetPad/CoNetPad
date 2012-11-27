@@ -89,7 +89,7 @@ public class NewFileDialog extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				if (textField.getText().trim().length() > 0) {
 					String fileName = textField.getText().trim();
-					client.createSourceFile(-1, fileName, SourceType.GENERAL);
+					client.createSourceFile(fileName, SourceType.GENERAL);
 					textField.setEnabled(false);
 
 				}
