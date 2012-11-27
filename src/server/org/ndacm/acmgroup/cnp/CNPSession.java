@@ -158,9 +158,10 @@ public class CNPSession implements SessionTaskExecutor {
 	 * @param connection
 	 *            The connection of the user
 	 */
-	public void addUser(int userID, String username, CNPConnection connection) {
+	public void addUser(int userID, String username, CNPConnection connection, String AuthToken) {
 		connection.setUserID(userID);
 		connection.setSessionID(sessionID);
+		connection.setAuth(AuthToken);
 		clientConnections.put(userID, connection);
 		clientIdToName.put(userID, username);
 	}

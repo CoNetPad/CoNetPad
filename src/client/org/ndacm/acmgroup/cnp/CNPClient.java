@@ -607,13 +607,20 @@ public class CNPClient implements TaskReceivedEventListener,
 	 * list.
 	 */
 	@Override
-	public void executeTask(LeaveSessionTaskResponse task) {
+	public void executeTask(final LeaveSessionTaskResponse task) {
 		if (task.isSuccess()) {
 			// if this client sent the initial task
 			if (task.getUserID() == userID) {
 				// then leave session in GUI
 			} else {
-				clientFrame.removeUser(task.getUsername());
+				
+				Runnable doWorkRunnable = new Runnable() {
+					public void run() {
+						clientFrame.removeUser(task.getUsername());
+					}
+
+				};
+				SwingUtilities.invokeLater(doWorkRunnable);
 			}
 
 		}

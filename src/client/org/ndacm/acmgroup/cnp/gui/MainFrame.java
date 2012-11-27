@@ -417,7 +417,13 @@ public class MainFrame extends JFrame {
 	 *            the user to remove
 	 */
 	public void removeUser(String username) {
-		// TODO implement
+		for (int i = 0; i < modelUsers.size(); i++) {
+			if(modelUsers.elementAt(i).compareTo(username) == 0){
+				modelUsers.remove(i);
+				break;
+			}
+			
+		}
 	}
 
 	/**

@@ -332,7 +332,7 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 
 				// add connection to session list
 				joinedSession.addUser(task.getUserID(), task.getUsername(),
-						task.getConnection());
+						task.getConnection(), task.getUserAuthToken());
 
 				// construct response
 				List<String> sessionFiles = new ArrayList<String>();
@@ -399,8 +399,8 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 
 			// remove connection from session list
 			sessionToLeave.removeUser(userID);
-			response = new LeaveSessionTaskResponse(userID, task.getUsername(),
-					true);
+			response = new LeaveSessionTaskResponse(userID, sessionToLeave
+					.getClientIdToName().get(userID), true);
 
 		} else {
 			// tokens don't match, join session task fails

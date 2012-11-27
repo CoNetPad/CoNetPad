@@ -32,6 +32,7 @@ public class CNPConnection extends Thread {
 	private boolean stop = false;
 	private int sessionID;
 	private int userID;
+	private String auth;
 
 	/**
 	 * @param socket
@@ -89,7 +90,7 @@ public class CNPConnection extends Thread {
 			System.err.println("Thread for client stopped with an exception");
 		}
 		taskSource.fireTaskReceivedEvent(new TaskReceivedEvent(
-				new LeaveSessionTask(userID, "", sessionID, ""), this));
+				new LeaveSessionTask(userID, "", sessionID, auth), this));
 	}
 
 	public void sendTask(Task task) {
@@ -147,6 +148,14 @@ public class CNPConnection extends Thread {
 
 	public void setUserID(int userID) {
 		this.userID = userID;
+	}
+
+	public String getAuth() {
+		return auth;
+	}
+
+	public void setAuth(String auth) {
+		this.auth = auth;
 	}
 
 }
