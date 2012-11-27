@@ -7,3 +7,5 @@ Thumbs.db
 build/
 dist/
 *.orig
+docs/javadoc/*
+test_reports/*
