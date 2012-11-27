@@ -50,6 +50,8 @@ public class ServerSourceFile extends SourceFile implements FileTaskExecutor {
 	 */
 	public ServerSourceFile(int fileID, String filename, SourceType type) {
 		super(fileID, filename, type, "");
+		fileTaskCourier = Executors.newCachedThreadPool();
+		fileTaskQueue = Executors.newSingleThreadExecutor();
 		clientConnections = new ConcurrentHashMap<Integer, CNPConnection>();
 	}
 	

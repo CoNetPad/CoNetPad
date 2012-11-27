@@ -10,6 +10,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 import java.util.Map;
@@ -315,19 +316,35 @@ public class MainFrame extends JFrame {
 
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		contentPane.add(tabbedPane, BorderLayout.CENTER);
+
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				cnpClient.closeConnection();
+				dispose();
+				System.exit(0); // calling the method is a must
+			}
+		});
 	}
 
 	public void addTab(final int fileID, String filename) {
 		final JTextArea fileTextArea = new JTextArea();
 		fileTextArea.setEditable(false);
+		fileTextArea.setLineWrap(true);
+		fileTextArea.setBorder(new LineBorder(new Color(0, 0, 0)));
 		fileTextArea.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent arg0) {
-				cnpClient.editFile(arg0.getKeyChar(), fileTextArea.getCaretPosition(), fileID);
+				cnpClient.editFile(arg0.getKeyChar(),
+						fileTextArea.getCaretPosition(), fileID);
 			}
 		});
 
-		tabbedPane.addTab("filename", null, fileTextArea, filename);
+		JScrollPane scrollPane = new JScrollPane(fileTextArea);
+		setPreferredSize(new Dimension(fileTextArea.getWidth(),
+				fileTextArea.getHeight()));
+
+		
+		tabbedPane.addTab("filename", null, scrollPane, filename);
 		tabs.put(fileID, fileTextArea);
 	}
 
@@ -342,9 +359,24 @@ public class MainFrame extends JFrame {
 		textAreaChat.append(username + ": " + message + "\n");
 	}
 
-	public void addTab(int fileID, String filename, String fileContent) {
-		JTextArea fileTextArea = new JTextArea(fileContent);
-		tabbedPane.addTab(filename, null, fileTextArea, filename);
+	public void addTab(final int fileID, String filename, String fileContent) {
+		final JTextArea fileTextArea = new JTextArea(fileContent);
+		fileTextArea.setEditable(false);
+		fileTextArea.setLineWrap(true);
+		fileTextArea.setBorder(new LineBorder(new Color(0, 0, 0)));
+		fileTextArea.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				cnpClient.editFile(arg0.getKeyChar(),
+						fileTextArea.getCaretPosition(), fileID);
+			}
+		});
+
+		JScrollPane scrollPane = new JScrollPane(fileTextArea);
+		setPreferredSize(new Dimension(fileTextArea.getWidth(),
+				fileTextArea.getHeight()));
+
+		tabbedPane.addTab(filename, null, scrollPane, filename);
 		tabs.put(fileID, fileTextArea);
 	}
 

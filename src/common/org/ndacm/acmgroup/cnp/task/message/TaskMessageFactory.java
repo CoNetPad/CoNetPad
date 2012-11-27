@@ -159,7 +159,8 @@ public class TaskMessageFactory {
 		case Login:
 			return new LoginTask(message.getData()[0], message.getData()[1]);
 		case OpenFile:
-			return new OpenFileTask(Integer.parseInt(message.getData()[0]),Integer.parseInt(message.getData()[1]),
+			return new OpenFileTask(Integer.parseInt(message.getData()[0]),
+					Integer.parseInt(message.getData()[1]),
 					Integer.parseInt(message.getData()[2]),
 					message.getData()[3]);
 		default:
@@ -213,7 +214,8 @@ public class TaskMessageFactory {
 			message = new TaskMessage(TaskType.CreateAccount, data);
 		} else if (task instanceof CreateFileTask) {
 			CreateFileTask createFile = (CreateFileTask) task;
-			String[] data = { Integer.toString(createFile.getUserID()),Integer.toString(createFile.getSessionID()),
+			String[] data = { Integer.toString(createFile.getUserID()),
+					Integer.toString(createFile.getSessionID()),
 					createFile.getFilename(), null,
 					createFile.getUserAuthToken() };
 
@@ -271,9 +273,11 @@ public class TaskMessageFactory {
 		} else if (task instanceof EditorTask) {
 			EditorTask editor = (EditorTask) task;
 			String[] data = { Integer.toString(editor.getUserID()),
+					Integer.toString(editor.getSessionID()),
 					Integer.toString(editor.getKeyPressed()),
 					Integer.toString(editor.getEditIndex()),
-					editor.getFilename(), editor.getUserAuthToken() };
+					Integer.toString(editor.getFileID()),
+					editor.getUserAuthToken() };
 			message = new TaskMessage(TaskType.Editor, data);
 		} else if (task instanceof JoinPrivateSessionTask) {
 			JoinPrivateSessionTask joinPrivate = (JoinPrivateSessionTask) task;
@@ -294,7 +298,8 @@ public class TaskMessageFactory {
 			message = new TaskMessage(TaskType.Login, data);
 		} else if (task instanceof OpenFileTask) {
 			OpenFileTask openFile = (OpenFileTask) task;
-			String[] data = { Integer.toString(openFile.getUserID()),Integer.toString(openFile.getSessionID()), 
+			String[] data = { Integer.toString(openFile.getUserID()),
+					Integer.toString(openFile.getSessionID()),
 					Integer.toString(openFile.getFileID()),
 					openFile.getUserAuthToken() };
 			message = new TaskMessage(TaskType.OpenFile, data);
