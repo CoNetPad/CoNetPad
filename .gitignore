@@ -8,3 +8,4 @@ build/
 dist/
 *.orig
 docs/javadoc/*
+test_reports/*
