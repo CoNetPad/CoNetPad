@@ -213,4 +213,13 @@ public class JRepository {
 		return localDirectory;
 	}
 
+	/**
+	 * This gets the directory of the local git repo
+	 * @return		The directory or path to the local git repo
+	 */
+	public File[] getDirectoryFiles() {
+		return localDirectory.listFiles();
+	}
+
+	
 }

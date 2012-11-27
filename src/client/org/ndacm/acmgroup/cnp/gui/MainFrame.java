@@ -2,12 +2,15 @@ package org.ndacm.acmgroup.cnp.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Dialog.ModalityType;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
 import java.util.List;
 import java.util.Map;
 
@@ -23,8 +26,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EtchedBorder;
@@ -32,10 +33,6 @@ import javax.swing.border.LineBorder;
 import javax.swing.text.BadLocationException;
 
 import org.ndacm.acmgroup.cnp.CNPClient;
-import org.ndacm.acmgroup.cnp.file.ClientSourceFile;
-
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class MainFrame extends JFrame {
 
@@ -178,7 +175,8 @@ public class MainFrame extends JFrame {
 			public void mouseClicked(MouseEvent arg0) {
 				if (arg0.getClickCount() == 2) {
 					int index = listFiles.locationToIndex(arg0.getPoint());
-					cnpClient.openSourceFile(listFiles.getModel().getElementAt(index));
+					cnpClient.openSourceFile(listFiles.getModel().getElementAt(
+							index));
 				}
 			}
 		});
@@ -387,5 +385,9 @@ public class MainFrame extends JFrame {
 	 */
 	public void leaveSession() {
 		// leave the current session
+	}
+
+	public void windowClosing(WindowEvent e) {
+		cnpClient.closeConnection();
 	}
 }

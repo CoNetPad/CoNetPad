@@ -322,9 +322,11 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 								task.getSessionName(), this);
 					}
 
+					joinedSession.setGitRepo(jGit.activateRepo(joinedSession
+							.getSessionName()));
+
 					openSessions.put(joinedSession.getSessionID(),
 							joinedSession);
-					jGit.activateRepo(joinedSession.getSessionName());
 
 				}
 
@@ -334,7 +336,7 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 
 				// construct response
 				List<String> sessionFiles = new ArrayList<String>();
-				List<Integer> sessionFileID  = new ArrayList<Integer>();
+				List<Integer> sessionFileID = new ArrayList<Integer>();
 				for (SourceFile file : joinedSession.getSourceFilesList()) {
 					sessionFiles.add(file.getFilename());
 					sessionFileID.add(file.getFileID());

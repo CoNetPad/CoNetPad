@@ -16,6 +16,7 @@ import java.net.Socket;
 
 import org.ndacm.acmgroup.cnp.network.events.TaskEventSource;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
+import org.ndacm.acmgroup.cnp.task.LeaveSessionTask;
 import org.ndacm.acmgroup.cnp.task.Task;
 import org.ndacm.acmgroup.cnp.task.message.TaskMessage;
 import org.ndacm.acmgroup.cnp.task.message.TaskMessageFactory;
@@ -29,6 +30,8 @@ public class CNPConnection extends Thread {
 	private TaskEventSource taskSource;
 	private boolean isServer;
 	private boolean stop = false;
+	private int sessionID;
+	private int userID;
 
 	/**
 	 * @param socket
@@ -62,7 +65,6 @@ public class CNPConnection extends Thread {
 	 * @see java.lang.Thread#run()
 	 */
 	public void run() {
-
 		try {
 			System.out.println("Thread for client " + id + " started");
 			String inputLine;
@@ -86,6 +88,8 @@ public class CNPConnection extends Thread {
 		} catch (IOException e) {
 			System.err.println("Thread for client stopped with an exception");
 		}
+		taskSource.fireTaskReceivedEvent(new TaskReceivedEvent(
+				new LeaveSessionTask(userID, "", sessionID, ""), this));
 	}
 
 	public void sendTask(Task task) {
@@ -127,6 +131,22 @@ public class CNPConnection extends Thread {
 	 */
 	public void stopThread() {
 		this.stop = true;
+	}
+
+	public int getSessionID() {
+		return sessionID;
+	}
+
+	public void setSessionID(int sessionID) {
+		this.sessionID = sessionID;
+	}
+
+	public int getUserID() {
+		return userID;
+	}
+
+	public void setUserID(int userID) {
+		this.userID = userID;
 	}
 
 }

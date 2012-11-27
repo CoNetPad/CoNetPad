@@ -49,11 +49,13 @@ public abstract class SourceFile {
 		this.type = type;
 		this.sourceRope = Rope.BUILDER.build(initialText);
 		this.file = new File(filename);
-		try {
-			file.createNewFile();
-		} catch (IOException e) {
-			System.err.println("Error creating file " + filename);
-			this.file = null;
+		if (!file.exists()) {
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				System.err.println("Error creating file " + filename);
+				this.file = null;
+			}
 		}
 	}
 

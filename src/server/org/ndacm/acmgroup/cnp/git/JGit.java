@@ -34,7 +34,7 @@ public class JGit {
 		repos = new Hashtable<String, JRepository>();
 	}
 
-	public void activateRepo(String name) throws FileNotFoundException {
+	public JRepository activateRepo(String name) throws FileNotFoundException {
 		File tempRepo = new File(storage.getAbsolutePath() + File.separatorChar
 				+ name);
 		if (tempRepo.exists()) {
@@ -42,12 +42,14 @@ public class JGit {
 				JRepository repoToLoad = new JRepository(tempRepo, name);
 				repoToLoad.gitLoad();
 				repos.put(repoToLoad.getName(), repoToLoad);
+				return repoToLoad;
 			} catch (NotDirectoryException e) {
 				e.printStackTrace();
 			}
 		} else {
 			throw new FileNotFoundException();
 		}
+		return null;
 	}
 
 	public void deactivateRepo(String name) {

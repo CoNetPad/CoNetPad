@@ -1,6 +1,7 @@
 package org.ndacm.acmgroup.cnp;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
 import org.ndacm.acmgroup.cnp.git.JGit;
+import org.ndacm.acmgroup.cnp.git.JRepository;
 import org.ndacm.acmgroup.cnp.network.CNPConnection;
 import org.ndacm.acmgroup.cnp.task.ChatTask;
 import org.ndacm.acmgroup.cnp.task.CloseFileTask;
@@ -70,7 +72,8 @@ public class CNPSession implements SessionTaskExecutor {
 	private int sessionID;
 	private CNPServer server;
 	private String sessionName;
-	private JGit gitRepo;
+	// private JGit gitRepo;
+	private JRepository gitRepo;
 	private Map<Integer, ServerSourceFile> sourceFiles; // maps fileID to
 														// ServerSourceFile
 	private ExecutorService sessionTaskCourier;
@@ -106,7 +109,6 @@ public class CNPSession implements SessionTaskExecutor {
 				+ System.getProperty("file.separator") + sessionName
 				+ System.getProperty("file.separator");
 
-		gitRepo = new JGit();
 		sourceFiles = new ConcurrentHashMap<Integer, ServerSourceFile>();
 
 		sessionTaskCourier = Executors.newCachedThreadPool();
@@ -157,6 +159,8 @@ public class CNPSession implements SessionTaskExecutor {
 	 *            The connection of the user
 	 */
 	public void addUser(int userID, String username, CNPConnection connection) {
+		connection.setUserID(userID);
+		connection.setSessionID(sessionID);
 		clientConnections.put(userID, connection);
 		clientIdToName.put(userID, username);
 	}
@@ -352,8 +356,9 @@ public class CNPSession implements SessionTaskExecutor {
 
 	public void distributeTask(TaskResponse task, int userId) { // have throw
 		// TaskExecutionException
-			SendResponseTask responseTask = new SendResponseTask(task,clientConnections.get(userId));
-			sessionTaskCourier.submit(responseTask);
+		SendResponseTask responseTask = new SendResponseTask(task,
+				clientConnections.get(userId));
+		sessionTaskCourier.submit(responseTask);
 	}
 
 	/**
@@ -415,5 +420,21 @@ public class CNPSession implements SessionTaskExecutor {
 
 	public void setClientIdToName(Map<Integer, String> clientIdToName) {
 		this.clientIdToName = clientIdToName;
+	}
+
+	public JRepository getGitRepo() {
+		return gitRepo;
+	}
+
+	public void setGitRepo(JRepository gitRepo) {
+		this.gitRepo = gitRepo;
+		for (int i = 0; i < gitRepo.getDirectoryFiles().length; i++) {
+			if (gitRepo.getDirectoryFiles()[i].getName().compareTo(".git") == 0) {
+				continue;
+			}
+			createFile(gitRepo.getDirectoryFiles()[i].getName(),
+					SourceType.GENERAL);
+
+		}
 	}
 }
