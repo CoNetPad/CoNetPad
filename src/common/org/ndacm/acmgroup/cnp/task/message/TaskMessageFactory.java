@@ -159,9 +159,9 @@ public class TaskMessageFactory {
 		case Login:
 			return new LoginTask(message.getData()[0], message.getData()[1]);
 		case OpenFile:
-			return new OpenFileTask(Integer.parseInt(message.getData()[0]),
-					Integer.parseInt(message.getData()[1]),
-					message.getData()[2]);
+			return new OpenFileTask(Integer.parseInt(message.getData()[0]),Integer.parseInt(message.getData()[1]),
+					Integer.parseInt(message.getData()[2]),
+					message.getData()[3]);
 		default:
 			return null;
 		}
@@ -294,7 +294,7 @@ public class TaskMessageFactory {
 			message = new TaskMessage(TaskType.Login, data);
 		} else if (task instanceof OpenFileTask) {
 			OpenFileTask openFile = (OpenFileTask) task;
-			String[] data = { Integer.toString(openFile.getUserID()),
+			String[] data = { Integer.toString(openFile.getUserID()),Integer.toString(openFile.getSessionID()), 
 					Integer.toString(openFile.getFileID()),
 					openFile.getUserAuthToken() };
 			message = new TaskMessage(TaskType.OpenFile, data);

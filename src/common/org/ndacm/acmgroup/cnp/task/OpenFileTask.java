@@ -9,10 +9,11 @@ public class OpenFileTask extends SessionTask {
 	protected String userAuthToken;
 	protected CNPConnection connection;
 
-	public OpenFileTask(int userID, int fileID, String userAuthToken) {
+	public OpenFileTask(int userID, int sessionID, int fileID, String userAuthToken) {
 		this.userID = userID;
 		this.fileID = fileID;
 		this.userAuthToken = userAuthToken;
+		this.sessionID = sessionID;
 	}
 
 	@Override

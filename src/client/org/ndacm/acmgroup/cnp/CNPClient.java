@@ -266,11 +266,28 @@ public class CNPClient implements TaskReceivedEventListener,
 	 *            The unique file ID of the file to open
 	 */
 	public void openSourceFile(int fileID) {
-		Task task = new OpenFileTask(userID, fileID, authToken);
+		Task task = new OpenFileTask(userID, sessionID, fileID, authToken);
 		network.sendTask(task);
 
 	}
 
+	/**
+	 * This opens up an existing file given a unique file name
+	 * 
+	 * @param fileName
+	 *            The unique name of the file to open
+	 */
+	public void openSourceFile(String fileName) {
+		for(ClientSourceFile entry : sourceFiles.values()){
+			if(entry.getFilename().compareTo(fileName) == 0){
+				Task task = new OpenFileTask(userID,sessionID,  entry.getFileID(), authToken);
+				network.sendTask(task);
+				break;
+			}
+		}
+	}
+	
+	
 	/**
 	 * This sends a chat message to the server.
 	 * 
