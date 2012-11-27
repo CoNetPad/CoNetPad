@@ -51,11 +51,11 @@ public class MainFrame extends JFrame {
 
 	private JTextArea textAreaChatInput;
 	private JTextArea textAreaChat;
-	private JList<String> listUsers;
-	private JList<String> listFiles;
+	private JList listUsers;
+	private JList listFiles;
 
-	private DefaultListModel<String> modelFiles;
-	private DefaultListModel<String> modelUsers;
+	private DefaultListModel modelFiles;
+	private DefaultListModel modelUsers;
 
 	/**
 	 * Create the frame.
@@ -76,10 +76,10 @@ public class MainFrame extends JFrame {
 
 		JLabel lblCurrentUsers = new JLabel("Current Users");
 
-		modelFiles = new DefaultListModel<String>();
-		modelUsers = new DefaultListModel<String>();
+		modelFiles = new DefaultListModel();
+		modelUsers = new DefaultListModel();
 
-		listUsers = new JList<String>(modelUsers);
+		listUsers = new JList(modelUsers);
 		listUsers.setBorder(new LineBorder(new Color(0, 0, 0)));
 		listUsers
 				.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
@@ -170,14 +170,14 @@ public class MainFrame extends JFrame {
 		contentPane.add(panel_1, BorderLayout.WEST);
 		JLabel lblWorkspace = new JLabel("Workspace");
 
-		listFiles = new JList<String>(modelFiles);
+		listFiles = new JList(modelFiles);
 		listFiles.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				if (arg0.getClickCount() == 2) {
 					int index = listFiles.locationToIndex(arg0.getPoint());
-					cnpClient.openSourceFile(listFiles.getModel().getElementAt(
-							index));
+					cnpClient.openSourceFile((String) (listFiles.getModel().getElementAt(
+							index)));
 				}
 			}
 		});
@@ -418,7 +418,7 @@ public class MainFrame extends JFrame {
 	 */
 	public void removeUser(String username) {
 		for (int i = 0; i < modelUsers.size(); i++) {
-			if(modelUsers.elementAt(i).compareTo(username) == 0){
+			if(((String)(modelUsers.elementAt(i))).compareTo(username) == 0){
 				modelUsers.remove(i);
 				break;
 			}

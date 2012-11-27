@@ -133,7 +133,7 @@
     
     <jar jarfile="dist/client/${ant.project.name}-client.jar" basedir="build/client" >
       <manifest>
-        <attribute name="Main-Class" value="org.ndacm.acmgroup.cnp.gui.ServerConnectionDialog" />
+        <attribute name="Main-Class" value="org.ndacm.acmgroup.cnp.CNPClient" />
 	<attribute name="Class-Path" value="${client.lib}"/>
       </manifest>
     </jar>

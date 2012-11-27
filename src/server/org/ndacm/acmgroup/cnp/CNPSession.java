@@ -189,7 +189,7 @@ public class CNPSession implements SessionTaskExecutor {
 	public synchronized ServerSourceFile createFile(String filename,
 			SourceType type) {
 		ServerSourceFile file = new ServerSourceFile(NEXT_FILEID, sessionName
-				+ File.separator + filename, type);
+				+ File.separator + filename, type, server);
 		sourceFiles.put(NEXT_FILEID, file);
 		NEXT_FILEID++;
 		return file;

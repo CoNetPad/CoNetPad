@@ -26,21 +26,21 @@ public class ServerSourceFile extends SourceFile implements FileTaskExecutor {
 	private Map<Integer, CNPConnection> clientConnections; // clients that have this specific file open
 	private CNPServer server;
 
-	/**
-	 * This is the default Constructor
-	 * @param fileID			The unique ID for the file
-	 * @param filename			The the unique file name w/o file type 
-	 * @param type				The file type of the file
-	 * @param initialText		The initial text or context of the file.
-	 */
-	public ServerSourceFile(int fileID, String filename, SourceType type, String initialText, CNPServer server) {
-		super(fileID, filename, type, initialText);
-
-		fileTaskCourier = Executors.newCachedThreadPool();
-		fileTaskQueue = Executors.newSingleThreadExecutor();
-		clientConnections = new ConcurrentHashMap<Integer, CNPConnection>();
-		this.server = server;
-	}
+//	/**
+//	 * This is the default Constructor
+//	 * @param fileID			The unique ID for the file
+//	 * @param filename			The the unique file name w/o file type 
+//	 * @param type				The file type of the file
+//	 * @param initialText		The initial text or context of the file.
+//	 */
+//	public ServerSourceFile(int fileID, String filename, SourceType type, String initialText, CNPServer server) {
+//		super(fileID, filename, type, initialText);
+//
+//		fileTaskCourier = Executors.newCachedThreadPool();
+//		fileTaskQueue = Executors.newSingleThreadExecutor();
+//		clientConnections = new ConcurrentHashMap<Integer, CNPConnection>();
+//		this.server = server;
+//	}
 
 	/**
 	 * This second constructor, this only creates a blank file
@@ -48,11 +48,12 @@ public class ServerSourceFile extends SourceFile implements FileTaskExecutor {
 	 * @param filename		The name of the file w/o the type
 	 * @param type			The type of file
 	 */
-	public ServerSourceFile(int fileID, String filename, SourceType type) {
+	public ServerSourceFile(int fileID, String filename, SourceType type, CNPServer server) {
 		super(fileID, filename, type);
 		fileTaskCourier = Executors.newCachedThreadPool();
 		fileTaskQueue = Executors.newSingleThreadExecutor();
 		clientConnections = new ConcurrentHashMap<Integer, CNPConnection>();
+		this.server = server;
 	}
 	
 	/**
@@ -78,7 +79,7 @@ public class ServerSourceFile extends SourceFile implements FileTaskExecutor {
 					task.getEditIndex(), task.getFileID(), true);
 		} else {
 			// user authentication failed
-			response = new EditorTaskResponse("", -1, -1, -1, false);
+			response = new EditorTaskResponse("n/a", -1, -1, -1, false);
 		}
 		distributeTask(response);
 		
