@@ -23,23 +23,6 @@ public class ServerConnectionDialog extends JDialog {
 	private JDialog serverConnectionDialog = this;
 
 	/**
-<<<<<<< HEAD
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		
-		try {
-			ServerConnectionDialog dialog = new ServerConnectionDialog();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-=======
->>>>>>> cesar-gui
 	 * Create the dialog.
 	 */
 	public ServerConnectionDialog() {

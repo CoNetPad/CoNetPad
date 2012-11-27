@@ -1,8 +1,14 @@
 package org.ndacm.acmgroup.cnp.file;
 
 import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import org.ahmadsoft.ropes.Rope;
 
@@ -57,6 +63,56 @@ public abstract class SourceFile {
 				this.file = null;
 			}
 		}
+	}
+
+	/**
+	 * This creates a new instance of the SourceFile
+	 * 
+	 * @param fileID
+	 *            A unique ID for the file
+	 * @param filename
+	 *            A unique name for the file
+	 * @param type
+	 *            The type of file
+	 */
+	public SourceFile(int fileID, String filename, SourceType type) {
+		this.fileID = fileID;
+		this.filename = filename;
+		this.type = type;
+
+		this.file = new File(filename);
+		if (!file.exists()) {
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				System.err.println("Error creating file " + filename);
+				this.file = null;
+			}
+		}
+
+		StringBuffer content = new StringBuffer();
+		try {
+			// Open the file that is the first
+			// command line parameter
+			FileInputStream fstream = new FileInputStream(
+					file.getAbsolutePath());
+			// Get the object of DataInputStream
+			DataInputStream in = new DataInputStream(fstream);
+			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			String strLine;
+			// Read File Line By Line
+			while ((strLine = br.readLine()) != null) {
+				// Print the content on the console
+				content.append(strLine);
+			}
+			// Close the input stream
+			in.close();
+			this.sourceRope = Rope.BUILDER.build(content);
+		} catch (Exception e) {// Catch exception if any
+			System.err.println("Error: " + e.getMessage());
+			this.sourceRope = Rope.BUILDER.build("");
+		}
+
 	}
 
 	/**
@@ -119,5 +175,15 @@ public abstract class SourceFile {
 	@Override
 	public String toString() {
 		return sourceRope.toString();
+	}
+
+	public void save() {
+		file.delete();
+		try {
+			BufferedWriter out = new BufferedWriter(new FileWriter(file));
+			out.write(sourceRope.toString());
+			out.close();
+		} catch (IOException e) {
+		}
 	}
 }

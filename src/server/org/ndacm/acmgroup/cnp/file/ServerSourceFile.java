@@ -49,7 +49,7 @@ public class ServerSourceFile extends SourceFile implements FileTaskExecutor {
 	 * @param type			The type of file
 	 */
 	public ServerSourceFile(int fileID, String filename, SourceType type) {
-		super(fileID, filename, type, "");
+		super(fileID, filename, type);
 		fileTaskCourier = Executors.newCachedThreadPool();
 		fileTaskQueue = Executors.newSingleThreadExecutor();
 		clientConnections = new ConcurrentHashMap<Integer, CNPConnection>();
