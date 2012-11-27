@@ -663,6 +663,28 @@ public class Database implements IDatabase{
 
 	}
 
+	public void clearTables() throws SQLException {
+
+		PreparedStatement dropAll = null;
+
+		String[] tables = new String[] {"Session", "SessionPassword", "SessionUser", "UserAccount"};
+		String query = "DROP FROM ?";
+		
+		for (String table : tables) {
+
+				dropAll = dbConnection.prepareStatement(query);
+				dropAll.setString(1, table);
+
+				dropAll.execute();
+
+				if(!dropAll.execute()) {
+					throw new SQLException("Could not drop records in " + table);
+				}
+				
+		}
+
+	}
+
 
 }
 

@@ -12,6 +12,7 @@ public class CNPTestSuite extends TestSuite {
 
 
 		suite.addTestSuite(ClientSourceFileTest.class);
+		
 
 		return suite;
 	}

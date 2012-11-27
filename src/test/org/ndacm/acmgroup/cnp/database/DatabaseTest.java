@@ -9,18 +9,18 @@ import org.ndacm.acmgroup.cnp.exceptions.FailedAccountException;
 import org.ndacm.acmgroup.cnp.exceptions.FailedSessionException;
 
 public class DatabaseTest extends TestCase {
-	
+
 	public static CNPServer server;
 	public static Database database;
 	public static Account account1;
-	
+
 	protected static void setUpBeforeClass() throws Exception {
 		// clear database
-		
-		
 		server = new CNPServer("");
 		database = new Database(server);
+		// database.clearTables();
 		account1 = database.createAccount("account1", "acc1@test.com", "testme");
+		System.out.println("WTF");
 	}
 
 	protected static void tearDownAfterClass() throws Exception {
@@ -28,6 +28,7 @@ public class DatabaseTest extends TestCase {
 
 	protected void setUp() throws Exception {
 		super.setUp();
+		
 	}
 
 	protected void tearDown() throws Exception {
