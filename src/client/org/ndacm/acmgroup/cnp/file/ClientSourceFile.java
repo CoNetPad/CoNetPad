@@ -34,7 +34,6 @@ public class ClientSourceFile extends SourceFile{
 	 */
 	public void editSource(EditorTaskResponse task) {
 		editSource(task.getKeyPressed(),task.getEditIndex());
-		System.out.print("HELP!");
 	}
 	
 	/**
