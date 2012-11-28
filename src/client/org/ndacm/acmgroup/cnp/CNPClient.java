@@ -28,6 +28,7 @@ import org.ndacm.acmgroup.cnp.network.ClientNetwork;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEventListener;
 import org.ndacm.acmgroup.cnp.task.ChatTask;
+import org.ndacm.acmgroup.cnp.task.CommitTask;
 import org.ndacm.acmgroup.cnp.task.CreateAccountTask;
 import org.ndacm.acmgroup.cnp.task.CreateFileTask;
 import org.ndacm.acmgroup.cnp.task.CreatePrivateSessionTask;
@@ -315,6 +316,8 @@ public class CNPClient implements TaskReceivedEventListener,
 		}
 	}
 
+	
+	
 	/**
 	 * This sends a chat message to the server.
 	 * 
@@ -327,6 +330,11 @@ public class CNPClient implements TaskReceivedEventListener,
 		network.sendTask(task);
 	}
 
+	public void commitSession() {
+		Task task = new CommitTask(userID, authToken, sessionID, sessionName, "");
+		network.sendTask(task);
+	}
+		
 	/**
 	 * Convert the SourceFile with the given filename to a File and return this
 	 * file.
@@ -599,7 +607,9 @@ public class CNPClient implements TaskReceivedEventListener,
 	@Override
 	public void executeTask(CommitTaskResponse task) {
 		if (task.isSuccess()) {
-			// show a dialog box?
+			JOptionPane.showMessageDialog(logDialog, "Files saved");
+		}else{
+			JOptionPane.showMessageDialog(logDialog, "Error while saving");
 		}
 
 	}
