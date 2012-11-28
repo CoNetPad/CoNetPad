@@ -32,7 +32,10 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 
 import org.ndacm.acmgroup.cnp.CNPClient;
 
@@ -57,12 +60,15 @@ public class MainFrame extends JFrame {
 
 	private DefaultListModel modelFiles;
 	private DefaultListModel modelUsers;
+	
+	DocumentFilter editorFilter;
 
 	/**
 	 * Create the frame.
 	 */
 	public MainFrame(CNPClient client) {
 		this.cnpClient = client;
+		editorFilter = new DoNothingFilter();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 		// column width should be updated whenever window resized (some
@@ -331,7 +337,7 @@ public class MainFrame extends JFrame {
 
 	public void addTab(final int fileID, String filename) {
 		final JTextArea fileTextArea = new JTextArea();
-		fileTextArea.setEditable(false);
+		fileTextArea.setEditable(true);
 		fileTextArea.setLineWrap(true);
 		fileTextArea.setBorder(new LineBorder(new Color(0, 0, 0)));
 		fileTextArea.addKeyListener(new KeyAdapter() {
@@ -345,6 +351,7 @@ public class MainFrame extends JFrame {
 		JScrollPane scrollPane = new JScrollPane(fileTextArea);
 		setPreferredSize(new Dimension(fileTextArea.getWidth(),
 				fileTextArea.getHeight()));
+		((AbstractDocument)fileTextArea.getDocument()).setDocumentFilter(editorFilter);
 
 
 		tabbedPane.addTab("filename", null, scrollPane, filename);
@@ -372,7 +379,7 @@ public class MainFrame extends JFrame {
 
 	public void addTab(final int fileID, String filename, String fileContent) {
 		final JTextArea fileTextArea = new JTextArea(fileContent);
-		fileTextArea.setEditable(false);
+		fileTextArea.setEditable(true);
 		fileTextArea.setLineWrap(true);
 		fileTextArea.setBorder(new LineBorder(new Color(0, 0, 0)));
 		fileTextArea.addKeyListener(new KeyAdapter() {
@@ -386,6 +393,7 @@ public class MainFrame extends JFrame {
 		JScrollPane scrollPane = new JScrollPane(fileTextArea);
 		setPreferredSize(new Dimension(fileTextArea.getWidth(),
 				fileTextArea.getHeight()));
+		((AbstractDocument)fileTextArea.getDocument()).setDocumentFilter(editorFilter);
 
 		tabbedPane.addTab(filename, null, scrollPane, filename);
 		tabs.put(fileID, fileTextArea);
@@ -443,4 +451,23 @@ public class MainFrame extends JFrame {
 	public void leaveSession() {
 		// leave the current session
 	}
+
+	// http://examples.oreilly.com/jswing2/code/ch22/UpcaseFilter.java
+
+	private class DoNothingFilter extends DocumentFilter {
+
+	  public void insertString(DocumentFilter.FilterBypass fb, int offset,
+	                String text, AttributeSet attr) throws BadLocationException
+	  {
+	    // do not do anything
+	  }
+
+	  public void replace(DocumentFilter.FilterBypass fb, int offset, int length,
+	                  String text, AttributeSet attr) throws BadLocationException
+	  {
+	    // do not do anything
+	  }
+
+	}
+	
 }
