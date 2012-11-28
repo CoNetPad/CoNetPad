@@ -22,7 +22,6 @@ import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
 import org.ndacm.acmgroup.cnp.git.JGit;
-import org.ndacm.acmgroup.cnp.git.JRepository;
 import org.ndacm.acmgroup.cnp.git.NotDirectoryException;
 import org.ndacm.acmgroup.cnp.network.ServerNetwork;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;

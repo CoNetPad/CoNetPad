@@ -11,6 +11,7 @@ import java.util.concurrent.Executors;
 
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
 
@@ -33,11 +34,11 @@ import org.ndacm.acmgroup.cnp.task.CreateAccountTask;
 import org.ndacm.acmgroup.cnp.task.CreateFileTask;
 import org.ndacm.acmgroup.cnp.task.CreatePrivateSessionTask;
 import org.ndacm.acmgroup.cnp.task.CreateSessionTask;
-import org.ndacm.acmgroup.cnp.task.EditorTask;
 import org.ndacm.acmgroup.cnp.task.JoinPrivateSessionTask;
 import org.ndacm.acmgroup.cnp.task.JoinSessionTask;
 import org.ndacm.acmgroup.cnp.task.LoginTask;
 import org.ndacm.acmgroup.cnp.task.OpenFileTask;
+import org.ndacm.acmgroup.cnp.task.SendEditorTaskTask;
 import org.ndacm.acmgroup.cnp.task.Task;
 import org.ndacm.acmgroup.cnp.task.response.ChatTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.CloseFileTaskResponse;
@@ -65,7 +66,7 @@ import org.ndacm.acmgroup.cnp.task.response.TaskResponseExecutor;
  * 
  */
 public class CNPClient implements TaskReceivedEventListener,
-		TaskResponseExecutor {
+TaskResponseExecutor {
 
 	private String serverURL; // The URL to the server
 	private String sessionName; // The unique name of the session the user
@@ -75,7 +76,11 @@ public class CNPClient implements TaskReceivedEventListener,
 	private String username; // The Username of the user
 	private String authToken; // assigned by server after authentication
 
-	private ExecutorService clientExecutor; // this is for executing varoous
+	private ExecutorService clientExecutor; // this is for executing varoous tasks
+	private ExecutorService editorTaskSender;
+	private volatile boolean isWaiting;
+	private final CNPClient cnpClient;
+
 	// tasks
 	private Map<Integer, ClientSourceFile> sourceFiles; // The files the client
 	// is reading through.
@@ -112,7 +117,10 @@ public class CNPClient implements TaskReceivedEventListener,
 
 		sourceFiles = new ConcurrentHashMap<Integer, ClientSourceFile>();
 		clientExecutor = Executors.newCachedThreadPool();
+		editorTaskSender = Executors.newSingleThreadExecutor();
 		network = new ClientNetwork();
+		isWaiting = false;
+		this.cnpClient = this;
 
 		// register as task event listener with network
 		network.addTaskReceivedEventListener(this);
@@ -270,11 +278,12 @@ public class CNPClient implements TaskReceivedEventListener,
 	 * @param userAuthToken
 	 *            The authentication cooki prevent hackers from editing
 	 */
-	public void editFile(int keyPressed, int editIndex, int fileID) {
+	public void editFile(int keyPressed, int fileID) {
 
-		Task task = new EditorTask(userID, sessionID, keyPressed, editIndex,
-				fileID, authToken);
-		network.sendTask(task);
+		SendEditorTaskTask task = new SendEditorTaskTask(userID, sessionID, keyPressed,
+				fileID, authToken, this);
+		editorTaskSender.submit(task);
+
 
 	}
 
@@ -569,15 +578,22 @@ public class CNPClient implements TaskReceivedEventListener,
 				Runnable doWorkRunnable = new Runnable() {
 					public void run() {
 						try {
-							// temporarily turn filter on
-							clientFrame.setEditorFilterActivated(true);
-							clientFrame.updateSourceTab(task.getFileID(),
-									task.getKeyPressed(), task.getEditIndex());
-							// turn back off
-							clientFrame.setEditorFilterActivated(false);
+							synchronized(cnpClient) {
+								// temporarily turn filter on
+								clientFrame.setEditorFilterActivated(true);
+								clientFrame.updateSourceTab(task.getFileID(),
+										task.getKeyPressed(), task.getEditIndex());
+								// turn back off
+								clientFrame.setEditorFilterActivated(false);
+								
+								cnpClient.setWaiting(false);
+								cnpClient.notifyAll();
+							}
 						} catch (BadLocationException e) {
 							// do something
 						}
+						
+
 						// FOR TESTING:
 						System.out.println("edit index: " + task.getEditIndex());
 						System.out.println("file is: " + sourceFiles.get(task.getFileID()).toString());
@@ -731,4 +747,22 @@ public class CNPClient implements TaskReceivedEventListener,
 	public String getSessionName() {
 		return sessionName;
 	}
+
+	public ClientNetwork getNetwork() {
+		return network;
+	}
+
+	public JTextArea getEditorTextArea(int fileID) {
+		return clientFrame.getTab(fileID);
+	}
+
+	public boolean isWaiting() {
+		return isWaiting;
+	}
+
+	public void setWaiting(boolean isWaiting) {
+		this.isWaiting = isWaiting;
+	}
+
+
 }

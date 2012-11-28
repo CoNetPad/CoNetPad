@@ -390,7 +390,7 @@ public class MainFrame extends JFrame {
 				@Override
 				public void keyTyped(KeyEvent arg0) {
 					cnpClient.editFile(arg0.getKeyChar(),
-							fileTextArea.getCaretPosition(), fileID);
+							fileID);
 				}
 			});
 
@@ -459,6 +459,10 @@ public class MainFrame extends JFrame {
 	 */
 	public void leaveSession() {
 		// leave the current session
+	}
+	
+	public JTextArea getTab(int fileID) {
+		return tabs.get(fileID);
 	}
 
 	public DocumentFilter getEditorFilter() {
