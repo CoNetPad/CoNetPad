@@ -19,7 +19,6 @@ import javax.swing.text.BadLocationException;
 import org.ndacm.acmgroup.cnp.file.ClientSourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
-import org.ndacm.acmgroup.cnp.git.JGit;
 import org.ndacm.acmgroup.cnp.gui.CreateSessionDialog;
 import org.ndacm.acmgroup.cnp.gui.LoginDialog;
 import org.ndacm.acmgroup.cnp.gui.MainFrame;
@@ -485,7 +484,7 @@ public class CNPClient implements TaskReceivedEventListener,
 			if (task.getUserID() == userID) {
 				// update client frame with list of files
 
-				File repoFolder = new File(JGit.REPO_DIR + File.separator
+				File repoFolder = new File("Repo" + File.separator
 						+ task.getSessionName());
 				repoFolder.mkdirs();
 
