@@ -174,10 +174,17 @@ public abstract class SourceFile {
 		return filename;
 	}
 
+	/**
+	 * @return type of this source file
+	 */
 	public SourceType getType() {
 		return type;
 	}
 
+	/**
+	 * @param type
+	 *            to define this source file
+	 */
 	public void setType(SourceType type) {
 		this.type = type;
 	}
@@ -190,6 +197,9 @@ public abstract class SourceFile {
 		return sourceRope.toString();
 	}
 
+	/**
+	 * Save the content of the rope to the file
+	 */
 	public void save() {
 		file.delete();
 		try {

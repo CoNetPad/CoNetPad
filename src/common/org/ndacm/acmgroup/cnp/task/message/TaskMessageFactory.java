@@ -48,6 +48,12 @@ import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
  */
 public class TaskMessageFactory {
 
+	/**
+	 * @author cesar
+	 * 
+	 *         This enum will indicate which kind of message or task is been
+	 *         handled.
+	 */
 	public enum TaskType {
 		Chat, CloseFile, Commit, Compile, CreateAccount, CreateFile, CreatePrivateSession, CreateSessionTask, DeleteSession, DeleteFile, LeaveSession, DownloadRepo, Editor, JoinPrivateSession, JoinSession, Login, OpenFile, EditorResponse, SessionExists
 	};
@@ -337,7 +343,7 @@ public class TaskMessageFactory {
 			int sourceTypeInt = Integer.parseInt(message.getData()[3]);
 			return new CreateFileTaskResponse(Integer.parseInt(message
 					.getData()[0]), Integer.parseInt(message.getData()[1]),
-					message.getData()[2], getSourceTypeFromInt(sourceTypeInt),
+					message.getData()[2], SourceType.GENERAL,
 					Boolean.parseBoolean(message.getData()[4]));
 		case CreatePrivateSession:
 		case CreateSessionTask:
@@ -528,44 +534,4 @@ public class TaskMessageFactory {
 
 		return message;
 	}
-
-	public static TaskMessage convertTaskToMessage(Task task) {
-		return convertTaskToMessage(task);
-	}
-
-	public static TaskMessage converTaskToMessage(EditorTask task) {
-		String[] data = { Integer.toString(task.getUserID()),
-				task.getUsername(), Integer.toString(task.getSessionID()),
-				Integer.toString(task.getKeyPressed()),
-				Integer.toString(task.getEditIndex()),
-				Integer.toString(task.getFileID()), task.getUserAuthToken() };
-		return new TaskMessage(TaskType.Editor, data);
-	}
-
-	public static TaskMessage convertTaskToMessage(EditorTaskResponse task) {
-		String[] data = { task.getUsername(),
-				Integer.toString(task.getKeyPressed()),
-				Integer.toString(task.getEditIndex()),
-				Integer.toString(task.getFileID()) };
-		return new TaskMessage(TaskType.EditorResponse, data);
-	}
-
-	public static SourceType getSourceTypeFromInt(int typeInt) {
-		SourceType type = null;
-		switch (typeInt) {
-
-		case 0:
-			type = SourceType.JAVA;
-			break;
-		case 1:
-			type = SourceType.CPP;
-			break;
-		case 2:
-			type = SourceType.GENERAL;
-			break;
-
-		}
-		return type;
-	}
-
 }

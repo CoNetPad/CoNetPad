@@ -112,6 +112,9 @@ public class CNPConnection extends Thread {
 				new LeaveSessionTask(userID, "", sessionID, auth), this));
 	}
 
+	/**
+	 * @param task to be send through the network
+	 */
 	public void sendTask(Task task) {
 		String message = TaskMessageFactory.fromTaskToMessage(task)
 				.getMessageString();
@@ -119,6 +122,9 @@ public class CNPConnection extends Thread {
 		System.out.println("Task sent");
 	}
 
+	/**
+	 * @param task (response) to be send through the network
+	 */
 	public void sendTaskResponse(TaskResponse task) {
 		String message = TaskMessageFactory.fromTaskResponseToMessage(task)
 				.getMessageString();
@@ -126,6 +132,9 @@ public class CNPConnection extends Thread {
 		System.out.println("TaskResponse sent");
 	}
 
+	/**
+	 * @param message string representation of a task
+	 */
 	private void sendData(String message) {
 		out.println(message);
 	}
@@ -159,26 +168,44 @@ public class CNPConnection extends Thread {
 		this.stop = true;
 	}
 
+	/**
+	 * @return sessionID
+	 */
 	public int getSessionID() {
 		return sessionID;
 	}
 
+	/**
+	 * @param sessionID
+	 */
 	public void setSessionID(int sessionID) {
 		this.sessionID = sessionID;
 	}
 
+	/**
+	 * @return userID
+	 */
 	public int getUserID() {
 		return userID;
 	}
 
+	/**
+	 * @param userID
+	 */
 	public void setUserID(int userID) {
 		this.userID = userID;
 	}
 
+	/**
+	 * @return userAuthToken
+	 */
 	public String getAuth() {
 		return auth;
 	}
 
+	/**
+	 * @param auth userAuthToken
+	 */
 	public void setAuth(String auth) {
 		this.auth = auth;
 	}
