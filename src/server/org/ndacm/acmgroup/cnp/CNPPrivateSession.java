@@ -1,13 +1,12 @@
+package org.ndacm.acmgroup.cnp;
+
+
 /**
  * Private Session
  * This is a class that inherits from CNP Session.  It is used for private sessions or sessions with password
  * @author Josh Tan
  * @version 2.0
  */
-package org.ndacm.acmgroup.cnp;
-
-
-
 public class CNPPrivateSession extends CNPSession {
 	
 

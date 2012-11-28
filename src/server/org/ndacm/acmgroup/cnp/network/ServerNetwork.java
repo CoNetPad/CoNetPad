@@ -1,9 +1,3 @@
-/**
- * This class will be in charge of handling all the network connections,
- * listening for new clients and sending/receiving messages.
- * @author Cesar Ramirez
- * @version 2.0
- */
 package org.ndacm.acmgroup.cnp.network;
 
 import java.io.IOException;
@@ -13,6 +7,12 @@ import java.util.ArrayList;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
 
+/**
+ * This class will be in charge of handling all the network connections,
+ * listening for new clients and sending/receiving messages.
+ * @author Cesar Ramirez
+ * @version 2.0
+ */
 public class ServerNetwork extends BaseNetwork {
 
 	public static final int SOCKET_NUMBER = 4444;				//The socket number to listen on
