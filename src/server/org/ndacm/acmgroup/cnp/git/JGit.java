@@ -185,6 +185,10 @@ public class JGit {
 	
 	}
 	
+	/**
+	 * This will clear ALL the repositories
+	 * @return	True if successfufl, false otherwise
+	 */
 	public boolean clearRepos()
 	{
 
