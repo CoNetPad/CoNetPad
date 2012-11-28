@@ -36,6 +36,11 @@ import javax.swing.text.BadLocationException;
 
 import org.ndacm.acmgroup.cnp.CNPClient;
 
+/**
+ * This is the main GUI Frame for the user to work with
+ * @author Cesar	
+ *
+ */
 public class MainFrame extends JFrame {
 
 	/**

@@ -16,6 +16,11 @@ import javax.swing.border.EtchedBorder;
 import org.ndacm.acmgroup.cnp.CNPClient;
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
 
+/**
+ * This a dialog box for creating a new file
+ * @author Cesar Ramirez
+ *
+ */
 public class NewFileDialog extends JDialog {
 
 	private CNPClient client;

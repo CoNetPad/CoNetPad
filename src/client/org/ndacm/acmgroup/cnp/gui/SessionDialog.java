@@ -16,6 +16,11 @@ import javax.swing.border.EtchedBorder;
 
 import org.ndacm.acmgroup.cnp.CNPClient;
 
+/**
+ * This is the class for joining an existing session
+ * @author Cesar Ramirez
+ *
+ */
 public class SessionDialog extends JDialog {
 
 	private SessionDialog loginDialog;

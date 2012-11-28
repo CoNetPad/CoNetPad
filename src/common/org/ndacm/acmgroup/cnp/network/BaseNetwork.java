@@ -1,16 +1,16 @@
-/**
- * Ths is used a parent class for the connections on the client and server side
- * @author Cesar Ramirez
- * @version 1.5
- */
 package org.ndacm.acmgroup.cnp.network;
 
 import javax.swing.event.EventListenerList;
+
 
 import org.ndacm.acmgroup.cnp.network.events.TaskEventSource;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEventListener;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
 
+/**
+ * Ths is used a parent class for the connections on the client and server side
+ * @author Cesar Ramirez
+ */
 public class BaseNetwork implements TaskEventSource {
 
 	/**

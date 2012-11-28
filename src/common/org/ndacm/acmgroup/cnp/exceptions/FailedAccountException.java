@@ -1,13 +1,12 @@
+package org.ndacm.acmgroup.cnp.exceptions;
+
+import java.sql.SQLException;
+
 /**
  * This is a new exception used for creating and retrieving sessions
  * @author Justin Anderson
  * @version 1.0
  */
-package org.ndacm.acmgroup.cnp.exceptions;
-
-import java.sql.SQLException;
-
-
 public class FailedAccountException extends SQLException {
 	
 	private static final long serialVersionUID = 1L;
