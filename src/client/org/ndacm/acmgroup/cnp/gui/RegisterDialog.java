@@ -17,6 +17,11 @@ import javax.swing.border.EtchedBorder;
 
 import org.ndacm.acmgroup.cnp.CNPClient;
 
+/**
+ * This is a dialog box for registering the user to the datbase
+ * @author Cesar Ramirez
+ *
+ */
 public class RegisterDialog extends JDialog {
 
 	private CNPClient client;

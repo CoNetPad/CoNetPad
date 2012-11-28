@@ -16,6 +16,11 @@ import javax.swing.border.EtchedBorder;
 
 import org.ndacm.acmgroup.cnp.CNPClient;
 
+/**
+ * This is the GUI Dialog box for creating new sessions
+ * @author Cesar Ramirez
+ *
+ */
 public class CreateSessionDialog extends JDialog {
 
 	private CNPClient client;

@@ -1,11 +1,3 @@
-/**
- *     This class is a single thread that will listen from messaged from the
- *         client. This class is initialized in the server when a client
- *         connects. Other objects can call sendMessage() to send a message to
- *         the client, this method is not called by this thread.
- *	@author Cesar Ramirez
- *	@version 2.0
- */
 package org.ndacm.acmgroup.cnp.network;
 
 import java.io.BufferedReader;
@@ -22,6 +14,13 @@ import org.ndacm.acmgroup.cnp.task.message.TaskMessage;
 import org.ndacm.acmgroup.cnp.task.message.TaskMessageFactory;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
+/**
+ *     This class is a single thread that will listen from messaged from the
+ *         client. This class is initialized in the server when a client
+ *         connects. Other objects can call sendMessage() to send a message to
+ *         the client, this method is not called by this thread.
+ *	@author Cesar Ramirez
+ */
 public class CNPConnection extends Thread {
 	private Socket socket = null;
 	private int id;
