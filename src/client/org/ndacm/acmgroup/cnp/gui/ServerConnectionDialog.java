@@ -17,6 +17,11 @@ import javax.swing.border.EtchedBorder;
 
 import org.ndacm.acmgroup.cnp.CNPClient;
 
+/**
+ * This is the dialog for adding or connecting to a server
+ * @author Cesar Ramirez
+ *
+ */
 public class ServerConnectionDialog extends JDialog {
 
 	private CNPClient client;

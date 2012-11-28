@@ -1,10 +1,10 @@
+package org.ndacm.acmgroup.cnp.exceptions;
+
 /**
  * This is an exception used for failed create and retrieve sessions
  * @author Justin Anderson
  * @version 1.0
  */
-package org.ndacm.acmgroup.cnp.exceptions;
-
 public class FailedSessionException extends Exception{
 
 	private String msg;	//The Error message

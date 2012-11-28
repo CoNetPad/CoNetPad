@@ -15,6 +15,11 @@ import javax.swing.border.EtchedBorder;
 
 import org.ndacm.acmgroup.cnp.CNPClient;
 
+/**
+ * This a dialog box for logging a user in
+ * @author Cesar Ramirez
+ *
+ */
 public class LoginDialog extends JDialog {
 
 	private LoginDialog loginDialog;

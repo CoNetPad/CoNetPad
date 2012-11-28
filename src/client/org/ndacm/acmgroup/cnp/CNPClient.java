@@ -28,6 +28,7 @@ import org.ndacm.acmgroup.cnp.network.ClientNetwork;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEventListener;
 import org.ndacm.acmgroup.cnp.task.ChatTask;
+import org.ndacm.acmgroup.cnp.task.CommitTask;
 import org.ndacm.acmgroup.cnp.task.CreateAccountTask;
 import org.ndacm.acmgroup.cnp.task.CreateFileTask;
 import org.ndacm.acmgroup.cnp.task.CreatePrivateSessionTask;
@@ -160,17 +161,25 @@ public class CNPClient implements TaskReceivedEventListener,
 	}
 	
 	/**
-	 * 
-	 * @param createDialog
+	 * This shows the dialog box or creating a new session
+	 * @param createDialog			The Create Dialog box for creating a new session
 	 */
 	public void setCreateSessionDialog(CreateSessionDialog createDialog) {
 		this.createSessionDialog = createDialog;
 	}
-
+	
+	/**
+	 * This shows the dialog box for adding a new file
+	 * @param dialog			The Dialog box for adding a new file
+	 */
 	public void setNewFileDialog(NewFileDialog dialog) {
 		this.newFileDialog = dialog;
 	}
-
+	
+	/**
+	 * This creates either a private or public password
+	 * @param password		Leave blank to create a public session, or give a password to create private
+	 */
 	public void createSession(String password) {
 		CreateSessionTask task;
 		if (password.isEmpty()) {
@@ -307,6 +316,8 @@ public class CNPClient implements TaskReceivedEventListener,
 		}
 	}
 
+	
+	
 	/**
 	 * This sends a chat message to the server.
 	 * 
@@ -319,6 +330,11 @@ public class CNPClient implements TaskReceivedEventListener,
 		network.sendTask(task);
 	}
 
+	public void commitSession() {
+		Task task = new CommitTask(userID, authToken, sessionID, sessionName, "");
+		network.sendTask(task);
+	}
+		
 	/**
 	 * Convert the SourceFile with the given filename to a File and return this
 	 * file.
@@ -584,27 +600,39 @@ public class CNPClient implements TaskReceivedEventListener,
 			SwingUtilities.invokeLater(doWorkRunnable);
 		}
 	}
-
+	
+	/**
+	 * This executes a Commit Task for the Git repository
+	 */
 	@Override
 	public void executeTask(CommitTaskResponse task) {
 		if (task.isSuccess()) {
-			// show a dialog box?
+			JOptionPane.showMessageDialog(logDialog, "Files saved");
+		}else{
+			JOptionPane.showMessageDialog(logDialog, "Error while saving");
 		}
 
 	}
-
+	/**
+	 * This executes a compile task to compile source code
+	 */
 	@Override
 	public void executeTask(CompileTaskResponse task) {
 		// TODO Auto-generated method stub
 
 	}
-
+	/**
+	 * This executes a delete file Task
+	 */
 	@Override
 	public void executeTask(DeleteFileTaskResponse task) {
 		// TODO Auto-generated method stub
 
 	}
 
+	/**
+	 * This executes a delete session task
+	 */
 	@Override
 	public void executeTask(DeleteSessionTaskResponse task) {
 		// TODO Auto-generated method stub
@@ -637,13 +665,17 @@ public class CNPClient implements TaskReceivedEventListener,
 		}
 
 	}
-
+	/**
+	 * This executes a download Repository Task
+	 */
 	@Override
 	public void executeTask(DownloadRepoTaskResponse task) {
 		// TODO Auto-generated method stub
 
 	}
-
+	/**
+	 * This handles and recieved tasks from the server
+	 */
 	@Override
 	public void TaskReceivedEventOccurred(TaskReceivedEvent evt) {
 
@@ -656,7 +688,10 @@ public class CNPClient implements TaskReceivedEventListener,
 		}
 
 	}
-
+	/**
+	 * This returns the Session name
+	 * @return		The name of the session the user current is part of
+	 */
 	public String getSessionName() {
 		return sessionName;
 	}
