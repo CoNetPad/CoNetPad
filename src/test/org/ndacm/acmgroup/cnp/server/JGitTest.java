@@ -148,7 +148,6 @@ public class JGitTest {
 		catch(Exception e)
 		{
 			e.printStackTrace();
-			System.err.println("Error:  " + e.toString());
 			fail("Unable to add new file");
 		}
 	}

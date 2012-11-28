@@ -114,7 +114,6 @@ public class JRepository {
 	public void gitAdd(File fileToAdd) {
 		try {
 			
-			if(git==null){	System.err.println("tem");	}
 			git.add().addFilepattern(fileToAdd.getAbsolutePath()).call();
 		} catch (GitAPIException e) {
 			e.printStackTrace();
