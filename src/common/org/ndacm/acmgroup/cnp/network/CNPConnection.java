@@ -74,9 +74,16 @@ public class CNPConnection extends Thread {
 				TaskMessage taskMessage;
 				if (inputLine.charAt(inputLine.length() - 1) != TaskMessage.end) {
 					buff = new StringBuffer();
-					do {
+					while (true) {
 						buff.append(in.readLine() + "\n\r");
-					} while (buff.length() < 2 || buff.toString().charAt(buff.length() - 3) != TaskMessage.end);
+						if (buff.length() < 3) {
+							continue;
+						} else if (buff.toString().charAt(buff.length() - 3) != TaskMessage.end) {
+							continue;
+						} else {
+							break;
+						}
+					}
 					taskMessage = new TaskMessage(inputLine
 							+ buff.substring(0, buff.length() - 4));
 				} else {
