@@ -459,22 +459,47 @@ public class MainFrame extends JFrame {
 		// leave the current session
 	}
 
+	public DocumentFilter getEditorFilter() {
+		return editorFilter;
+	}
+	
+	public void setEditorFilterActivated(boolean activated) {
+		((DoNothingFilter) editorFilter).setActivated(activated);
+	}
+
 	// http://examples.oreilly.com/jswing2/code/ch22/UpcaseFilter.java
 
 	private class DoNothingFilter extends DocumentFilter {
 
+		private boolean activated;
+
+		public void setActivated(boolean activated) {
+			this.activated = activated;
+		}
+
 		public void insertString(DocumentFilter.FilterBypass fb, int offset,
 				String text, AttributeSet attr) throws BadLocationException
 				{
-			// do not do anything
+			if (activated) {
+				super.insertString(fb, offset, text, attr);
+			}
 				}
 
 		public void replace(DocumentFilter.FilterBypass fb, int offset, int length,
 				String text, AttributeSet attr) throws BadLocationException
 				{
-			// do not do anything
+			if (activated) {
+				super.replace(fb, offset, length, text, attr);
+			}
 				}
 
+		public void remove(DocumentFilter.FilterBypass fb, int offset, int length) throws BadLocationException {
+			if (activated) {
+				super.remove(fb, offset, length);
+			}
+		}
+
 	}
+
 
 }
