@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
+import java.awt.Event;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -346,6 +348,8 @@ public class MainFrame extends JFrame {
 		final JTextArea fileTextArea = new JTextArea();
 		fileTextArea.setEditable(true);
 		fileTextArea.setLineWrap(true);
+		fileTextArea.setTabSize(4);
+		fileTextArea.setFont(new Font("Consolas",Font.PLAIN, 14));
 		fileTextArea.setBorder(new LineBorder(new Color(0, 0, 0)));
 		fileTextArea.addKeyListener(new KeyAdapter() {
 			@Override
@@ -371,9 +375,14 @@ public class MainFrame extends JFrame {
 		JTextArea text = tabs.get(fileID);
 
 		if (keyPressed == KeyEvent.VK_BACK_SPACE) {
+			// backspace character
+			text.getDocument().remove(editIndex -1, 1);
+		} else if (keyPressed == Event.DELETE) {
 			// delete character
 			text.getDocument().remove(editIndex, 1);
+
 		} else {
+
 			// insert character
 			text.getDocument().insertString(editIndex,
 					Character.toString((char) keyPressed), null);
@@ -388,6 +397,8 @@ public class MainFrame extends JFrame {
 		final JTextArea fileTextArea = new JTextArea(fileContent);
 		fileTextArea.setEditable(true);
 		fileTextArea.setLineWrap(true);
+		fileTextArea.setTabSize(4);
+		fileTextArea.setFont(new Font("Consolas",Font.PLAIN, 13));
 		fileTextArea.setBorder(new LineBorder(new Color(0, 0, 0)));
 		fileTextArea.addKeyListener(new KeyAdapter() {
 			@Override
@@ -462,7 +473,7 @@ public class MainFrame extends JFrame {
 	public DocumentFilter getEditorFilter() {
 		return editorFilter;
 	}
-	
+
 	public void setEditorFilterActivated(boolean activated) {
 		((DoNothingFilter) editorFilter).setActivated(activated);
 	}

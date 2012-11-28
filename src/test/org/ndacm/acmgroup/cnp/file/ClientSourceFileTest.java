@@ -1,5 +1,7 @@
 package org.ndacm.acmgroup.cnp.file;
 
+import java.awt.Event;
+
 import junit.framework.TestCase;
 
 import org.junit.After;
@@ -45,6 +47,8 @@ public class ClientSourceFileTest extends TestCase {
 		//file.editSource(66, 6);
 		file.editSource((int) 'd', 2);
 		assertEquals("Hedllo World!", file.toString());
+		file.editSource(Event.BACK_SPACE, 3);
+		assertEquals("Hello World!", file.toString());
 	}
 
 	@Test

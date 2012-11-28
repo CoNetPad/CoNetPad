@@ -1,10 +1,6 @@
 package org.ndacm.acmgroup.cnp.client.Cesar;
 
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 
 public class CesarTest extends TestCase {

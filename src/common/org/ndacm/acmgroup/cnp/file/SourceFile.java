@@ -1,5 +1,6 @@
 package org.ndacm.acmgroup.cnp.file;
 
+import java.awt.Event;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -127,6 +128,8 @@ public abstract class SourceFile {
 
 		if (keyPressed == KeyEvent.VK_BACK_SPACE) {
 			sourceRope = sourceRope.delete(editIndex -1, editIndex);
+		} else if (keyPressed == Event.DELETE) {
+			sourceRope = sourceRope.delete(editIndex, editIndex + 1);
 		} else {
 			Character tmp = (char) keyPressed;
 			sourceRope = sourceRope.insert(editIndex, Character.toString(tmp));
