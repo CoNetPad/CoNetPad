@@ -323,7 +323,7 @@ public class CNPClient implements TaskReceivedEventListener,
 	}
 
 	public void commitSession() {
-		Task task = new CommitTask(userID, authToken, sessionID, sessionName, "");
+		Task task = new CommitTask(userID, authToken, sessionID, sessionName, "Default");
 		network.sendTask(task);
 	}
 		

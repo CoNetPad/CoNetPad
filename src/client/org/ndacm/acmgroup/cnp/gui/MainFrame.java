@@ -356,8 +356,11 @@ public class MainFrame extends JFrame {
 	public void updateSourceTab(int fileID, int keyPressed, int editIndex)
 			throws BadLocationException {
 		JTextArea text = tabs.get(fileID);
+		
 		text.getDocument().insertString(editIndex,
 				Character.toString((char) keyPressed), null);
+		
+		//text.getDocument().re
 	}
 
 	public void updateChat(String username, String message) {
