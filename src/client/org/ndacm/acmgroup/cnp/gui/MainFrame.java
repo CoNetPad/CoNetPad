@@ -348,6 +348,7 @@ public class MainFrame extends JFrame {
 			}
 		});
 	}
+
 	public void updateSourceTab(int fileID, int keyPressed, int editIndex)
 			throws BadLocationException {
 
@@ -365,7 +366,7 @@ public class MainFrame extends JFrame {
 			Character tmp = (char) keyPressed;
 			text.getDocument().insertString(editIndex,
 					Character.toString((char) keyPressed), null);
-			if(keyPressed == 10){
+			if (keyPressed == 10) {
 				text.getDocument().insertString(editIndex,
 						Character.toString('\r'), null);
 			}
@@ -376,7 +377,7 @@ public class MainFrame extends JFrame {
 		textAreaChat.append(username + ": " + message + "\n");
 	}
 
-	public void addTab(final int fileID, String filename, String fileContent) {
+	public boolean addTab(final int fileID, String filename, String fileContent) {
 		if (tabs.get(fileID) == null) {
 
 			final JTextArea fileTextArea = new JTextArea(fileContent);
@@ -401,6 +402,9 @@ public class MainFrame extends JFrame {
 
 			tabbedPane.addTab(filename, null, scrollPane, filename);
 			tabs.put(fileID, fileTextArea);
+			return true;
+		} else {
+			return false;
 		}
 	}
 

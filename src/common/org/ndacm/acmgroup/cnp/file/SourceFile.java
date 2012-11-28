@@ -124,7 +124,7 @@ public abstract class SourceFile {
 	 * @param editIndex
 	 *            The index of the character or space that is being edited
 	 */
-	public void editSource(int keyPressed, int editIndex) {
+	public boolean editSource(int keyPressed, int editIndex) {
 
 		try {
 			if (keyPressed == KeyEvent.VK_BACK_SPACE) {
@@ -140,9 +140,11 @@ public abstract class SourceFile {
 							Character.toString('\r'));
 				}
 			}
+			return true;
 		} catch (IndexOutOfBoundsException e) {
 			e.printStackTrace();
 		}
+		return false;
 	}
 
 	/**
