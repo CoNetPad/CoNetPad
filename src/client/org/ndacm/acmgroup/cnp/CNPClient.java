@@ -47,7 +47,6 @@ import org.ndacm.acmgroup.cnp.task.response.CreateFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.CreateSessionTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.DeleteFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.DeleteSessionTaskResponse;
-import org.ndacm.acmgroup.cnp.task.response.DownloadFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.DownloadRepoTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.JoinSessionTaskResponse;
@@ -252,8 +251,7 @@ public class CNPClient implements TaskReceivedEventListener,
 	 * @param userAuthToken
 	 *            The authentication cooki prevent hackers from editing
 	 */
-	public void editFile(int keyPressed,
-			int editIndex, int fileID) {
+	public void editFile(int keyPressed, int editIndex, int fileID) {
 
 		Task task = new EditorTask(userID, sessionID, keyPressed, editIndex,
 				fileID, authToken);
@@ -307,16 +305,16 @@ public class CNPClient implements TaskReceivedEventListener,
 	 *            The unique name of the file to open
 	 */
 	public void openSourceFile(String fileName) {
-		for(ClientSourceFile entry : sourceFiles.values()){
-			if(entry.getFilename().compareTo(fileName) == 0){
-				Task task = new OpenFileTask(userID,sessionID,  entry.getFileID(), authToken);
+		for (ClientSourceFile entry : sourceFiles.values()) {
+			if (entry.getFilename().compareTo(fileName) == 0) {
+				Task task = new OpenFileTask(userID, sessionID,
+						entry.getFileID(), authToken);
 				network.sendTask(task);
 				break;
 			}
 		}
 	}
-	
-	
+
 	/**
 	 * This sends a chat message to the server.
 	 * 
@@ -460,11 +458,13 @@ public class CNPClient implements TaskReceivedEventListener,
 						clientFrame.addToFileList(task.getSessionFiles());
 
 						for (int i = 0; i < task.getSessionFiles().size(); i++) {
-							sourceFiles.put(
-									task.getFileIDs().get(i),
-									new ClientSourceFile(task.getFileIDs().get(
-											i), task.getSessionFiles().get(i),
-											SourceType.GENERAL, "", client));
+							ClientSourceFile file = new ClientSourceFile(task
+									.getFileIDs().get(i), task
+									.getSessionFiles().get(i),
+									SourceType.GENERAL, "", client);
+							sourceFiles.put(task.getFileIDs().get(i), file);
+							System.out.println(sourceFiles.get(task
+									.getFileIDs().get(i)));
 						}
 					}
 				};
@@ -534,8 +534,9 @@ public class CNPClient implements TaskReceivedEventListener,
 	public void executeTask(final EditorTaskResponse task) {
 
 		if (task.isSuccess()) {
-			sourceFiles.get(task.getFileID()).editSource(task);
-			
+			ClientSourceFile file = sourceFiles.get(task.getFileID());
+			file.editSource(task);
+
 			Runnable doWorkRunnable = new Runnable() {
 				public void run() {
 					try {
@@ -575,17 +576,6 @@ public class CNPClient implements TaskReceivedEventListener,
 		SwingUtilities.invokeLater(doWorkRunnable);
 	}
 
-	/**
-	 * This downloads a file via DownloadFileTAsk response [Not Implemented]
-	 * 
-	 * @param task
-	 *            the DownloadFileTAsk to use to download the file
-	 * @return True if successful, false otherwise
-	 */
-	public void executeTask(DownloadFileTaskResponse task) {
-		// TODO implement
-
-	}
 
 	/**
 	 * If task was executed successfully, close the tab for task file.
@@ -652,7 +642,7 @@ public class CNPClient implements TaskReceivedEventListener,
 			if (task.getUserID() == userID) {
 				// then leave session in GUI
 			} else {
-				
+
 				Runnable doWorkRunnable = new Runnable() {
 					public void run() {
 						clientFrame.removeUser(task.getUsername());

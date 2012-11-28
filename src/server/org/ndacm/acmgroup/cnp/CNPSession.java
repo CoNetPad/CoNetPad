@@ -1,7 +1,6 @@
 package org.ndacm.acmgroup.cnp;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +15,6 @@ import org.ndacm.acmgroup.cnp.database.Database;
 import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
-import org.ndacm.acmgroup.cnp.git.JGit;
 import org.ndacm.acmgroup.cnp.git.JRepository;
 import org.ndacm.acmgroup.cnp.network.CNPConnection;
 import org.ndacm.acmgroup.cnp.task.ChatTask;
@@ -24,7 +22,6 @@ import org.ndacm.acmgroup.cnp.task.CloseFileTask;
 import org.ndacm.acmgroup.cnp.task.CompileTask;
 import org.ndacm.acmgroup.cnp.task.CreateFileTask;
 import org.ndacm.acmgroup.cnp.task.DeleteFileTask;
-import org.ndacm.acmgroup.cnp.task.DownloadFileTask;
 import org.ndacm.acmgroup.cnp.task.DownloadRepoTask;
 import org.ndacm.acmgroup.cnp.task.OpenFileTask;
 import org.ndacm.acmgroup.cnp.task.SendResponseTask;
@@ -308,12 +305,6 @@ public class CNPSession implements SessionTaskExecutor {
 
 	@Override
 	public void executeTask(DeleteFileTask task) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void executeTask(DownloadFileTask task) {
 		// TODO Auto-generated method stub
 
 	}

@@ -42,8 +42,9 @@ public class ClientSourceFileTest extends TestCase {
 
 	@Test
 	public void testEditSourceIntInt() {
-		file.editSource(66, 6);
-		assertEquals("Hello BWorld!", file.toString());
+		//file.editSource(66, 6);
+		file.editSource((int) 'd', 2);
+		assertEquals("Hedllo World!", file.toString());
 	}
 
 	@Test

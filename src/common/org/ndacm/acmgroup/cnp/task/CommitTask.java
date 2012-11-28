@@ -1,6 +1,6 @@
 package org.ndacm.acmgroup.cnp.task;
 
-/*
+import org.ndacm.acmgroup.cnp.network.CNPConnection;/*
  * This is the task for committing changes to the GIT repository
  * @author Cesar Ramirez
  */
@@ -11,6 +11,7 @@ public class CommitTask extends ServerTask {
 	private int sessionID;
 	private String sessionName;
 	private String message;
+	private CNPConnection connection;
 	
 	/**
 	 * Default Constructor	
@@ -100,6 +101,16 @@ public class CommitTask extends ServerTask {
 	public void setMessage(String message) {
 		this.message = message;
 	}
+
+	public CNPConnection getConnection() {
+		return connection;
+	}
+
+	public void setConnection(CNPConnection connection) {
+		this.connection = connection;
+	}
+	
+	
 	
 	
 
