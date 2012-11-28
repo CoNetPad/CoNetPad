@@ -125,6 +125,10 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 	}
 
 	// args[0] is base installation directory
+	/**
+	 * @param args
+	 *            The base installation directory.
+	 */
 	public static void main(String[] args) {
 		CNPServer server;
 		if (args.length > 0) {
@@ -156,11 +160,20 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 		return new File(""); // return tar or something
 	}
 
+	/**
+	 * @param sessionID
+	 *            to find
+	 * @return List of strings with the name of all files.
+	 */
 	public List<String> retrieveSessionFileList(int sessionID) {
 		// TODO implement
 		return null;
 	}
 
+	/**
+	 * @param sessionName
+	 * @return List of strings with the name of all files.
+	 */
 	public List<String> retrieveSessionFileList(String sessionName) {
 		File repo = jGit.retrieveRepo(sessionName);
 		if (repo.isDirectory()) {
@@ -293,6 +306,13 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 		serverExecutor.submit(sessionResponseTask);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.ndacm.acmgroup.cnp.task.ServerTaskExecutor#executeTask(org.ndacm.
+	 * acmgroup.cnp.task.JoinSessionTask)
+	 */
 	public void executeTask(JoinSessionTask task) {
 
 		CNPSession joinedSession = null;
@@ -328,7 +348,8 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 					openSessions.put(joinedSession.getSessionID(),
 							joinedSession);
 
-					joinedSession.setGitRepo(jGit.activateRepo(joinedSession.getSessionName()));
+					joinedSession.setGitRepo(jGit.activateRepo(joinedSession
+							.getSessionName()));
 				}
 
 				// add connection to session list
@@ -422,6 +443,13 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.ndacm.acmgroup.cnp.task.ServerTaskExecutor#executeTask(org.ndacm.
+	 * acmgroup.cnp.task.DeleteSessionTask)
+	 */
 	@Override
 	public void executeTask(DeleteSessionTask task) {
 		if (userIsAuth(task.getUserID(), task.getUserAuthToken())) {
@@ -432,6 +460,13 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.ndacm.acmgroup.cnp.task.ServerTaskExecutor#executeTask(org.ndacm.
+	 * acmgroup.cnp.task.CommitTask)
+	 */
 	@Override
 	public void executeTask(CommitTask task) {
 		CommitTaskResponse response = null;
@@ -463,6 +498,13 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.ndacm.acmgroup.cnp.network.events.TaskReceivedEventListener#
+	 * TaskReceivedEventOccurred
+	 * (org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent)
+	 */
 	@Override
 	public void TaskReceivedEventOccurred(TaskReceivedEvent evt) {
 
@@ -607,6 +649,9 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 		return new String(text);
 	}
 
+	/**
+	 * @return the git instance that handles all repos.
+	 */
 	public JGit getjGit() {
 		return jGit;
 	}

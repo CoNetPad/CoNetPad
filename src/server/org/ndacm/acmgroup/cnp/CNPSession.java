@@ -247,6 +247,13 @@ public class CNPSession implements SessionTaskExecutor {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.ndacm.acmgroup.cnp.task.SessionTaskExecutor#executeTask(org.ndacm
+	 * .acmgroup.cnp.task.OpenFileTask)
+	 */
 	public void executeTask(OpenFileTask task) {
 		OpenFileTaskResponse response = null;
 
@@ -283,6 +290,13 @@ public class CNPSession implements SessionTaskExecutor {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.ndacm.acmgroup.cnp.task.SessionTaskExecutor#executeTask(org.ndacm
+	 * .acmgroup.cnp.task.CloseFileTask)
+	 */
 	@Override
 	public void executeTask(CloseFileTask task) {
 		CloseFileTaskResponse response = null;
@@ -306,18 +320,39 @@ public class CNPSession implements SessionTaskExecutor {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.ndacm.acmgroup.cnp.task.SessionTaskExecutor#executeTask(org.ndacm
+	 * .acmgroup.cnp.task.DeleteFileTask)
+	 */
 	@Override
 	public void executeTask(DeleteFileTask task) {
 		// TODO Auto-generated method stub
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.ndacm.acmgroup.cnp.task.SessionTaskExecutor#executeTask(org.ndacm
+	 * .acmgroup.cnp.task.DownloadRepoTask)
+	 */
 	@Override
 	public void executeTask(DownloadRepoTask task) {
 		// TODO Auto-generated method stub
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.ndacm.acmgroup.cnp.task.SessionTaskExecutor#executeTask(org.ndacm
+	 * .acmgroup.cnp.task.CompileTask)
+	 */
 	@Override
 	public void executeTask(CompileTask task) {
 		// TODO Auto-generated method stub
@@ -349,6 +384,12 @@ public class CNPSession implements SessionTaskExecutor {
 		}
 	}
 
+	/**
+	 * @param task
+	 *            to get send to the user with the userId provided.
+	 * @param userId
+	 *            of the recipient of the task.
+	 */
 	public void distributeTask(TaskResponse task, int userId) { // have throw
 		// TaskExecutionException
 		SendResponseTask responseTask = new SendResponseTask(task,
@@ -384,10 +425,16 @@ public class CNPSession implements SessionTaskExecutor {
 		return false;
 	}
 
+	/**
+	 * @return the map from fileID to sourceFiles.
+	 */
 	public Map<Integer, ServerSourceFile> getSourceFiles() {
 		return sourceFiles;
 	}
 
+	/**
+	 * @return the list of sourceFile.
+	 */
 	public List<SourceFile> getSourceFilesList() {
 		ArrayList<SourceFile> list = new ArrayList<SourceFile>();
 		for (Integer key : sourceFiles.keySet()) {
@@ -396,31 +443,56 @@ public class CNPSession implements SessionTaskExecutor {
 		return list;
 	}
 
+	/**
+	 * @param sourceFiles
+	 *            to be set as the map for fileIDs and sourceFiles.
+	 */
 	public void setSourceFiles(Map<Integer, ServerSourceFile> sourceFiles) {
 		this.sourceFiles = sourceFiles;
 	}
 
+	/**
+	 * @return the map between the connectionID and CNPConnections.
+	 */
 	public Map<Integer, CNPConnection> getClientConnections() {
 		return clientConnections;
 	}
 
+	/**
+	 * @param clientConnections
+	 *            to be set as the map for connectionsID and CNPConnections.
+	 */
 	public void setClientConnections(
 			Map<Integer, CNPConnection> clientConnections) {
 		this.clientConnections = clientConnections;
 	}
 
+	/**
+	 * @return the map between the clientID and clientName.
+	 */
 	public Map<Integer, String> getClientIdToName() {
 		return clientIdToName;
 	}
 
+	/**
+	 * @param clientIdToName
+	 *            to be set as the map between clientID and clientName.
+	 */
 	public void setClientIdToName(Map<Integer, String> clientIdToName) {
 		this.clientIdToName = clientIdToName;
 	}
 
+	/**
+	 * @return the repository that is bound to this session.
+	 */
 	public JRepository getGitRepo() {
 		return gitRepo;
 	}
 
+	/**
+	 * @param gitRepo
+	 *            to be set for this session.
+	 */
 	public void setGitRepo(JRepository gitRepo) {
 		this.gitRepo = gitRepo;
 		for (int i = 0; i < gitRepo.getDirectoryFiles().length; i++) {
