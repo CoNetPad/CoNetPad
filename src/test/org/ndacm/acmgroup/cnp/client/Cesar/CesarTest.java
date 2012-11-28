@@ -1,7 +1,10 @@
 package org.ndacm.acmgroup.cnp.client.Cesar;
 
 import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 
 public class CesarTest extends TestCase {
@@ -12,10 +15,18 @@ public class CesarTest extends TestCase {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
+			fail("Unable to start server");
 			e.printStackTrace();
 		}
-		new Thread( new ClientTestRunnable()).start();
-		new Thread( new ClientTestRunnableMute()).start();
+	
+		try{
+			new Thread( new ClientTestRunnable()).start();
+			new Thread( new ClientTestRunnableMute()).start();
+		}
+		catch(Exception e)
+		{
+			fail("Unable to run clients");
+		}
 
 	}
 
