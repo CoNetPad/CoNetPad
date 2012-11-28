@@ -137,4 +137,34 @@ public class JGit {
 			return null;
 		}
 	}
+	
+	/**
+	 * This deletes the directory of a repository
+	 * @param name		The name of the repository
+	 * @return			True if successful, false otherwise
+	 */
+	public boolean deleteRepo(String name)
+	{
+		if (repos.get(name) != null)
+		{
+			return repos.get(name).deleteDirectory();
+		}
+		else
+		{
+			return false;
+		}
+	
+	}
+	
+	public boolean clearRepos()
+	{
+
+		boolean suc = true;
+		for (Map.Entry<String, JRepository> r : repos.entrySet())
+		{
+			suc = deleteRepo(r.getKey()) && suc;
+			
+		}
+		return suc;
+	}
 }

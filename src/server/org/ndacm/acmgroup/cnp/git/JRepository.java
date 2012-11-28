@@ -222,6 +222,37 @@ public class JRepository {
 	public File[] getDirectoryFiles() {
 		return localDirectory.listFiles();
 	}
+	
+	/**
+	 * This deletes the repo folder.
+	 * @return	True if successful, false otherwise.
+	 */
+	public boolean deleteDirectory()
+	{
+		return deleteDirectory(localDirectory);
+	}
+
+	public boolean deleteDirectory(File f)
+	{
+		if( f.exists() )
+		{
+		      File[] files = f.listFiles();
+		      for(int i=0; i<files.length; i++)
+		      {
+		         if(files[i].isDirectory()) 
+		         {
+		           deleteDirectory(files[i]);
+		         }
+		         else 
+		         {
+		        	System.out.println(files[i].getAbsoluteFile());
+		           files[i].delete();
+		         }
+		      }
+		 }
+		    return( f.delete() );
+	}
+
 
 
 }
