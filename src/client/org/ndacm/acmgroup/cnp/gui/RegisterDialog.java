@@ -176,8 +176,8 @@ public class RegisterDialog extends JDialog {
 				if (formattedPassword.getText().contentEquals(
 						formattedPasswordAgain.getText())) {
 					client.createAccount(formattedUsername.getText(),
-							formattedPassword.getText(),
-							formattedEmail.getText());
+							formattedEmail.getText(),
+							formattedPassword.getText());
 					formattedUsername.setEnabled(false);
 					formattedEmail.setEnabled(false);
 					formattedPassword.setEnabled(false);
