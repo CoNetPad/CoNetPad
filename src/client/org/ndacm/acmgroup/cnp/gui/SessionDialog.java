@@ -33,6 +33,8 @@ public class SessionDialog extends JDialog {
 
 	/**
 	 * Create the dialog.
+
+	 * @param client
 	 */
 	public SessionDialog(final CNPClient client) {
 		loginDialog = this;
@@ -205,6 +207,9 @@ public class SessionDialog extends JDialog {
 		}
 	}
 
+	/**
+	 * @return
+	 */
 	public MainFrame openMainFrame() {
 		MainFrame frame = new MainFrame(client);
 		frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -214,6 +219,9 @@ public class SessionDialog extends JDialog {
 		return frame;
 	}
 
+	/**
+	 * 
+	 */
 	public void resetDialog() {
 		formattedSession.setEnabled(true);
 		passwordField.setEnabled(true);
@@ -221,6 +229,9 @@ public class SessionDialog extends JDialog {
 		btnCreate.setEnabled(true);
 	}
 
+	/**
+	 * @param sessionName
+	 */
 	public void setSessionName(String sessionName) {
 		formattedSession.setText(sessionName);
 	}

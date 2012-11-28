@@ -32,6 +32,9 @@ public class NewFileDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
+	/**
+	 * @param client
+	 */
 	public NewFileDialog(final CNPClient client) {
 		this.client = client;
 		this.newDialog = this;

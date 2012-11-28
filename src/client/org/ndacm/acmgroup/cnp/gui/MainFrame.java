@@ -73,6 +73,8 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Create the frame.
+	 * 
+	 * @param client
 	 */
 	public MainFrame(CNPClient client) {
 		this.cnpClient = client;
@@ -349,6 +351,15 @@ public class MainFrame extends JFrame {
 		});
 	}
 
+	/**
+	 * @param fileID
+	 *            unique identifier for each file.
+	 * @param keyPressed
+	 *            integer that represents the key pressed
+	 * @param editIndex
+	 *            location where the even occurred
+	 * @throws BadLocationException
+	 */
 	public void updateSourceTab(int fileID, int keyPressed, int editIndex)
 			throws BadLocationException {
 
@@ -373,10 +384,25 @@ public class MainFrame extends JFrame {
 		}
 	}
 
+	/**
+	 * @param username
+	 *            to display in the chat
+	 * @param message
+	 *            to displat in the chat
+	 */
 	public void updateChat(String username, String message) {
 		textAreaChat.append(username + ": " + message + "\n");
 	}
 
+	/**
+	 * @param fileID
+	 *            to identify the file that is being open.
+	 * @param filename
+	 *            relative path to the file.
+	 * @param fileContent
+	 *            string with the data of the file
+	 * @return success or failure
+	 */
 	public boolean addTab(final int fileID, String filename, String fileContent) {
 		if (tabs.get(fileID) == null) {
 
@@ -408,16 +434,27 @@ public class MainFrame extends JFrame {
 		}
 	}
 
+	/**
+	 * @param tabIndex
+	 *            index of tab to remove
+	 */
 	public void removeTab(int tabIndex) {
 		tabbedPane.removeTabAt(tabIndex);
 	}
 
+	/**
+	 * @param fileList
+	 *            List of strings to be added to the file list.
+	 */
 	public void addToFileList(List<String> fileList) {
 		for (int i = 0; i < fileList.size(); i++) {
 			modelFiles.addElement(fileList.get(i));
 		}
 	}
 
+	/**
+	 * @param file name of file to be added to the file list
+	 */
 	public void addToFileList(String file) {
 		modelFiles.addElement(file);
 	}
@@ -432,6 +469,9 @@ public class MainFrame extends JFrame {
 		modelUsers.addElement(username);
 	}
 
+	/**
+	 * @param userList
+	 */
 	public void addToUserList(List<String> userList) {
 		for (int i = 0; i < userList.size(); i++) {
 			modelUsers.addElement(userList.get(i));
@@ -443,6 +483,9 @@ public class MainFrame extends JFrame {
 	 * 
 	 * @param username
 	 *            the user to remove
+	 */
+	/**
+	 * @param username
 	 */
 	public void removeUser(String username) {
 		for (int i = 0; i < modelUsers.size(); i++) {
@@ -456,21 +499,27 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Leave the session the client is currently connected to.
+	 * 
 	 */
 	public void leaveSession() {
 		// leave the current session
 	}
 
+	/**
+	 * @return the documentFilter that defines the input style.
+	 */
 	public DocumentFilter getEditorFilter() {
 		return editorFilter;
 	}
 
+	/**
+	 * @param activated the status of the editor filter.
+	 */
 	public void setEditorFilterActivated(boolean activated) {
 		((DoNothingFilter) editorFilter).setActivated(activated);
 	}
 
 	// http://examples.oreilly.com/jswing2/code/ch22/UpcaseFilter.java
-
 	private class DoNothingFilter extends DocumentFilter {
 
 		private boolean activated;

@@ -31,6 +31,9 @@ public class RegisterDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
+	/**
+	 * @param client
+	 */
 	public RegisterDialog(final CNPClient client) {
 		this.client = client;
 		this.regDialog = this;
@@ -226,6 +229,9 @@ public class RegisterDialog extends JDialog {
 		getContentPane().setLayout(groupLayout);
 	}
 
+	/**
+	 * @param dialog
+	 */
 	public void setLoginDialog(LoginDialog dialog) {
 		this.logDialog = dialog;
 	}

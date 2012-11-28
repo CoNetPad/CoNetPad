@@ -30,6 +30,9 @@ public class ServerConnectionDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
+	/**
+	 * 
+	 */
 	public ServerConnectionDialog() {
 		client = new CNPClient();
 		setTitle("CoNetPad Client");

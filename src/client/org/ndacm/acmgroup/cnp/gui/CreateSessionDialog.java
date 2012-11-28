@@ -18,8 +18,9 @@ import org.ndacm.acmgroup.cnp.CNPClient;
 
 /**
  * This is the GUI Dialog box for creating new sessions
+ * 
  * @author Cesar Ramirez
- *
+ * 
  */
 public class CreateSessionDialog extends JDialog {
 
@@ -32,6 +33,9 @@ public class CreateSessionDialog extends JDialog {
 
 	/**
 	 * Create the dialog.
+	 * 
+	 * @param client
+	 *            that will provide the logic and network interface.
 	 */
 	public CreateSessionDialog(final CNPClient client) {
 		this.client = client;
@@ -183,6 +187,11 @@ public class CreateSessionDialog extends JDialog {
 		getContentPane().setLayout(groupLayout);
 	}
 
+	/**
+	 * Re-enable all the UI components. Usually this method gets called after
+	 * the client reports an error in the submission. The components get reset
+	 * so the user can fix and resubmit.
+	 */
 	public void resetDialog() {
 		textFieldPassword.setEnabled(true);
 		textFieldPasswordAgain.setEnabled(true);

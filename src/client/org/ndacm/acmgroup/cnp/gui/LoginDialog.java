@@ -17,8 +17,9 @@ import org.ndacm.acmgroup.cnp.CNPClient;
 
 /**
  * This a dialog box for logging a user in
+ * 
  * @author Cesar Ramirez
- *
+ * 
  */
 public class LoginDialog extends JDialog {
 
@@ -32,6 +33,9 @@ public class LoginDialog extends JDialog {
 
 	/**
 	 * Create the dialog.
+	 * 
+	 * @param client
+	 *            that will provide the logic and network interface.
 	 */
 	public LoginDialog(final CNPClient client) {
 		loginDialog = this;
@@ -181,6 +185,10 @@ public class LoginDialog extends JDialog {
 		}
 	}
 
+	/**
+	 * This method will call the next step in the login process. The current
+	 * dialog will be disposed and an instance of SessionDialog will be created.
+	 */
 	public void openSessionDialog() {
 		SessionDialog dialog = new SessionDialog(client);
 		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -189,6 +197,11 @@ public class LoginDialog extends JDialog {
 		loginDialog.dispose();
 	}
 
+	/**
+	 * Re-enable all the UI components. Usually this method gets called after
+	 * the client reports an error in the submission. The components get reset
+	 * so the user can fix and resubmit.
+	 */
 	public void resetDialog() {
 		formattedPassword.setEnabled(true);
 		formattedUsername.setEnabled(true);
@@ -196,6 +209,10 @@ public class LoginDialog extends JDialog {
 		btnLogIn.setEnabled(true);
 	}
 
+	/**
+	 * @param text
+	 *            to be placed in the username field.
+	 */
 	public void setUsername(String text) {
 		formattedUsername.setText(text);
 	}

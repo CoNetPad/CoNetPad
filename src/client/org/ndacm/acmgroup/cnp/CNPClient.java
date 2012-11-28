@@ -346,6 +346,10 @@ public class CNPClient implements TaskReceivedEventListener,
 		network.sendTask(task);
 	}
 
+	/**
+	 * This sends a commit task to the server. This method should be used if the
+	 * data from the ropes need to be saved to the disk.
+	 */
 	public void commitSession() {
 		Task task = new CommitTask(userID, authToken, sessionID, sessionName,
 				"Default");
@@ -579,8 +583,10 @@ public class CNPClient implements TaskReceivedEventListener,
 							// do something
 						}
 						// FOR TESTING:
-						System.out.println("edit index: " + task.getEditIndex());
-						System.out.println("file is: " + sourceFiles.get(task.getFileID()).toString());
+						System.out
+								.println("edit index: " + task.getEditIndex());
+						System.out.println("file is: "
+								+ sourceFiles.get(task.getFileID()).toString());
 					}
 				};
 				SwingUtilities.invokeLater(doWorkRunnable);
