@@ -126,7 +126,7 @@ public abstract class SourceFile {
 	public void editSource(int keyPressed, int editIndex) {
 
 		if (keyPressed == KeyEvent.VK_BACK_SPACE) {
-			sourceRope = sourceRope.delete(editIndex, editIndex + 1);
+			sourceRope = sourceRope.delete(editIndex -1, editIndex);
 		} else {
 			Character tmp = (char) keyPressed;
 			sourceRope = sourceRope.insert(editIndex, Character.toString(tmp));
