@@ -134,33 +134,33 @@ public class MainFrame extends JFrame {
 				.createParallelGroup(Alignment.TRAILING)
 				.addGroup(
 						gl_panel.createSequentialGroup()
-								.addContainerGap()
-								.addGroup(
-										gl_panel.createParallelGroup(
-												Alignment.TRAILING)
-												.addComponent(
-														listUsers,
-														GroupLayout.DEFAULT_SIZE,
-														191, Short.MAX_VALUE)
+						.addContainerGap()
+						.addGroup(
+								gl_panel.createParallelGroup(
+										Alignment.TRAILING)
+										.addComponent(
+												listUsers,
+												GroupLayout.DEFAULT_SIZE,
+												191, Short.MAX_VALUE)
 												.addComponent(scrollPane,
 														Alignment.LEADING)
-												.addComponent(
-														scrollPane_1,
-														Alignment.LEADING,
-														GroupLayout.PREFERRED_SIZE,
-														GroupLayout.DEFAULT_SIZE,
-														Short.MAX_VALUE)
-												.addComponent(
-														lblCurrentUsers,
-														Alignment.LEADING,
-														GroupLayout.DEFAULT_SIZE,
-														191, Short.MAX_VALUE)
-												.addComponent(
-														lblChat,
-														Alignment.LEADING,
-														GroupLayout.DEFAULT_SIZE,
-														191, Short.MAX_VALUE))
-								.addContainerGap()));
+														.addComponent(
+																scrollPane_1,
+																Alignment.LEADING,
+																GroupLayout.PREFERRED_SIZE,
+																GroupLayout.DEFAULT_SIZE,
+																Short.MAX_VALUE)
+																.addComponent(
+																		lblCurrentUsers,
+																		Alignment.LEADING,
+																		GroupLayout.DEFAULT_SIZE,
+																		191, Short.MAX_VALUE)
+																		.addComponent(
+																				lblChat,
+																				Alignment.LEADING,
+																				GroupLayout.DEFAULT_SIZE,
+																				191, Short.MAX_VALUE))
+																				.addContainerGap()));
 		gl_panel.setVerticalGroup(gl_panel.createParallelGroup(
 				Alignment.LEADING).addGroup(
 						gl_panel.createSequentialGroup()
@@ -197,7 +197,7 @@ public class MainFrame extends JFrame {
 		});
 		listFiles.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		listFiles
-				.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		listFiles.setVisibleRowCount(-1);
 
 		JButton btnNewFile = new JButton("New File");
@@ -229,66 +229,66 @@ public class MainFrame extends JFrame {
 						.addContainerGap()
 						.addGroup(
 								gl_panel_1
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												gl_panel_1
-														.createParallelGroup(
-																Alignment.LEADING)
-														.addComponent(
-																listFiles,
-																Alignment.TRAILING,
-																GroupLayout.DEFAULT_SIZE,
-																208,
-																Short.MAX_VALUE)
+								.createSequentialGroup()
+								.addContainerGap()
+								.addGroup(
+										gl_panel_1
+										.createParallelGroup(
+												Alignment.LEADING)
+												.addComponent(
+														listFiles,
+														Alignment.TRAILING,
+														GroupLayout.DEFAULT_SIZE,
+														208,
+														Short.MAX_VALUE)
 														.addComponent(
 																lblWorkspace,
 																GroupLayout.PREFERRED_SIZE,
 																200,
 																GroupLayout.PREFERRED_SIZE)
-														.addComponent(
-																panel_2,
-																GroupLayout.DEFAULT_SIZE,
-																208,
-																Short.MAX_VALUE)
-														.addGroup(
-																gl_panel_1
-																		.createSequentialGroup()
-																		.addComponent(
-																				btnDeleteFile)
-																		.addPreferredGap(
-																				ComponentPlacement.RELATED,
-																				31,
-																				Short.MAX_VALUE)
-																		.addComponent(
-																				btnNewFile,
-																				GroupLayout.PREFERRED_SIZE,
-																				94,
-																				GroupLayout.PREFERRED_SIZE)))
-										.addContainerGap())));
+																.addComponent(
+																		panel_2,
+																		GroupLayout.DEFAULT_SIZE,
+																		208,
+																		Short.MAX_VALUE)
+																		.addGroup(
+																				gl_panel_1
+																				.createSequentialGroup()
+																				.addComponent(
+																						btnDeleteFile)
+																						.addPreferredGap(
+																								ComponentPlacement.RELATED,
+																								31,
+																								Short.MAX_VALUE)
+																								.addComponent(
+																										btnNewFile,
+																										GroupLayout.PREFERRED_SIZE,
+																										94,
+																										GroupLayout.PREFERRED_SIZE)))
+																										.addContainerGap())));
 		gl_panel_1.setVerticalGroup(gl_panel_1.createParallelGroup(
 				Alignment.LEADING)
 				.addGroup(
 						gl_panel_1
-								.createSequentialGroup()
-								.addGap(10)
-								.addComponent(lblWorkspace)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(listFiles,
-										GroupLayout.DEFAULT_SIZE, 507,
-										Short.MAX_VALUE)
+						.createSequentialGroup()
+						.addGap(10)
+						.addComponent(lblWorkspace)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(listFiles,
+								GroupLayout.DEFAULT_SIZE, 507,
+								Short.MAX_VALUE)
 								.addPreferredGap(ComponentPlacement.RELATED)
 								.addGroup(
 										gl_panel_1
-												.createParallelGroup(
-														Alignment.BASELINE)
+										.createParallelGroup(
+												Alignment.BASELINE)
 												.addComponent(btnNewFile)
 												.addComponent(btnDeleteFile))
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(panel_2,
-										GroupLayout.PREFERRED_SIZE, 43,
-										GroupLayout.PREFERRED_SIZE)
-								.addContainerGap()));
+												.addPreferredGap(ComponentPlacement.RELATED)
+												.addComponent(panel_2,
+														GroupLayout.PREFERRED_SIZE, 43,
+														GroupLayout.PREFERRED_SIZE)
+														.addContainerGap()));
 
 		JButton btnExit = new JButton("Exit");
 		btnExit.addActionListener(new ActionListener() {
@@ -360,8 +360,10 @@ public class MainFrame extends JFrame {
 			fileTextArea.addKeyListener(new KeyAdapter() {
 				@Override
 				public void keyTyped(KeyEvent arg0) {
-					cnpClient.editFile(arg0.getKeyChar(),
-							fileTextArea.getCaretPosition(), fileID);
+
+											cnpClient.editFile(arg0.getKeyChar(),
+												fileTextArea.getCaretPosition(), fileID);
+
 				}
 			});
 
@@ -369,7 +371,7 @@ public class MainFrame extends JFrame {
 			setPreferredSize(new Dimension(fileTextArea.getWidth(),
 					fileTextArea.getHeight()));
 			((AbstractDocument) fileTextArea.getDocument())
-					.setDocumentFilter(editorFilter);
+			.setDocumentFilter(editorFilter);
 
 			tabbedPane.addTab("filename", null, scrollPane, filename);
 			tabs.put(fileID, fileTextArea);
@@ -379,21 +381,30 @@ public class MainFrame extends JFrame {
 	public void updateSourceTab(int fileID, int keyPressed, int editIndex)
 			throws BadLocationException {
 
+		System.out.println("updateSourceTab = key: " + (char) keyPressed + ", index: " + editIndex);
 		JTextArea text = tabs.get(fileID);
 
-		if (keyPressed == KeyEvent.VK_BACK_SPACE) {
-			// backspace character
-			text.getDocument().remove(editIndex -1, 1);
-		} else if (keyPressed == Event.DELETE) {
-			// delete character
-			text.getDocument().remove(editIndex, 1);
 
-		} else {
+			
+			if (keyPressed == KeyEvent.VK_BACK_SPACE) {
+				// backspace character
+			
+				text.getDocument().remove(editIndex -1, 1);
+			} else if (keyPressed == Event.DELETE) {
+				// delete character
+				text.getDocument().remove(editIndex, 1);
 
-			// insert character
-			text.getDocument().insertString(editIndex,
-					Character.toString((char) keyPressed), null);
-		}
+			} else {
+			
+
+				// insert character
+				text.getDocument().insertString(editIndex,
+						Character.toString((char) keyPressed), null);
+
+			}
+			
+
+		
 	}
 
 	public void updateChat(String username, String message) {
@@ -410,8 +421,12 @@ public class MainFrame extends JFrame {
 		fileTextArea.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent arg0) {
-				cnpClient.editFile(arg0.getKeyChar(),
-						fileTextArea.getCaretPosition(), fileID);
+
+									cnpClient.editFile(arg0.getKeyChar(),
+											fileTextArea.getCaretPosition(), fileID);
+
+
+
 			}
 		});
 
@@ -480,7 +495,7 @@ public class MainFrame extends JFrame {
 	public DocumentFilter getEditorFilter() {
 		return editorFilter;
 	}
-	
+
 	public void setEditorFilterActivated(boolean activated) {
 		((DoNothingFilter) editorFilter).setActivated(activated);
 	}
@@ -504,7 +519,7 @@ public class MainFrame extends JFrame {
 
 		public void replace(DocumentFilter.FilterBypass fb, int offset,
 				int length, String text, AttributeSet attr)
-				throws BadLocationException {
+						throws BadLocationException {
 			if (activated) {
 				super.replace(fb, offset, length, text, attr);
 			}

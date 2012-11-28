@@ -546,7 +546,7 @@ public class CNPClient implements TaskReceivedEventListener,
 			file.editSource(task);
 
 			Runnable doWorkRunnable = new Runnable() {
-				public void run() {
+				public void run() { // this might be the problem?
 					try {
 						// temporarily turn filter on
 						clientFrame.setEditorFilterActivated(true);
@@ -557,6 +557,8 @@ public class CNPClient implements TaskReceivedEventListener,
 					} catch (BadLocationException e) {
 						// do something
 					}
+					System.out.println("edit index: " + task.getEditIndex());
+					System.out.println("file is: " + sourceFiles.get(task.getFileID()).toString());
 				}
 			};
 			SwingUtilities.invokeLater(doWorkRunnable);

@@ -80,6 +80,7 @@ public class ServerSourceFile extends SourceFile implements FileTaskExecutor {
 			// user authentication failed
 			response = new EditorTaskResponse("n/a", -1, -1, -1, false);
 		}
+		System.out.println("file is: " + sourceRope.toString());
 		distributeTask(response);
 		
 	}
