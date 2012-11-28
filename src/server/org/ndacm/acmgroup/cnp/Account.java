@@ -8,9 +8,21 @@ package org.ndacm.acmgroup.cnp;
  */
 public class Account {
 	
+	/**
+	 * 
+	 */
 	private String username;		//Username of account
+	/**
+	 * 
+	 */
 	private String email;			//Email of Accout
+	/**
+	 * 
+	 */
 	private int userID;				//Database ID of the account
+	/**
+	 * 
+	 */
 	public Account()
 	{
 		username = "guest";
@@ -62,15 +74,25 @@ public class Account {
 		return userID;
 	}
 	
+	/**
+	 * @param id
+	 */
 	public void setUserID(int id) {
 		userID = id;
 	}
 	
 	
+	/**
+	 * @param name
+	 */
 	public void setUserName(String name) {
 		username = name;
 	}
 	
+	/**
+	 * @author cesar
+	 *
+	 */
 	public enum FilePermissionLevel {
 		READ(0),
 		READ_WRITE(2),
@@ -86,15 +108,37 @@ public class Account {
 		}
 	}
 	
+	/**
+	 * @author cesar
+	 *
+	 */
 	public enum ChatPermissionLevel {
+		/**
+		 * 
+		 */
 		MUTE(0),
+		/**
+		 * 
+		 */
 		TO_LEADER(1),
+		/**
+		 * 
+		 */
 		VOICE(2);
+		/**
+		 * 
+		 */
 		private int value;
+		/**
+		 * @param val
+		 */
 		ChatPermissionLevel(int val)
 		{
 			this.value = val;
 		}
+		/**
+		 * @return
+		 */
 		public int toInt()
 		{
 			return this.value;

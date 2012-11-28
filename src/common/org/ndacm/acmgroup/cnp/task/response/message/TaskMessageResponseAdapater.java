@@ -16,11 +16,24 @@ import com.google.gson.JsonSerializer;
  * Source: http://stackoverflow.com/questions/5800433/polymorphism-with-gson
  *
  */
+/**
+ * @author cesar
+ *
+ */
 public class TaskMessageResponseAdapater implements JsonSerializer<TaskMessageResponse>, JsonDeserializer<TaskMessageResponse>{
 	
+	/**
+	 * 
+	 */
 	private static final String CLASSNAME = "CLASSNAME";
+	/**
+	 * 
+	 */
 	private static final String INSTANCE  = "INSTANCE";
 
+	/* (non-Javadoc)
+	 * @see com.google.gson.JsonSerializer#serialize(java.lang.Object, java.lang.reflect.Type, com.google.gson.JsonSerializationContext)
+	 */
 	@Override
 	public JsonElement serialize(TaskMessageResponse src, Type typeOfSrc, JsonSerializationContext context) {
 		JsonObject retValue = new JsonObject();
@@ -31,6 +44,9 @@ public class TaskMessageResponseAdapater implements JsonSerializer<TaskMessageRe
 	    return retValue;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.google.gson.JsonDeserializer#deserialize(com.google.gson.JsonElement, java.lang.reflect.Type, com.google.gson.JsonDeserializationContext)
+	 */
 	@Override
 	public TaskMessageResponse deserialize(JsonElement json, Type typeOfT,
 			JsonDeserializationContext context) throws JsonParseException {

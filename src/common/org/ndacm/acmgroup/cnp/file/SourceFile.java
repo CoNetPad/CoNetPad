@@ -126,15 +126,23 @@ public abstract class SourceFile {
 	 */
 	public void editSource(int keyPressed, int editIndex) {
 
-		if (keyPressed == KeyEvent.VK_BACK_SPACE) {
-			sourceRope = sourceRope.delete(editIndex -1, editIndex);
-		} else if (keyPressed == Event.DELETE) {
-			sourceRope = sourceRope.delete(editIndex, editIndex + 1);
-		} else {
-			Character tmp = (char) keyPressed;
-			sourceRope = sourceRope.insert(editIndex, Character.toString(tmp));
+		try {
+			if (keyPressed == KeyEvent.VK_BACK_SPACE) {
+				sourceRope = sourceRope.delete(editIndex - 1, editIndex);
+			} else if (keyPressed == Event.DELETE) {
+				sourceRope = sourceRope.delete(editIndex, editIndex + 1);
+			} else {
+				Character tmp = (char) keyPressed;
+				sourceRope = sourceRope.insert(editIndex,
+						Character.toString(tmp));
+				if (keyPressed == 10) {
+					sourceRope = sourceRope.insert(editIndex,
+							Character.toString('\r'));
+				}
+			}
+		} catch (IndexOutOfBoundsException e) {
+			e.printStackTrace();
 		}
-
 	}
 
 	/**

@@ -329,14 +329,12 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 					openSessions.put(joinedSession.getSessionID(),
 							joinedSession);
 
+					joinedSession.setGitRepo(jGit.activateRepo(joinedSession.getSessionName()));
 				}
 
 				// add connection to session list
 				joinedSession.addUser(task.getUserID(), task.getUsername(),
 						task.getConnection(), task.getUserAuthToken());
-
-				joinedSession.setGitRepo(jGit.activateRepo(joinedSession
-						.getSessionName()));
 
 				// construct response
 				List<String> sessionFiles = new ArrayList<String>();

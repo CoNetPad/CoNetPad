@@ -16,6 +16,8 @@ public class TaskMessage {
 	 */
 	private TaskType taskType;
 
+	private Character deliter = 5;
+	
 	/**
 	 * An array of string that contain the fields required to rebuild a task.
 	 */
@@ -38,7 +40,7 @@ public class TaskMessage {
 	 *            into a TaskMessage
 	 */
 	public TaskMessage(String input) {
-		String[] elements = input.split(";");
+		String[] elements = input.split(Character.toString(deliter));
 
 		int tasktypeId = Integer.parseInt(elements[0]);
 		TaskType taskType = TaskType.values()[tasktypeId];
@@ -59,9 +61,10 @@ public class TaskMessage {
 	public String getMessageString() {
 		StringBuffer buffer = new StringBuffer();
 
-		buffer.append(taskType.ordinal() + ";");
+		buffer.append(taskType.ordinal());
+		buffer.append(deliter);
 		for (String element : data) {
-			buffer.append(element + ";");
+			buffer.append(element + deliter);
 		}
 
 		return buffer.toString();
