@@ -15,6 +15,7 @@ import org.ndacm.acmgroup.cnp.database.Database;
 import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
+import org.ndacm.acmgroup.cnp.git.JGit;
 import org.ndacm.acmgroup.cnp.git.JRepository;
 import org.ndacm.acmgroup.cnp.network.CNPConnection;
 import org.ndacm.acmgroup.cnp.task.ChatTask;
@@ -155,7 +156,8 @@ public class CNPSession implements SessionTaskExecutor {
 	 * @param connection
 	 *            The connection of the user
 	 */
-	public void addUser(int userID, String username, CNPConnection connection, String AuthToken) {
+	public void addUser(int userID, String username, CNPConnection connection,
+			String AuthToken) {
 		connection.setUserID(userID);
 		connection.setSessionID(sessionID);
 		connection.setAuth(AuthToken);
@@ -185,8 +187,9 @@ public class CNPSession implements SessionTaskExecutor {
 	 */
 	public synchronized ServerSourceFile createFile(String filename,
 			SourceType type) {
-		ServerSourceFile file = new ServerSourceFile(NEXT_FILEID, sessionName
-				+ File.separator + filename, type, server);
+		ServerSourceFile file = new ServerSourceFile(NEXT_FILEID, JGit.REPO_DIR
+				+ File.separator + gitRepo.getName() + File.separator
+				+ filename, type, server);
 		sourceFiles.put(NEXT_FILEID, file);
 		NEXT_FILEID++;
 		return file;

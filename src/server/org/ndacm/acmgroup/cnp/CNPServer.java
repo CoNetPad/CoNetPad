@@ -62,9 +62,9 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 
 	private static final int USER_TOKEN_LENGTH = 10; // The length of a user
 														// token
-	
+
 	// The available characters used in a token
-	private static final String TOKEN_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; 
+	private static final String TOKEN_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
 	private ServerNetwork network; // The network class for handing soccket
 									// connection
@@ -266,6 +266,8 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 				}
 
 				jGit.createRepo(newSession.getSessionName());
+				newSession.setGitRepo(jGit.activateRepo(newSession
+						.getSessionName()));
 				newSession.createFile("HelloWorld.txt", SourceType.GENERAL);
 				openSessions.put(newSession.getSessionID(), newSession);
 				response = new CreateSessionTaskResponse(
@@ -275,6 +277,9 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 			} catch (FailedSessionException ex) {
 				// if creating the session fails, create a response signifying
 				// this
+				response = new CreateSessionTaskResponse(-1, "n/a", false);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
 				response = new CreateSessionTaskResponse(-1, "n/a", false);
 			}
 		} else {
@@ -320,9 +325,6 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 								task.getSessionName(), this);
 					}
 
-					joinedSession.setGitRepo(jGit.activateRepo(joinedSession
-							.getSessionName()));
-
 					openSessions.put(joinedSession.getSessionID(),
 							joinedSession);
 
@@ -351,10 +353,7 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 				// this
 				response = new JoinSessionTaskResponse(-1, "n/a", "n/a", -1,
 						false, null, null, null);
-			} catch (FileNotFoundException e) {
-				response = new JoinSessionTaskResponse(-1, "", "", -1, false,
-						null, null, null);
-			}
+			} 
 		} else {
 			// tokens don't match, join session task fails
 			response = new JoinSessionTaskResponse(-1, "n/a", "n/a", -1, false,
@@ -431,29 +430,30 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 	@Override
 	public void executeTask(CommitTask task) {
 		CommitTaskResponse response = null;
-		
+
 		// make sure user requesting task has authenticated
 		if (userIsAuth(task.getUserID(), task.getUserAuthToken())) {
-			
+
 			try {
-				
+
 				// write all session ropes to files
 				CNPSession session = openSessions.get(task.getSessionID());
 				for (SourceFile file : session.getSourceFiles().values()) {
 					file.save();
 				}
-				
+
 				// commit the task
 				jGit.commitToRepo(task.getSessionID(), task.getMessage());
-				
+
 				// return a response
 				response = new CommitTaskResponse(true);
-				
+
 			} catch (GitAPIException e) {
 				response = new CommitTaskResponse(false);
 			}
-			
-			SendResponseTask commitResponseTask = new SendResponseTask(response, task.getConnection());
+
+			SendResponseTask commitResponseTask = new SendResponseTask(
+					response, task.getConnection());
 			serverExecutor.submit(commitResponseTask);
 		}
 	}
@@ -464,7 +464,8 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 		Task task = evt.getTask();
 
 		// based on specific task type, will need to set different variable
-		// references (for execution) and forward on to a specific ExecutorService 
+		// references (for execution) and forward on to a specific
+		// ExecutorService
 		// (server, session, or file)
 		if (task instanceof ServerTask) {
 

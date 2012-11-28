@@ -30,7 +30,7 @@ import org.eclipse.jgit.storage.file.FileRepository;
  * @version 2.0
  */
 public class JRepository {
-	private static final String GIT_DIR = ".git";			//The Git director file type
+	public static final String GIT_DIR = ".git";			//The Git director file type
 	private String name;									//The name of the repository	
 	private File localDirectory;							//The local directory that the repo works on
 	private Repository localRepo;							//

@@ -548,8 +548,12 @@ public class CNPClient implements TaskReceivedEventListener,
 			Runnable doWorkRunnable = new Runnable() {
 				public void run() {
 					try {
+						// temporarily turn filter on
+						clientFrame.setEditorFilterActivated(true);
 						clientFrame.updateSourceTab(task.getFileID(),
 								task.getKeyPressed(), task.getEditIndex());
+						// turn back off
+						clientFrame.setEditorFilterActivated(false);
 					} catch (BadLocationException e) {
 						// do something
 					}
