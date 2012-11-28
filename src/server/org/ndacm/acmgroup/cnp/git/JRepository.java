@@ -113,6 +113,8 @@ public class JRepository {
 	 */
 	public void gitAdd(File fileToAdd) {
 		try {
+			
+			if(git==null){	System.err.println("tem");	}
 			git.add().addFilepattern(fileToAdd.getAbsolutePath()).call();
 		} catch (GitAPIException e) {
 			e.printStackTrace();
@@ -313,7 +315,7 @@ public class JRepository {
 				if (files[i].isDirectory()) {
 					deleteDirectory(files[i]);
 				} else {
-					System.out.println(files[i].getAbsoluteFile());
+			
 					files[i].delete();
 				}
 			}

@@ -187,7 +187,7 @@ public class JGit {
 	
 	/**
 	 * This will clear ALL the repositories
-	 * @return	True if successfufl, false otherwise
+	 * @return	True if successfull, false otherwise
 	 */
 	public boolean clearRepos()
 	{
@@ -195,6 +195,7 @@ public class JGit {
 		boolean suc = true;
 		for (Map.Entry<String, JRepository> r : repos.entrySet())
 		{
+
 			suc = deleteRepo(r.getKey()) && suc;
 			
 		}
