@@ -18,8 +18,9 @@ import org.ndacm.acmgroup.cnp.CNPClient;
 
 /**
  * This is the class for joining an existing session
+ * 
  * @author Cesar Ramirez
- *
+ * 
  */
 public class SessionDialog extends JDialog {
 
@@ -33,8 +34,9 @@ public class SessionDialog extends JDialog {
 
 	/**
 	 * Create the dialog.
-
+	 * 
 	 * @param client
+	 *            that will provide the logic and network interface.
 	 */
 	public SessionDialog(final CNPClient client) {
 		loginDialog = this;
@@ -208,7 +210,11 @@ public class SessionDialog extends JDialog {
 	}
 
 	/**
-	 * @return
+	 * This method will create a MainFrame(main GUI class).This method should be
+	 * called when the the CNPClient recieved a successful
+	 * JoinSessionTaskResponse.
+	 * 
+	 * @return reference to the created MainFrame
 	 */
 	public MainFrame openMainFrame() {
 		MainFrame frame = new MainFrame(client);
@@ -220,7 +226,9 @@ public class SessionDialog extends JDialog {
 	}
 
 	/**
-	 * 
+	 * Re-enable all the UI components. Usually this method gets called after
+	 * the client reports an error in the submission. The components get reset
+	 * so the user can fix and resubmit.
 	 */
 	public void resetDialog() {
 		formattedSession.setEnabled(true);
@@ -230,7 +238,7 @@ public class SessionDialog extends JDialog {
 	}
 
 	/**
-	 * @param sessionName
+	 * @param sessionName name of the session
 	 */
 	public void setSessionName(String sessionName) {
 		formattedSession.setText(sessionName);

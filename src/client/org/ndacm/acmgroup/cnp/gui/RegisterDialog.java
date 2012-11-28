@@ -30,9 +30,9 @@ public class RegisterDialog extends JDialog {
 
 	/**
 	 * Create the dialog.
-	 */
-	/**
+	 * 
 	 * @param client
+	 *            that will provide the logic and network interface.
 	 */
 	public RegisterDialog(final CNPClient client) {
 		this.client = client;

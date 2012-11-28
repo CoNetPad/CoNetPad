@@ -66,7 +66,7 @@ import org.ndacm.acmgroup.cnp.task.response.TaskResponseExecutor;
  * 
  */
 public class CNPClient implements TaskReceivedEventListener,
-TaskResponseExecutor {
+		TaskResponseExecutor {
 
 	private String serverURL; // The URL to the server
 	private String sessionName; // The unique name of the session the user
@@ -76,7 +76,8 @@ TaskResponseExecutor {
 	private String username; // The Username of the user
 	private String authToken; // assigned by server after authentication
 
-	private ExecutorService clientExecutor; // this is for executing varoous tasks
+	private ExecutorService clientExecutor; // this is for executing varoous
+											// tasks
 	private ExecutorService editorTaskSender;
 	private volatile boolean isWaiting;
 	private final CNPClient cnpClient;
@@ -280,10 +281,9 @@ TaskResponseExecutor {
 	 */
 	public void editFile(int keyPressed, int fileID) {
 
-		SendEditorTaskTask task = new SendEditorTaskTask(userID, sessionID, keyPressed,
-				fileID, authToken, this);
+		SendEditorTaskTask task = new SendEditorTaskTask(userID, sessionID,
+				keyPressed, fileID, authToken, this);
 		editorTaskSender.submit(task);
-
 
 	}
 
@@ -582,21 +582,21 @@ TaskResponseExecutor {
 				Runnable doWorkRunnable = new Runnable() {
 					public void run() {
 						try {
-							synchronized(cnpClient) {
+							synchronized (cnpClient) {
 								// temporarily turn filter on
 								clientFrame.setEditorFilterActivated(true);
 								clientFrame.updateSourceTab(task.getFileID(),
-										task.getKeyPressed(), task.getEditIndex());
+										task.getKeyPressed(),
+										task.getEditIndex());
 								// turn back off
 								clientFrame.setEditorFilterActivated(false);
-								
+
 								cnpClient.setWaiting(false);
 								cnpClient.notifyAll();
 							}
 						} catch (BadLocationException e) {
 							// do something
 						}
-						
 
 						// FOR TESTING:
 						System.out
@@ -754,21 +754,35 @@ TaskResponseExecutor {
 		return sessionName;
 	}
 
+	/**
+	 * @return the network component.
+	 */
 	public ClientNetwork getNetwork() {
 		return network;
 	}
 
+	/**
+	 * @param fileID
+	 *            of the file to open.
+	 * @return the jtextarea containing the specified fiel.
+	 */
 	public JTextArea getEditorTextArea(int fileID) {
 		return clientFrame.getTab(fileID);
 	}
 
+	/**
+	 * @return the value of the isWaiting flag.
+	 */
 	public boolean isWaiting() {
 		return isWaiting;
 	}
 
+	/**
+	 * @param isWaiting
+	 *            the status to set to isWaiting flag to.
+	 */
 	public void setWaiting(boolean isWaiting) {
 		this.isWaiting = isWaiting;
 	}
-
 
 }

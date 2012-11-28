@@ -18,8 +18,9 @@ import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
 
 /**
  * This a dialog box for creating a new file
+ * 
  * @author Cesar Ramirez
- *
+ * 
  */
 public class NewFileDialog extends JDialog {
 
@@ -31,9 +32,9 @@ public class NewFileDialog extends JDialog {
 
 	/**
 	 * Create the dialog.
-	 */
-	/**
+	 * 
 	 * @param client
+	 *            that will provide the logic and network interface.
 	 */
 	public NewFileDialog(final CNPClient client) {
 		this.client = client;

@@ -49,9 +49,6 @@ import org.ndacm.acmgroup.cnp.CNPClient;
  */
 public class MainFrame extends JFrame {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTabbedPane tabbedPane;
@@ -72,9 +69,10 @@ public class MainFrame extends JFrame {
 	DocumentFilter editorFilter;
 
 	/**
-	 * Create the frame.
+	 * Create the dialog.
 	 * 
 	 * @param client
+	 *            that will provide the logic and network interface.
 	 */
 	public MainFrame(CNPClient client) {
 		this.cnpClient = client;
@@ -415,8 +413,7 @@ public class MainFrame extends JFrame {
 			fileTextArea.addKeyListener(new KeyAdapter() {
 				@Override
 				public void keyTyped(KeyEvent arg0) {
-					cnpClient.editFile(arg0.getKeyChar(),
-							fileID);
+					cnpClient.editFile(arg0.getKeyChar(), fileID);
 				}
 			});
 
@@ -453,7 +450,8 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
-	 * @param file name of file to be added to the file list
+	 * @param file
+	 *            name of file to be added to the file list
 	 */
 	public void addToFileList(String file) {
 		modelFiles.addElement(file);
@@ -484,9 +482,6 @@ public class MainFrame extends JFrame {
 	 * @param username
 	 *            the user to remove
 	 */
-	/**
-	 * @param username
-	 */
 	public void removeUser(String username) {
 		for (int i = 0; i < modelUsers.size(); i++) {
 			if (((String) (modelUsers.elementAt(i))).compareTo(username) == 0) {
@@ -504,7 +499,12 @@ public class MainFrame extends JFrame {
 	public void leaveSession() {
 		// leave the current session
 	}
-	
+
+	/**
+	 * @param fileID
+	 *            identifier of the tab
+	 * @return the tab containing the file requested
+	 */
 	public JTextArea getTab(int fileID) {
 		return tabs.get(fileID);
 	}
@@ -517,7 +517,8 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
-	 * @param activated the status of the editor filter.
+	 * @param activated
+	 *            the status of the editor filter.
 	 */
 	public void setEditorFilterActivated(boolean activated) {
 		((DoNothingFilter) editorFilter).setActivated(activated);

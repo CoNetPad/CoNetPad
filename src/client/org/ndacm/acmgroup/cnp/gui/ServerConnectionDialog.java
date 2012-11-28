@@ -29,9 +29,9 @@ public class ServerConnectionDialog extends JDialog {
 
 	/**
 	 * Create the dialog.
-	 */
-	/**
 	 * 
+	 * @param client
+	 *            that will provide the logic and network interface.
 	 */
 	public ServerConnectionDialog() {
 		client = new CNPClient();
