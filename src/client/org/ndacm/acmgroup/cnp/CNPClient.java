@@ -56,10 +56,13 @@ import org.ndacm.acmgroup.cnp.task.response.LoginTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.OpenFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponseExecutor;
+
 /**
- * This class is the main client-side class.  It handles the communication and the various client functionalities.
+ * This class is the main client-side class. It handles the communication and
+ * the various client functionalities.
+ * 
  * @author Cesar Ramirez
- *
+ * 
  */
 public class CNPClient implements TaskReceivedEventListener,
 		TaskResponseExecutor {
@@ -129,6 +132,7 @@ public class CNPClient implements TaskReceivedEventListener,
 		}
 		return true;
 	}
+
 	/**
 	 * This disconnectst he user from the server
 	 */
@@ -136,17 +140,22 @@ public class CNPClient implements TaskReceivedEventListener,
 		network.disconnect();
 		clientExecutor.shutdown();
 	}
+
 	/**
 	 * This shows the dialog box for registering a new user
-	 * @param regDialog		The Dialogbox for registering the user
+	 * 
+	 * @param regDialog
+	 *            The Dialogbox for registering the user
 	 */
 	public void setRegDialog(RegisterDialog regDialog) {
 		this.regDialog = regDialog;
 	}
-	
+
 	/**
 	 * This shows the dialog box for setting a user session
-	 * @param sessionDialog			The SessionDialog for setting the session for the user
+	 * 
+	 * @param sessionDialog
+	 *            The SessionDialog for setting the session for the user
 	 */
 	public void setSessionDialog(SessionDialog sessionDialog) {
 		this.sesDialog = sessionDialog;
@@ -154,31 +163,40 @@ public class CNPClient implements TaskReceivedEventListener,
 
 	/**
 	 * This shows the dialog box for logging the user in
-	 * @param logDialog		The LoginDialog for logging the user in
+	 * 
+	 * @param logDialog
+	 *            The LoginDialog for logging the user in
 	 */
 	public void setLogDialog(LoginDialog logDialog) {
 		this.logDialog = logDialog;
 	}
-	
+
 	/**
 	 * This shows the dialog box or creating a new session
-	 * @param createDialog			The Create Dialog box for creating a new session
+	 * 
+	 * @param createDialog
+	 *            The Create Dialog box for creating a new session
 	 */
 	public void setCreateSessionDialog(CreateSessionDialog createDialog) {
 		this.createSessionDialog = createDialog;
 	}
-	
+
 	/**
 	 * This shows the dialog box for adding a new file
-	 * @param dialog			The Dialog box for adding a new file
+	 * 
+	 * @param dialog
+	 *            The Dialog box for adding a new file
 	 */
 	public void setNewFileDialog(NewFileDialog dialog) {
 		this.newFileDialog = dialog;
 	}
-	
+
 	/**
 	 * This creates either a private or public password
-	 * @param password		Leave blank to create a public session, or give a password to create private
+	 * 
+	 * @param password
+	 *            Leave blank to create a public session, or give a password to
+	 *            create private
 	 */
 	public void createSession(String password) {
 		CreateSessionTask task;
@@ -316,8 +334,6 @@ public class CNPClient implements TaskReceivedEventListener,
 		}
 	}
 
-	
-	
 	/**
 	 * This sends a chat message to the server.
 	 * 
@@ -331,10 +347,11 @@ public class CNPClient implements TaskReceivedEventListener,
 	}
 
 	public void commitSession() {
-		Task task = new CommitTask(userID, authToken, sessionID, sessionName, "Default");
+		Task task = new CommitTask(userID, authToken, sessionID, sessionName,
+				"Default");
 		network.sendTask(task);
 	}
-		
+
 	/**
 	 * Convert the SourceFile with the given filename to a File and return this
 	 * file.
@@ -527,8 +544,12 @@ public class CNPClient implements TaskReceivedEventListener,
 	 *            The openFileTaskResponse used to open a file
 	 */
 	public void executeTask(OpenFileTaskResponse task) {
-		clientFrame.addTab(task.getFileID(), task.getFilename(),
-				task.getFileContent());
+		if (clientFrame.addTab(task.getFileID(), task.getFilename(),
+				task.getFileContent())) {
+			sourceFiles.put(task.getFileID(),
+					new ClientSourceFile(task.getFileID(), task.getFilename(),
+							SourceType.GENERAL, task.getFileContent(), this));
+		}
 	}
 
 	/**
@@ -543,25 +564,29 @@ public class CNPClient implements TaskReceivedEventListener,
 
 		if (task.isSuccess()) {
 			ClientSourceFile file = sourceFiles.get(task.getFileID());
-			file.editSource(task);
+			if (file.editSource(task)) {
 
-			Runnable doWorkRunnable = new Runnable() {
-				public void run() { // this might be the problem?
-					try {
-						// temporarily turn filter on
-						clientFrame.setEditorFilterActivated(true);
-						clientFrame.updateSourceTab(task.getFileID(),
-								task.getKeyPressed(), task.getEditIndex());
-						// turn back off
-						clientFrame.setEditorFilterActivated(false);
-					} catch (BadLocationException e) {
-						// do something
+				Runnable doWorkRunnable = new Runnable() {
+					public void run() {
+						try {
+							// temporarily turn filter on
+							clientFrame.setEditorFilterActivated(true);
+							clientFrame.updateSourceTab(task.getFileID(),
+									task.getKeyPressed(), task.getEditIndex());
+							// turn back off
+							clientFrame.setEditorFilterActivated(false);
+						} catch (BadLocationException e) {
+							// do something
+						}
+						// FOR TESTING:
+						System.out.println("edit index: " + task.getEditIndex());
+						System.out.println("file is: " + sourceFiles.get(task.getFileID()).toString());
 					}
-					System.out.println("edit index: " + task.getEditIndex());
-					System.out.println("file is: " + sourceFiles.get(task.getFileID()).toString());
-				}
-			};
-			SwingUtilities.invokeLater(doWorkRunnable);
+				};
+				SwingUtilities.invokeLater(doWorkRunnable);
+			} else {
+				System.out.println("Error updating text area");
+			}
 		}
 	}
 
@@ -590,7 +615,6 @@ public class CNPClient implements TaskReceivedEventListener,
 		SwingUtilities.invokeLater(doWorkRunnable);
 	}
 
-
 	/**
 	 * If task was executed successfully, close the tab for task file.
 	 */
@@ -606,7 +630,7 @@ public class CNPClient implements TaskReceivedEventListener,
 			SwingUtilities.invokeLater(doWorkRunnable);
 		}
 	}
-	
+
 	/**
 	 * This executes a Commit Task for the Git repository
 	 */
@@ -614,11 +638,12 @@ public class CNPClient implements TaskReceivedEventListener,
 	public void executeTask(CommitTaskResponse task) {
 		if (task.isSuccess()) {
 			JOptionPane.showMessageDialog(logDialog, "Files saved");
-		}else{
+		} else {
 			JOptionPane.showMessageDialog(logDialog, "Error while saving");
 		}
 
 	}
+
 	/**
 	 * This executes a compile task to compile source code
 	 */
@@ -627,6 +652,7 @@ public class CNPClient implements TaskReceivedEventListener,
 		// TODO Auto-generated method stub
 
 	}
+
 	/**
 	 * This executes a delete file Task
 	 */
@@ -671,6 +697,7 @@ public class CNPClient implements TaskReceivedEventListener,
 		}
 
 	}
+
 	/**
 	 * This executes a download Repository Task
 	 */
@@ -679,6 +706,7 @@ public class CNPClient implements TaskReceivedEventListener,
 		// TODO Auto-generated method stub
 
 	}
+
 	/**
 	 * This handles and recieved tasks from the server
 	 */
@@ -694,9 +722,11 @@ public class CNPClient implements TaskReceivedEventListener,
 		}
 
 	}
+
 	/**
 	 * This returns the Session name
-	 * @return		The name of the session the user current is part of
+	 * 
+	 * @return The name of the session the user current is part of
 	 */
 	public String getSessionName() {
 		return sessionName;

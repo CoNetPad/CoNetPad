@@ -32,8 +32,8 @@ public class ClientSourceFile extends SourceFile{
 	 * This edits the source file via EditorTaskResponse
 	 * @param task			The EditorTaskResponse used to edit the file
 	 */
-	public void editSource(EditorTaskResponse task) {
-		editSource(task.getKeyPressed(),task.getEditIndex());
+	public boolean editSource(EditorTaskResponse task) {
+		return editSource(task.getKeyPressed(),task.getEditIndex());
 	}
 	
 	/**

@@ -15,11 +15,12 @@ import org.ndacm.acmgroup.cnp.task.message.TaskMessageFactory;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
 /**
- *     This class is a single thread that will listen from messaged from the
- *         client. This class is initialized in the server when a client
- *         connects. Other objects can call sendMessage() to send a message to
- *         the client, this method is not called by this thread.
- *	@author Cesar Ramirez
+ * This class is a single thread that will listen from messaged from the client.
+ * This class is initialized in the server when a client connects. Other objects
+ * can call sendMessage() to send a message to the client, this method is not
+ * called by this thread.
+ * 
+ * @author Cesar Ramirez
  */
 public class CNPConnection extends Thread {
 	private Socket socket = null;
@@ -68,15 +69,29 @@ public class CNPConnection extends Thread {
 		try {
 			System.out.println("Thread for client " + id + " started");
 			String inputLine;
+			StringBuffer buff;
 			while ((inputLine = in.readLine()) != null && !stop) {
-				TaskMessage message = new TaskMessage(inputLine);
+				TaskMessage taskMessage;
+				if (inputLine.charAt(inputLine.length() - 1) != TaskMessage.end) {
+					buff = new StringBuffer();
+					do {
+						buff.append(in.readLine() + "\n\r");
+					} while (buff.length() < 2 || buff.toString().charAt(buff.length() - 3) != TaskMessage.end);
+					taskMessage = new TaskMessage(inputLine
+							+ buff.substring(0, buff.length() - 4));
+				} else {
+					taskMessage = new TaskMessage(inputLine);
+				}
+
 				Task task = null;
 				if (isServer) {
-					task = TaskMessageFactory.fromMessageToTask(message);
+					task = TaskMessageFactory.fromMessageToTask(taskMessage);
 					task.setClientId(id);
 				} else {
+					System.out.println("total elements"
+							+ taskMessage.getData().length);
 					task = TaskMessageFactory
-							.fromMessageToTaskResponse(message);
+							.fromMessageToTaskResponse(taskMessage);
 				}
 				System.out.println("Message recieved");
 				taskSource.fireTaskReceivedEvent(new TaskReceivedEvent(task,
@@ -91,15 +106,21 @@ public class CNPConnection extends Thread {
 	}
 
 	public void sendTask(Task task) {
-		out.println(TaskMessageFactory.fromTaskToMessage(task)
-				.getMessageString());
+		String message = TaskMessageFactory.fromTaskToMessage(task)
+				.getMessageString();
+		sendData(message);
 		System.out.println("Task sent");
 	}
 
 	public void sendTaskResponse(TaskResponse task) {
-		out.println(TaskMessageFactory.fromTaskResponseToMessage(task)
-				.getMessageString());
+		String message = TaskMessageFactory.fromTaskResponseToMessage(task)
+				.getMessageString();
+		sendData(message);
 		System.out.println("TaskResponse sent");
+	}
+
+	private void sendData(String message) {
+		out.println(message);
 	}
 
 	/**
