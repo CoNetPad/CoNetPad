@@ -51,7 +51,6 @@ public abstract class SourceFile {
 	public SourceFile(int fileID, String filename, SourceType type,
 			String initialText) {
 		this.fileID = fileID;
-		this.filename = filename;
 		this.type = type;
 		this.sourceRope = Rope.BUILDER.build(initialText);
 		this.file = new File(filename);
@@ -63,6 +62,7 @@ public abstract class SourceFile {
 				this.file = null;
 			}
 		}
+		this.filename = filename;
 	}
 
 	/**
@@ -129,8 +129,7 @@ public abstract class SourceFile {
 			sourceRope = sourceRope.delete(editIndex, editIndex + 1);
 		} else {
 			Character tmp = (char) keyPressed;
-			sourceRope = sourceRope.insert(editIndex,
-					Character.toString(tmp));
+			sourceRope = sourceRope.insert(editIndex, Character.toString(tmp));
 		}
 
 	}
