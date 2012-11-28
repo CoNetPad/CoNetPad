@@ -22,6 +22,7 @@ import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
 import org.ndacm.acmgroup.cnp.git.JGit;
+import org.ndacm.acmgroup.cnp.git.JRepository;
 import org.ndacm.acmgroup.cnp.git.NotDirectoryException;
 import org.ndacm.acmgroup.cnp.network.ServerNetwork;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
@@ -334,6 +335,9 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 				joinedSession.addUser(task.getUserID(), task.getUsername(),
 						task.getConnection(), task.getUserAuthToken());
 
+				joinedSession.setGitRepo(jGit.activateRepo(joinedSession
+						.getSessionName()));
+
 				// construct response
 				List<String> sessionFiles = new ArrayList<String>();
 				List<Integer> sessionFileID = new ArrayList<Integer>();
@@ -353,7 +357,11 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 				// this
 				response = new JoinSessionTaskResponse(-1, "n/a", "n/a", -1,
 						false, null, null, null);
-			} 
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				response = new JoinSessionTaskResponse(-1, "n/a", "n/a", -1,
+						false, null, null, null);
+			}
 		} else {
 			// tokens don't match, join session task fails
 			response = new JoinSessionTaskResponse(-1, "n/a", "n/a", -1, false,
