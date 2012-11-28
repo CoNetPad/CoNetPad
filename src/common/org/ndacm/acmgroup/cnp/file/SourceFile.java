@@ -128,8 +128,9 @@ public abstract class SourceFile {
 		if (keyPressed == KeyEvent.VK_BACK_SPACE) {
 			sourceRope = sourceRope.delete(editIndex, editIndex + 1);
 		} else {
+			Character tmp = (char) keyPressed;
 			sourceRope = sourceRope.insert(editIndex,
-					Character.toString((char) keyPressed));
+					Character.toString(tmp));
 		}
 
 	}

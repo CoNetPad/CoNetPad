@@ -1,13 +1,14 @@
-/**
- * This is a class for handing a source file for the clients
- * @author Josh Tan, Cesar Ramirez
- * @version 1.0
- */
 package org.ndacm.acmgroup.cnp.file;
 
 import org.ndacm.acmgroup.cnp.CNPClient;
 import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
 
+
+/**
+ * This is a class for handing a source file for the clients
+ * @author Josh Tan, Cesar Ramirez
+ * @version 1.0
+ */
 public class ClientSourceFile extends SourceFile{
 	
 	private CNPClient client;			//The CNP Client object of the client who is working on the file
@@ -33,6 +34,7 @@ public class ClientSourceFile extends SourceFile{
 	 */
 	public void editSource(EditorTaskResponse task) {
 		editSource(task.getKeyPressed(),task.getEditIndex());
+		System.out.print("HELP!");
 	}
 	
 	/**

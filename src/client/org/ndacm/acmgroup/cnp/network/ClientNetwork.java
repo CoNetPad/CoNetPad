@@ -1,8 +1,3 @@
-/**
- * This class handles the client connection and message sending on the client end
- * @author Cesar Ramirez
- * @version 1.5
- */
 package org.ndacm.acmgroup.cnp.network;
 
 import java.io.IOException;
@@ -11,6 +6,12 @@ import java.net.UnknownHostException;
 
 import org.ndacm.acmgroup.cnp.task.Task;
 
+
+/**
+ * This class handles the client connection and message sending on the client end
+ * @author Cesar Ramirez
+ * @version 1.5
+ */
 public class ClientNetwork extends BaseNetwork {
 
 	private CNPConnection serverConnection;

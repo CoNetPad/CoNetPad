@@ -55,7 +55,11 @@ import org.ndacm.acmgroup.cnp.task.response.LoginTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.OpenFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponseExecutor;
-
+/**
+ * This class is the main client-side class.  It handles the communication and the various client functionalities.
+ * @author Cesar Ramirez
+ *
+ */
 public class CNPClient implements TaskReceivedEventListener,
 		TaskResponseExecutor {
 
@@ -124,24 +128,41 @@ public class CNPClient implements TaskReceivedEventListener,
 		}
 		return true;
 	}
-
+	/**
+	 * This disconnectst he user from the server
+	 */
 	public void closeConnection() {
 		network.disconnect();
 		clientExecutor.shutdown();
 	}
-
+	/**
+	 * This shows the dialog box for registering a new user
+	 * @param regDialog		The Dialogbox for registering the user
+	 */
 	public void setRegDialog(RegisterDialog regDialog) {
 		this.regDialog = regDialog;
 	}
-
+	
+	/**
+	 * This shows the dialog box for setting a user session
+	 * @param sessionDialog			The SessionDialog for setting the session for the user
+	 */
 	public void setSessionDialog(SessionDialog sessionDialog) {
 		this.sesDialog = sessionDialog;
 	}
 
+	/**
+	 * This shows the dialog box for logging the user in
+	 * @param logDialog		The LoginDialog for logging the user in
+	 */
 	public void setLogDialog(LoginDialog logDialog) {
 		this.logDialog = logDialog;
 	}
-
+	
+	/**
+	 * 
+	 * @param createDialog
+	 */
 	public void setCreateSessionDialog(CreateSessionDialog createDialog) {
 		this.createSessionDialog = createDialog;
 	}
@@ -222,8 +243,7 @@ public class CNPClient implements TaskReceivedEventListener,
 	 * @param userAuthToken
 	 *            The authentication cooki prevent hackers from editing
 	 */
-	public void editFile(int keyPressed,
-			int editIndex, int fileID) {
+	public void editFile(int keyPressed, int editIndex, int fileID) {
 
 		Task task = new EditorTask(userID, sessionID, keyPressed, editIndex,
 				fileID, authToken);
@@ -277,16 +297,16 @@ public class CNPClient implements TaskReceivedEventListener,
 	 *            The unique name of the file to open
 	 */
 	public void openSourceFile(String fileName) {
-		for(ClientSourceFile entry : sourceFiles.values()){
-			if(entry.getFilename().compareTo(fileName) == 0){
-				Task task = new OpenFileTask(userID,sessionID,  entry.getFileID(), authToken);
+		for (ClientSourceFile entry : sourceFiles.values()) {
+			if (entry.getFilename().compareTo(fileName) == 0) {
+				Task task = new OpenFileTask(userID, sessionID,
+						entry.getFileID(), authToken);
 				network.sendTask(task);
 				break;
 			}
 		}
 	}
-	
-	
+
 	/**
 	 * This sends a chat message to the server.
 	 * 
@@ -430,11 +450,13 @@ public class CNPClient implements TaskReceivedEventListener,
 						clientFrame.addToFileList(task.getSessionFiles());
 
 						for (int i = 0; i < task.getSessionFiles().size(); i++) {
-							sourceFiles.put(
-									task.getFileIDs().get(i),
-									new ClientSourceFile(task.getFileIDs().get(
-											i), task.getSessionFiles().get(i),
-											SourceType.GENERAL, "", client));
+							ClientSourceFile file = new ClientSourceFile(task
+									.getFileIDs().get(i), task
+									.getSessionFiles().get(i),
+									SourceType.GENERAL, "", client);
+							sourceFiles.put(task.getFileIDs().get(i), file);
+							System.out.println(sourceFiles.get(task
+									.getFileIDs().get(i)));
 						}
 					}
 				};
@@ -504,8 +526,9 @@ public class CNPClient implements TaskReceivedEventListener,
 	public void executeTask(final EditorTaskResponse task) {
 
 		if (task.isSuccess()) {
-			sourceFiles.get(task.getFileID()).editSource(task);
-			
+			ClientSourceFile file = sourceFiles.get(task.getFileID());
+			file.editSource(task);
+
 			Runnable doWorkRunnable = new Runnable() {
 				public void run() {
 					try {
@@ -601,7 +624,7 @@ public class CNPClient implements TaskReceivedEventListener,
 			if (task.getUserID() == userID) {
 				// then leave session in GUI
 			} else {
-				
+
 				Runnable doWorkRunnable = new Runnable() {
 					public void run() {
 						clientFrame.removeUser(task.getUsername());

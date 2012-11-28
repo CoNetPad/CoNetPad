@@ -1,14 +1,14 @@
-/**
- * This is a response task to send to clients
- * @author Cesar Ramirez, Josh Tan
- * @version 1.5
- */
 package org.ndacm.acmgroup.cnp.task;
 
 import org.ndacm.acmgroup.cnp.network.CNPConnection;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
-// for tasks that are sent only to users with a file open
+
+/**
+ * This is a response task to send to clients
+ * @author Cesar Ramirez, Josh Tan
+ * @version 1.5
+ */
 public class SendResponseTask extends Task {
 
 	private TaskResponse response;			//The TaskReponse 

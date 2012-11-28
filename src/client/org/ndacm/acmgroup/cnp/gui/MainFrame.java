@@ -12,6 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -314,6 +315,8 @@ public class MainFrame extends JFrame {
 		panel_2.setLayout(gl_panel_2);
 		panel_1.setLayout(gl_panel_1);
 
+
+		tabs = new HashMap<Integer, JTextArea>();
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		contentPane.add(tabbedPane, BorderLayout.CENTER);
 
