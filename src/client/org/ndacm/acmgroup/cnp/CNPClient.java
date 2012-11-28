@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -18,6 +19,7 @@ import javax.swing.text.BadLocationException;
 import org.ndacm.acmgroup.cnp.file.ClientSourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
+import org.ndacm.acmgroup.cnp.git.JGit;
 import org.ndacm.acmgroup.cnp.gui.CreateSessionDialog;
 import org.ndacm.acmgroup.cnp.gui.LoginDialog;
 import org.ndacm.acmgroup.cnp.gui.MainFrame;
@@ -25,6 +27,7 @@ import org.ndacm.acmgroup.cnp.gui.NewFileDialog;
 import org.ndacm.acmgroup.cnp.gui.RegisterDialog;
 import org.ndacm.acmgroup.cnp.gui.ServerConnectionDialog;
 import org.ndacm.acmgroup.cnp.gui.SessionDialog;
+import org.ndacm.acmgroup.cnp.network.CNPConnection;
 import org.ndacm.acmgroup.cnp.network.ClientNetwork;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEventListener;
@@ -39,6 +42,7 @@ import org.ndacm.acmgroup.cnp.task.JoinSessionTask;
 import org.ndacm.acmgroup.cnp.task.LoginTask;
 import org.ndacm.acmgroup.cnp.task.OpenFileTask;
 import org.ndacm.acmgroup.cnp.task.SendEditorTaskTask;
+import org.ndacm.acmgroup.cnp.task.SendResponseTask;
 import org.ndacm.acmgroup.cnp.task.Task;
 import org.ndacm.acmgroup.cnp.task.response.ChatTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.CloseFileTaskResponse;
@@ -482,6 +486,11 @@ public class CNPClient implements TaskReceivedEventListener,
 		if (task.isSuccess()) {
 			if (task.getUserID() == userID) {
 				// update client frame with list of files
+
+				File repoFolder = new File(JGit.REPO_DIR + File.separator
+						+ task.getSessionName());
+				repoFolder.mkdirs();
+
 				Runnable doWorkRunnable = new Runnable() {
 					public void run() {
 						clientFrame = sesDialog.openMainFrame();
@@ -501,8 +510,6 @@ public class CNPClient implements TaskReceivedEventListener,
 									.getSessionFiles().get(i),
 									SourceType.GENERAL, "", client);
 							sourceFiles.put(task.getFileIDs().get(i), file);
-							System.out.println(sourceFiles.get(task
-									.getFileIDs().get(i)));
 						}
 					}
 				};
@@ -562,6 +569,7 @@ public class CNPClient implements TaskReceivedEventListener,
 			sourceFiles.put(task.getFileID(),
 					new ClientSourceFile(task.getFileID(), task.getFilename(),
 							SourceType.GENERAL, task.getFileContent(), this));
+			sourceFiles.get(task.getClientId()).save();
 		}
 	}
 
@@ -598,11 +606,6 @@ public class CNPClient implements TaskReceivedEventListener,
 							// do something
 						}
 
-						// FOR TESTING:
-						System.out
-								.println("edit index: " + task.getEditIndex());
-						System.out.println("file is: "
-								+ sourceFiles.get(task.getFileID()).toString());
 					}
 				};
 				SwingUtilities.invokeLater(doWorkRunnable);
@@ -660,6 +663,10 @@ public class CNPClient implements TaskReceivedEventListener,
 	public void executeTask(CommitTaskResponse task) {
 		if (task.isSuccess()) {
 			JOptionPane.showMessageDialog(logDialog, "Files saved");
+			for (Entry<Integer, ClientSourceFile> fileEntry : sourceFiles
+					.entrySet()) {
+				fileEntry.getValue().save();
+			}
 		} else {
 			JOptionPane.showMessageDialog(logDialog, "Error while saving");
 		}
