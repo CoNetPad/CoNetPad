@@ -265,7 +265,7 @@ public class MainFrame extends JFrame {
 																				GroupLayout.PREFERRED_SIZE,
 																				94,
 																				GroupLayout.PREFERRED_SIZE)))
-										.addContainerGap()));
+										.addContainerGap())));
 		gl_panel_1.setVerticalGroup(gl_panel_1.createParallelGroup(
 				Alignment.LEADING)
 				.addGroup(
@@ -355,7 +355,7 @@ public class MainFrame extends JFrame {
 			fileTextArea.setEditable(true);
 			fileTextArea.setLineWrap(true);
 			fileTextArea.setTabSize(4);
-			fileTextArea.setFont(new Font("Consolas",Font.PLAIN, 14));
+			fileTextArea.setFont(new Font("Consolas",Font.PLAIN, 13));
 			fileTextArea.setBorder(new LineBorder(new Color(0, 0, 0)));
 			fileTextArea.addKeyListener(new KeyAdapter() {
 				@Override
