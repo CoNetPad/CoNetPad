@@ -436,8 +436,17 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 		if (userIsAuth(task.getUserID(), task.getUserAuthToken())) {
 			
 			try {
-				// commit the task and return a response
+				
+				// write all session ropes to files
+				CNPSession session = openSessions.get(task.getSessionID());
+				for (SourceFile file : session.getSourceFiles().values()) {
+					file.save();
+				}
+				
+				// commit the task
 				jGit.commitToRepo(task.getSessionID(), task.getMessage());
+				
+				// return a response
 				response = new CommitTaskResponse(true);
 				
 			} catch (GitAPIException e) {
