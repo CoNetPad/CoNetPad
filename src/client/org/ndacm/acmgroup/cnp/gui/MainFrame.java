@@ -203,6 +203,7 @@ public class MainFrame extends JFrame {
 		JButton btnDeleteFile = new JButton("Delete File");
 		btnDeleteFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				//cnpClient.deleteSourceFile();
 			}
 		});
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
@@ -283,9 +284,10 @@ public class MainFrame extends JFrame {
 		JButton btnSave = new JButton("Save");
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO
+				cnpClient.commitSession();
 			}
 		});
+		
 		GroupLayout gl_panel_2 = new GroupLayout(panel_2);
 		gl_panel_2.setHorizontalGroup(gl_panel_2.createParallelGroup(
 				Alignment.LEADING).addGroup(
