@@ -2,8 +2,15 @@ package org.ndacm.acmgroup.cnp.git;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Hashtable;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.eclipse.jgit.api.errors.ConcurrentRefUpdateException;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.NoHeadException;
+import org.eclipse.jgit.api.errors.NoMessageException;
+import org.eclipse.jgit.api.errors.UnmergedPathsException;
+import org.eclipse.jgit.api.errors.WrongRepositoryStateException;
 
 /**
  * @author cesar
@@ -18,7 +25,7 @@ public class JGit {
 
 	public static final String TEMP_REPO_DIR = "./Repos";
 
-	private Hashtable<String, JRepository> repos;
+	private Map<String, JRepository> repos;
 
 	public File storage;
 
@@ -35,7 +42,7 @@ public class JGit {
 			throw new NotDirectoryException();
 		}
 		this.storage = storage;
-		repos = new Hashtable<String, JRepository>();
+		repos = new ConcurrentHashMap<String, JRepository>();
 	}
 	
 	/**
@@ -61,12 +68,11 @@ public class JGit {
 		}
 		return null;
 	}
-
 	/**
 	 * This deactiviates the local repository
 	 * @param name			The name of the repository
 	 */
-	public void deactivateRepo(String name) {
+	public void deactivateRepo(String name) throws NoHeadException, NoMessageException, UnmergedPathsException, ConcurrentRefUpdateException, WrongRepositoryStateException, GitAPIException {
 		if (repos.get(name) != null) {
 			repos.get(name).gitCommit("Closing repo");
 		}
@@ -113,14 +119,9 @@ public class JGit {
 		}
 	}
 
-	/**
-	 * Commit changes to the git repository
-	 * @param name			The name of the repository
-	 * @param message		The message for the commit
-	 */
-	public void commitToRepo(String name, String message) {
-		if (repos.get(name) != null) {
-			repos.get(name).gitCommit(message);
+	public void commitToRepo(int sessionID, String message) throws NoHeadException, NoMessageException, UnmergedPathsException, ConcurrentRefUpdateException, WrongRepositoryStateException, GitAPIException {
+		if (repos.get(sessionID) != null) {
+			repos.get(sessionID).gitCommit(message);
 		}
 	}
 

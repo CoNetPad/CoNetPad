@@ -1,5 +1,7 @@
 package org.ndacm.acmgroup.cnp.task;
 
+import org.ndacm.acmgroup.cnp.network.CNPConnection;
+
 public class CommitTask extends ServerTask {
 
 	protected int userID;
@@ -7,6 +9,7 @@ public class CommitTask extends ServerTask {
 	private int sessionID;
 	private String sessionName;
 	private String message;
+	private CNPConnection connection;
 	
 	public CommitTask(int userID, String userAuthToken, int sessionID, String sessionName, String message) {
 		this.userID = userID;
@@ -53,6 +56,16 @@ public class CommitTask extends ServerTask {
 	public void setMessage(String message) {
 		this.message = message;
 	}
+
+	public CNPConnection getConnection() {
+		return connection;
+	}
+
+	public void setConnection(CNPConnection connection) {
+		this.connection = connection;
+	}
+	
+	
 	
 	
 
