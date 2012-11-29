@@ -60,6 +60,49 @@ import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponseExecutor;
 
 /**
+ * 
+ * ###################KK###################
+ * ##################KEDK##################
+ * #################K#EEfK#################
+ * ################KWWWDEEK################
+ * ###############KWWWK###DK###############
+ * ##############KWWWW#K#EKDK##############
+ * #############KWWKWWWWWKEKEK#############
+ * ############KKW#WDWW#WEKKKKK############
+ * ###########KiLKW        WW#KK###########
+ * ##########K;E#  ,#WWWK#,  #EGK##########
+ * #########KWj  ###W##W##KE#  DGK#########
+ * ########KW#  WKWW####WWDGLG  EEK########
+ * #######KWW  W#KWKWWWWEWGGLLD  E#K#######
+ * ######KK## WWK#KKKKEEDEDGGDDD ##EK######
+ * #####KWKW #WKKWK#W#WKKEEDDDDE# EEEK#####
+ * ####KKK#W #WKKKKWWWWKEEEDDDDDE WEKKK####
+ * ###K#WWK ,KWWKKEKKKKKEEEEEEEEE, KE#DK###
+ * ##KE##WE ##   WWWj  #; W :#  W# EWKLEK##
+ * #KEWW##K ##,#  #  Dt ;       EW #WEKW#K#
+ * KGWWED#W ##K   #  ###; ## ## j# #tKWWW#K
+ * DEWWGEK# #  ## #  ###; ## ## j# EEWKKKKD
+ * #DGWWKEW W  #. #  ## ; WW WW tW DEW#KKD#
+ * ##EKWKKK #W  W WW   K; WW KK tW EWWW#E##
+ * ###EGWWE ,KKWWKKKWWKWKKKKKEEEE, KDWWE###
+ * ####DKEEW KKKKK##KWW#WWWKKKEEE WEDED####
+ * #####DDGK #EKEDK#E##WKWWEEGDD# GEWD#####
+ * ######EDW# DGGDDDDDEEDDGGGLL# ##WE######
+ * #######EEW  DDDEDDKWWW###WWE  W#E#######
+ * ########DKW  EDEEG##KWWWEEL  fKD########
+ * #########DK#  #fEKDDGLfDE#  LGD#########
+ * ##########DE##  ,WDLDLE,  #WGD##########
+ * ###########DKWKW        WDfDD###########
+ * ############EKWKKEK##KfG#DGE############
+ * #############EEWKEEEKKGEKGE#############
+ * ##############DDWEEEEEDK#D##############
+ * ###############EEWKKEG##D###############
+ * ################KKWKDGLK################
+ * #################KEWEGK#################
+ * ##################KEKK##################
+ * ###################KK###################
+ * 
+ * 
  * This class is the main client-side class. It handles the communication and
  * the various client functionalities.
  * 
@@ -72,7 +115,7 @@ public class CNPClient implements TaskReceivedEventListener,
 	// URL of the server connected to
 	private String serverURL;
 	// The unique name of the session the user belongs to
-	private String sessionName; 
+	private String sessionName;
 	private int sessionID; // The unique ID of the session the user belongs
 	private int userID; // ID of account logged in as
 	private String username; // The username of the user
@@ -82,21 +125,21 @@ public class CNPClient implements TaskReceivedEventListener,
 	 * Executor for executing client tasks.
 	 */
 	private ExecutorService clientExecutor;
-	
+
 	/**
-	 * Executor for queuing editing events on the client side. Single 
-	 * threaded to serialize tasks as they are added.
+	 * Executor for queuing editing events on the client side. Single threaded
+	 * to serialize tasks as they are added.
 	 */
 	private ExecutorService editorTaskSender;
-	
+
 	/**
 	 * True if the user is waiting for an editor response. Needed to ensure
 	 * consistency in file editing events.
 	 */
 	private volatile boolean isWaiting;
-	
+
 	private final CNPClient cnpClient;
-	
+
 	/**
 	 * The source files for the session that a client is connected to.
 	 */
@@ -115,7 +158,7 @@ public class CNPClient implements TaskReceivedEventListener,
 	private CNPClient client = this;
 
 	/**
-	 * Launch the application. Entry point for the client side of the 
+	 * Launch the application. Entry point for the client side of the
 	 * application.
 	 */
 	public static void main(String[] args) {
@@ -804,5 +847,4 @@ public class CNPClient implements TaskReceivedEventListener,
 	public void setWaiting(boolean isWaiting) {
 		this.isWaiting = isWaiting;
 	}
-
 }

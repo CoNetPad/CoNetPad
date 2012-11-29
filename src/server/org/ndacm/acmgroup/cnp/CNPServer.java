@@ -52,6 +52,49 @@ import org.ndacm.acmgroup.cnp.task.response.LeaveSessionTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.LoginTaskResponse;
 
 /**
+ * 
+ * ###################KK###################
+ * ##################KEDK##################
+ * #################K#EEfK#################
+ * ################KWWWDEEK################
+ * ###############KWWWK###DK###############
+ * ##############KWWWW#K#EKDK##############
+ * #############KWWKWWWWWKEKEK#############
+ * ############KKW#WDWW#WEKKKKK############
+ * ###########KiLKW        WW#KK###########
+ * ##########K;E#  ,#WWWK#,  #EGK##########
+ * #########KWj  ###W##W##KE#  DGK#########
+ * ########KW#  WKWW####WWDGLG  EEK########
+ * #######KWW  W#KWKWWWWEWGGLLD  E#K#######
+ * ######KK## WWK#KKKKEEDEDGGDDD ##EK######
+ * #####KWKW #WKKWK#W#WKKEEDDDDE# EEEK#####
+ * ####KKK#W #WKKKKWWWWKEEEDDDDDE WEKKK####
+ * ###K#WWK ,KWWKKEKKKKKEEEEEEEEE, KE#DK###
+ * ##KE##WE ##   WWWj  #; W :#  W# EWKLEK##
+ * #KEWW##K ##,#  #  Dt ;       EW #WEKW#K#
+ * KGWWED#W ##K   #  ###; ## ## j# #tKWWW#K
+ * DEWWGEK# #  ## #  ###; ## ## j# EEWKKKKD
+ * #DGWWKEW W  #. #  ## ; WW WW tW DEW#KKD#
+ * ##EKWKKK #W  W WW   K; WW KK tW EWWW#E##
+ * ###EGWWE ,KKWWKKKWWKWKKKKKEEEE, KDWWE###
+ * ####DKEEW KKKKK##KWW#WWWKKKEEE WEDED####
+ * #####DDGK #EKEDK#E##WKWWEEGDD# GEWD#####
+ * ######EDW# DGGDDDDDEEDDGGGLL# ##WE######
+ * #######EEW  DDDEDDKWWW###WWE  W#E#######
+ * ########DKW  EDEEG##KWWWEEL  fKD########
+ * #########DK#  #fEKDDGLfDE#  LGD#########
+ * ##########DE##  ,WDLDLE,  #WGD##########
+ * ###########DKWKW        WDfDD###########
+ * ############EKWKKEK##KfG#DGE############
+ * #############EEWKEEEKKGEKGE#############
+ * ##############DDWEEEEEDK#D##############
+ * ###############EEWKKEG##D###############
+ * ################KKWKDGLK################
+ * #################KEWEGK#################
+ * ##################KEKK##################
+ * ###################KK###################
+ * 
+ * 
  * The CoNetPad server. This is the main class that handles the server.
  * 
  */
