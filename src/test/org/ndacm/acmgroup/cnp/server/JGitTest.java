@@ -5,11 +5,15 @@ package org.ndacm.acmgroup.cnp.server;
 
 import static org.junit.Assert.*;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.ndacm.acmgroup.cnp.git.JGit;
+import org.ndacm.acmgroup.cnp.git.JRepository;
 
 /**
  * @author Justin
@@ -26,13 +30,21 @@ public class JGitTest {
 	public static void setUpBeforeClass() throws Exception {
 		file = new File(".");
 		jg = new JGit(file);
-		jg.clearRepos();
+
+		
+		jg.createRepo("testRepo1");
+		jg.createRepo("testRepo2");
+		jg.createRepo("testRepo3");
 	}
 	
-
-	public static void tearDown(){
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
 		jg.clearRepos();
 	}
+
 	/**
 	 * Test method for {@link org.ndacm.acmgroup.cnp.git.JGit#JGit(java.io.File)}.
 	 */
@@ -49,13 +61,13 @@ public class JGitTest {
 	public final void testDeactivateRepo() {
 		
 		try{
-			jg.createRepo("testRepo3");
-			jg.activateRepo("testRepo3");
-			jg.deactivateRepo("testRepo3");
+			jg.activateRepo("testRepo2");
+			jg.deactivateRepo("testRepo2");
 		}
 		catch(Exception e)
 		{
-			fail("Unable activate repo");
+			e.printStackTrace();
+			fail("Unable de-activate repo");
 		}
 	}
 
@@ -67,7 +79,6 @@ public class JGitTest {
 		
 		
 		try{
-			jg.deleteRepo("testRepo");
 			jg.createRepo("testRepo");
 		}
 		catch(Exception e)
@@ -86,9 +97,9 @@ public class JGitTest {
 		
 		
 		try{
-			jg.createRepo("testRepo");
+			jg.createRepo("testRepo5");
 			
-			boolean test = jg.deleteRepo("testRepo");
+			boolean test = jg.deleteRepo("testRepo5");
 			assertTrue(test);
 			//jg.createRepo("testRepo");
 		}
@@ -113,7 +124,6 @@ public class JGitTest {
 	public final void testActivateRepo() {
 		
 		try{
-			jg.createRepo("testRepo2");
 			jg.activateRepo("testRepo2");
 		}
 		catch(Exception e)
@@ -128,10 +138,16 @@ public class JGitTest {
 	@Test
 	public final void testAddFileToRepo() {
 		try{
-			jg.addFileToRepo("testFile", new File("blarg.txt"));
+
+			File test =  new File("blarg.txt");
+			
+		
+	         jg.activateRepo("testRepo1");
+			jg.addFileToRepo("testRepo1", test);
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
 			fail("Unable to add new file");
 		}
 	}
@@ -141,23 +157,27 @@ public class JGitTest {
 	 */
 	@Test
 	public final void testRemoveFileFromRepo() {
-		fail("Not yet implemented"); // TODO
+		try{
+			File test =  new File("blarg.txt");
+			jg.activateRepo("testRepo1");
+			jg.addFileToRepo("testRepo1", test);
+			jg.removeFileFromRepo("testRepo1", test);
+		}
+		catch(Exception e)
+		{	
+			e.printStackTrace();
+			fail("Unable to delete file");
+		}
 	}
 
-	/**
-	 * Test method for {@link org.ndacm.acmgroup.cnp.git.JGit#commitToRepo(int, java.lang.String)}.
-	 */
-	@Test
-	public final void testCommitToRepo() {
-		fail("Not yet implemented"); // TODO
-	}
 
 	/**
 	 * Test method for {@link org.ndacm.acmgroup.cnp.git.JGit#retrieveRepo(java.lang.String)}.
 	 */
 	@Test
 	public final void testRetrieveRepo() {
-		fail("Not yet implemented"); // TODO
+		File test = jg.retrieveRepo("testRepo1");
+		assertNotNull(test);
 	}
 
 }
