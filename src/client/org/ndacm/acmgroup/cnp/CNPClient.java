@@ -500,7 +500,7 @@ public class CNPClient implements TaskReceivedEventListener,
 			if (task.getUserID() == userID) {
 				// update client frame with list of files
 
-				File repoFolder = new File("Repo" + File.separator
+				File repoFolder = new File("Repos" + File.separator
 						+ task.getSessionName());
 				repoFolder.mkdirs();
 
