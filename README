@@ -25,8 +25,8 @@ The Directory Information
 #The documentation for our project
 /docs
 
-#The reports for our projects
-/reports
+#The test reports for our JUnit test case
+/test_reports
 
 #The general folder for the source code
 /src
@@ -42,3 +42,15 @@ The Directory Information
 
 #Library resources
 /lib
+
+======================================================
+Instructions on how to compile, jar, and test CoNetPad:
+======================================================
+
+* To compile, use "ant clean", followed by "ant dist"
+* To test, use "ant test"
+
+* The executables for our application can be found in
+  dist/client and dist/server (after running "ant dist")
+* To run the server, enter dist/server and use "java -jar conetpad-server.jar"
+* To run the client, enter dist/client and use "java -jar conetpad-client.jar"

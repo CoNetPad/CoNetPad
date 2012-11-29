@@ -1,0 +1,15 @@
+Deliverable III - Code Review
+=============================
+
+Source Code:
+Our source code can be found in the 'src' folder. The relevant subdirectories
+are 'client', 'common', 'server', and 'test'.
+
+Code Review Document:
+The code review document can be found in the root folder with the
+name "inspection-code-TheACMGroup.pdf".
+
+Instructions on Compiling and Running Code:
+The Ant tool is being used to compile, jar (distribute), and (JUnit) test our
+code. Specific instructions on how to perform these tasks on are located in
+'README' in the root directory of the repository.

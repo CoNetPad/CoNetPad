@@ -3,17 +3,16 @@
  */
 package org.ndacm.acmgroup.cnp.server;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.ndacm.acmgroup.cnp.git.JGit;
-import org.ndacm.acmgroup.cnp.git.JRepository;
 
 /**
  * @author Justin
