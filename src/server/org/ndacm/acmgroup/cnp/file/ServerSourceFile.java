@@ -15,47 +15,35 @@ import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
 /**
- * This is the class that deals with source files at the server end
+ * A source file on the server end of the application.
  * 
  * @author Cesar Ramirez, Josh Tan
  * @version 1.5
  */
 public class ServerSourceFile extends SourceFile implements FileTaskExecutor {
 
-	private ExecutorService fileTaskCourier; // This is used to store tasks to
-												// be process in queue
-	private ExecutorService fileTaskQueue; // This is the task queue
-	private Map<Integer, CNPConnection> clientConnections; // clients that have
-															// this specific
-															// file open
+	/**
+	 * The executor for tasks that are to be distributed to clients registered
+	 * as listeners on the file. Multithreaded to allow for maximum efficiency
+	 * in distribution.
+	 */
+	private ExecutorService fileTaskCourier;
+						
+	/**
+	 * The executor for tasks to be executed. Single threaded so that tasks
+	 * are executed in the order they are received.
+	 */
+	private ExecutorService fileTaskQueue;
+	
+	private Map<Integer, CNPConnection> clientConnections;
 	private CNPServer server;
 
-	// /**
-	// * This is the default Constructor
-	// * @param fileID The unique ID for the file
-	// * @param filename The the unique file name w/o file type
-	// * @param type The file type of the file
-	// * @param initialText The initial text or context of the file.
-	// */
-	// public ServerSourceFile(int fileID, String filename, SourceType type,
-	// String initialText, CNPServer server) {
-	// super(fileID, filename, type, initialText);
-	//
-	// fileTaskCourier = Executors.newCachedThreadPool();
-	// fileTaskQueue = Executors.newSingleThreadExecutor();
-	// clientConnections = new ConcurrentHashMap<Integer, CNPConnection>();
-	// this.server = server;
-	// }
-
 	/**
-	 * This second constructor, this only creates a blank file
+	 * Default constructor.
 	 * 
-	 * @param fileID
-	 *            The unique ID of the file
-	 * @param filename
-	 *            The name of the file w/o the type
-	 * @param type
-	 *            The type of file
+	 * @param fileID the unique ID of the file
+	 * @param filename the name of the source file
+	 * @param type the type of the source file (e.g. Java, C++, etc.)
 	 */
 	public ServerSourceFile(int fileID, String filename, SourceType type,
 			CNPServer server) {
@@ -67,27 +55,27 @@ public class ServerSourceFile extends SourceFile implements FileTaskExecutor {
 	}
 
 	/**
-	 * This adds a new fileTask to the queue
+	 * Submit a task to the task queue.
 	 * 
-	 * @param task
-	 *            The FileTask to add to the queue
+	 * @param task the FileTask to be enqueued.
 	 */
 	public void submitTask(FileTask task) {
 		fileTaskQueue.submit(task);
 	}
 
 	/**
-	 * This executes an editorTask
+	 * Execute a task for editing a source file.
 	 * 
-	 * @param task
-	 *            The editor task to execute
+	 * @param task the editor task to execute
 	 */
 	public void executeTask(EditorTask task) {
 
 		TaskResponse response = null;
+		
+		// authenticate user using token
 		if (server.userIsAuth(task.getUserID(), task.getUserAuthToken())) {
+			// edit the Rope underlying the file
 			editSource(task);
-
 			// notify clients of edit
 			response = new EditorTaskResponse(task.getUsername(),
 					task.getKeyPressed(), task.getEditIndex(),
@@ -96,26 +84,22 @@ public class ServerSourceFile extends SourceFile implements FileTaskExecutor {
 			// user authentication failed
 			response = new EditorTaskResponse("n/a", -1, -1, -1, false);
 		}
-		System.out.println("file is: " + sourceRope.toString());
 		distributeTask(response);
-
 	}
 
 	/**
-	 * This edits the source code of the file
+	 * Edit the source code using an EditorTask.
 	 * 
-	 * @param task
-	 *            The EditorTask that determines what needs to be edited
+	 * @param task the EditorTask that determines what needs to be edited
 	 */
 	public void editSource(EditorTask task) {
 		editSource(task.getKeyPressed(), task.getEditIndex());
 	}
 
 	/**
-	 * This distrubutes a response task between the different clients
+	 * Distribute a task to those clients registered as listeners on this file.
 	 * 
-	 * @param response
-	 *            The task response to distribute to the clients
+	 * @param response the task response to distribute to the clients
 	 */
 	public void distributeTask(TaskResponse response) {
 		for (CNPConnection client : clientConnections.values()) {
@@ -125,19 +109,19 @@ public class ServerSourceFile extends SourceFile implements FileTaskExecutor {
 	}
 
 	/**
-	 * @param userID
-	 *            identifier of the user that will get registered to this
-	 *            events.
-	 * @param connection
-	 *            of the client that will registered to this events.
+	 * Add a user to the lists of file task event listeners.
+	 * 
+	 * @param userID the identifier of the user that will get registered for events
+	 * @param connection the CNPConnection of the client that will registered for events
 	 */
 	public void addFileTaskEventListener(int userID, CNPConnection connection) {
 		clientConnections.put(userID, connection);
 	}
 
 	/**
-	 * @param userID
-	 *            of the file to be removed from the list of registered clients.
+	 * Remove a user from the list of file task event listeners.
+	 * 
+	 * @param userID user ID of the user to remove
 	 */
 	public void removeFileTaskEventListener(int userID) {
 		clientConnections.remove(userID);
@@ -146,9 +130,8 @@ public class ServerSourceFile extends SourceFile implements FileTaskExecutor {
 	/**
 	 * Check if a user is a registered listener for this file.
 	 * 
-	 * @param userID
-	 *            the ID of the user to check
-	 * @return true if user is currently listening for changes
+	 * @param userID The ID of the user to check
+	 * @return true only if user is currently listening for changes
 	 */
 	public boolean userIsListening(int userID) {
 		if (clientConnections.containsKey(userID)) {

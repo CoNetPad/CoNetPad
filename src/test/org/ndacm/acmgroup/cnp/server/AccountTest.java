@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.ndacm.acmgroup.cnp.server;
 
 import static org.junit.Assert.assertEquals;
@@ -12,7 +9,7 @@ import org.junit.Test;
 import org.ndacm.acmgroup.cnp.Account;
 
 /**
- * This a Junit test fpr Account
+ * JUnit test for Account.
  * @author Justin
  *
  */

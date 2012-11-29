@@ -1,49 +1,58 @@
 package org.ndacm.acmgroup.cnp.file;
 
+import static org.junit.Assert.assertEquals;
+
 import java.awt.Event;
 
-import junit.framework.TestCase;
-
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
 import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
 
-public class ClientSourceFileTest extends TestCase {
+/**
+ * JUnit test case for ClientSourceFile
+ *
+ */
+public class ClientSourceFileTest {
 	
 	public ClientSourceFile file;
 	public EditorTaskResponse response;
+	public static ClientSourceFile file1;
+	public static ClientSourceFile file2;
 
+	/**
+	 * @throws java.lang.Exception
+	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		
+		file1 = new ClientSourceFile(189, "fml.cpp", SourceType.CPP, "whoa", null);
+		file2 = new ClientSourceFile(190, "lmao.cpp", SourceType.CPP, "", null);
 	}
 
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
+	/**
+	 * @throws java.lang.Exception
+	 */
 	@Before
 	public void setUp() throws Exception {
 		file = new ClientSourceFile(101, "HelloWorld.java",SourceType.JAVA,"Hello World!", null);
 		response = new EditorTaskResponse("jotan", 65, 6, 101, true);
 	}
 
-	@After
-	public void tearDown() throws Exception {
-	}
-
+	/**
+	 * Test method for {@link org.ndacm.acmgroup.cnp.file.ClientSourceFile#editSource(org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse)}.
+	 */
 	@Test
-	public void testEditSourceEditorTaskResponse() {
+	public final void testEditSourceEditorTaskResponse() {
 		file.editSource(response);
 		assertEquals("Hello AWorld!", file.toString());
 	}
 
+	/**
+	 * Test method for {@link org.ndacm.acmgroup.cnp.file.SourceFile#editSource(int, int)}.
+	 */
 	@Test
-	public void testEditSourceIntInt() {
+	public final void testEditSourceIntInt() {
 		//file.editSource(66, 6);
 		file.editSource((int) 'd', 2);
 		assertEquals("Hedllo World!", file.toString());
@@ -51,9 +60,12 @@ public class ClientSourceFileTest extends TestCase {
 		assertEquals("Hello World!", file.toString());
 	}
 
+	/**
+	 * Test method for {@link org.ndacm.acmgroup.cnp.file.SourceFile#toString()}.
+	 */
 	@Test
-	public void testToFile() {
-		fail("Not yet implemented");
+	public final void testToString() {
+		assertEquals(file1.toString(), "whoa");
 	}
 
 }

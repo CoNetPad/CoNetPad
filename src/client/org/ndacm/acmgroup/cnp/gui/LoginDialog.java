@@ -23,6 +23,8 @@ import org.ndacm.acmgroup.cnp.CNPClient;
  */
 public class LoginDialog extends JDialog {
 
+	private static final long serialVersionUID = 1L;
+	
 	private LoginDialog loginDialog;
 	private CNPClient client;
 	private JFormattedTextField formattedUsername;

@@ -340,7 +340,6 @@ public class TaskMessageFactory {
 			return new CreateAccountTaskResponse(Integer.parseInt(message
 					.getData()[0]), Boolean.parseBoolean(message.getData()[1]));
 		case CreateFile:
-			int sourceTypeInt = Integer.parseInt(message.getData()[3]);
 			return new CreateFileTaskResponse(Integer.parseInt(message
 					.getData()[0]), Integer.parseInt(message.getData()[1]),
 					message.getData()[2], SourceType.GENERAL,

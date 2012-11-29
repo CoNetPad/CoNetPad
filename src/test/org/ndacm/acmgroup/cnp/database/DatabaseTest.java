@@ -7,9 +7,7 @@ import static org.junit.Assert.fail;
 
 import java.sql.SQLException;
 
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.ndacm.acmgroup.cnp.Account;
@@ -55,20 +53,6 @@ public class DatabaseTest {
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		database.clearTables();
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
 	}
 
 	/**

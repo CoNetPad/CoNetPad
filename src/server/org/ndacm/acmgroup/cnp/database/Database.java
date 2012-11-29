@@ -25,9 +25,8 @@ import org.ndacm.acmgroup.cnp.exceptions.FailedAccountException;
 import org.ndacm.acmgroup.cnp.exceptions.FailedSessionException;
 
 /**
- * Class: Database<br>
- * Description: This is a class for handling our database stuff.
- * 
+ * The database manager for the CoNetPad application.
+ *
  */
 public class Database implements IDatabase {
 
@@ -40,32 +39,28 @@ public class Database implements IDatabase {
 	private CNPServer server;
 
 	/**
-	 * Default Constructor
+	 * Default constructor.
 	 * 
 	 * @throws SQLException
 	 * @throws Exception
 	 */
 	public Database(CNPServer server) throws ClassNotFoundException,
-			SQLException {
+	SQLException {
 		Class.forName(DRIVER_CLASS);
 		dbConnection = DriverManager.getConnection(DB_FILE);
 		random = new Random();
 		this.server = server;
-
 	}
 
 	/**
-	 * createAccount() This Creates a new user account and returns an object
+	 * Create an account in the database.
 	 * 
-	 * @param username
-	 *            - String The string username you wish to use to create new
-	 *            account
-	 * @param email
-	 *            - String The password of the new account
-	 * @param password
-	 *            - String The RAW password to be given. Encrpytion is done for
-	 *            you.
-	 * @return Returns an new Account Object or throws an FailedAccountException
+	 * @param username the username of the account to create
+	 * @param email the email of the account to create
+	 * @param password the raw password of the account to create. Encryption will
+	 * be performed on this.
+	 *
+	 * @return an new Account
 	 * @throws FailedAccountException
 	 */
 	public Account createAccount(String username, String email, String password)
@@ -74,6 +69,7 @@ public class Database implements IDatabase {
 		Account newAccount = null;
 
 		// salt and hash password
+		// sources:
 		// http://stackoverflow.com/questions/2860943/suggestions-for-library-to-hash-passwords-in-java
 		// http://stackoverflow.com/questions/5499924/convert-java-string-to-byte-array
 		String hashString = null, saltString = null;
@@ -81,9 +77,12 @@ public class Database implements IDatabase {
 		random.nextBytes(salt);
 
 		try {
+			// generate salt and hash
 			saltString = new String(salt, "ISO-8859-1");
 			hashString = this.encrypt(password, saltString);
+
 			// test if username/email already exists
+			// TODO implement
 
 			// insert user into DB
 			PreparedStatement registerUser = null;
@@ -136,15 +135,12 @@ public class Database implements IDatabase {
 	}
 
 	/**
-	 * retrieveAccount() Gets an existing account from the database and returns
-	 * it into an Account Object
 	 * 
-	 * @param username
-	 *            The username you wish to try and get
-	 * @param password
-	 *            The password you wish to verify with. Make sure its RAW and
-	 *            not encrypted.
-	 * @return Account The account object of the the user account
+	 * Retrieve an account from the database.
+	 * 
+	 * @param username username of the account to retrieve
+	 * @param password raw unencrypted password of the account to retrieve
+	 * @return Account the retrieved account
 	 * @throws FailedAccountException
 	 */
 	public Account retrieveAccount(String username, String password)
@@ -152,7 +148,7 @@ public class Database implements IDatabase {
 
 		PreparedStatement retrieveAccount = null;
 		ResultSet rset = null;
-		Account accountRetrieved = null;
+
 		String query = "SELECT * " + "FROM UserAccount " + "WHERE username = ?";
 
 		try {
@@ -179,6 +175,7 @@ public class Database implements IDatabase {
 					throw new FailedAccountException("Passwords did not match");
 				}
 				// clean up database classes
+				// TODO implement
 
 			} else {
 				throw new FailedAccountException("No User Account was found");
@@ -226,8 +223,8 @@ public class Database implements IDatabase {
 			createSession = dbConnection.prepareStatement(insertion);
 			createSession.setInt(1, sessionLeader);
 
-			String sessionName = server.generateString(); // sessionName is
-															// unique
+			// session name generated will be unique
+			String sessionName = server.generateString();
 
 			createSession.setInt(1, sessionLeader);
 			createSession.setString(2, sessionName);
@@ -247,6 +244,9 @@ public class Database implements IDatabase {
 
 	}
 
+	/**
+	 * Create a private session in the database.
+	 */
 	public CNPPrivateSession createSession(int sessionLeader, CNPServer server,
 			String sessionPassword) throws FailedSessionException {
 
@@ -254,6 +254,7 @@ public class Database implements IDatabase {
 		CNPPrivateSession newSession = null;
 
 		// salt and hash password
+		// sources:
 		// http://stackoverflow.com/questions/2860943/suggestions-for-library-to-hash-passwords-in-java
 		// http://stackoverflow.com/questions/5499924/convert-java-string-to-byte-array
 		String hashString = null, saltString = null;
@@ -270,6 +271,7 @@ public class Database implements IDatabase {
 		PreparedStatement createSessionPassword = null;
 
 		try {
+			// generate salt and hash
 			saltString = new String(salt, "ISO-8859-1");
 			hashString = this.encrypt(sessionPassword, saltString);
 
@@ -356,7 +358,6 @@ public class Database implements IDatabase {
 
 	}
 
-	// check this
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -366,7 +367,7 @@ public class Database implements IDatabase {
 	 */
 	public CNPPrivateSession retrieveSession(String sessionName,
 			CNPServer server, String sessionPassword)
-			throws FailedSessionException {
+					throws FailedSessionException {
 		PreparedStatement retrieveSession = null;
 		ResultSet rset = null;
 
@@ -384,11 +385,12 @@ public class Database implements IDatabase {
 				String nameRetrieved = rset.getString("SessionName");
 				int sessionLeader = rset.getInt("SessionLeader");
 
-				// Verify Password
+				// verify password
 				query = "SELECT * " + "FROM SessionPassword "
 						+ "WHERE SessionID = ?";
 				retrieveSession = dbConnection.prepareStatement(query);
 				retrieveSession.setInt(1, idRetrieved);
+				
 				// run the query, return a result set
 				rset = retrieveSession.executeQuery();
 				if (rset.next()) {
@@ -436,6 +438,8 @@ public class Database implements IDatabase {
 	}
 
 	/*
+	 * Return whether the session is private or not.
+	 * 
 	 * (non-Javadoc)
 	 * 
 	 * @see
@@ -462,6 +466,8 @@ public class Database implements IDatabase {
 	}
 
 	/*
+	 * Create a session-account mapping in the database.
+	 * 
 	 * (non-Javadoc)
 	 * 
 	 * @see
@@ -489,6 +495,16 @@ public class Database implements IDatabase {
 
 	}
 
+	/**
+	 * Encrypt a password using the given salt.
+	 * 
+	 * @param input the raw password to encrypt
+	 * @param salt the salt used on the password
+	 * @return the encrypted password
+	 * @throws NoSuchAlgorithmException
+	 * @throws InvalidKeySpecException
+	 * @throws UnsupportedEncodingException
+	 */
 	private String encrypt(String input, String salt)
 			throws NoSuchAlgorithmException, InvalidKeySpecException,
 			UnsupportedEncodingException {
@@ -499,6 +515,8 @@ public class Database implements IDatabase {
 	}
 
 	/*
+	 * Delete a session from the database.
+	 * 
 	 * (non-Javadoc)
 	 * 
 	 * @see
@@ -507,7 +525,8 @@ public class Database implements IDatabase {
 	 */
 	@Override
 	public void deleteSession(CNPSession session) throws SQLException {
-		// TODO Auto-generated method stub
+
+		// delete from both Session and SessionPassword tables
 		String query = "DELETE FROM Session WHERE SessionID = ?";
 		String query2 = "DELETE FROM SessionPassword WHERE SessionID = ?";
 		PreparedStatement deleteSA = null;
@@ -531,6 +550,8 @@ public class Database implements IDatabase {
 	}
 
 	/*
+	 * Delete an account from the database.
+	 * 
 	 * (non-Javadoc)
 	 * 
 	 * @see
@@ -539,7 +560,8 @@ public class Database implements IDatabase {
 	 */
 	@Override
 	public void deleteAccount(Account account) throws SQLException,
-			FailedAccountException {
+	FailedAccountException {
+		// delete from both UserAccount and SessionUser tables
 		String query = "DELETE FROM UserAccount WHERE UserID = ?";
 		String query1 = "DELETE FROM SessionUser WHERE UserId = ?";
 		PreparedStatement deleteUser = null;
@@ -562,6 +584,8 @@ public class Database implements IDatabase {
 	}
 
 	/*
+	 * Create a session account mapping in the database.
+	 * 
 	 * (non-Javadoc)
 	 * 
 	 * @see
@@ -620,8 +644,7 @@ public class Database implements IDatabase {
 	/**
 	 * Returns true if a session with the given session name exists.
 	 * 
-	 * @param sessionName
-	 *            the session name to look for
+	 * @param sessionName the session name to look for
 	 * @return true if a session with the given name exists
 	 * @throws FailedSessionException
 	 */
@@ -651,8 +674,9 @@ public class Database implements IDatabase {
 	}
 
 	/**
-	 * @param sessionName
-	 *            of the session we will retrieve the sessionID.
+	 * Get the session ID for a given session name.
+	 * 
+	 * @param sessionName the name of the session to retrieve
 	 * @return sessionID of the session.
 	 * @throws FailedSessionException
 	 */

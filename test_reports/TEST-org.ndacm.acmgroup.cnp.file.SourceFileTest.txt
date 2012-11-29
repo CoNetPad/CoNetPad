@@ -1,4 +1,0 @@
-Testsuite: org.ndacm.acmgroup.cnp.file.SourceFileTest
-Tests run: 1, Failures: 0, Errors: 0, Time elapsed: 0.036 sec
-
-Testcase: testToString took 0.002 sec

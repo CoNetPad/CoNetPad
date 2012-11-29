@@ -1,9 +1,0 @@
-Testsuite: org.ndacm.acmgroup.cnp.server.CompilerTest
-Tests run: 1, Failures: 1, Errors: 0, Time elapsed: 0.019 sec
-
-Testcase: test took 0.003 sec
-	FAILED
-Not yet implemented
-junit.framework.AssertionFailedError: Not yet implemented
-	at org.ndacm.acmgroup.cnp.server.CompilerTest.test(CompilerTest.java:11)
-

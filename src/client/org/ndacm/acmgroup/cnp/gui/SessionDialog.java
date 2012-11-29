@@ -24,6 +24,8 @@ import org.ndacm.acmgroup.cnp.CNPClient;
  */
 public class SessionDialog extends JDialog {
 
+	private static final long serialVersionUID = 1L;
+	
 	private SessionDialog loginDialog;
 	private CNPClient client;
 	private JPasswordField passwordField;

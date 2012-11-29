@@ -1,17 +1,19 @@
 package org.ndacm.acmgroup.cnp;
 
 /**
- * Account class This is for handling each of the user accounts
+ * A user account.
  * 
- * @version 2.0
- * @author Justin Andres, Josh Tan
+ * @author Justin, Cesar, Josh
  */
 public class Account {
 
-	private String username; // Username of account
-	private String email; // Email of Accout
-	private int userID; // Database ID of the account
+	private String username; // username of account
+	private String email; // email of Account
+	private int userID; // database ID of the account
 
+	/**
+	 * Default constructor
+	 */
 	public Account() {
 		username = "guest";
 		email = "none";
@@ -19,14 +21,10 @@ public class Account {
 	}
 
 	/**
-	 * Constructor
-	 * 
-	 * @param uname
-	 *            The username of the account
-	 * @param eml
-	 *            The email of the account
-	 * @param id
-	 *            The database ID of the account
+	 * Overloaded constructor.
+	 * @param uname The username for the account.
+	 * @param eml The email address of the account.
+	 * @param id The account ID.
 	 */
 	public Account(String uname, String eml, int id) {
 		username = uname;
@@ -35,49 +33,54 @@ public class Account {
 	}
 
 	/**
-	 * getUsername() This gets the username of the account
-	 * 
-	 * @return The username of the account
+	 * Get the account username.
+	 * @return the account username
 	 */
 	public String getUsername() {
 		return username;
 	}
 
+
 	/**
-	 * getEmail() This gets the email of the account
-	 * 
-	 * @return The email address of the Account
+	 * Get the account email.
+	 * @return the account email
 	 */
 	public String getEmail() {
 		return email;
 	}
 
+
 	/**
-	 * getUserID() This gets the Database ID of the user.
-	 * 
-	 * @return The database ID of the user
+	 * Get the account user ID.
+	 * @return the account user ID
 	 */
 	public int getUserID() {
 		return userID;
 	}
 
 	/**
-	 * @param id
-	 *            to be set for the current account.
+	 * Set the account user ID.
+	 * @param id the account ID to set
 	 */
 	public void setUserID(int id) {
 		userID = id;
 	}
 
+
 	/**
-	 * @param name
-	 *            to be set for the current account.
+	 * Set the account username.
+	 * @param name the username to set
 	 */
 	public void setUserName(String name) {
 		username = name;
 	}
 
+	/**
+	 * Enumeration for the different file permission levels that
+	 * an account can have.
+	 */
 	public enum FilePermissionLevel {
+		
 		READ(0), READ_WRITE(2), UNRESTRICTED(3);
 		private int value;
 
@@ -90,6 +93,10 @@ public class Account {
 		}
 	}
 
+	/**
+	 * Enumeration for the different chat permission levels that
+	 * an account can have.
+	 */
 	public enum ChatPermissionLevel {
 		MUTE(0), TO_LEADER(1), VOICE(2);
 		private int value;
@@ -104,11 +111,9 @@ public class Account {
 	}
 
 	/**
-	 * equals() This determines if two accounts are equal
-	 * 
-	 * @param a
-	 *            Account object you wish to test against
-	 * @return True if they are equal or alse otherwise
+	 * Checks the equality of the account to another specified account.
+	 * @param a the account to compare against
+	 * @return true, if the accounts are equal
 	 */
 	public boolean equals(Account a) {
 		if ((a.getUsername().equals(username)) && (a.getEmail().equals(email))) {

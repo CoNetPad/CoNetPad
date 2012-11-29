@@ -14,9 +14,10 @@ public class Compiler {
 	private static Compiler compiler; // singleton instance
 
 	/**
-	 * @param sourceFiles
-	 *            to get compiled.
-	 * @return the list of compiled
+	 * Compile the list of source files to binary format.
+	 * 
+	 * @param sourceFiles the source files to compile
+	 * @return a list of the compiled files
 	 */
 	public List<File> compile(List<ServerSourceFile> sourceFiles) {
 		// TODO implement

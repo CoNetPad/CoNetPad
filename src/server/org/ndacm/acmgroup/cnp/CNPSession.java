@@ -11,7 +11,6 @@ import java.util.concurrent.Executors;
 
 import org.ndacm.acmgroup.cnp.Account.ChatPermissionLevel;
 import org.ndacm.acmgroup.cnp.Account.FilePermissionLevel;
-import org.ndacm.acmgroup.cnp.database.Database;
 import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile;
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
@@ -35,67 +34,54 @@ import org.ndacm.acmgroup.cnp.task.response.OpenFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
 /**
- * CNP Session Class This is the class that handles the session specified in the
- * SRS document
+ * A CoNetPad session. This is the class that handles the CNP session.
  * 
- * @author Josh Tan
- * @version 2.0
  */
 public class CNPSession implements SessionTaskExecutor {
 
 	/**
-	 * The allowed characters for the Session name generator
+	 * The allowed characters for a session name.
 	 */
 	public static final String SESSION_NAME_CHARS = "abcdefghijklmnopqrstuvwxyz";
 	/**
-	 * A unique INTEGER for getting next file ID.
+	 * A unique INTEGER to be used for the next file ID.
 	 */
 	private static volatile int NEXT_FILEID;
 	/**
-	 * Max length of session names
+	 * Max length of session names.
 	 */
 	public static final int NAME_LENGTH = 5;
 	/**
 	 * The base directories of the files stored
 	 */
 	private static String baseDirectory;
+	/**
+	 * maps fileID to ServerSourceFile
+	 */
+	private Map<Integer, ServerSourceFile> sourceFiles;
+	/**
+	 * maps userID to CNPConnection
+	 */
+	private Map<Integer, CNPConnection> clientConnections; 
 
-	/**
-	 * The database object to run queries
-	 */
-	private Database db;
-	/**
-	 * ;
-	 */
 	private int sessionID;
 	private CNPServer server;
 	private String sessionName;
-	// private JGit gitRepo;
 	private JRepository gitRepo;
-	private Map<Integer, ServerSourceFile> sourceFiles; // maps fileID to
-														// ServerSourceFile
-	private ExecutorService sessionTaskCourier;
-	private ExecutorService sessionTaskQueue; // single-thread
-	// private SessionType type;
 	private int sessionLeader;
-	private String encryptedPassword;
-	private Map<Integer, CNPConnection> clientConnections; // maps userID to
-															// CNPConnection
 	private Map<Integer, String> clientIdToName;
 	private Map<Account, Account.FilePermissionLevel> filePermissions;
 	private Map<Account, Account.ChatPermissionLevel> chatPermissions;
 
+	private ExecutorService sessionTaskCourier; // multi-threaded
+	private ExecutorService sessionTaskQueue; // single-threaded
+
 	/**
-	 * This creates a new instance of a CNP Session
-	 * 
-	 * @param sessionID
-	 *            The database ID of the session
-	 * @param sessionName
-	 *            The unique session name
-	 * @param server
-	 *            The sever object
-	 * @param sessionLeader
-	 *            The database ID of the user who is the session leader
+	 * Default constructor.
+	 * @param sessionID 	sessionID for this session
+	 * @param sessionName 	name for this session
+	 * @param server 		server managing this session
+	 * @param sessionLeader database ID of the user who is the session leader
 	 */
 	public CNPSession(int sessionID, String sessionName, CNPServer server,
 			int sessionLeader) {
@@ -108,7 +94,6 @@ public class CNPSession implements SessionTaskExecutor {
 				+ System.getProperty("file.separator");
 
 		sourceFiles = new ConcurrentHashMap<Integer, ServerSourceFile>();
-
 		sessionTaskCourier = Executors.newCachedThreadPool();
 		sessionTaskQueue = Executors.newSingleThreadExecutor();
 		this.sessionID = sessionID;
@@ -118,29 +103,28 @@ public class CNPSession implements SessionTaskExecutor {
 		clientIdToName = new ConcurrentHashMap<Integer, String>();
 		filePermissions = new ConcurrentHashMap<Account, FilePermissionLevel>();
 		chatPermissions = new ConcurrentHashMap<Account, ChatPermissionLevel>();
-
 	}
 
 	/**
-	 * This returns the database ID of the sesison leader
+	 * Returns the database ID of the session leader.
 	 * 
-	 * @return Database Id of the session leader
+	 * @return database ID of the session leader
 	 */
 	public int getSessionLeader() {
 		return sessionLeader;
 	}
 
 	/**
-	 * This returns the unique session name
+	 * Returns the unique session name.
 	 * 
-	 * @return The unique name of the session.
+	 * @return the unique name of the session
 	 */
 	public String getSessionName() {
 		return sessionName;
 	}
 
 	/**
-	 * This returns the Database ID of the session
+	 * Returns the Database ID of the session.
 	 * 
 	 * @return The database ID
 	 */
@@ -149,12 +133,10 @@ public class CNPSession implements SessionTaskExecutor {
 	}
 
 	/**
-	 * This adds user to the session
+	 * Adds a user to the session.
 	 * 
-	 * @param userAccount
-	 *            The account in which you wish to add
-	 * @param connection
-	 *            The connection of the user
+	 * @param userAccount the account to be added
+	 * @param connection the connection of the user to be added
 	 */
 	public void addUser(int userID, String username, CNPConnection connection,
 			String AuthToken) {
@@ -166,10 +148,9 @@ public class CNPSession implements SessionTaskExecutor {
 	}
 
 	/**
-	 * This removes an user from the session
+	 * Removes an user from the session.
 	 * 
-	 * @param userID
-	 *            The account you wish to remove
+	 * @param userID the account to be removed
 	 */
 	public void removeUser(int userID) {
 		clientConnections.remove(userID);
@@ -177,13 +158,11 @@ public class CNPSession implements SessionTaskExecutor {
 	}
 
 	/**
-	 * This creates a file to be worked on. It is synchronized for
-	 * multi-threading
+	 * Creates a source file for this session. It is synchronized for
+	 * multi-threading.
 	 * 
-	 * @param filename
-	 *            The name of the file. No path
-	 * @param type
-	 *            The file type. Include period.
+	 * @param filename the name of the file (no path).
+	 * @param type the file type. Include period.
 	 */
 	public synchronized ServerSourceFile createFile(String filename,
 			SourceType type) {
@@ -196,19 +175,18 @@ public class CNPSession implements SessionTaskExecutor {
 	}
 
 	/**
-	 * This deletes the file
+	 * Delete a source file.
 	 * 
-	 * @param filename
-	 *            The filename you wish to remove. No need for file type
+	 * @param filename the filename to be deleted. No need for file type.
 	 */
 	public void deleteFile(String filename) {
 		sourceFiles.remove(filename);
 	}
 
 	/**
-	 * This clones a repository using git. [Not Implemented]
+	 * Clone a repository using Git. [Not Implemented]
 	 * 
-	 * @return The new file?
+	 * @return an archive of the Git repository
 	 */
 	public File cloneRepo() {
 		// TODO implement
@@ -216,18 +194,21 @@ public class CNPSession implements SessionTaskExecutor {
 	}
 
 	/**
-	 * This executes a given chat class
+	 * Execute a task for creating files.
 	 * 
-	 * @param task
-	 *            The chat class you wish to execute
+	 * @param task the task to execute
 	 */
 	public void executeTask(CreateFileTask task) {
 
+		// the response to send to the client
 		CreateFileTaskResponse response = null;
+
+		// must be session leader to create files
 		if (task.getUserID() == sessionLeader
 				&& server.userIsAuth(task.getUserID(), task.getUserAuthToken())) {
 			ServerSourceFile sourceFile = createFile(task.getFilename(),
 					task.getType());
+
 			response = new CreateFileTaskResponse(sourceFile.getFileID(),
 					task.getUserID(), sourceFile.getFilename(),
 					sourceFile.getType(), true);
@@ -247,16 +228,13 @@ public class CNPSession implements SessionTaskExecutor {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.ndacm.acmgroup.cnp.task.SessionTaskExecutor#executeTask(org.ndacm
-	 * .acmgroup.cnp.task.OpenFileTask)
+	/**
+	 * Execute a task for opening a file.
 	 */
 	public void executeTask(OpenFileTask task) {
 		OpenFileTaskResponse response = null;
 
+		// authenicate user using token
 		if (server.userIsAuth(task.getUserID(), task.getUserAuthToken())) {
 			ServerSourceFile sourceFile = sourceFiles.get(task.getFileID());
 
@@ -273,14 +251,12 @@ public class CNPSession implements SessionTaskExecutor {
 		}
 
 		distributeTask(response, task.getUserID());
-
 	}
 
 	/**
-	 * This executes a given chat class
+	 * Execute a task for user chat.
 	 * 
-	 * @param task
-	 *            The chat class you wish to execute
+	 * @param task the task to execute
 	 */
 	public void executeTask(ChatTask task) {
 
@@ -290,17 +266,14 @@ public class CNPSession implements SessionTaskExecutor {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.ndacm.acmgroup.cnp.task.SessionTaskExecutor#executeTask(org.ndacm
-	 * .acmgroup.cnp.task.CloseFileTask)
+	/**
+	 * Execute a task for closing files.
 	 */
 	@Override
 	public void executeTask(CloseFileTask task) {
 		CloseFileTaskResponse response = null;
 
+		// authenticate user using token
 		if (server.userIsAuth(task.getUserID(), task.getUserAuthToken())) {
 			ServerSourceFile sourceFile = sourceFiles.get(task.getFileID());
 
@@ -317,65 +290,50 @@ public class CNPSession implements SessionTaskExecutor {
 		}
 
 		distributeTask(response);
-
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.ndacm.acmgroup.cnp.task.SessionTaskExecutor#executeTask(org.ndacm
-	 * .acmgroup.cnp.task.DeleteFileTask)
+	/**
+	 * Execute a task for deleting a file.
 	 */
 	@Override
 	public void executeTask(DeleteFileTask task) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.ndacm.acmgroup.cnp.task.SessionTaskExecutor#executeTask(org.ndacm
-	 * .acmgroup.cnp.task.DownloadRepoTask)
-	 */
-	@Override
-	public void executeTask(DownloadRepoTask task) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.ndacm.acmgroup.cnp.task.SessionTaskExecutor#executeTask(org.ndacm
-	 * .acmgroup.cnp.task.CompileTask)
-	 */
-	@Override
-	public void executeTask(CompileTask task) {
-		// TODO Auto-generated method stub
+		// TODO implement
 
 	}
 
 	/**
-	 * This submits a sessionTask to the queue for execution
+	 * Execute a task for downloading a repo.
+	 */
+	@Override
+	public void executeTask(DownloadRepoTask task) {
+		// TODO implement
+
+	}
+
+	/**
+	 * Execute a task for compiling source code.
+	 */
+	@Override
+	public void executeTask(CompileTask task) {
+		// TODO implement
+
+	}
+
+	/**
+	 * Submit a sessionTask to the queue for execution.
 	 * 
-	 * @param task
+	 * @param task the task to submit
 	 */
 	public void submitTask(SessionTask task) {
 		sessionTaskQueue.submit(task);
 	}
 
 	/**
-	 * This distributes a response task to session users
+	 * Distribute a response task to session users.
 	 * 
-	 * @param task
-	 *            The distribution task you wish to send out
+	 * @param task the distribution task you wish to send out
 	 */
-	public void distributeTask(TaskResponse task) { // have throw
-													// TaskExecutionException
+	public void distributeTask(TaskResponse task) {
 		for (Entry<Integer, CNPConnection> clientEntry : clientConnections
 				.entrySet()) {
 			SendResponseTask responseTask = new SendResponseTask(task,
@@ -385,35 +343,33 @@ public class CNPSession implements SessionTaskExecutor {
 	}
 
 	/**
-	 * @param task
-	 *            to get send to the user with the userId provided.
-	 * @param userId
-	 *            of the recipient of the task.
+	 * 
+	 * Distribute a task to a specific user.
+	 * 
+	 * @param task the task to distribute
+	 * @param userId user ID of the target user
 	 */
-	public void distributeTask(TaskResponse task, int userId) { // have throw
-		// TaskExecutionException
+	public void distributeTask(TaskResponse task, int userId) {
 		SendResponseTask responseTask = new SendResponseTask(task,
 				clientConnections.get(userId));
 		sessionTaskCourier.submit(responseTask);
 	}
 
 	/**
-	 * This gets a file given a file ID
+	 * Get a file, given a file ID.
 	 * 
-	 * @param fileID
-	 *            The file ID you wish to get
-	 * @return The serverSourceFile with the given ID.
+	 * @param fileID the file ID you wish to get
+	 * @return the serverSourceFile for the given file ID
 	 */
 	public ServerSourceFile getFile(int fileID) {
 		return sourceFiles.get(fileID);
 	}
 
 	/**
-	 * This checks to see if two sessions are equal
+	 * Check to see if two sessions are equal.
 	 * 
-	 * @param session
-	 *            The session you wish to test is equal
-	 * @return True if the two sessions are equal, false otherwise
+	 * @param session the session you wish to test for equality.
+	 * @return true, if the two sessions are equal; false otherwise.
 	 */
 	public boolean equals(CNPSession session) {
 
@@ -426,13 +382,17 @@ public class CNPSession implements SessionTaskExecutor {
 	}
 
 	/**
-	 * @return the map from fileID to sourceFiles.
+	 * Get the map source files for the session.
+	 * 
+	 * @return the map from fileID to sourceFiles
 	 */
 	public Map<Integer, ServerSourceFile> getSourceFiles() {
 		return sourceFiles;
 	}
 
 	/**
+	 * Get the list of source files for the session.
+	 *  
 	 * @return the list of sourceFile.
 	 */
 	public List<SourceFile> getSourceFilesList() {
@@ -444,14 +404,18 @@ public class CNPSession implements SessionTaskExecutor {
 	}
 
 	/**
-	 * @param sourceFiles
-	 *            to be set as the map for fileIDs and sourceFiles.
+	 * Set the source files for the session.
+	 * 
+	 * @param sourceFiles the source files to be set in the map for fileIDs 
+	 * to sourceFiles
 	 */
 	public void setSourceFiles(Map<Integer, ServerSourceFile> sourceFiles) {
 		this.sourceFiles = sourceFiles;
 	}
 
 	/**
+	 * Get the client connections for the session.
+	 * 
 	 * @return the map between the connectionID and CNPConnections.
 	 */
 	public Map<Integer, CNPConnection> getClientConnections() {
@@ -459,8 +423,10 @@ public class CNPSession implements SessionTaskExecutor {
 	}
 
 	/**
-	 * @param clientConnections
-	 *            to be set as the map for connectionsID and CNPConnections.
+	 * Set the client connections for the session.
+	 * 
+	 * @param clientConnections the connections to be set in the map for 
+	 * connectionsID and CNPConnections.
 	 */
 	public void setClientConnections(
 			Map<Integer, CNPConnection> clientConnections) {
@@ -468,30 +434,37 @@ public class CNPSession implements SessionTaskExecutor {
 	}
 
 	/**
-	 * @return the map between the clientID and clientName.
+	 * Get the client ID mapping to the client name.
+	 * 
+	 * @return the map between the clientID and clientName
 	 */
 	public Map<Integer, String> getClientIdToName() {
 		return clientIdToName;
 	}
 
 	/**
-	 * @param clientIdToName
-	 *            to be set as the map between clientID and clientName.
+	 * Set the client ID mapping to the client name.
+	 * 
+	 * @param clientIdToName the map to be set 
+	 * between clientID and clientName.
 	 */
 	public void setClientIdToName(Map<Integer, String> clientIdToName) {
 		this.clientIdToName = clientIdToName;
 	}
 
 	/**
-	 * @return the repository that is bound to this session.
+	 * Return the Git repo for this session.
+	 * 
+	 * @return the repository that is bound to this session
 	 */
 	public JRepository getGitRepo() {
 		return gitRepo;
 	}
 
 	/**
-	 * @param gitRepo
-	 *            to be set for this session.
+	 * Set the Git repo for this session.
+	 * 
+	 * @param gitRepo repo to be set for this session
 	 */
 	public void setGitRepo(JRepository gitRepo) {
 		this.gitRepo = gitRepo;
@@ -501,7 +474,6 @@ public class CNPSession implements SessionTaskExecutor {
 			}
 			createFile(gitRepo.getDirectoryFiles()[i].getName(),
 					SourceType.GENERAL);
-
 		}
 	}
 }

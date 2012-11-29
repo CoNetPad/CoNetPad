@@ -372,7 +372,6 @@ public class MainFrame extends JFrame {
 
 		} else {
 			// insert character
-			Character tmp = (char) keyPressed;
 			text.getDocument().insertString(editIndex,
 					Character.toString((char) keyPressed), null);
 			if (keyPressed == 10) {

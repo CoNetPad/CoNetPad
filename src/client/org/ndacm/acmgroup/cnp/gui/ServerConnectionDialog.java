@@ -24,6 +24,8 @@ import org.ndacm.acmgroup.cnp.CNPClient;
  */
 public class ServerConnectionDialog extends JDialog {
 
+	private static final long serialVersionUID = 1L;
+	
 	private CNPClient client;
 	private JDialog serverConnectionDialog = this;
 

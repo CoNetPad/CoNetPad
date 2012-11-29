@@ -24,8 +24,9 @@ import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
  */
 public class NewFileDialog extends JDialog {
 
+	private static final long serialVersionUID = 1L;
+	
 	private CNPClient client;
-	private MainFrame mainDialog;
 	private NewFileDialog newDialog;
 	private JTextField textField;
 	private JButton btnCreate;

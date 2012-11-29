@@ -7,6 +7,8 @@ package org.ndacm.acmgroup.cnp.exceptions;
  */
 public class FailedSessionException extends Exception{
 
+	private static final long serialVersionUID = 1L;
+	
 	private String msg;	//The Error message
 	/**
 	 * This creates a new FailedSessionException using the default message

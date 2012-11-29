@@ -69,29 +69,44 @@ import org.ndacm.acmgroup.cnp.task.response.TaskResponseExecutor;
 public class CNPClient implements TaskReceivedEventListener,
 		TaskResponseExecutor {
 
-	private String serverURL; // The URL to the server
-	private String sessionName; // The unique name of the session the user
-	// belongs to
+	// URL of the server connected to
+	private String serverURL;
+	// The unique name of the session the user belongs to
+	private String sessionName; 
 	private int sessionID; // The unique ID of the session the user belongs
 	private int userID; // ID of account logged in as
-	private String username; // The Username of the user
+	private String username; // The username of the user
 	private String authToken; // assigned by server after authentication
 
-	private ExecutorService clientExecutor; // this is for executing varoous
-											// tasks
+	/**
+	 * Executor for executing client tasks.
+	 */
+	private ExecutorService clientExecutor;
+	
+	/**
+	 * Executor for queuing editing events on the client side. Single 
+	 * threaded to serialize tasks as they are added.
+	 */
 	private ExecutorService editorTaskSender;
+	
+	/**
+	 * True if the user is waiting for an editor response. Needed to ensure
+	 * consistency in file editing events.
+	 */
 	private volatile boolean isWaiting;
+	
 	private final CNPClient cnpClient;
+	
+	/**
+	 * The source files for the session that a client is connected to.
+	 */
+	private Map<Integer, ClientSourceFile> sourceFiles;
 
-	// tasks
-	private Map<Integer, ClientSourceFile> sourceFiles; // The files the client
-	// is reading through.
-	// This is used in the
-	// GUI
-
-	private ClientNetwork network; // The network connection for doing messaging
-	// sending and recieving
-	private MainFrame clientFrame; // The frame of the GUI
+	/**
+	 * Network handling the sending and receiving of messages.
+	 */
+	private ClientNetwork network;
+	private MainFrame clientFrame; // The frame of the client GUI
 	private RegisterDialog regDialog;
 	private LoginDialog logDialog;
 	private SessionDialog sesDialog;
@@ -100,7 +115,8 @@ public class CNPClient implements TaskReceivedEventListener,
 	private CNPClient client = this;
 
 	/**
-	 * Launch the application.
+	 * Launch the application. Entry point for the client side of the 
+	 * application.
 	 */
 	public static void main(String[] args) {
 		try {
@@ -144,7 +160,7 @@ public class CNPClient implements TaskReceivedEventListener,
 	}
 
 	/**
-	 * This disconnectst he user from the server
+	 * This disconnects the user from the server
 	 */
 	public void closeConnection() {
 		network.disconnect();

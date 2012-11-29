@@ -24,8 +24,9 @@ import org.ndacm.acmgroup.cnp.CNPClient;
  */
 public class CreateSessionDialog extends JDialog {
 
+	private static final long serialVersionUID = 1L;
+	
 	private CNPClient client;
-	private SessionDialog sessionDialog;
 	private CreateSessionDialog createDialog;
 	private JButton btnCreate;
 	private JTextField textFieldPassword;
