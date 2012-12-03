@@ -127,7 +127,7 @@ public abstract class SourceFile {
 	public boolean editSource(int keyPressed, int editIndex) {
 
 		try {
-			if (keyPressed == KeyEvent.VK_BACK_SPACE) {
+			if (keyPressed == KeyEvent.VK_BACK_SPACE && editIndex > 0) {
 				sourceRope = sourceRope.delete(editIndex - 1, editIndex);
 			} else if (keyPressed == Event.DELETE) {
 				sourceRope = sourceRope.delete(editIndex, editIndex + 1);
