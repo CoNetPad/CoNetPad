@@ -141,7 +141,7 @@
   </target>
 
   <!-- copy resources into client, server, and test dist directories -->
-  <target name="dist" depends="jar" description="generate the distribution">
+  <target name="dist" depends="clean, jar" description="generate the distribution">
 
     <!-- copy database to server and test dist directories-->
     <copy todir="dist/server/data">
@@ -153,13 +153,16 @@
     <!-- zip all of dist -->
     <zip basedir="dist" destfile="dist/${ant.project.name}-${DSTAMP}.zip" excludes="${ant.project.name}-*.zip" />
   </target>
-  
+
   <!-- run junit tests -->
   <target name="test" depends="compile">
 
     <!-- delete prev tests -->
-    <delete includeemptydirs="true">
+    <delete verbose="true" includeemptydirs="true">
       <fileset dir="test_reports" includes="**/*"/>
+    </delete>
+    <delete verbose="true" includeemptydirs="true">
+      <fileset dir="Repos" includes="**/testRepo*/**" />
     </delete>
 
     <!-- run tests and print results -->

@@ -3,7 +3,9 @@ package org.ndacm.acmgroup.cnp.file;
 import static org.junit.Assert.assertEquals;
 
 import java.awt.Event;
+import java.io.File;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -16,7 +18,7 @@ import org.ndacm.acmgroup.cnp.task.response.EditorTaskResponse;
  */
 public class ClientSourceFileTest {
 	
-	public ClientSourceFile file;
+	public static ClientSourceFile file;
 	public EditorTaskResponse response;
 	public static ClientSourceFile file1;
 	public static ClientSourceFile file2;
@@ -26,8 +28,8 @@ public class ClientSourceFileTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		file1 = new ClientSourceFile(189, "fml.cpp", SourceType.CPP, "whoa", null);
-		file2 = new ClientSourceFile(190, "lmao.cpp", SourceType.CPP, "", null);
+		file1 = new ClientSourceFile(189, "testfile1.cpp", SourceType.CPP, "whoa", null);
+		file2 = new ClientSourceFile(190, "testfile2.cpp", SourceType.CPP, "", null);
 	}
 
 	/**
@@ -37,6 +39,19 @@ public class ClientSourceFileTest {
 	public void setUp() throws Exception {
 		file = new ClientSourceFile(101, "HelloWorld.java",SourceType.JAVA,"Hello World!", null);
 		response = new EditorTaskResponse("jotan", 65, 6, 101, true);
+	}
+	
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+		File file = new File("HelloWorld.java");
+		File file1 = new File("testfile1.cpp");
+		File file2 = new File("testfile2.cpp");
+		file.delete();
+		file1.delete();
+		file2.delete();
 	}
 
 	/**

@@ -30,10 +30,11 @@ public class JGitTest {
 		file = new File(".");
 		jg = new JGit(file);
 
-		
 		jg.createRepo("testRepo1");
 		jg.createRepo("testRepo2");
 		jg.createRepo("testRepo3");
+		
+		
 	}
 	
 	/**
