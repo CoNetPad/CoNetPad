@@ -35,6 +35,8 @@ public class CNPConnection extends Thread {
 	private String auth;
 
 	/**
+	 * Defualt constructor.
+	 * 
 	 * @param socket
 	 *            socket that connects to the client
 	 * @param id
@@ -113,6 +115,8 @@ public class CNPConnection extends Thread {
 	}
 
 	/**
+	 * Send a task through the connection.
+	 * 
 	 * @param task to be send through the network
 	 */
 	public void sendTask(Task task) {
@@ -123,6 +127,8 @@ public class CNPConnection extends Thread {
 	}
 
 	/**
+	 * Send a task response through the connection.
+	 * 
 	 * @param task (response) to be send through the network
 	 */
 	public void sendTaskResponse(TaskResponse task) {
@@ -133,6 +139,8 @@ public class CNPConnection extends Thread {
 	}
 
 	/**
+	 * Send a string representation message of a task.
+	 * 
 	 * @param message string representation of a task
 	 */
 	private void sendData(String message) {
@@ -154,6 +162,8 @@ public class CNPConnection extends Thread {
 	}
 
 	/**
+	 * Get the stopped status of the thread.
+	 * 
 	 * @return get the flag of the current status of the thread
 	 */
 	public boolean isStop() {
@@ -161,6 +171,8 @@ public class CNPConnection extends Thread {
 	}
 
 	/**
+	 * Set the status of the thread to stopped.
+	 * 
 	 * the stop flag is raised and the running thread should stop. The close()
 	 * method should be called after this.
 	 */
@@ -169,6 +181,8 @@ public class CNPConnection extends Thread {
 	}
 
 	/**
+	 * Get the session ID of the connection.
+	 * 
 	 * @return sessionID
 	 */
 	public int getSessionID() {
@@ -176,13 +190,17 @@ public class CNPConnection extends Thread {
 	}
 
 	/**
+	 * Set the session ID of the connection.
+	 * 
 	 * @param sessionID
 	 */
 	public void setSessionID(int sessionID) {
 		this.sessionID = sessionID;
 	}
 
-	/**
+	/** 
+	 * Get the user ID of the connection.
+	 * 
 	 * @return userID
 	 */
 	public int getUserID() {
@@ -190,6 +208,8 @@ public class CNPConnection extends Thread {
 	}
 
 	/**
+	 * Set the user ID of the connection.
+	 * 
 	 * @param userID
 	 */
 	public void setUserID(int userID) {
@@ -197,6 +217,8 @@ public class CNPConnection extends Thread {
 	}
 
 	/**
+	 * Get the authorization token for the user of the connection.
+	 * 
 	 * @return userAuthToken
 	 */
 	public String getAuth() {
@@ -204,6 +226,8 @@ public class CNPConnection extends Thread {
 	}
 
 	/**
+	 * Set the authorization token for the user of the connection.
+	 * 
 	 * @param auth userAuthToken
 	 */
 	public void setAuth(String auth) {

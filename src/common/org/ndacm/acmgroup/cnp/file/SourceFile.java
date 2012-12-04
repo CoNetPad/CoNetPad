@@ -14,7 +14,7 @@ import java.io.InputStreamReader;
 import org.ahmadsoft.ropes.Rope;
 
 /**
- * This is used for handing server and client based source file
+ * This is used for handing server and client based source file.
  * 
  * @author Josh Tan
  * @version 1.0
@@ -28,17 +28,14 @@ public abstract class SourceFile {
 	protected File file;
 
 	/**
-	 * This is an enumeration for file types.
-	 * 
-	 * @author Josh Tan
-	 * 
+	 * This is an enumeration for file types. 
 	 */
 	public enum SourceType {
 		JAVA, CPP, GENERAL
 	}
 
 	/**
-	 * This creates a new instance of the SourceFile
+	 * This creates a new instance of the SourceFile.
 	 * 
 	 * @param fileID
 	 *            A unique ID for the file
@@ -117,7 +114,7 @@ public abstract class SourceFile {
 	}
 
 	/**
-	 * This edits the source file via a key stroke
+	 * This edits the source file via a key stroke.
 	 * 
 	 * @param keyPressed
 	 *            The integer value of the key that is pressed
@@ -148,7 +145,7 @@ public abstract class SourceFile {
 	}
 
 	/**
-	 * This returns the sourceFile as a file object
+	 * This returns the sourceFile as a file object.
 	 * 
 	 * @return The file object of the source file
 	 */
@@ -157,7 +154,7 @@ public abstract class SourceFile {
 	}
 
 	/**
-	 * This returns the Unique ID of the file
+	 * This returns the Unique ID of the file.
 	 * 
 	 * @return The unique ID of the file
 	 */
@@ -166,7 +163,7 @@ public abstract class SourceFile {
 	}
 
 	/**
-	 * This gets the name of the FIle.
+	 * This gets the name of the File.
 	 * 
 	 * @return The name of the file
 	 */
@@ -175,6 +172,8 @@ public abstract class SourceFile {
 	}
 
 	/**
+	 * Get the type of the source file.
+	 * 
 	 * @return type of this source file
 	 */
 	public SourceType getType() {
@@ -182,6 +181,8 @@ public abstract class SourceFile {
 	}
 
 	/**
+	 * Set the type of the source file.
+	 * 
 	 * @param type
 	 *            to define this source file
 	 */
@@ -190,7 +191,7 @@ public abstract class SourceFile {
 	}
 
 	/**
-	 * This gets the file's content as a string
+	 * This gets the file's content as a string.
 	 */
 	@Override
 	public String toString() {
@@ -198,7 +199,7 @@ public abstract class SourceFile {
 	}
 
 	/**
-	 * Save the content of the rope to the file
+	 * Save the content of the rope to the file.
 	 */
 	public void save() {
 		file.delete();
@@ -207,6 +208,7 @@ public abstract class SourceFile {
 			out.write(sourceRope.toString());
 			out.close();
 		} catch (IOException e) {
+			// do nothing, for now
 		}
 	}
 }

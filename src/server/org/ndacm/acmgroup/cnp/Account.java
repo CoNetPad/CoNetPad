@@ -40,7 +40,6 @@ public class Account {
 		return username;
 	}
 
-
 	/**
 	 * Get the account email.
 	 * @return the account email
@@ -48,7 +47,6 @@ public class Account {
 	public String getEmail() {
 		return email;
 	}
-
 
 	/**
 	 * Get the account user ID.
@@ -66,7 +64,6 @@ public class Account {
 		userID = id;
 	}
 
-
 	/**
 	 * Set the account username.
 	 * @param name the username to set
@@ -80,7 +77,7 @@ public class Account {
 	 * an account can have.
 	 */
 	public enum FilePermissionLevel {
-		
+
 		READ(0), READ_WRITE(2), UNRESTRICTED(3);
 		private int value;
 
@@ -120,7 +117,6 @@ public class Account {
 			return true;
 		}
 		return false;
-
 	}
 
 }

@@ -8,7 +8,8 @@ import org.ndacm.acmgroup.cnp.task.Task;
 
 
 /**
- * This class handles the client connection and message sending on the client end
+ * This class handles the client connection and message sending on the client end.
+ * 
  * @author Cesar Ramirez
  * @version 1.5
  */
@@ -16,9 +17,9 @@ public class ClientNetwork extends BaseNetwork {
 
 	private CNPConnection serverConnection;
 
-	// private SSLSocketFactory sslSocketFactory;
-	// private SSLSocket socket;
-	
+	// private SSLSocketFactory sslSocketFactory; // TODO implement
+	// private SSLSocket socket; // TODO implement
+
 	/**
 	 * Default Constructor - DONT USE
 	 * This creates a new ClientNetwork with serverConnection set to null
@@ -27,6 +28,7 @@ public class ClientNetwork extends BaseNetwork {
 		serverConnection = null;
 
 	}
+	
 	/**
 	 * This creates a new clientNetwork using a server IP Address
 	 * @param ipAddress		The IP address of the server
@@ -45,6 +47,7 @@ public class ClientNetwork extends BaseNetwork {
 		}
 		return true;
 	}
+	
 	/**
 	 * This disconnects the user from the server
 	 */

@@ -10,7 +10,6 @@ public class Compiler {
 
 	private static final String JAVAC_PATH = "";
 	private static final String GCC_PATH = "";
-
 	private static Compiler compiler; // singleton instance
 
 	/**

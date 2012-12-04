@@ -25,7 +25,7 @@ import org.ndacm.acmgroup.cnp.CNPClient;
 public class CreateSessionDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private CNPClient client;
 	private CreateSessionDialog createDialog;
 	private JButton btnCreate;
@@ -35,8 +35,7 @@ public class CreateSessionDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 * 
-	 * @param client
-	 *            that will provide the logic and network interface.
+	 * @param client client that will provide the logic and network interface
 	 */
 	public CreateSessionDialog(final CNPClient client) {
 		this.client = client;
@@ -60,87 +59,87 @@ public class CreateSessionDialog extends JDialog {
 		textFieldPasswordAgain.setColumns(10);
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
 		groupLayout
-				.setHorizontalGroup(groupLayout
-						.createParallelGroup(Alignment.LEADING)
+		.setHorizontalGroup(groupLayout
+				.createParallelGroup(Alignment.LEADING)
+				.addGroup(
+						groupLayout
+						.createSequentialGroup()
+						.addContainerGap()
 						.addGroup(
 								groupLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.LEADING)
-														.addComponent(
-																lblPasswordAgain)
-														.addComponent(
-																lblPassword))
-										.addPreferredGap(
-												ComponentPlacement.RELATED)
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.LEADING)
-														.addComponent(
-																textFieldPassword,
-																GroupLayout.DEFAULT_SIZE,
-																270,
-																Short.MAX_VALUE)
-														.addComponent(
-																textFieldPasswordAgain,
-																GroupLayout.DEFAULT_SIZE,
-																270,
-																Short.MAX_VALUE))
-										.addContainerGap())
-						.addGroup(
-								groupLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addComponent(lblInstructions)
-										.addContainerGap(
-												GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE))
-						.addComponent(panel, Alignment.TRAILING,
-								GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE));
+								.createParallelGroup(
+										Alignment.LEADING)
+										.addComponent(
+												lblPasswordAgain)
+												.addComponent(
+														lblPassword))
+														.addPreferredGap(
+																ComponentPlacement.RELATED)
+																.addGroup(
+																		groupLayout
+																		.createParallelGroup(
+																				Alignment.LEADING)
+																				.addComponent(
+																						textFieldPassword,
+																						GroupLayout.DEFAULT_SIZE,
+																						270,
+																						Short.MAX_VALUE)
+																						.addComponent(
+																								textFieldPasswordAgain,
+																								GroupLayout.DEFAULT_SIZE,
+																								270,
+																								Short.MAX_VALUE))
+																								.addContainerGap())
+																								.addGroup(
+																										groupLayout
+																										.createSequentialGroup()
+																										.addContainerGap()
+																										.addComponent(lblInstructions)
+																										.addContainerGap(
+																												GroupLayout.DEFAULT_SIZE,
+																												Short.MAX_VALUE))
+																												.addComponent(panel, Alignment.TRAILING,
+																														GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE));
 		groupLayout
-				.setVerticalGroup(groupLayout
-						.createParallelGroup(Alignment.LEADING)
-						.addGroup(
-								groupLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addComponent(lblInstructions)
-										.addPreferredGap(
-												ComponentPlacement.RELATED)
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.BASELINE)
-														.addComponent(
-																lblPassword)
+		.setVerticalGroup(groupLayout
+				.createParallelGroup(Alignment.LEADING)
+				.addGroup(
+						groupLayout
+						.createSequentialGroup()
+						.addContainerGap()
+						.addComponent(lblInstructions)
+						.addPreferredGap(
+								ComponentPlacement.RELATED)
+								.addGroup(
+										groupLayout
+										.createParallelGroup(
+												Alignment.BASELINE)
+												.addComponent(
+														lblPassword)
 														.addComponent(
 																textFieldPassword,
 																GroupLayout.PREFERRED_SIZE,
 																GroupLayout.DEFAULT_SIZE,
 																GroupLayout.PREFERRED_SIZE))
-										.addPreferredGap(
-												ComponentPlacement.RELATED)
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.BASELINE)
-														.addComponent(
-																lblPasswordAgain)
-														.addComponent(
-																textFieldPasswordAgain,
-																GroupLayout.PREFERRED_SIZE,
-																GroupLayout.DEFAULT_SIZE,
-																GroupLayout.PREFERRED_SIZE))
-										.addPreferredGap(
-												ComponentPlacement.RELATED, 23,
-												Short.MAX_VALUE)
-										.addComponent(panel,
-												GroupLayout.PREFERRED_SIZE, 46,
-												GroupLayout.PREFERRED_SIZE)));
+																.addPreferredGap(
+																		ComponentPlacement.RELATED)
+																		.addGroup(
+																				groupLayout
+																				.createParallelGroup(
+																						Alignment.BASELINE)
+																						.addComponent(
+																								lblPasswordAgain)
+																								.addComponent(
+																										textFieldPasswordAgain,
+																										GroupLayout.PREFERRED_SIZE,
+																										GroupLayout.DEFAULT_SIZE,
+																										GroupLayout.PREFERRED_SIZE))
+																										.addPreferredGap(
+																												ComponentPlacement.RELATED, 23,
+																												Short.MAX_VALUE)
+																												.addComponent(panel,
+																														GroupLayout.PREFERRED_SIZE, 46,
+																														GroupLayout.PREFERRED_SIZE)));
 		JButton btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -166,8 +165,8 @@ public class CreateSessionDialog extends JDialog {
 		GroupLayout gl_panel = new GroupLayout(panel);
 		gl_panel.setHorizontalGroup(gl_panel.createParallelGroup(
 				Alignment.LEADING).addGroup(
-				Alignment.TRAILING,
-				gl_panel.createSequentialGroup()
+						Alignment.TRAILING,
+						gl_panel.createSequentialGroup()
 						.addContainerGap(186, Short.MAX_VALUE)
 						.addComponent(btnCreate)
 						.addPreferredGap(ComponentPlacement.RELATED)
@@ -176,14 +175,14 @@ public class CreateSessionDialog extends JDialog {
 				Alignment.TRAILING)
 				.addGroup(
 						gl_panel.createSequentialGroup()
-								.addContainerGap(GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE)
+						.addContainerGap(GroupLayout.DEFAULT_SIZE,
+								Short.MAX_VALUE)
 								.addGroup(
 										gl_panel.createParallelGroup(
 												Alignment.BASELINE)
 												.addComponent(btnCancel)
 												.addComponent(btnCreate))
-								.addContainerGap()));
+												.addContainerGap()));
 		panel.setLayout(gl_panel);
 		getContentPane().setLayout(groupLayout);
 	}

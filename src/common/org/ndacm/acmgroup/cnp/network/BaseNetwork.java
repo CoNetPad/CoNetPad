@@ -8,7 +8,8 @@ import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEventListener;
 import org.ndacm.acmgroup.cnp.network.events.TaskReceivedEvent;
 
 /**
- * Ths is used a parent class for the connections on the client and server side
+ * Ths is used a parent class for the connections on the client and server side.
+ * 
  * @author Cesar Ramirez
  */
 public class BaseNetwork implements TaskEventSource {
@@ -18,7 +19,9 @@ public class BaseNetwork implements TaskEventSource {
 	 */
 	private EventListenerList listenerList = new EventListenerList();
 
-
+	/**
+	 * Add an event listener for when tasks are received.
+	 */
 	public void addTaskReceivedEventListener(TaskReceivedEventListener listener) {
 		listenerList.add(TaskReceivedEventListener.class, listener);
 	}
@@ -39,7 +42,7 @@ public class BaseNetwork implements TaskEventSource {
 		for (int i = 0; i < listeners.length; i += 2) {
 			if (listeners[i] == TaskReceivedEventListener.class) {
 				((TaskReceivedEventListener) listeners[i + 1])
-						.TaskReceivedEventOccurred(evt);
+				.TaskReceivedEventOccurred(evt);
 			}
 		}
 	}

@@ -20,8 +20,10 @@ public class TaskReceivedEvent extends EventObject {
 	private CNPConnection connection;
 
 	/**
+	 * Default constructor.
+	 * 
 	 * @param task
-	 *            This method should called by the TaskEventSource that is
+	 *            This constructor should called by the TaskEventSource that is
 	 *            firing the event.
 	 */
 	public TaskReceivedEvent(Task task, CNPConnection connection) {
@@ -31,6 +33,8 @@ public class TaskReceivedEvent extends EventObject {
 	}
 
 	/**
+	 * Get the task for this event.
+	 * 
 	 * @return Objects receiving this event can use this method to retrieve the
 	 *         CNPTask.
 	 */
@@ -39,6 +43,8 @@ public class TaskReceivedEvent extends EventObject {
 	}
 
 	/**
+	 * Get the connection from which the message was received.
+	 * 
 	 * @return connection where messages are coming from
 	 */
 	public CNPConnection getConnection() {
@@ -46,6 +52,8 @@ public class TaskReceivedEvent extends EventObject {
 	}
 
 	/**
+	 * Set the connection from which the message was received.
+	 * 
 	 * @param connection
 	 *            CNPConnetion where we are going to be listening for events
 	 */

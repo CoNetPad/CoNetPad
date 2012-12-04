@@ -3,9 +3,9 @@ package org.ndacm.acmgroup.cnp.task;
 import org.ndacm.acmgroup.cnp.network.CNPConnection;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
-
 /**
- * This is a response task to send to clients
+ * This is a response task to send to clients.
+ * 
  * @author Cesar Ramirez, Josh Tan
  * @version 1.5
  */
@@ -24,6 +24,7 @@ public class SendResponseTask extends Task {
 		this.response = response;
 		this.client = client;
 	}
+	
 	/**
 	 * This executes the task response or sends the task response to the user.
 	 */

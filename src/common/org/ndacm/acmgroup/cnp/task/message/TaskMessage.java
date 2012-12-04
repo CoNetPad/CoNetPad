@@ -2,15 +2,16 @@ package org.ndacm.acmgroup.cnp.task.message;
 
 import org.ndacm.acmgroup.cnp.task.message.TaskMessageFactory.TaskType;
 
-/**
+/** 
+ * A TaskMessage is an abstraction of the Tasks and their attributes. A
+ * TaskMessage is basically a string replresentation of the task and is
+ * used for sending and recieving them over the network.
+ *         
  * @author Cesar
- * 
- *         A TaskMessage is an abstraction of the Tasks and their attributes. A
- *         TaskMessage is basically a string replresentation of the task and is
- *         used for sending and recieving them over the network.
  * 
  */
 public class TaskMessage {
+
 	/**
 	 * An Enum with the task type this message represents.
 	 */
@@ -18,13 +19,15 @@ public class TaskMessage {
 
 	public static Character end = 4;
 	public static Character delimiter = 5;
-	
+
 	/**
 	 * An array of string that contain the fields required to rebuild a task.
 	 */
 	private String[] data;
 
 	/**
+	 * Overloaded constructor.
+	 * 
 	 * @param tasktype
 	 *            Task type to represent
 	 * @param Array
@@ -36,6 +39,8 @@ public class TaskMessage {
 	}
 
 	/**
+	 * Default constructor.
+	 * 
 	 * @param String
 	 *            received over the network that is going going to be translated
 	 *            into a TaskMessage
@@ -56,6 +61,8 @@ public class TaskMessage {
 	}
 
 	/**
+	 * Get a message string for this TaskMessage.
+	 * 
 	 * @return Returns a string representation of this message. This string will
 	 *         contain the task type and all the data.
 	 */
@@ -68,11 +75,13 @@ public class TaskMessage {
 			buffer.append(element + delimiter);
 		}
 		buffer.append(end);
-		
+
 		return buffer.toString();
 	}
 
 	/**
+	 * Get the task type for this message.
+	 * 
 	 * @return the task type
 	 */
 	public TaskType getTaskType() {
@@ -80,6 +89,8 @@ public class TaskMessage {
 	}
 
 	/**
+	 * Get the data array for this message.
+	 * 
 	 * @return the array that contains the set of data
 	 */
 	public String[] getData() {

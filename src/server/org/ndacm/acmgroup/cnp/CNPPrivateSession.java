@@ -7,7 +7,7 @@ package org.ndacm.acmgroup.cnp;
  * sessions (sessions with password).
  */
 public class CNPPrivateSession extends CNPSession {
-	
+
 	/**
 	 * Default constructor.
 	 * @param sessionID			The database ID of the CNP Session
@@ -17,7 +17,7 @@ public class CNPPrivateSession extends CNPSession {
 	 */
 	public CNPPrivateSession(int sessionID, String sessionName, CNPServer server, int sessionLeader) {
 		super(sessionID, sessionName, server, sessionLeader);
-		
+
 	}
 
 	/**

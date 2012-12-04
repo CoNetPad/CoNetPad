@@ -19,13 +19,14 @@ import org.ndacm.acmgroup.cnp.CNPClient;
 
 /**
  * This is the dialog for adding or connecting to a server
+ * 
  * @author Cesar Ramirez
  *
  */
 public class ServerConnectionDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private CNPClient client;
 	private JDialog serverConnectionDialog = this;
 
@@ -50,56 +51,56 @@ public class ServerConnectionDialog extends JDialog {
 		formattedServer.setText("localhost");
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
 		groupLayout
-				.setHorizontalGroup(groupLayout
-						.createParallelGroup(Alignment.TRAILING)
-						.addComponent(panel, GroupLayout.DEFAULT_SIZE, 384,
-								Short.MAX_VALUE)
+		.setHorizontalGroup(groupLayout
+				.createParallelGroup(Alignment.TRAILING)
+				.addComponent(panel, GroupLayout.DEFAULT_SIZE, 384,
+						Short.MAX_VALUE)
 						.addGroup(
 								Alignment.LEADING,
 								groupLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addComponent(lblServer)
-										.addPreferredGap(
-												ComponentPlacement.RELATED)
+								.createSequentialGroup()
+								.addContainerGap()
+								.addComponent(lblServer)
+								.addPreferredGap(
+										ComponentPlacement.RELATED)
 										.addGroup(
 												groupLayout
-														.createParallelGroup(
-																Alignment.LEADING)
+												.createParallelGroup(
+														Alignment.LEADING)
 														.addComponent(
 																chckbxRemember)
-														.addComponent(
-																formattedServer,
-																GroupLayout.DEFAULT_SIZE,
-																297,
-																Short.MAX_VALUE))
-										.addContainerGap()));
+																.addComponent(
+																		formattedServer,
+																		GroupLayout.DEFAULT_SIZE,
+																		297,
+																		Short.MAX_VALUE))
+																		.addContainerGap()));
 		groupLayout
-				.setVerticalGroup(groupLayout
-						.createParallelGroup(Alignment.LEADING)
+		.setVerticalGroup(groupLayout
+				.createParallelGroup(Alignment.LEADING)
+				.addGroup(
+						groupLayout
+						.createSequentialGroup()
+						.addContainerGap()
 						.addGroup(
 								groupLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.BASELINE)
-														.addComponent(
-																formattedServer,
-																GroupLayout.PREFERRED_SIZE,
-																GroupLayout.DEFAULT_SIZE,
-																GroupLayout.PREFERRED_SIZE)
-														.addComponent(lblServer))
-										.addPreferredGap(
-												ComponentPlacement.RELATED)
-										.addComponent(chckbxRemember)
-										.addPreferredGap(
-												ComponentPlacement.RELATED, 47,
-												Short.MAX_VALUE)
-										.addComponent(panel,
-												GroupLayout.PREFERRED_SIZE, 49,
-												GroupLayout.PREFERRED_SIZE)));
+								.createParallelGroup(
+										Alignment.BASELINE)
+										.addComponent(
+												formattedServer,
+												GroupLayout.PREFERRED_SIZE,
+												GroupLayout.DEFAULT_SIZE,
+												GroupLayout.PREFERRED_SIZE)
+												.addComponent(lblServer))
+												.addPreferredGap(
+														ComponentPlacement.RELATED)
+														.addComponent(chckbxRemember)
+														.addPreferredGap(
+																ComponentPlacement.RELATED, 47,
+																Short.MAX_VALUE)
+																.addComponent(panel,
+																		GroupLayout.PREFERRED_SIZE, 49,
+																		GroupLayout.PREFERRED_SIZE)));
 
 		JButton btnConnect = new JButton("Connect");
 		btnConnect.addActionListener(new ActionListener() {
@@ -126,7 +127,7 @@ public class ServerConnectionDialog extends JDialog {
 		GroupLayout gl_panel = new GroupLayout(panel);
 		gl_panel.setHorizontalGroup(gl_panel.createParallelGroup(
 				Alignment.TRAILING).addGroup(
-				gl_panel.createSequentialGroup()
+						gl_panel.createSequentialGroup()
 						.addContainerGap(199, Short.MAX_VALUE)
 						.addComponent(btnConnect).addGap(18)
 						.addComponent(btnExit).addContainerGap()));
@@ -134,14 +135,14 @@ public class ServerConnectionDialog extends JDialog {
 				Alignment.TRAILING)
 				.addGroup(
 						gl_panel.createSequentialGroup()
-								.addContainerGap(GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE)
+						.addContainerGap(GroupLayout.DEFAULT_SIZE,
+								Short.MAX_VALUE)
 								.addGroup(
 										gl_panel.createParallelGroup(
 												Alignment.BASELINE)
 												.addComponent(btnExit)
 												.addComponent(btnConnect))
-								.addContainerGap()));
+												.addContainerGap()));
 		panel.setLayout(gl_panel);
 		getContentPane().setLayout(groupLayout);
 	}

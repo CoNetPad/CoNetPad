@@ -102,24 +102,34 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 
 	// the length of a user token
 	private static final int USER_TOKEN_LENGTH = 10;
+
 	// the available characters that may be used in a token
 	private static final String TOKEN_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
 	// network class for handling the socket connection
 	private ServerNetwork network;
+
 	// database object for SQL query handling
 	private Database database;
+
 	// manager for Git functionality
 	private JGit jGit;
+
 	// compiler for source files
 	private Compiler compiler;
+
 	// base installation directory for CNP files
 	private String baseDirectory;
+
 	// maps sessionID to CNPSession
 	private Map<Integer, CNPSession> openSessions;
+
 	// task executor for server-wide tasks
 	private ExecutorService serverExecutor;
+
 	// maps userID to user authentication token
 	private Map<Integer, String> userAuthTokens;
+
 	private Random rand;
 	private SecretKey key; // TODO implement
 	private Cipher cipher; // TODO implement
@@ -158,9 +168,8 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 
 		// register as task event listener with the network
 		network.addTaskReceivedEventListener(this);
-
 	}
-	
+
 	/**
 	 * Entry point for the CNP server.
 	 * 
@@ -183,7 +192,7 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 	public void startNetwork() {
 		network.startListening();
 	}
-	
+
 	/**
 	 * Compiles the files in the given list of filenames for 
 	 * a given session. The result will be an archive file
@@ -208,7 +217,7 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 		// TODO implement
 		return null;
 	}
-	
+
 	/**
 	 * Retrieve the list of files for a given session name.
 	 * 
@@ -217,7 +226,7 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 	 */
 	public List<String> retrieveSessionFileList(String sessionName) {
 		File repo = jGit.retrieveRepo(sessionName);
-		
+
 		// if the repository has an existing directory, return the associated
 		// list of filenames
 		if (repo.isDirectory()) {
@@ -261,11 +270,10 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 		SendResponseTask accountResponseTask = new SendResponseTask(response,
 				task.getConnection());
 		serverExecutor.submit(accountResponseTask);
-
 	}
 
 	/**
-	 * Execute task for creating an account.
+	 * Execute task for logging into an account.
 	 * 
 	 * @param task the task to execute
 	 */
@@ -291,11 +299,10 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 		SendResponseTask accountResponseTask = new SendResponseTask(response,
 				task.getConnection());
 		serverExecutor.submit(accountResponseTask);
-
 	}
 
 	/**
-	 * Execute task for creating an account.
+	 * Execute task for creating a session.
 	 * 
 	 * @param task the task to execute
 	 */
@@ -308,7 +315,7 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 		if (userIsAuth(task.getSessionLeader(), task.getUserAuthToken())) {
 			// create a new public or private session, depending on the task type
 			try {
-				
+
 				if (task instanceof CreatePrivateSessionTask) {
 					newSession = database.createSession(
 							task.getSessionLeader(), this,
@@ -355,7 +362,7 @@ public class CNPServer implements TaskReceivedEventListener, ServerTaskExecutor 
 		CNPSession joinedSession = null;
 		JoinSessionTaskResponse response = null;
 
-		// authenticate user using toke 
+		// authenticate user using token 
 		if (userIsAuth(task.getUserID(), task.getUserAuthToken())) {
 			// join an existing public or private session, depending on
 			// the type of the task

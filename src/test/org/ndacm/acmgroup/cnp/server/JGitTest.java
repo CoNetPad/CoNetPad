@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.ndacm.acmgroup.cnp.server;
 
 import static org.junit.Assert.assertNotNull;
@@ -15,13 +12,15 @@ import org.junit.Test;
 import org.ndacm.acmgroup.cnp.git.JGit;
 
 /**
+ * JUnit test for testing JGit.
+ * 
  * @author Justin
- *
  */
 public class JGitTest {
 
 	public static JGit jg;
 	public static File file;
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -33,10 +32,8 @@ public class JGitTest {
 		jg.createRepo("testRepo1");
 		jg.createRepo("testRepo2");
 		jg.createRepo("testRepo3");
-		
-		
 	}
-	
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -53,13 +50,12 @@ public class JGitTest {
 		assertNotNull(jg);
 	}
 
-
 	/**
 	 * Test method for {@link org.ndacm.acmgroup.cnp.git.JGit#deactivateRepo(java.lang.String)}.
 	 */
 	@Test
 	public final void testDeactivateRepo() {
-		
+
 		try{
 			jg.activateRepo("testRepo2");
 			jg.deactivateRepo("testRepo2");
@@ -76,8 +72,6 @@ public class JGitTest {
 	 */
 	@Test
 	public final void testCreateRepo() {
-		
-		
 		try{
 			jg.createRepo("testRepo");
 		}
@@ -85,44 +79,39 @@ public class JGitTest {
 		{
 			e.printStackTrace();
 			fail("Unable to create repo");
-		
+
 		}
 	}
-	
+
 	/**
 	 * Test method for {@link org.ndacm.acmgroup.cnp.git.JGit#deleteRepo(java.lang.String)}.
 	 */
 	@Test
 	public final void testDeleteRepo() {
-		
-		
+
 		try{
 			jg.createRepo("testRepo5");
-			
 			boolean test = jg.deleteRepo("testRepo5");
 			assertTrue(test);
-			//jg.createRepo("testRepo");
 		}
 		catch(Exception e)
 		{
 			e.printStackTrace();
 			fail("Unable to create repo");
-		
+
 		}
 		catch(AssertionError e)
 		{
 			fail("Delete failed");
 		}
 	}
-	
 
-	
 	/**
 	 * Test method for {@link org.ndacm.acmgroup.cnp.git.JGit#activateRepo(java.lang.String)}.
 	 */
 	@Test
 	public final void testActivateRepo() {
-		
+
 		try{
 			jg.activateRepo("testRepo2");
 		}
@@ -138,11 +127,8 @@ public class JGitTest {
 	@Test
 	public final void testAddFileToRepo() {
 		try{
-
 			File test =  new File("blarg.txt");
-			
-		
-	         jg.activateRepo("testRepo1");
+			jg.activateRepo("testRepo1");
 			jg.addFileToRepo("testRepo1", test);
 		}
 		catch(Exception e)
@@ -169,7 +155,6 @@ public class JGitTest {
 			fail("Unable to delete file");
 		}
 	}
-
 
 	/**
 	 * Test method for {@link org.ndacm.acmgroup.cnp.git.JGit#retrieveRepo(java.lang.String)}.

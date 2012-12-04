@@ -15,26 +15,43 @@ import org.ndacm.acmgroup.cnp.network.CNPConnection;
  *
  */
 public abstract class ServerTask extends Task {
-	
+
 	protected ServerTaskExecutor server;
 	private CNPConnection connection;
-	
+
+	/**
+	 * Set the task executor for this task.
+	 * @param server the task executor
+	 */
 	public void setServer(ServerTaskExecutor server) {
 		this.server = server;
 	}
-	
+
+	/**
+	 * Get the task executor for this task.
+	 * 
+	 * @return the task executor
+	 */
 	public ServerTaskExecutor getServer() {
 		return server;
 	}
 
+	/**
+	 * Get the connection for the task.
+	 * 
+	 * @return the connection
+	 */
 	public CNPConnection getConnection() {
 		return connection;
 	}
 
+	/**
+	 * Set the connection for the task.
+	 * 
+	 * @param connection the connection
+	 */
 	public void setConnection(CNPConnection connection) {
 		this.connection = connection;
 	}
-	
-	
 
 }

@@ -2,6 +2,12 @@ package org.ndacm.acmgroup.cnp.task;
 
 import org.ndacm.acmgroup.cnp.network.CNPConnection;
 
+/**
+ * Task for opening a file.
+ * 
+ * @author Josh Tan
+ *
+ */
 public class OpenFileTask extends SessionTask {
 	
 	protected int userID;

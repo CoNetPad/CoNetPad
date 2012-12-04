@@ -13,12 +13,13 @@ import org.eclipse.jgit.api.errors.UnmergedPathsException;
 import org.eclipse.jgit.api.errors.WrongRepositoryStateException;
 
 /**
- * @author cesar
  * 
- *         This class will interface with the git repos. The JGit class is an
- *         abstraction of git for java, so this class will allow manipulation of
- *         different git repos and keeping track of each one of the active
- *         repos.
+ * This class will interface with the git repos. The JGit class is an
+ * abstraction of git for java, so this class will allow manipulation of
+ * different git repos and keeping track of each one of the active
+ * repos.
+ * 
+ * @author Cesar
  * 
  */
 public class JGit {
@@ -78,7 +79,7 @@ public class JGit {
 	}
 
 	/**
-	 * This deactiviates the local repository
+	 * This deactivates the local repository
 	 * 
 	 * @param name
 	 *            The name of the repository
@@ -93,7 +94,7 @@ public class JGit {
 	}
 
 	/**
-	 * This creates a new git repository
+	 * This creates a new Git repository
 	 * 
 	 * @param name
 	 *            The name of the repository
@@ -115,7 +116,7 @@ public class JGit {
 	}
 
 	/**
-	 * This adds a new file to the git repository
+	 * This adds a new file to the Git repository
 	 * 
 	 * @param name
 	 *            The name of the repository
@@ -129,7 +130,7 @@ public class JGit {
 	}
 
 	/**
-	 * This removes a file from the git repository
+	 * This removes a file from the Git repository
 	 * 
 	 * @param name
 	 *            The name of the repository
@@ -142,6 +143,18 @@ public class JGit {
 		}
 	}
 
+	/**
+	 * Commit to the repository.
+	 * 
+	 * @param sessionID Session ID of the repository to commit
+	 * @param message The commit message
+	 * @throws NoHeadException
+	 * @throws NoMessageException
+	 * @throws UnmergedPathsException
+	 * @throws ConcurrentRefUpdateException
+	 * @throws WrongRepositoryStateException
+	 * @throws GitAPIException
+	 */
 	public void commitToRepo(int sessionID, String message)
 			throws NoHeadException, NoMessageException, UnmergedPathsException,
 			ConcurrentRefUpdateException, WrongRepositoryStateException,
@@ -182,16 +195,14 @@ public class JGit {
 		{
 			return false;
 		}
-	
 	}
 	
 	/**
-	 * This will clear ALL the repositories
-	 * @return	True if successfull, false otherwise
+	 * This will clear ALL of the repositories.
+	 * @return	True if successful, false otherwise
 	 */
 	public boolean clearRepos()
 	{
-
 		boolean suc = true;
 		for (Map.Entry<String, JRepository> r : repos.entrySet())
 		{

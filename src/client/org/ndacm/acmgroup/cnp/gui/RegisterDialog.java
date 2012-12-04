@@ -18,14 +18,15 @@ import javax.swing.border.EtchedBorder;
 import org.ndacm.acmgroup.cnp.CNPClient;
 
 /**
- * This is a dialog box for registering the user to the datbase
+ * This is a dialog box for registering the user to the database.
+ * 
  * @author Cesar Ramirez
  *
  */
 public class RegisterDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private CNPClient client;
 	private LoginDialog logDialog;
 	private RegisterDialog regDialog;
@@ -33,8 +34,7 @@ public class RegisterDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 * 
-	 * @param client
-	 *            that will provide the logic and network interface.
+	 * @param client client that will provide the logic and network interface.
 	 */
 	public RegisterDialog(final CNPClient client) {
 		this.client = client;
@@ -61,119 +61,119 @@ public class RegisterDialog extends JDialog {
 		final JFormattedTextField formattedPasswordAgain = new JFormattedTextField();
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
 		groupLayout
-				.setHorizontalGroup(groupLayout
-						.createParallelGroup(Alignment.LEADING)
+		.setHorizontalGroup(groupLayout
+				.createParallelGroup(Alignment.LEADING)
+				.addGroup(
+						groupLayout
+						.createSequentialGroup()
+						.addContainerGap()
 						.addGroup(
 								groupLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.LEADING)
-														.addComponent(
-																lblPasswordAgain)
-														.addComponent(
-																lblPassword)
+								.createParallelGroup(
+										Alignment.LEADING)
+										.addComponent(
+												lblPasswordAgain)
+												.addComponent(
+														lblPassword)
 														.addComponent(
 																lblUsername)
-														.addComponent(lblEmail))
-										.addPreferredGap(
-												ComponentPlacement.RELATED)
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.LEADING)
-														.addComponent(
-																formattedPasswordAgain,
-																Alignment.TRAILING,
-																GroupLayout.DEFAULT_SIZE,
-																242,
-																Short.MAX_VALUE)
-														.addComponent(
-																formattedPassword,
-																Alignment.TRAILING,
-																GroupLayout.DEFAULT_SIZE,
-																271,
-																Short.MAX_VALUE)
-														.addComponent(
-																formattedEmail,
-																Alignment.TRAILING,
-																GroupLayout.DEFAULT_SIZE,
-																269,
-																Short.MAX_VALUE)
-														.addComponent(
-																formattedUsername,
-																Alignment.TRAILING,
-																GroupLayout.DEFAULT_SIZE,
-																269,
-																Short.MAX_VALUE))
-										.addContainerGap())
-						.addComponent(panel, Alignment.TRAILING,
-								GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE));
+																.addComponent(lblEmail))
+																.addPreferredGap(
+																		ComponentPlacement.RELATED)
+																		.addGroup(
+																				groupLayout
+																				.createParallelGroup(
+																						Alignment.LEADING)
+																						.addComponent(
+																								formattedPasswordAgain,
+																								Alignment.TRAILING,
+																								GroupLayout.DEFAULT_SIZE,
+																								242,
+																								Short.MAX_VALUE)
+																								.addComponent(
+																										formattedPassword,
+																										Alignment.TRAILING,
+																										GroupLayout.DEFAULT_SIZE,
+																										271,
+																										Short.MAX_VALUE)
+																										.addComponent(
+																												formattedEmail,
+																												Alignment.TRAILING,
+																												GroupLayout.DEFAULT_SIZE,
+																												269,
+																												Short.MAX_VALUE)
+																												.addComponent(
+																														formattedUsername,
+																														Alignment.TRAILING,
+																														GroupLayout.DEFAULT_SIZE,
+																														269,
+																														Short.MAX_VALUE))
+																														.addContainerGap())
+																														.addComponent(panel, Alignment.TRAILING,
+																																GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE));
 		groupLayout
-				.setVerticalGroup(groupLayout
-						.createParallelGroup(Alignment.LEADING)
+		.setVerticalGroup(groupLayout
+				.createParallelGroup(Alignment.LEADING)
+				.addGroup(
+						groupLayout
+						.createSequentialGroup()
+						.addContainerGap()
 						.addGroup(
 								groupLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.BASELINE)
-														.addComponent(
-																lblUsername)
-														.addComponent(
-																formattedUsername,
-																GroupLayout.PREFERRED_SIZE,
-																GroupLayout.DEFAULT_SIZE,
-																GroupLayout.PREFERRED_SIZE))
-										.addPreferredGap(
-												ComponentPlacement.RELATED)
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.BASELINE)
-														.addComponent(lblEmail)
-														.addComponent(
-																formattedEmail,
-																GroupLayout.PREFERRED_SIZE,
-																GroupLayout.DEFAULT_SIZE,
-																GroupLayout.PREFERRED_SIZE))
-										.addPreferredGap(
-												ComponentPlacement.RELATED)
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.BASELINE)
-														.addComponent(
-																lblPassword)
-														.addComponent(
-																formattedPassword,
-																GroupLayout.PREFERRED_SIZE,
-																GroupLayout.DEFAULT_SIZE,
-																GroupLayout.PREFERRED_SIZE))
-										.addPreferredGap(
-												ComponentPlacement.RELATED)
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.BASELINE)
-														.addComponent(
-																lblPasswordAgain)
-														.addComponent(
-																formattedPasswordAgain,
-																GroupLayout.PREFERRED_SIZE,
-																GroupLayout.DEFAULT_SIZE,
-																GroupLayout.PREFERRED_SIZE))
-										.addPreferredGap(
-												ComponentPlacement.RELATED,
-												GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)
-										.addComponent(panel,
-												GroupLayout.PREFERRED_SIZE, 46,
-												GroupLayout.PREFERRED_SIZE)));
+								.createParallelGroup(
+										Alignment.BASELINE)
+										.addComponent(
+												lblUsername)
+												.addComponent(
+														formattedUsername,
+														GroupLayout.PREFERRED_SIZE,
+														GroupLayout.DEFAULT_SIZE,
+														GroupLayout.PREFERRED_SIZE))
+														.addPreferredGap(
+																ComponentPlacement.RELATED)
+																.addGroup(
+																		groupLayout
+																		.createParallelGroup(
+																				Alignment.BASELINE)
+																				.addComponent(lblEmail)
+																				.addComponent(
+																						formattedEmail,
+																						GroupLayout.PREFERRED_SIZE,
+																						GroupLayout.DEFAULT_SIZE,
+																						GroupLayout.PREFERRED_SIZE))
+																						.addPreferredGap(
+																								ComponentPlacement.RELATED)
+																								.addGroup(
+																										groupLayout
+																										.createParallelGroup(
+																												Alignment.BASELINE)
+																												.addComponent(
+																														lblPassword)
+																														.addComponent(
+																																formattedPassword,
+																																GroupLayout.PREFERRED_SIZE,
+																																GroupLayout.DEFAULT_SIZE,
+																																GroupLayout.PREFERRED_SIZE))
+																																.addPreferredGap(
+																																		ComponentPlacement.RELATED)
+																																		.addGroup(
+																																				groupLayout
+																																				.createParallelGroup(
+																																						Alignment.BASELINE)
+																																						.addComponent(
+																																								lblPasswordAgain)
+																																								.addComponent(
+																																										formattedPasswordAgain,
+																																										GroupLayout.PREFERRED_SIZE,
+																																										GroupLayout.DEFAULT_SIZE,
+																																										GroupLayout.PREFERRED_SIZE))
+																																										.addPreferredGap(
+																																												ComponentPlacement.RELATED,
+																																												GroupLayout.DEFAULT_SIZE,
+																																												Short.MAX_VALUE)
+																																												.addComponent(panel,
+																																														GroupLayout.PREFERRED_SIZE, 46,
+																																														GroupLayout.PREFERRED_SIZE)));
 		JButton btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -209,8 +209,8 @@ public class RegisterDialog extends JDialog {
 		GroupLayout gl_panel = new GroupLayout(panel);
 		gl_panel.setHorizontalGroup(gl_panel.createParallelGroup(
 				Alignment.LEADING).addGroup(
-				Alignment.TRAILING,
-				gl_panel.createSequentialGroup()
+						Alignment.TRAILING,
+						gl_panel.createSequentialGroup()
 						.addContainerGap(186, Short.MAX_VALUE)
 						.addComponent(btnCreate)
 						.addPreferredGap(ComponentPlacement.RELATED)
@@ -219,19 +219,21 @@ public class RegisterDialog extends JDialog {
 				Alignment.TRAILING)
 				.addGroup(
 						gl_panel.createSequentialGroup()
-								.addContainerGap(GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE)
+						.addContainerGap(GroupLayout.DEFAULT_SIZE,
+								Short.MAX_VALUE)
 								.addGroup(
 										gl_panel.createParallelGroup(
 												Alignment.BASELINE)
 												.addComponent(btnCancel)
 												.addComponent(btnCreate))
-								.addContainerGap()));
+												.addContainerGap()));
 		panel.setLayout(gl_panel);
 		getContentPane().setLayout(groupLayout);
 	}
 
 	/**
+	 * Set the login dialog component.
+	 * 
 	 * @param dialog
 	 */
 	public void setLoginDialog(LoginDialog dialog) {

@@ -28,13 +28,13 @@ public class ServerSourceFile extends SourceFile implements FileTaskExecutor {
 	 * in distribution.
 	 */
 	private ExecutorService fileTaskCourier;
-						
+
 	/**
 	 * The executor for tasks to be executed. Single threaded so that tasks
 	 * are executed in the order they are received.
 	 */
 	private ExecutorService fileTaskQueue;
-	
+
 	private Map<Integer, CNPConnection> clientConnections;
 	private CNPServer server;
 
@@ -71,7 +71,7 @@ public class ServerSourceFile extends SourceFile implements FileTaskExecutor {
 	public void executeTask(EditorTask task) {
 
 		TaskResponse response = null;
-		
+
 		// authenticate user using token
 		if (server.userIsAuth(task.getUserID(), task.getUserAuthToken())) {
 			// edit the Rope underlying the file

@@ -137,7 +137,4 @@ public interface IDatabase {
 	 */
 	void deleteAccount(Account account) throws SQLException, FailedAccountException;
 
-
-
-
 }

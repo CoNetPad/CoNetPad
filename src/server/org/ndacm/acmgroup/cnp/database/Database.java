@@ -131,7 +131,6 @@ public class Database implements IDatabase {
 			throw new FailedAccountException("Error creating account for "
 					+ username);
 		}
-
 	}
 
 	/**
@@ -201,7 +200,6 @@ public class Database implements IDatabase {
 			System.err.println("Some other Error was caught");
 			throw new FailedAccountException("Error  " + e.getStackTrace());
 		}
-
 	}
 
 	/*
@@ -355,7 +353,6 @@ public class Database implements IDatabase {
 		} catch (SQLException ex) {
 			throw new FailedSessionException("Failed due to SQLException.");
 		}
-
 	}
 
 	/*
@@ -390,7 +387,7 @@ public class Database implements IDatabase {
 						+ "WHERE SessionID = ?";
 				retrieveSession = dbConnection.prepareStatement(query);
 				retrieveSession.setInt(1, idRetrieved);
-				
+
 				// run the query, return a result set
 				rset = retrieveSession.executeQuery();
 				if (rset.next()) {
@@ -434,7 +431,6 @@ public class Database implements IDatabase {
 			System.err.println("Password Encoding error");
 			throw new FailedSessionException("Encoding error");
 		}
-
 	}
 
 	/*
@@ -492,7 +488,6 @@ public class Database implements IDatabase {
 		if (rows <= 0) {
 			throw new SQLException("Unable to insert session-account mapping.");
 		}
-
 	}
 
 	/**

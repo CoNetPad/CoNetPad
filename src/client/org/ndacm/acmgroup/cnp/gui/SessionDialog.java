@@ -17,7 +17,7 @@ import javax.swing.border.EtchedBorder;
 import org.ndacm.acmgroup.cnp.CNPClient;
 
 /**
- * This is the class for joining an existing session
+ * This is the class for joining an existing session.
  * 
  * @author Cesar Ramirez
  * 
@@ -25,7 +25,7 @@ import org.ndacm.acmgroup.cnp.CNPClient;
 public class SessionDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private SessionDialog loginDialog;
 	private CNPClient client;
 	private JPasswordField passwordField;
@@ -63,95 +63,95 @@ public class SessionDialog extends JDialog {
 		passwordField = new JPasswordField();
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
 		groupLayout
-				.setHorizontalGroup(groupLayout
-						.createParallelGroup(Alignment.LEADING)
-						.addComponent(panel, GroupLayout.DEFAULT_SIZE, 378,
-								Short.MAX_VALUE)
+		.setHorizontalGroup(groupLayout
+				.createParallelGroup(Alignment.LEADING)
+				.addComponent(panel, GroupLayout.DEFAULT_SIZE, 378,
+						Short.MAX_VALUE)
 						.addGroup(
 								groupLayout.createSequentialGroup()
-										.addContainerGap()
-										.addComponent(lblInfo)
-										.addContainerGap(150, Short.MAX_VALUE))
-						.addGroup(
-								groupLayout
+								.addContainerGap()
+								.addComponent(lblInfo)
+								.addContainerGap(150, Short.MAX_VALUE))
+								.addGroup(
+										groupLayout
 										.createSequentialGroup()
 										.addContainerGap()
 										.addGroup(
 												groupLayout
-														.createParallelGroup(
-																Alignment.LEADING)
+												.createParallelGroup(
+														Alignment.LEADING)
 														.addComponent(
 																lblPassword_1)
-														.addComponent(
-																lblSession))
-										.addPreferredGap(
-												ComponentPlacement.RELATED)
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.LEADING)
-														.addComponent(
-																passwordField,
-																GroupLayout.DEFAULT_SIZE,
-																253,
-																Short.MAX_VALUE)
-														.addComponent(
-																formattedSession,
-																GroupLayout.DEFAULT_SIZE,
-																253,
-																Short.MAX_VALUE))
-										.addContainerGap())
-						.addGroup(
-								groupLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addComponent(lblifYouAre,
-												GroupLayout.DEFAULT_SIZE, 358,
-												Short.MAX_VALUE)
-										.addContainerGap()));
+																.addComponent(
+																		lblSession))
+																		.addPreferredGap(
+																				ComponentPlacement.RELATED)
+																				.addGroup(
+																						groupLayout
+																						.createParallelGroup(
+																								Alignment.LEADING)
+																								.addComponent(
+																										passwordField,
+																										GroupLayout.DEFAULT_SIZE,
+																										253,
+																										Short.MAX_VALUE)
+																										.addComponent(
+																												formattedSession,
+																												GroupLayout.DEFAULT_SIZE,
+																												253,
+																												Short.MAX_VALUE))
+																												.addContainerGap())
+																												.addGroup(
+																														groupLayout
+																														.createSequentialGroup()
+																														.addContainerGap()
+																														.addComponent(lblifYouAre,
+																																GroupLayout.DEFAULT_SIZE, 358,
+																																Short.MAX_VALUE)
+																																.addContainerGap()));
 		groupLayout
-				.setVerticalGroup(groupLayout
-						.createParallelGroup(Alignment.LEADING)
-						.addGroup(
-								groupLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addComponent(lblInfo)
-										.addPreferredGap(
-												ComponentPlacement.RELATED)
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.BASELINE)
-														.addComponent(
-																lblSession)
+		.setVerticalGroup(groupLayout
+				.createParallelGroup(Alignment.LEADING)
+				.addGroup(
+						groupLayout
+						.createSequentialGroup()
+						.addContainerGap()
+						.addComponent(lblInfo)
+						.addPreferredGap(
+								ComponentPlacement.RELATED)
+								.addGroup(
+										groupLayout
+										.createParallelGroup(
+												Alignment.BASELINE)
+												.addComponent(
+														lblSession)
 														.addComponent(
 																formattedSession,
 																GroupLayout.PREFERRED_SIZE,
 																GroupLayout.DEFAULT_SIZE,
 																GroupLayout.PREFERRED_SIZE))
-										.addPreferredGap(
-												ComponentPlacement.RELATED)
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.BASELINE)
-														.addComponent(
-																lblPassword_1)
-														.addComponent(
-																passwordField,
-																GroupLayout.PREFERRED_SIZE,
-																GroupLayout.DEFAULT_SIZE,
-																GroupLayout.PREFERRED_SIZE))
-										.addPreferredGap(
-												ComponentPlacement.RELATED)
-										.addComponent(lblifYouAre)
-										.addPreferredGap(
-												ComponentPlacement.RELATED, 44,
-												Short.MAX_VALUE)
-										.addComponent(panel,
-												GroupLayout.PREFERRED_SIZE, 45,
-												GroupLayout.PREFERRED_SIZE)));
+																.addPreferredGap(
+																		ComponentPlacement.RELATED)
+																		.addGroup(
+																				groupLayout
+																				.createParallelGroup(
+																						Alignment.BASELINE)
+																						.addComponent(
+																								lblPassword_1)
+																								.addComponent(
+																										passwordField,
+																										GroupLayout.PREFERRED_SIZE,
+																										GroupLayout.DEFAULT_SIZE,
+																										GroupLayout.PREFERRED_SIZE))
+																										.addPreferredGap(
+																												ComponentPlacement.RELATED)
+																												.addComponent(lblifYouAre)
+																												.addPreferredGap(
+																														ComponentPlacement.RELATED, 44,
+																														Short.MAX_VALUE)
+																														.addComponent(panel,
+																																GroupLayout.PREFERRED_SIZE, 45,
+																																GroupLayout.PREFERRED_SIZE)));
 		{
 			JButton btnCancel = new JButton("Cancel");
 			btnCancel.addActionListener(new ActionListener() {
@@ -187,25 +187,25 @@ public class SessionDialog extends JDialog {
 			GroupLayout gl_panel = new GroupLayout(panel);
 			gl_panel.setHorizontalGroup(gl_panel.createParallelGroup(
 					Alignment.TRAILING).addGroup(
-					gl_panel.createSequentialGroup()
+							gl_panel.createSequentialGroup()
 							.addContainerGap()
 							.addComponent(btnCreate)
 							.addPreferredGap(ComponentPlacement.RELATED, 129,
 									Short.MAX_VALUE).addComponent(btnAccess)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(btnCancel).addContainerGap()));
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(btnCancel).addContainerGap()));
 			gl_panel.setVerticalGroup(gl_panel.createParallelGroup(
 					Alignment.TRAILING).addGroup(
-					gl_panel.createSequentialGroup()
+							gl_panel.createSequentialGroup()
 							.addContainerGap(GroupLayout.DEFAULT_SIZE,
 									Short.MAX_VALUE)
-							.addGroup(
-									gl_panel.createParallelGroup(
-											Alignment.BASELINE)
-											.addComponent(btnCancel)
-											.addComponent(btnAccess)
-											.addComponent(btnCreate))
-							.addContainerGap()));
+									.addGroup(
+											gl_panel.createParallelGroup(
+													Alignment.BASELINE)
+													.addComponent(btnCancel)
+													.addComponent(btnAccess)
+													.addComponent(btnCreate))
+													.addContainerGap()));
 			panel.setLayout(gl_panel);
 			getContentPane().setLayout(groupLayout);
 		}
@@ -240,6 +240,8 @@ public class SessionDialog extends JDialog {
 	}
 
 	/**
+	 * Set the session name for the session dialog.
+	 * 
 	 * @param sessionName name of the session
 	 */
 	public void setSessionName(String sessionName) {

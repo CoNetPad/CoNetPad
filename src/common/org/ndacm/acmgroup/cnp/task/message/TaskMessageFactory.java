@@ -41,24 +41,26 @@ import org.ndacm.acmgroup.cnp.task.response.OpenFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 
 /**
- * @author Cesar Factory that will do the work of translating between
- *         Task(Response) and Messages. The advantage of this class is that if
- *         will handle all the different kinds of tasks or messages to be
- *         translated.
+ * Factory that will do the work of translating between
+ * Task(Response) and Messages. The advantage of this class is that if
+ * will handle all the different kinds of tasks or messages to be
+ * translated.
+ * 
+ * @author Cesar 
  */
 public class TaskMessageFactory {
 
 	/**
-	 * @author cesar
-	 * 
-	 *         This enum will indicate which kind of message or task is been
-	 *         handled.
+	 * This enum will indicate which kind of message or task is been
+	 * handled.
 	 */
 	public enum TaskType {
 		Chat, CloseFile, Commit, Compile, CreateAccount, CreateFile, CreatePrivateSession, CreateSessionTask, DeleteSession, DeleteFile, LeaveSession, DownloadRepo, Editor, JoinPrivateSession, JoinSession, Login, OpenFile, EditorResponse, SessionExists
 	};
 
 	/**
+	 * Convert a TaskMessage to a Task.
+	 * 
 	 * @param message
 	 *            to be converted into a Task
 	 * @return a Task based on the information received in the message
@@ -174,6 +176,8 @@ public class TaskMessageFactory {
 	}
 
 	/**
+	 * Convert a Task to a TaskMessage.
+	 * 
 	 * @param task
 	 *            to be translated into a message
 	 * @return message containing the string re[presentation of the task
@@ -314,6 +318,8 @@ public class TaskMessageFactory {
 	}
 
 	/**
+	 * Convert a TaskMessage to a TaskResonse.
+	 * 
 	 * @param message
 	 *            to be converted into a TaskResponse
 	 * @return a TaskResponse based on the information received in the message
@@ -415,6 +421,8 @@ public class TaskMessageFactory {
 	}
 
 	/**
+	 * Convert a TaskResponse to a TaskMessage.
+	 * 
 	 * @param taskResponse
 	 *            to be translated into a message
 	 * @return message containing the string representation of the taskResponse

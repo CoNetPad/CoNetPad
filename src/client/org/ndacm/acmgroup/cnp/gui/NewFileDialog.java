@@ -17,7 +17,7 @@ import org.ndacm.acmgroup.cnp.CNPClient;
 import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
 
 /**
- * This a dialog box for creating a new file
+ * This a dialog box for creating a new file.
  * 
  * @author Cesar Ramirez
  * 
@@ -25,7 +25,7 @@ import org.ndacm.acmgroup.cnp.file.SourceFile.SourceType;
 public class NewFileDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private CNPClient client;
 	private NewFileDialog newDialog;
 	private JTextField textField;
@@ -55,8 +55,8 @@ public class NewFileDialog extends JDialog {
 				.createParallelGroup(Alignment.LEADING)
 				.addComponent(panel, Alignment.TRAILING,
 						GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
-				.addGroup(
-						groupLayout
+						.addGroup(
+								groupLayout
 								.createSequentialGroup()
 								.addContainerGap()
 								.addComponent(lblFileName)
@@ -65,29 +65,29 @@ public class NewFileDialog extends JDialog {
 										GroupLayout.DEFAULT_SIZE, 375,
 										Short.MAX_VALUE).addContainerGap()));
 		groupLayout
-				.setVerticalGroup(groupLayout
-						.createParallelGroup(Alignment.TRAILING)
+		.setVerticalGroup(groupLayout
+				.createParallelGroup(Alignment.TRAILING)
+				.addGroup(
+						groupLayout
+						.createSequentialGroup()
+						.addContainerGap()
 						.addGroup(
 								groupLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.BASELINE)
-														.addComponent(
-																lblFileName)
-														.addComponent(
-																textField,
-																GroupLayout.PREFERRED_SIZE,
-																GroupLayout.DEFAULT_SIZE,
-																GroupLayout.PREFERRED_SIZE))
-										.addPreferredGap(
-												ComponentPlacement.RELATED, 18,
-												Short.MAX_VALUE)
-										.addComponent(panel,
-												GroupLayout.PREFERRED_SIZE, 46,
-												GroupLayout.PREFERRED_SIZE)));
+								.createParallelGroup(
+										Alignment.BASELINE)
+										.addComponent(
+												lblFileName)
+												.addComponent(
+														textField,
+														GroupLayout.PREFERRED_SIZE,
+														GroupLayout.DEFAULT_SIZE,
+														GroupLayout.PREFERRED_SIZE))
+														.addPreferredGap(
+																ComponentPlacement.RELATED, 18,
+																Short.MAX_VALUE)
+																.addComponent(panel,
+																		GroupLayout.PREFERRED_SIZE, 46,
+																		GroupLayout.PREFERRED_SIZE)));
 		JButton btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -108,8 +108,8 @@ public class NewFileDialog extends JDialog {
 		GroupLayout gl_panel = new GroupLayout(panel);
 		gl_panel.setHorizontalGroup(gl_panel.createParallelGroup(
 				Alignment.LEADING).addGroup(
-				Alignment.TRAILING,
-				gl_panel.createSequentialGroup()
+						Alignment.TRAILING,
+						gl_panel.createSequentialGroup()
 						.addContainerGap(186, Short.MAX_VALUE)
 						.addComponent(btnCreate)
 						.addPreferredGap(ComponentPlacement.RELATED)
@@ -118,14 +118,14 @@ public class NewFileDialog extends JDialog {
 				Alignment.TRAILING)
 				.addGroup(
 						gl_panel.createSequentialGroup()
-								.addContainerGap(GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE)
+						.addContainerGap(GroupLayout.DEFAULT_SIZE,
+								Short.MAX_VALUE)
 								.addGroup(
 										gl_panel.createParallelGroup(
 												Alignment.BASELINE)
 												.addComponent(btnCancel)
 												.addComponent(btnCreate))
-								.addContainerGap()));
+												.addContainerGap()));
 		panel.setLayout(gl_panel);
 		getContentPane().setLayout(groupLayout);
 	}

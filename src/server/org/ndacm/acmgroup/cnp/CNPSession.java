@@ -43,22 +43,27 @@ public class CNPSession implements SessionTaskExecutor {
 	 * The allowed characters for a session name.
 	 */
 	public static final String SESSION_NAME_CHARS = "abcdefghijklmnopqrstuvwxyz";
+
 	/**
 	 * A unique INTEGER to be used for the next file ID.
 	 */
 	private static volatile int NEXT_FILEID;
+
 	/**
 	 * Max length of session names.
 	 */
 	public static final int NAME_LENGTH = 5;
+
 	/**
 	 * The base directories of the files stored
 	 */
 	private static String baseDirectory;
+
 	/**
 	 * maps fileID to ServerSourceFile
 	 */
 	private Map<Integer, ServerSourceFile> sourceFiles;
+
 	/**
 	 * maps userID to CNPConnection
 	 */
@@ -288,7 +293,6 @@ public class CNPSession implements SessionTaskExecutor {
 			// user authentication fails
 			response = new CloseFileTaskResponse(-1, -1, false);
 		}
-
 		distributeTask(response);
 	}
 

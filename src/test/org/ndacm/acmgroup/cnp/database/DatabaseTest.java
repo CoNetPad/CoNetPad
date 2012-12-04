@@ -182,7 +182,6 @@ public class DatabaseTest {
 		} catch (FailedAccountException ex) {
 
 		}
-
 	}
 
 	/**

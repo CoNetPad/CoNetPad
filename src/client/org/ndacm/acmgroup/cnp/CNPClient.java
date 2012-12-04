@@ -110,7 +110,7 @@ import org.ndacm.acmgroup.cnp.task.response.TaskResponseExecutor;
  * 
  */
 public class CNPClient implements TaskReceivedEventListener,
-		TaskResponseExecutor {
+TaskResponseExecutor {
 
 	// URL of the server connected to
 	private String serverURL;
@@ -344,7 +344,6 @@ public class CNPClient implements TaskReceivedEventListener,
 		SendEditorTaskTask task = new SendEditorTaskTask(userID, sessionID,
 				keyPressed, fileID, authToken, this);
 		editorTaskSender.submit(task);
-
 	}
 
 	/**
@@ -371,7 +370,6 @@ public class CNPClient implements TaskReceivedEventListener,
 		Task task = new CreateFileTask(userID, sessionID, filename, type,
 				authToken);
 		network.sendTask(task);
-
 	}
 
 	/**
@@ -383,7 +381,6 @@ public class CNPClient implements TaskReceivedEventListener,
 	public void openSourceFile(int fileID) {
 		Task task = new OpenFileTask(userID, sessionID, fileID, authToken);
 		network.sendTask(task);
-
 	}
 
 	/**
@@ -661,7 +658,6 @@ public class CNPClient implements TaskReceivedEventListener,
 						} catch (BadLocationException e) {
 							// do something
 						}
-
 					}
 				};
 				SwingUtilities.invokeLater(doWorkRunnable);
@@ -846,5 +842,13 @@ public class CNPClient implements TaskReceivedEventListener,
 	 */
 	public void setWaiting(boolean isWaiting) {
 		this.isWaiting = isWaiting;
+	}
+
+	/**
+	 * Return the mapping of fileID to ClientSourceFile.
+	 * @return the map between fileID and source files
+	 */
+	public Map<Integer, ClientSourceFile> getSourceFiles() {
+		return sourceFiles;
 	}
 }

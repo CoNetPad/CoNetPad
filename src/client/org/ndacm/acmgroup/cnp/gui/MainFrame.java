@@ -42,7 +42,7 @@ import javax.swing.text.DocumentFilter;
 import org.ndacm.acmgroup.cnp.CNPClient;
 
 /**
- * This is the main GUI Frame for the user to work with
+ * This is the main GUI Frame for the user to work with.
  * 
  * @author Cesar
  * 
@@ -71,8 +71,7 @@ public class MainFrame extends JFrame {
 	/**
 	 * Create the dialog.
 	 * 
-	 * @param client
-	 *            that will provide the logic and network interface.
+	 * @param client client that will provide the logic and network interface
 	 */
 	public MainFrame(CNPClient client) {
 		this.cnpClient = client;
@@ -97,7 +96,7 @@ public class MainFrame extends JFrame {
 		listUsers = new JList(modelUsers);
 		listUsers.setBorder(new LineBorder(new Color(0, 0, 0)));
 		listUsers
-				.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		listUsers.setVisibleRowCount(-1);
 
 		JLabel lblChat = new JLabel("Chat");
@@ -135,50 +134,50 @@ public class MainFrame extends JFrame {
 				.createParallelGroup(Alignment.TRAILING)
 				.addGroup(
 						gl_panel.createSequentialGroup()
-								.addContainerGap()
-								.addGroup(
-										gl_panel.createParallelGroup(
-												Alignment.TRAILING)
-												.addComponent(
-														listUsers,
-														GroupLayout.DEFAULT_SIZE,
-														191, Short.MAX_VALUE)
+						.addContainerGap()
+						.addGroup(
+								gl_panel.createParallelGroup(
+										Alignment.TRAILING)
+										.addComponent(
+												listUsers,
+												GroupLayout.DEFAULT_SIZE,
+												191, Short.MAX_VALUE)
 												.addComponent(scrollPane,
 														Alignment.LEADING)
-												.addComponent(
-														scrollPane_1,
-														Alignment.LEADING,
-														GroupLayout.PREFERRED_SIZE,
-														GroupLayout.DEFAULT_SIZE,
-														Short.MAX_VALUE)
-												.addComponent(
-														lblCurrentUsers,
-														Alignment.LEADING,
-														GroupLayout.DEFAULT_SIZE,
-														191, Short.MAX_VALUE)
-												.addComponent(
-														lblChat,
-														Alignment.LEADING,
-														GroupLayout.DEFAULT_SIZE,
-														191, Short.MAX_VALUE))
-								.addContainerGap()));
+														.addComponent(
+																scrollPane_1,
+																Alignment.LEADING,
+																GroupLayout.PREFERRED_SIZE,
+																GroupLayout.DEFAULT_SIZE,
+																Short.MAX_VALUE)
+																.addComponent(
+																		lblCurrentUsers,
+																		Alignment.LEADING,
+																		GroupLayout.DEFAULT_SIZE,
+																		191, Short.MAX_VALUE)
+																		.addComponent(
+																				lblChat,
+																				Alignment.LEADING,
+																				GroupLayout.DEFAULT_SIZE,
+																				191, Short.MAX_VALUE))
+																				.addContainerGap()));
 		gl_panel.setVerticalGroup(gl_panel.createParallelGroup(
 				Alignment.LEADING).addGroup(
-				gl_panel.createSequentialGroup()
+						gl_panel.createSequentialGroup()
 						.addContainerGap()
 						.addComponent(lblCurrentUsers)
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addComponent(listUsers, GroupLayout.PREFERRED_SIZE,
 								121, GroupLayout.PREFERRED_SIZE)
-						.addGap(18)
-						.addComponent(lblChat)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE,
-								377, Short.MAX_VALUE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE,
-								42, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap()));
+								.addGap(18)
+								.addComponent(lblChat)
+								.addPreferredGap(ComponentPlacement.RELATED)
+								.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE,
+										377, Short.MAX_VALUE)
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE,
+												42, GroupLayout.PREFERRED_SIZE)
+												.addContainerGap()));
 		panel.setLayout(gl_panel);
 
 		JPanel panel_1 = new JPanel();
@@ -198,7 +197,7 @@ public class MainFrame extends JFrame {
 		});
 		listFiles.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		listFiles
-				.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		listFiles.setVisibleRowCount(-1);
 
 		JButton btnNewFile = new JButton("New File");
@@ -222,74 +221,74 @@ public class MainFrame extends JFrame {
 		});
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
 		gl_panel_1
-				.setHorizontalGroup(gl_panel_1
-						.createParallelGroup(Alignment.LEADING)
+		.setHorizontalGroup(gl_panel_1
+				.createParallelGroup(Alignment.LEADING)
+				.addGroup(
+						gl_panel_1
+						.createSequentialGroup()
+						.addContainerGap()
 						.addGroup(
 								gl_panel_1
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												gl_panel_1
-														.createSequentialGroup()
-														.addContainerGap()
-														.addGroup(
-																gl_panel_1
-																		.createParallelGroup(
-																				Alignment.LEADING)
-																		.addComponent(
-																				listFiles,
-																				Alignment.TRAILING,
-																				GroupLayout.DEFAULT_SIZE,
-																				208,
-																				Short.MAX_VALUE)
-																		.addComponent(
-																				lblWorkspace,
-																				GroupLayout.PREFERRED_SIZE,
-																				200,
-																				GroupLayout.PREFERRED_SIZE)
-																		.addComponent(
-																				panel_2,
-																				GroupLayout.DEFAULT_SIZE,
-																				208,
-																				Short.MAX_VALUE)
+								.createSequentialGroup()
+								.addContainerGap()
+								.addGroup(
+										gl_panel_1
+										.createParallelGroup(
+												Alignment.LEADING)
+												.addComponent(
+														listFiles,
+														Alignment.TRAILING,
+														GroupLayout.DEFAULT_SIZE,
+														208,
+														Short.MAX_VALUE)
+														.addComponent(
+																lblWorkspace,
+																GroupLayout.PREFERRED_SIZE,
+																200,
+																GroupLayout.PREFERRED_SIZE)
+																.addComponent(
+																		panel_2,
+																		GroupLayout.DEFAULT_SIZE,
+																		208,
+																		Short.MAX_VALUE)
 																		.addGroup(
 																				gl_panel_1
-																						.createSequentialGroup()
-																						.addComponent(
-																								btnDeleteFile)
+																				.createSequentialGroup()
+																				.addComponent(
+																						btnDeleteFile)
 																						.addPreferredGap(
 																								ComponentPlacement.RELATED,
 																								31,
 																								Short.MAX_VALUE)
-																						.addComponent(
-																								btnNewFile,
-																								GroupLayout.PREFERRED_SIZE,
-																								94,
-																								GroupLayout.PREFERRED_SIZE)))
-														.addContainerGap())));
+																								.addComponent(
+																										btnNewFile,
+																										GroupLayout.PREFERRED_SIZE,
+																										94,
+																										GroupLayout.PREFERRED_SIZE)))
+																										.addContainerGap())));
 		gl_panel_1.setVerticalGroup(gl_panel_1.createParallelGroup(
 				Alignment.LEADING)
 				.addGroup(
 						gl_panel_1
-								.createSequentialGroup()
-								.addGap(10)
-								.addComponent(lblWorkspace)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(listFiles,
-										GroupLayout.DEFAULT_SIZE, 507,
-										Short.MAX_VALUE)
+						.createSequentialGroup()
+						.addGap(10)
+						.addComponent(lblWorkspace)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(listFiles,
+								GroupLayout.DEFAULT_SIZE, 507,
+								Short.MAX_VALUE)
 								.addPreferredGap(ComponentPlacement.RELATED)
 								.addGroup(
 										gl_panel_1
-												.createParallelGroup(
-														Alignment.BASELINE)
+										.createParallelGroup(
+												Alignment.BASELINE)
 												.addComponent(btnNewFile)
 												.addComponent(btnDeleteFile))
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(panel_2,
-										GroupLayout.PREFERRED_SIZE, 43,
-										GroupLayout.PREFERRED_SIZE)
-								.addContainerGap()));
+												.addPreferredGap(ComponentPlacement.RELATED)
+												.addComponent(panel_2,
+														GroupLayout.PREFERRED_SIZE, 43,
+														GroupLayout.PREFERRED_SIZE)
+														.addContainerGap()));
 
 		JButton btnExit = new JButton("Exit");
 		btnExit.addActionListener(new ActionListener() {
@@ -310,29 +309,29 @@ public class MainFrame extends JFrame {
 		GroupLayout gl_panel_2 = new GroupLayout(panel_2);
 		gl_panel_2.setHorizontalGroup(gl_panel_2.createParallelGroup(
 				Alignment.LEADING).addGroup(
-				gl_panel_2
+						gl_panel_2
 						.createSequentialGroup()
 						.addContainerGap()
 						.addComponent(btnExit)
 						.addPreferredGap(ComponentPlacement.RELATED, 52,
 								Short.MAX_VALUE)
-						.addComponent(btnSave, GroupLayout.PREFERRED_SIZE, 81,
-								GroupLayout.PREFERRED_SIZE).addContainerGap()));
+								.addComponent(btnSave, GroupLayout.PREFERRED_SIZE, 81,
+										GroupLayout.PREFERRED_SIZE).addContainerGap()));
 		gl_panel_2.setVerticalGroup(gl_panel_2.createParallelGroup(
 				Alignment.LEADING)
 				.addGroup(
 						Alignment.TRAILING,
 						gl_panel_2
-								.createSequentialGroup()
-								.addContainerGap(GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE)
+						.createSequentialGroup()
+						.addContainerGap(GroupLayout.DEFAULT_SIZE,
+								Short.MAX_VALUE)
 								.addGroup(
 										gl_panel_2
-												.createParallelGroup(
-														Alignment.BASELINE)
+										.createParallelGroup(
+												Alignment.BASELINE)
 												.addComponent(btnExit)
 												.addComponent(btnSave))
-								.addContainerGap()));
+												.addContainerGap()));
 		panel_2.setLayout(gl_panel_2);
 		panel_1.setLayout(gl_panel_1);
 
@@ -350,12 +349,11 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
-	 * @param fileID
-	 *            unique identifier for each file.
-	 * @param keyPressed
-	 *            integer that represents the key pressed
-	 * @param editIndex
-	 *            location where the even occurred
+	 * Update the source tab to reflect a source edit.
+	 * 
+	 * @param fileID 	 the unique identifier for a file
+	 * @param keyPressed integer that represents the key pressed
+	 * @param editIndex  location where the even occurred
 	 * @throws BadLocationException
 	 */
 	public void updateSourceTab(int fileID, int keyPressed, int editIndex)
@@ -382,22 +380,23 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
+	 * Update the chat area with a new chat message.
+	 * 
 	 * @param username
 	 *            to display in the chat
 	 * @param message
-	 *            to displat in the chat
+	 *            to display in the chat
 	 */
 	public void updateChat(String username, String message) {
 		textAreaChat.append(username + ": " + message + "\n");
 	}
 
 	/**
-	 * @param fileID
-	 *            to identify the file that is being open.
-	 * @param filename
-	 *            relative path to the file.
-	 * @param fileContent
-	 *            string with the data of the file
+	 * Add a tab for a new file to the GUI.
+	 * 
+	 * @param fileID      the ID to identify the file that is being open
+	 * @param filename    relative path to the file
+	 * @param fileContent string with the data of the file
 	 * @return success or failure
 	 */
 	public boolean addTab(final int fileID, String filename, String fileContent) {
@@ -420,7 +419,7 @@ public class MainFrame extends JFrame {
 			setPreferredSize(new Dimension(fileTextArea.getWidth(),
 					fileTextArea.getHeight()));
 			((AbstractDocument) fileTextArea.getDocument())
-					.setDocumentFilter(editorFilter);
+			.setDocumentFilter(editorFilter);
 
 			tabbedPane.addTab(filename, null, scrollPane, filename);
 			tabs.put(fileID, fileTextArea);
@@ -431,6 +430,8 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
+	 * Remove a tab for a file from the GUI.
+	 * 
 	 * @param tabIndex
 	 *            index of tab to remove
 	 */
@@ -439,6 +440,8 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
+	 * Add a list of filenames to the file list.
+	 * 
 	 * @param fileList
 	 *            List of strings to be added to the file list.
 	 */
@@ -449,6 +452,8 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
+	 * Add a filename to the file list.
+	 * 
 	 * @param file
 	 *            name of file to be added to the file list
 	 */
@@ -467,6 +472,8 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
+	 * Add a list of users to the user list.
+	 * 
 	 * @param userList
 	 */
 	public void addToUserList(List<String> userList) {
@@ -500,6 +507,8 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
+	 * Get the file ID of a tab.
+	 * 
 	 * @param fileID
 	 *            identifier of the tab
 	 * @return the tab containing the file requested
@@ -509,6 +518,8 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
+	 * Get the document filter for the editor.
+	 * 
 	 * @return the documentFilter that defines the input style.
 	 */
 	public DocumentFilter getEditorFilter() {
@@ -516,6 +527,8 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
+	 * Set the editor filter status for the editor.
+	 * 
 	 * @param activated
 	 *            the status of the editor filter.
 	 */
@@ -523,7 +536,11 @@ public class MainFrame extends JFrame {
 		((DoNothingFilter) editorFilter).setActivated(activated);
 	}
 
-	// http://examples.oreilly.com/jswing2/code/ch22/UpcaseFilter.java
+	/**
+	 * Inner class for the editor document filter.
+	 * 
+	 * Source: http://examples.oreilly.com/jswing2/code/ch22/UpcaseFilter.java
+	 */
 	private class DoNothingFilter extends DocumentFilter {
 
 		private boolean activated;
@@ -541,7 +558,7 @@ public class MainFrame extends JFrame {
 
 		public void replace(DocumentFilter.FilterBypass fb, int offset,
 				int length, String text, AttributeSet attr)
-				throws BadLocationException {
+						throws BadLocationException {
 			if (activated) {
 				super.replace(fb, offset, length, text, attr);
 			}
