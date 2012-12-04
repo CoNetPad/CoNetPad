@@ -1,6 +1,9 @@
 Deliverable III - Code Review
 =============================
 
+Deliverable III document:
+The document for Devilerable III can be found in the root directory with the filename of " CoNetPad-TeamDeliverableIII.pdf".
+
 Source Code:
 Our source code can be found in the 'src' folder. The relevant subdirectories
 are 'client', 'common', 'server', and 'test'.
