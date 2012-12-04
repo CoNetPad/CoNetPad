@@ -138,10 +138,11 @@ public class CNPSession implements SessionTaskExecutor {
 	}
 
 	/**
-	 * Adds a user to the session.
-	 * 
-	 * @param userAccount the account to be added
-	 * @param connection the connection of the user to be added
+	 * Add a user to the session.
+	 * @param userID the ID of the user to add
+	 * @param username the username of the user to add
+	 * @param connection the connection to add
+	 * @param AuthToken the authorization token of the user to add
 	 */
 	public void addUser(int userID, String username, CNPConnection connection,
 			String AuthToken) {

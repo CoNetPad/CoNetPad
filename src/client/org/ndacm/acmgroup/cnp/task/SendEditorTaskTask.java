@@ -62,7 +62,7 @@ public class SendEditorTaskTask extends Task {
 	/**
 	 * Get the user ID of the task.
 	 * 
-	 * @return
+	 * @return the user ID of the task
 	 */
 	public int getUserID() {
 		return userID;

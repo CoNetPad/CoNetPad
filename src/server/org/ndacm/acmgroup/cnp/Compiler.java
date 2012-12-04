@@ -6,6 +6,10 @@ import java.util.List;
 
 import org.ndacm.acmgroup.cnp.file.ServerSourceFile;
 
+/**
+ * Server-side compiler for source files.
+ *
+ */
 public class Compiler {
 
 	private static final String JAVAC_PATH = "";

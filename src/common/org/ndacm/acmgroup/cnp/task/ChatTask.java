@@ -31,14 +31,13 @@ public class ChatTask extends SessionTask {
 		this.message = message;
 		this.userAuthToken = userAuthToken;
 	}
-	
+
 	/**
-	 * Run the task in a thread
+	 * Execute this task.
 	 */
 	@Override
 	public void run() {
 		session.executeTask(this);
-
 	}
 
 	/**
@@ -48,7 +47,7 @@ public class ChatTask extends SessionTask {
 	public void setUserID(int userID) {
 		this.userID = userID;
 	}
-	
+
 	/**
 	 * Set the content of the chat message
 	 * @param message		The message to be sent
@@ -58,21 +57,21 @@ public class ChatTask extends SessionTask {
 	}
 
 	/**
-	 * Sets the Use authrized token
-	 * @param userAuthToken		The valid User autherized token
+	 * Sets the Use authorized token
+	 * @param userAuthToken		The valid User authorized token
 	 */
 	public void setUserAuthToken(String userAuthToken) {
 		this.userAuthToken = userAuthToken;
 	}
 
 	/**
-	 * This returns a string of the chat userID and the mssage
-	 * @return The User ID followed by a space,a nd chat message
+	 * This returns a string of the chat userID and the message
+	 * @return The User ID followed by a space andd chat message
 	 */
 	public String toString() {
 		return this.userID + " " + this.message;
 	}
-	
+
 	/**
 	 * This returns the UserID of the sender
 	 * @return		User ID of the sender
@@ -80,7 +79,7 @@ public class ChatTask extends SessionTask {
 	public int getUserID() {
 		return userID;
 	}
-	
+
 	/**
 	 * This gets the content of the chat message
 	 * @return		The chat message contents
@@ -88,7 +87,7 @@ public class ChatTask extends SessionTask {
 	public String getMessage() {
 		return message;
 	}
-	
+
 	/**
 	 * This gets the user authorized token
 	 * @return		The authorized user token
@@ -96,9 +95,9 @@ public class ChatTask extends SessionTask {
 	public String getUserAuthToken() {
 		return userAuthToken;
 	}
-	
+
 	/**
-	 * This gets the Username of the sender
+	 * This gets the username of the sender.
 	 * @return		The username of the user
 	 */
 	public String getUsername() {

@@ -1,8 +1,10 @@
 package org.ndacm.acmgroup.cnp.task;
 
 import org.ndacm.acmgroup.cnp.network.CNPConnection;
+
 /**
- * This is a task for closing a file
+ * This is a task for closing a file.
+ * 
  * @author Cesar Ramirez, Josh Tan
  *
  */
@@ -13,7 +15,7 @@ public class CloseFileTask extends SessionTask {
 	private int tabIndex;
 	protected String userAuthToken;
 	protected CNPConnection connection;
-	
+
 	/**
 	 * Default Constructor
 	 * @param userID			The database ID of the user who wishes to close the file
@@ -27,16 +29,15 @@ public class CloseFileTask extends SessionTask {
 		this.tabIndex = tabIndex;
 		this.userAuthToken = userAuthToken;
 	}
-	
+
 	/**
-	 * This runs the task in a thread
+	 * Execute this task.
 	 */
 	@Override
 	public void run() {
 		session.executeTask(this);
-		
 	}
-	
+
 	/**
 	 * This returns the User Id of the task initializer
 	 * @return		The User ID
@@ -44,9 +45,9 @@ public class CloseFileTask extends SessionTask {
 	public int getUserID() {
 		return userID;
 	}
-	
+
 	/**
-	 * This gets the Fild ID of the file that is to be closes
+	 * This gets the File ID of the file that is to be closes
 	 * @return		The unique file id
 	 */
 	public int getFileID() {
@@ -60,7 +61,7 @@ public class CloseFileTask extends SessionTask {
 	public String getUserAuthToken() {
 		return userAuthToken;
 	}
-	
+
 	/**
 	 * The CNP connection of the user 
 	 * @return		The CNP Connection of the user
@@ -76,10 +77,10 @@ public class CloseFileTask extends SessionTask {
 	public void setConnection(CNPConnection connection) {
 		this.connection = connection;
 	}
-	
+
 	/**
 	 * The current location of the text cursor for editing
-	 * @return		The Location of the text curosr
+	 * @return		The Location of the text cursor
 	 */
 	public int getTabIndex() {
 		return tabIndex;
@@ -92,9 +93,5 @@ public class CloseFileTask extends SessionTask {
 	public void setTabIndex(int tabIndex) {
 		this.tabIndex = tabIndex;
 	}
-	
-	
-	
-	
 
 }

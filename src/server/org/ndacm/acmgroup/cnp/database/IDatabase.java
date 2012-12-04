@@ -122,16 +122,14 @@ public interface IDatabase {
 	 * This deletes a public session.
 	 * 
 	 * @param session		The public session
-	 * @return				Either the deletion was successful or not
 	 * @throws SQLException
 	 */
 	void deleteSession(CNPSession session)throws SQLException;
 
 	/**
 	 * This deletes the given account.
-	 * S
+	 * 
 	 * @param account				The account to delete
-	 * @return						True if the deletion was successful, false otherwise
 	 * @throws SQLException
 	 * @throws FailedAccountException
 	 */

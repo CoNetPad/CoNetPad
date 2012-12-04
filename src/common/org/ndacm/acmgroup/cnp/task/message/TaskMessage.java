@@ -30,8 +30,8 @@ public class TaskMessage {
 	 * 
 	 * @param tasktype
 	 *            Task type to represent
-	 * @param Array
-	 *            of string representing their fields
+	 * @param data 
+	 *            array of string representing their fields
 	 */
 	public TaskMessage(TaskType tasktype, String[] data) {
 		this.taskType = tasktype;
@@ -41,8 +41,8 @@ public class TaskMessage {
 	/**
 	 * Default constructor.
 	 * 
-	 * @param String
-	 *            received over the network that is going going to be translated
+	 * @param input
+	 *            string received over the network that is going going to be translated
 	 *            into a TaskMessage
 	 */
 	public TaskMessage(String input) {

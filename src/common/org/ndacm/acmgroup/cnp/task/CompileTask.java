@@ -2,16 +2,16 @@ package org.ndacm.acmgroup.cnp.task;
 
 import java.util.List;
 /**
- * This is the task for compiling a file
+ * This is the task for compiling a file.
+ * 
  * @author Cesar Ramirez
- *
  */
 public class CompileTask extends SessionTask {
 
 	protected int userID;
 	protected List<String> sourceFilenames;
 	protected String userAuthToken;
-	
+
 	/**
 	 * Default Constructor
 	 * @param userID				The unique ID of the user who initialized the compile
@@ -25,12 +25,11 @@ public class CompileTask extends SessionTask {
 	}
 
 	/**
-	 * This runs the task in a thread
+	 * Execute this task.
 	 */
 	@Override
 	public void run() {
 		session.executeTask(this);
-		
 	}
 
 	/**
@@ -43,12 +42,12 @@ public class CompileTask extends SessionTask {
 
 	/**
 	 * This gets the list of file names that were to be compile
-	 * @return		The list of files to be comipled
+	 * @return		The list of files to be compiled
 	 */
 	public List<String> getSourceFilenames() {
 		return sourceFilenames;
 	}
-	
+
 	/**
 	 * This gets the user's authorized token
 	 * @return	The user authorized token

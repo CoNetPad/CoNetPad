@@ -59,7 +59,7 @@ public class LoginTaskResponse extends TaskResponse {
 	/**
 	 * Get whether the original task was a success or not.
 	 * 
-	 * @return
+	 * @return the success status
 	 */
 	public boolean isSuccess() {
 		return success;

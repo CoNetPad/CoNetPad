@@ -1,7 +1,10 @@
 package org.ndacm.acmgroup.cnp.task;
 
-import org.ndacm.acmgroup.cnp.network.CNPConnection;/*
- * This is the task for committing changes to the GIT repository
+import org.ndacm.acmgroup.cnp.network.CNPConnection;
+
+/**
+ * This is the task for committing changes to the Git repository.
+ * 
  * @author Cesar Ramirez
  */
 public class CommitTask extends ServerTask {
@@ -12,10 +15,10 @@ public class CommitTask extends ServerTask {
 	private String sessionName;
 	private String message;
 	private CNPConnection connection;
-	
+
 	/**
 	 * Default Constructor	
-	 * @param userID			The USer ID who initialized the task
+	 * @param userID			The User ID who initialized the task
 	 * @param userAuthToken		The User's authorized token
 	 * @param sessionID			The unique ID of the session
 	 * @param sessionName		The Unique Name of the session
@@ -30,12 +33,11 @@ public class CommitTask extends ServerTask {
 	}
 
 	/**
-	 * This runs the task in a thread
+	 * Execute this task.
 	 */
 	@Override
 	public void run() {
 		server.executeTask(this);
-		
 	}
 
 	/**
@@ -102,16 +104,22 @@ public class CommitTask extends ServerTask {
 		this.message = message;
 	}
 
+	/**
+	 * Get the connection for the task.
+	 * 
+	 * @return the connection
+	 */
 	public CNPConnection getConnection() {
 		return connection;
 	}
 
+	/** 
+	 * Set the connection for the task.
+	 * 
+	 * @param connection the connection
+	 */
 	public void setConnection(CNPConnection connection) {
 		this.connection = connection;
 	}
-	
-	
-	
-	
 
 }

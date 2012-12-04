@@ -59,49 +59,7 @@ import org.ndacm.acmgroup.cnp.task.response.OpenFileTaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponse;
 import org.ndacm.acmgroup.cnp.task.response.TaskResponseExecutor;
 
-/**
- * 
- * ###################KK###################
- * ##################KEDK##################
- * #################K#EEfK#################
- * ################KWWWDEEK################
- * ###############KWWWK###DK###############
- * ##############KWWWW#K#EKDK##############
- * #############KWWKWWWWWKEKEK#############
- * ############KKW#WDWW#WEKKKKK############
- * ###########KiLKW        WW#KK###########
- * ##########K;E#  ,#WWWK#,  #EGK##########
- * #########KWj  ###W##W##KE#  DGK#########
- * ########KW#  WKWW####WWDGLG  EEK########
- * #######KWW  W#KWKWWWWEWGGLLD  E#K#######
- * ######KK## WWK#KKKKEEDEDGGDDD ##EK######
- * #####KWKW #WKKWK#W#WKKEEDDDDE# EEEK#####
- * ####KKK#W #WKKKKWWWWKEEEDDDDDE WEKKK####
- * ###K#WWK ,KWWKKEKKKKKEEEEEEEEE, KE#DK###
- * ##KE##WE ##   WWWj  #; W :#  W# EWKLEK##
- * #KEWW##K ##,#  #  Dt ;       EW #WEKW#K#
- * KGWWED#W ##K   #  ###; ## ## j# #tKWWW#K
- * DEWWGEK# #  ## #  ###; ## ## j# EEWKKKKD
- * #DGWWKEW W  #. #  ## ; WW WW tW DEW#KKD#
- * ##EKWKKK #W  W WW   K; WW KK tW EWWW#E##
- * ###EGWWE ,KKWWKKKWWKWKKKKKEEEE, KDWWE###
- * ####DKEEW KKKKK##KWW#WWWKKKEEE WEDED####
- * #####DDGK #EKEDK#E##WKWWEEGDD# GEWD#####
- * ######EDW# DGGDDDDDEEDDGGGLL# ##WE######
- * #######EEW  DDDEDDKWWW###WWE  W#E#######
- * ########DKW  EDEEG##KWWWEEL  fKD########
- * #########DK#  #fEKDDGLfDE#  LGD#########
- * ##########DE##  ,WDLDLE,  #WGD##########
- * ###########DKWKW        WDfDD###########
- * ############EKWKKEK##KfG#DGE############
- * #############EEWKEEEKKGEKGE#############
- * ##############DDWEEEEEDK#D##############
- * ###############EEWKKEG##D###############
- * ################KKWKDGLK################
- * #################KEWEGK#################
- * ##################KEKK##################
- * ###################KK###################
- * 
+/** 
  * 
  * This class is the main client-side class. It handles the communication and
  * the various client functionalities.
@@ -326,18 +284,10 @@ TaskResponseExecutor {
 	/**
 	 * This edits the file the user is viewing or working on
 	 * 
-	 * @param userID
-	 *            The user ID of which the edit came from
-	 * @param sessionID
-	 *            the session Id of which the file belongs to
 	 * @param keyPressed
 	 *            The key that is pressed when the edit is being made
-	 * @param editIndex
-	 *            The index of the character or white space being edited
 	 * @param fileID
-	 *            The unique file ID of the ile being edited
-	 * @param userAuthToken
-	 *            The authentication cooki prevent hackers from editing
+	 *            The unique file ID of the file being edited
 	 */
 	public void editFile(int keyPressed, int fileID) {
 
@@ -814,6 +764,8 @@ TaskResponseExecutor {
 	}
 
 	/**
+	 * Get the client network.
+	 * 
 	 * @return the network component.
 	 */
 	public ClientNetwork getNetwork() {
@@ -823,7 +775,7 @@ TaskResponseExecutor {
 	/**
 	 * @param fileID
 	 *            of the file to open.
-	 * @return the jtextarea containing the specified fiel.
+	 * @return the jtextarea containing the specified field.
 	 */
 	public JTextArea getEditorTextArea(int fileID) {
 		return clientFrame.getTab(fileID);

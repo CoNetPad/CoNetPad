@@ -20,6 +20,7 @@ public class JGitTest {
 
 	public static JGit jg;
 	public static File file;
+	public static File blargTest;
 
 	/**
 	 * @throws java.lang.Exception
@@ -40,6 +41,9 @@ public class JGitTest {
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		jg.clearRepos();
+		if (blargTest != null) {
+			blargTest.delete();
+		}
 	}
 
 	/**
@@ -127,9 +131,9 @@ public class JGitTest {
 	@Test
 	public final void testAddFileToRepo() {
 		try{
-			File test =  new File("blarg.txt");
+			blargTest =  new File("blarg.txt");
 			jg.activateRepo("testRepo1");
-			jg.addFileToRepo("testRepo1", test);
+			jg.addFileToRepo("testRepo1", blargTest);
 		}
 		catch(Exception e)
 		{

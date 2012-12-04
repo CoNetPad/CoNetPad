@@ -300,12 +300,11 @@ public class JRepository {
 	}
 
 	/**
-	 * Deletes the file or folder and returns if the process was succesful or
+	 * Deletes the file or folder and returns if the process was successful or
 	 * not.
 	 * 
-	 * @param f
-	 *            file to delete
-	 * @return
+	 * @param f file to delete
+	 * @return whether or not the delete was successful
 	 */
 	public boolean deleteDirectory(File f) {
 		if (f.exists()) {

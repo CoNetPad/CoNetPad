@@ -56,7 +56,7 @@ public class TaskMessageFactory {
 	 */
 	public enum TaskType {
 		Chat, CloseFile, Commit, Compile, CreateAccount, CreateFile, CreatePrivateSession, CreateSessionTask, DeleteSession, DeleteFile, LeaveSession, DownloadRepo, Editor, JoinPrivateSession, JoinSession, Login, OpenFile, EditorResponse, SessionExists
-	};
+	}
 
 	/**
 	 * Convert a TaskMessage to a Task.
@@ -423,7 +423,7 @@ public class TaskMessageFactory {
 	/**
 	 * Convert a TaskResponse to a TaskMessage.
 	 * 
-	 * @param taskResponse
+	 * @param task
 	 *            to be translated into a message
 	 * @return message containing the string representation of the taskResponse
 	 */

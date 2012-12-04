@@ -35,13 +35,13 @@ public class CNPConnection extends Thread {
 	private String auth;
 
 	/**
-	 * Defualt constructor.
+	 * Default constructor.
 	 * 
 	 * @param socket
 	 *            socket that connects to the client
 	 * @param id
 	 *            integer, unique identifier for this connection and client
-	 * @param component
+	 * @param taskSource
 	 *            object that handles firing events, this will usually be the
 	 *            Network object.
 	 */
